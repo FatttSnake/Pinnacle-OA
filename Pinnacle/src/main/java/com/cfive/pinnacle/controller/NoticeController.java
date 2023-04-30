@@ -1,6 +1,8 @@
 package com.cfive.pinnacle.controller;
 
 import com.cfive.pinnacle.entity.Notice;
+import com.cfive.pinnacle.entity.common.ResponseCode;
+import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.INoticeService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,45 +29,45 @@ public class NoticeController {
 
     //根据公告id查公告信息及发布人
     @GetMapping("/{nid}")
-    public Result selectByNoticeId(@PathVariable Long nid) {
+    public ResponseResult selectByNoticeId(@PathVariable Long nid) {
         Notice noticeById = noticeService.selectByNoticeId(nid);
-        Integer code = noticeById != null ? Code.SELECT_NOTICE_OK : Code.SELECT_NOTICE_ERR;
+        Integer code = noticeById != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticeById != null ? "" : "数据查询失败，请尝试！";
-        return new Result(code, noticeById, msg);
+        return ResponseResult.build(code, msg, noticeById);
     }
 
     ;
 
     //添加公告
     @GetMapping
-    public Result selectAllNoticeId() {
-        List<Notice> noticeList = noticeService.selectAllNoticeId();
-        Integer code = noticeList != null ? Code.SELECT_ALL_OK : Code.SELECT_ALL_ERR;
+    public ResponseResult selectAllNotice() {
+        List<Notice> noticeList = noticeService.selectAllNotice();
+        Integer code = noticeList != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticeList != null ? "" : "数据查询失败，请尝试！";
-        return new Result(code, noticeList, msg);
+        return ResponseResult.build(code, msg, noticeList);
     }
 
     @PostMapping
-    public Result updateNotice(@RequestBody Notice notice) {
+    public ResponseResult updateNotice(@RequestBody Notice notice) {
         notice.setId(null);  //清除id，使新插入的数据id自增
-        notice.setModifyTime(LocalDateTime.now());
         notice.setOriginId(notice.getId());
         boolean updateById = noticeService.save(notice);
-        Result result = new Result(updateById ? Code.UPDATE_OK : Code.UPDATE_ERR, updateById);
-        return result;
+        String msg = updateById ? "" : "数据修改失败，请尝试！";
+        return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateById);
     }
 
     @PutMapping
-    public Result addNotice(@RequestBody Notice notice){
+    public ResponseResult addNotice(@RequestBody Notice notice) {
         boolean insertNotice = noticeService.save(notice);
-        Result result = new Result(insertNotice ? Code.SAVE_OK : Code.SAVE_ERR, insertNotice);
-        return result;
+        String msg = insertNotice ? "" : "数据添加失败，请尝试！";
+        return ResponseResult.build(insertNotice ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, insertNotice);
     }
 
     @DeleteMapping("/{nid}")
-    public Result deleteByNoticeId(@PathVariable Long nid){
-        boolean  removeById= noticeService.removeById(nid);
-        Result result = new Result(removeById ? Code.DELETE_OK : Code.DELETE_ERR, removeById);
-        return result;
+    public ResponseResult deleteByNoticeId(@PathVariable Long nid) {
+        boolean removeById = noticeService.deleteById(nid);
+        String msg = removeById ? "" : "数据删除失败，请尝试！";
+        return ResponseResult.build(removeById ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, removeById);
+
     }
 }

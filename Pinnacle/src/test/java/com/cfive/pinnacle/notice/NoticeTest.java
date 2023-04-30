@@ -1,11 +1,11 @@
 package com.cfive.pinnacle.notice;
 
 import com.cfive.pinnacle.controller.NoticeController;
-import com.cfive.pinnacle.controller.Result;
-import com.cfive.pinnacle.entity.Department;
 import com.cfive.pinnacle.entity.Notice;
+import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.entity.NoticeType;
 import com.cfive.pinnacle.entity.User;
+import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IDepartmentService;
 import com.cfive.pinnacle.service.INoticeReceiveService;
 import com.cfive.pinnacle.service.INoticeTypeService;
@@ -33,20 +33,20 @@ public class NoticeTest {
 
     @Test
     void selectByIdTest() {
-        Result notice = noticeController.selectByNoticeId(21L);
-        System.out.println(notice.getData());
+        ResponseResult selectByNoticeId = noticeController.selectByNoticeId(21L);
+        System.out.println(selectByNoticeId.getData());
     }
 
     @Test
     void selectAllTest() {
-        Result noticeList = noticeController.selectAllNoticeId();
+        ResponseResult noticeList = noticeController.selectAllNotice();
         System.out.println(noticeList.getData());
     }
 
     @Test
     void updateTest() {
-        Result notice =noticeController.selectByNoticeId(23L);
-        Result updateNotice = noticeController.updateNotice((Notice)notice.getData());
+        ResponseResult notice = noticeController.selectByNoticeId(23L);
+        ResponseResult updateNotice = noticeController.updateNotice((Notice) notice.getData());
         System.out.println(updateNotice.getData());
     }
 
@@ -56,14 +56,13 @@ public class NoticeTest {
         notice.setTitle("title1");
         notice.setTypeId(1652684907554496514L);
         notice.setSenderId(1652714496280469506L);
-        LocalDateTime startDate = LocalDateTime.parse("2023-03-21 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime endDate = LocalDateTime.parse("2023-09-01 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-//        notice.setEffectiveDate(startDate);
-//        notice.setEndDate(endDate);
-//        notice.setSenderID(2);
+        LocalDateTime sendTime = LocalDateTime.parse("2023-05-11 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime endTime = LocalDateTime.parse("2023-09-01 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        notice.setPriority(2);
+        notice.setSendTime(sendTime);
+        notice.setEndTime(endTime);
         notice.setContent("Content1");
-        Result updateNotice = noticeController.addNotice(notice);
-        System.out.println(updateNotice.getData());
+        noticeController.addNotice(notice);
     }
     @Test
     void insertNoticeTypeTest(){
@@ -74,11 +73,11 @@ public class NoticeTest {
 
     @Test
     void insertNoticeRecTest(){
-        User user = new User();
-        user.setUsername("cyb");
-        user.setPasswd("123");
-        user.setDepartmentId(1652713919467151362L);
-        iUserService.save(user);
-//        iNoticeTypeService.save(noticeType);
+        NoticeReceive receive = new NoticeReceive();
+        receive.setNoticeId(1652734384348790786L);
+        receive.setUserId(1652714496280469506L);
+        iNoticeReceiveService.save(receive);
     }
+
+
 }

@@ -18,5 +18,5 @@ import java.util.List;
 public interface NoticeMapper extends BaseMapper<Notice> {
     Notice selectByNoticeId(Long nid);
 
-    List<Notice> selectAllNoticeId();
+    List<Notice> selectAllNotice();
 }

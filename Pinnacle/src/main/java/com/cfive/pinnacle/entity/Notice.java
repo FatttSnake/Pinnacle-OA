@@ -45,16 +45,28 @@ public class Notice implements Serializable {
     private String content;
 
     /**
-     * 公告类型
+     * 公告类型Id
      */
     @TableField("type_id")
     private Long typeId;
+
+    /**
+     * 公告类型
+     */
+    @TableField(exist = false)
+    private NoticeType noticeType;
 
     /**
      * 发布者id
      */
     @TableField("sender_id")
     private Long senderId;
+
+    /**
+     * 发布者
+     */
+    @TableField(exist = false)
+    private User sender;
 
     /**
      * 创建时间
@@ -103,12 +115,6 @@ public class Notice implements Serializable {
      */
     @TableField("old")
     private Integer old;
-
-    /**
-     * 发布者
-     */
-    @TableField(exist = false)
-    private User sender;
 
     @TableField("deleted")
     @TableLogic

@@ -16,5 +16,7 @@ import java.util.List;
 public interface INoticeService extends IService<Notice> {
     Notice selectByNoticeId(Long nid);
 
-    List<Notice> selectAllNoticeId();
+    List<Notice> selectAllNotice();
+
+    Boolean deleteById(Long nid);
 }

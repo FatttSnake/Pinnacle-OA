@@ -16,11 +16,11 @@
             :formatter="formatter"
             show-overflow-tooltip
         />
-        <el-table-column prop="category" label="公告类别" width="180" />
-        <el-table-column prop="status" label="状态" width="180" />
+        <el-table-column prop="noticeType.name" label="公告类别" width="180" />
+        <el-table-column prop="priority" label="优先级" width="180" />
         <el-table-column
             prop="sendTime"
-            label="创建时间"
+            label="生效时间"
             sortable
             width="180"
             column-key="date"
@@ -34,7 +34,7 @@
             :formatter="formatDate"
         />
         <el-table-column
-            prop="endDate"
+            prop="endTime"
             label="失效时间"
             sortable
             width="180"
@@ -42,7 +42,7 @@
             :formatter="formatDate"
         />
         <el-table-column
-            prop="sender.userName"
+            prop="sender.username"
             label="发布人"
             width="100"
             :filters="[
@@ -56,7 +56,7 @@
                 <el-tag
                     :type="scope.row.sender.userName === 'Home' ? '' : 'success'"
                     disable-transitions
-                    >{{ scope.row.sender.userName }}
+                    >{{ scope.row.sender.username }}
                 </el-tag>
             </template>
         </el-table-column>
@@ -93,7 +93,7 @@ export default {
             return row.title
         },
         filterTag(value, row) {
-            return row.sender.userName === value
+            return row.sender.username === value
         },
         filterHandler(value, row, column) {
             const property = column['property']
@@ -111,14 +111,16 @@ export default {
             console.log(index, row.id)
         },
         handleDelete(index, row) {
-            axios.delete('http://localhost:8080/notice/' + row.id).then((response) => {
+            // console.log(row.id)
+            axios.delete('http://localhost:8621/notice/' + row.id).then((response) => {
                 console.log(response.data)
                 this.selectAllNotice()
             })
         },
         selectAllNotice() {
-            axios.get('http://localhost:8080/notice').then((response) => {
-                this.tableData = response.data.data
+            axios.get('http://localhost:8621/notice').then((response) => {
+                this.tableData = response.data.data;
+                console.log(response.data.data[0].id)
             })
         }
     },

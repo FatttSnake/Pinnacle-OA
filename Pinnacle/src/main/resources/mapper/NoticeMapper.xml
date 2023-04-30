@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.NoticeMapper">
-    <!-- 根据公告id查公告信息及发布人   -->
+    <!-- 根据公告id查公告信息及发布人、公告类别名   -->
     <select id="selectByNoticeId" resultMap="NoticeByIdResultMap" parameterType="long">
         select *
         from t_user u,
-             t_notice t
-        where u.id = t.sender_id
-          and t.id = #{nid}
-          and t.deleted = 0
-
-
+             t_notice n,
+             t_notice_type type
+        where u.id = n.sender_id
+          and type.id=n.type_id
+          and n.id = #{nid}
+          and n.deleted = 0
+          and n.old=0
     </select>
     <resultMap id="NoticeByIdResultMap" type="notice" autoMapping="true">
         <association property="sender" javaType="user" autoMapping="true"/>
+        <association property="noticeType" javaType="noticeType" autoMapping="true"/>
     </resultMap>
 
     <!--  查询所有公告  -->
-    <select id="selectAllNoticeId" resultMap="NoticeAllResultMap">
+    <select id="selectAllNotice" resultMap="NoticeAllResultMap">
         select *
         from t_user u,
-             t_notice t
-        where u.id = t.sender_id
-          and t.deleted = 0
+             t_notice n,
+             t_notice_type type
+        where u.id = n.sender_id
+          and type.id=n.type_id
+          and n.deleted = 0
+          and n.old=0
     </select>
     <resultMap id="NoticeAllResultMap" type="notice" autoMapping="true">
         <association property="sender" javaType="user" autoMapping="true"/>
+        <association property="noticeType" javaType="noticeType" autoMapping="true"/>
     </resultMap>
 </mapper>

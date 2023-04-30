@@ -32,16 +32,28 @@ public class NoticeReceive implements Serializable {
     private Long id;
 
     /**
-     * 用户
+     * 用户Id
      */
     @TableField("user_id")
     private Long userId;
 
     /**
-     * 公告
+     * 用户
+     */
+    @TableField(exist = false)
+    private User user;
+
+    /**
+     * 公告Id
      */
     @TableField("notice_id")
     private Long noticeId;
+
+    /**
+     * 公告
+     */
+    @TableField(exist = false)
+    private Notice notice;
 
     /**
      * 已读
