@@ -242,7 +242,7 @@ create table `t_notice_receive`
     `id`        bigint not null primary key,
     `user_id`   bigint not null comment '用户',
     `notice_id` bigint not null comment '公告',
-    `read`      int    not null default 0 comment '已读',
+    `already_read`      int    not null default 0 comment '已读',
     `deleted`   int    not null default 0,
     `version`   int    not null default 0,
     constraint t_notice_receive_user_id_fk foreign key (user_id) references t_user (id),
