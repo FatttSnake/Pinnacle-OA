@@ -16,3 +16,4 @@ mybatis-plus:
       logic-not-delete-value: 0
       logic-delete-value: 1
       id-type: assign_id
+  type-aliases-package: com.cfive.pinnacle.entity
