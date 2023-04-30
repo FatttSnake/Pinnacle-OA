@@ -27,11 +27,11 @@
                             :icon="InfoFilled"
                             icon-color="#00d4ff"
                             title="是否确认完成？"
-                            @confirm="completeConfirmEvent(scope.row)"
-                            @cancel="completeCancelEvent"
+                            @confirm="todoConfirmEvent(scope.row)"
+                            @cancel="todoCancelEvent"
                         >
                             <template #reference>
-                                <el-button link type="primary" size="default">完成</el-button>
+                                <el-button link type="primary" size="default">未完成</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
@@ -43,8 +43,9 @@
 
 <script>
 import axios from 'axios'
+
 export default {
-    name: 'TodoPage',
+    name: 'CompletePage',
     data() {
         return {
             tableData: []
@@ -55,18 +56,18 @@ export default {
             console.log(new Date(deadLine).toLocaleString())
             return new Date(deadLine).toLocaleString()
         },
-        completeConfirmEvent(row) {
+        todoConfirmEvent(row) {
             console.log(row)
-            this.setTaskComplete(row)
+            this.setTaskTodo(row)
             console.log('complete confirm!')
             location.reload()
         },
-        completeCancelEvent() {
+        todoCancelEvent() {
             console.log('complete cancel!')
         },
         getTableData() {
             axios
-                .get('http://localhost:8080/work/todo')
+                .get('http://localhost:8080/work/complete')
                 .then((response) => {
                     console.log(response.data)
                     this.tableData = response.data
@@ -76,10 +77,10 @@ export default {
                     console.log(reportError)
                 })
         },
-        setTaskComplete(row) {
+        setTaskTodo(row) {
             var workDo = new Object()
             workDo.id = row.id
-            workDo.taskStatus = true
+            workDo.taskStatus = false
             axios
                 .put('http://localhost:8080/work', workDo)
                 .then((response) => {

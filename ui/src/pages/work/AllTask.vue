@@ -17,9 +17,31 @@
                         {{ formatDate(scope.row.deadLine) }}
                     </template>
                 </el-table-column>
+                <el-table-column prop="taskStatus" label="状态" width="150" />
+                <el-table-column prop="progress" label="进度" width="250">
+                    <template #default>
+                        <el-progress :text-inside="true" :stroke-width="20" :percentage="70" />
+                    </template>
+                </el-table-column>
                 <el-table-column fixed="right" label="操作" width="240">
                     <template #default="scope">
-                        <el-button link type="primary" size="large">查看</el-button>
+                        <el-button link type="primary" size="large" @click="handleClick"
+                            >编辑</el-button
+                        >
+                        <el-popconfirm
+                            width="220"
+                            confirm-button-text="是"
+                            cancel-button-text="否"
+                            :icon="InfoFilled"
+                            icon-color="#00d4ff"
+                            title="是否确定删除？"
+                            @confirm="deleteConfirmEvent(scope.row)"
+                            @cancel="deleteCancelEvent"
+                        >
+                            <template #reference>
+                                <el-button link type="primary" size="default">删除</el-button>
+                            </template>
+                        </el-popconfirm>
                         <el-popconfirm
                             width="220"
                             confirm-button-text="是"
@@ -27,7 +49,7 @@
                             :icon="InfoFilled"
                             icon-color="#00d4ff"
                             title="是否确认完成？"
-                            @confirm="completeConfirmEvent(scope.row)"
+                            @confirm="completeConfirmEvent"
                             @cancel="completeCancelEvent"
                         >
                             <template #reference>
@@ -38,16 +60,27 @@
                 </el-table-column>
             </el-table>
         </div>
+        <div class="main-add-content">
+            <div class="main-add-box">
+                <el-button @click="dialogFormVisible = true">添加</el-button>
+            </div>
+            <el-dialog v-model="dialogFormVisible" width="60%">
+                <edit-work @setDialogVisible="setDialogVisible"></edit-work>
+            </el-dialog>
+        </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import EditWork from '@/components/EditWork.vue'
+
 export default {
-    name: 'TodoPage',
+    name: 'AllTaskPage',
     data() {
         return {
-            tableData: []
+            tableData: [],
+            dialogFormVisible: false
         }
     },
     methods: {
@@ -55,18 +88,26 @@ export default {
             console.log(new Date(deadLine).toLocaleString())
             return new Date(deadLine).toLocaleString()
         },
-        completeConfirmEvent(row) {
-            console.log(row)
-            this.setTaskComplete(row)
-            console.log('complete confirm!')
+        handleClick() {
+            console.log('click')
+        },
+        deleteConfirmEvent(row) {
+            this.deleteTableData(row)
             location.reload()
+            console.log('delete confirm!')
+        },
+        deleteCancelEvent() {
+            console.log('delete cancel!')
+        },
+        completeConfirmEvent() {
+            console.log('complete confirm!')
         },
         completeCancelEvent() {
             console.log('complete cancel!')
         },
         getTableData() {
             axios
-                .get('http://localhost:8080/work/todo')
+                .get('http://localhost:8080/work')
                 .then((response) => {
                     console.log(response.data)
                     this.tableData = response.data
@@ -76,22 +117,27 @@ export default {
                     console.log(reportError)
                 })
         },
-        setTaskComplete(row) {
-            var workDo = new Object()
-            workDo.id = row.id
-            workDo.taskStatus = true
+        deleteTableData(row) {
             axios
-                .put('http://localhost:8080/work', workDo)
+                .delete('http://localhost:8080/work/' + row.id)
                 .then((response) => {
                     console.log(response.data)
                 })
                 .catch((reportError) => {
                     console.log(reportError)
                 })
+        },
+        setDialogVisible(dialogVisible) {
+            console.log(dialogVisible)
+            this.dialogFormVisible = dialogVisible
+            location.reload()
         }
     },
     created() {
         this.getTableData()
+    },
+    components: {
+        EditWork
     }
 }
 </script>
