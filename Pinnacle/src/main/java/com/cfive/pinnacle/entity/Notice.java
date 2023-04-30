@@ -51,7 +51,7 @@ public class Notice implements Serializable {
     private Long typeId;
 
     /**
-     * 发布者
+     * 发布者id
      */
     @TableField("sender_id")
     private Long senderId;
@@ -104,6 +104,12 @@ public class Notice implements Serializable {
     @TableField("old")
     private Integer old;
 
+    /**
+     * 发布者
+     */
+    @TableField(exist = false)
+    private User sender;
+
     @TableField("deleted")
     @TableLogic
     private Integer deleted;
@@ -111,4 +117,6 @@ public class Notice implements Serializable {
     @TableField("version")
     @Version
     private Integer version;
+
+
 }
