@@ -316,5 +316,7 @@ create table `t_attendance`
     `modify_id`   bigint   not null comment '修改人',
     `modify_time` datetime not null default CURRENT_TIMESTAMP comment '修改时间',
     `deleted`     int      not null default 0,
-    `version`     int      not null default 0
+    `version`     int      not null default 0,
+    constraint t_attendance_user_id_fk foreign key (user_id) references t_user(id),
+    constraint t_attendance_modify_id_fk foreign key (modify_id) references t_user(id)
 ) comment '考勤';
