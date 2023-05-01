@@ -1,5 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.WorkMapper">
+    <resultMap id="workMap" type="work">
+        <id property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="publisherId" column="publisher_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="deadline" column="deadline"/>
+        <collection property="userWorkList" ofType="userWork">
+            <result property="status" column="status"/>
+        </collection>
+        <collection property="worker" ofType="user">
+            <id property="id" column="worker_id"/>
+            <result property="username" column="worker_name"/>
+        </collection>
+    </resultMap>
+    <select id="getAll" resultMap="workMap">
+        select w.id,
+               content,
+               publisher_id,
+               create_time,
+               deadline,
+               tuw.user_id worker_id,
+               u.username  worker_name,
+               tuw.status  status
+        from t_work w,
+             t_user u,
+             t_user_work tuw
+        where w.id = tuw.work_id
+          and tuw.user_id = u.id
+          and w.deleted = 0
+          and tuw.deleted = 0
+        order by w.id desc;
+    </select>
+    <select id="getWork" parameterType="work" resultType="work">
+        select id, user_id, content, create_time, deadline, task_status
+        from t_task
+        <where>
+            <if test="task_status!=null">
+                and task_status=#{task_status}
+            </if>
+            <if test="user_id!=null and user_id!=0">
+                and user_id=#{user_id}
+            </if>
+        </where>
+        order by deadline, id;
+    </select>
+    <select id="getTodo" parameterType="long" resultMap="workMap">
+        select w.id,
+               content,
+               publisher_id,
+               create_time,
+               deadline,
+               tuw.user_id worker_id,
+               u.username  worker_name,
+               tuw.status  status
+        from t_work w,
+             t_user u,
+             t_user_work tuw
+        where w.id = tuw.work_id
+          and tuw.user_id = u.id
+          and tuw.user_id = #{userId}
+          and status = false
+          and w.deleted = 0
+          and tuw.deleted = 0
+        order by u.id desc;
+    </select>
+    <select id="getComplete" parameterType="long" resultMap="workMap">
+        select w.id,
+               content,
+               publisher_id,
+               create_time,
+               deadline,
+               tuw.user_id worker_id,
+               u.username  worker_name,
+               tuw.status status
+        from t_work w,
+             t_user u,
+             t_user_work tuw
+        where w.id = tuw.work_id
+          and tuw.user_id = u.id
+          and tuw.user_id = #{userId}
+          and status = true
+          and w.deleted = 0
+          and tuw.deleted = 0
+        order by u.id desc;
+    </select>
+    <delete id="deleteWorkById" parameterType="int">
+        delete
+        from t_task
+        where id = #{id};
+    </delete>
+    <delete id="deleteWork" parameterType="list">
+        delete
+        from t_task
+        <where>
+            <foreach collection="list" item="id" open="id in(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+    <update id="updateWork" parameterType="Work">
+        update t_task
+        <set>
+            <if test="publisher_id!=null and publisher_id!=0">
+                publisher_id = #{publisher_id}
+            </if>
+            <if test="taskStatus!=null">
+                task_status=#{taskStatus}
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+    <select id="getOneById" resultMap="workMap">
+        select id, user_id, userName, task_content, create_time, deadline, task_status
+        from t_task,
+             t_user
+        where user_id = userID
+          and id = #{id};
+    </select>
 
 </mapper>

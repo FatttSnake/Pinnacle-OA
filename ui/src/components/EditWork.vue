@@ -6,30 +6,29 @@
                 multiple
                 filterable
                 :reserve-keyword="false"
-                value-key="userID"
+                value-key="username"
                 placeholder="选择相对应的工作人员"
             >
                 <el-option
                     v-for="item in workers"
-                    :key="item.userID"
-                    :label="item.userName"
+                    :key="item.userId"
+                    :label="item.username"
                     :value="item"
                 />
             </el-select>
         </el-form-item>
-        <el-form-item label="终止时间" prop="deadLine">
+        <el-form-item label="终止时间" prop="deadline">
             <el-col :span="11">
                 <el-date-picker
-                    v-model="form.deadLine"
+                    v-model="form.deadline"
                     type="datetime"
-                    format="YYYY-MM-DD HH:mm"
                     placeholder="请选择时间"
                     style="width: 100%"
                 />
             </el-col>
         </el-form-item>
-        <el-form-item label="工作内容" prop="taskContent">
-            <el-input v-model="form.taskContent" type="textarea" />
+        <el-form-item label="工作内容" prop="content">
+            <el-input v-model="form.content" type="textarea" />
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="onSubmit(form)">创建</el-button>
@@ -45,16 +44,16 @@ export default {
     data() {
         return {
             form: {
-                publisher_id: '',
+                publisherId: '',
                 createTime: '',
-                deadLine: '',
-                taskContent: '',
+                deadline: '',
+                content: '',
                 worker: []
             },
             workers: [
                 {
-                    userID: '',
-                    userName: ''
+                    userId: '',
+                    username: ''
                 }
             ],
             rules: {
@@ -64,14 +63,14 @@ export default {
                         message: '请选择相应的工作人员'
                     }
                 ],
-                deadLine: [
+                deadline: [
                     {
                         type: 'date',
                         required: true,
                         message: '请输入终止日期'
                     }
                 ],
-                taskContent: [
+                content: [
                     {
                         required: true,
                         message: '请输入工作内容'
@@ -83,10 +82,10 @@ export default {
     methods: {
         getFormData() {
             axios
-                .get('http://localhost:8080/user')
+                .get('http://localhost:8621/user')
                 .then((response) => {
-                    console.log(response.data)
-                    this.workers = response.data
+                    console.log(response.data.data)
+                    this.workers = response.data.data
                     console.log(this.workers)
                 })
                 .catch((reportError) => {
@@ -96,7 +95,7 @@ export default {
         addWork(form) {
             console.log(form)
             axios
-                .post('http://localhost:8080/work', form)
+                .post('http://localhost:8621/work', form)
                 .then((response) => {
                     console.log(response.data)
                 })
@@ -108,9 +107,9 @@ export default {
             //表单校验
             this.$refs.ruleForm.validate((value) => {
                 if (value) {
-                    form.createTime = new Date().getTime().toString()
-                    console.log(form)
-                    form.publisher_id = String(1)
+                    console.log(form.deadline)
+                    form.createTime = new Date()
+                    form.publisherId = String(1)
                     this.addWork(form)
                     this.$emit('setDialogVisible', false)
                     console.log('submit!')

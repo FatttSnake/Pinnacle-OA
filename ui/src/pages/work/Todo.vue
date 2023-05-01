@@ -3,8 +3,8 @@
         <div class="main-table">
             <el-table :data="tableData" style="width: 100%">
                 <el-table-column fixed prop="id" label="工作事项ID" width="150" />
-                <el-table-column prop="publisher_id" label="发布者ID" width="120" />
-                <el-table-column prop="taskContent" label="内容" width="800" />
+                <el-table-column prop="publisherId" label="发布者ID" width="120" />
+                <el-table-column prop="content" label="内容" width="800" />
                 <el-table-column prop="worker" label="工作人员" width="200">
                     <template #default="{ row }">
                         <span v-for="item in row.worker" :key="item.userID">
@@ -12,9 +12,9 @@
                         </span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="deadLine" label="结束时间" width="200">
+                <el-table-column prop="deadline" label="结束时间" width="200">
                     <template #default="scope">
-                        {{ formatDate(scope.row.deadLine) }}
+                        {{ formatDate(scope.row.deadline) }}
                     </template>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="240">
@@ -51,9 +51,9 @@ export default {
         }
     },
     methods: {
-        formatDate(deadLine) {
-            console.log(new Date(deadLine).toLocaleString())
-            return new Date(deadLine).toLocaleString()
+        formatDate(deadline) {
+            console.log(new Date(deadline).toLocaleString())
+            return new Date(deadline).toLocaleString()
         },
         completeConfirmEvent(row) {
             console.log(row)
@@ -79,7 +79,7 @@ export default {
         setTaskComplete(row) {
             var workDo = new Object()
             workDo.id = row.id
-            workDo.taskStatus = true
+            workDo.status = true
             axios
                 .put('http://localhost:8080/work', workDo)
                 .then((response) => {

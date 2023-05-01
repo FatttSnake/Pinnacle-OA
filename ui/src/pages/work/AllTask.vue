@@ -2,28 +2,30 @@
     <div class="main">
         <div class="main-table">
             <el-table :data="tableData" style="width: 100%">
-                <el-table-column fixed prop="id" label="工作事项ID" width="150" />
-                <el-table-column prop="publisher_id" label="发布者ID" width="120" />
-                <el-table-column prop="taskContent" label="内容" width="800" />
+                <el-table-column prop="content" label="内容" width="800" />
+                <el-table-column prop="publisherName" label="发布者ID" width="120" />
                 <el-table-column prop="worker" label="工作人员" width="200">
                     <template #default="{ row }">
-                        <span v-for="item in row.worker" :key="item.userID">
-                            {{ item.userName }},&nbsp;
+                        <span v-for="item in row.worker" :key="item.userId">
+                            {{ item.username }},&nbsp;
                         </span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="deadLine" label="结束时间" width="200">
+                <el-table-column prop="deadline" label="结束时间" width="200">
                     <template #default="scope">
-                        {{ formatDate(scope.row.deadLine) }}
+                        {{ formatDate(scope.row.deadline) }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="taskStatus" label="状态" width="150" />
-                <el-table-column prop="progress" label="进度" width="250">
-                    <template #default>
-                        <el-progress :text-inside="true" :stroke-width="20" :percentage="70" />
+                <el-table-column fixed="right" prop="progress" label="进度" width="200">
+                    <template #default="scope">
+                        <el-progress
+                            :text-inside="true"
+                            :stroke-width="15"
+                            :percentage="scope.row.progress"
+                        />
                     </template>
                 </el-table-column>
-                <el-table-column fixed="right" label="操作" width="240">
+                <el-table-column fixed="right" label="操作" width="200">
                     <template #default="scope">
                         <el-button link type="primary" size="large" @click="handleClick"
                             >编辑</el-button
@@ -42,20 +44,20 @@
                                 <el-button link type="primary" size="default">删除</el-button>
                             </template>
                         </el-popconfirm>
-                        <el-popconfirm
-                            width="220"
-                            confirm-button-text="是"
-                            cancel-button-text="否"
-                            :icon="InfoFilled"
-                            icon-color="#00d4ff"
-                            title="是否确认完成？"
-                            @confirm="completeConfirmEvent"
-                            @cancel="completeCancelEvent"
-                        >
-                            <template #reference>
-                                <el-button link type="primary" size="default">完成</el-button>
-                            </template>
-                        </el-popconfirm>
+                        <!--                        <el-popconfirm-->
+                        <!--                            width="220"-->
+                        <!--                            confirm-button-text="是"-->
+                        <!--                            cancel-button-text="否"-->
+                        <!--                            :icon="InfoFilled"-->
+                        <!--                            icon-color="#00d4ff"-->
+                        <!--                            title="是否确认完成？"-->
+                        <!--                            @confirm="completeConfirmEvent"-->
+                        <!--                            @cancel="completeCancelEvent"-->
+                        <!--                        >-->
+                        <!--                            <template #reference>-->
+                        <!--                                <el-button link type="primary" size="default">完成</el-button>-->
+                        <!--                            </template>-->
+                        <!--                        </el-popconfirm>-->
                     </template>
                 </el-table-column>
             </el-table>
@@ -84,9 +86,9 @@ export default {
         }
     },
     methods: {
-        formatDate(deadLine) {
-            console.log(new Date(deadLine).toLocaleString())
-            return new Date(deadLine).toLocaleString()
+        formatDate(deadline) {
+            console.log(new Date(deadline).toLocaleString())
+            return new Date(deadline).toLocaleString()
         },
         handleClick() {
             console.log('click')
@@ -107,10 +109,10 @@ export default {
         },
         getTableData() {
             axios
-                .get('http://localhost:8080/work')
+                .get('http://localhost:8621/work')
                 .then((response) => {
-                    console.log(response.data)
-                    this.tableData = response.data
+                    console.log(response.data.data)
+                    this.tableData = response.data.data
                     console.log(this.tableData)
                 })
                 .catch((reportError) => {
@@ -119,9 +121,9 @@ export default {
         },
         deleteTableData(row) {
             axios
-                .delete('http://localhost:8080/work/' + row.id)
+                .delete('http://localhost:8621/work/' + row.id)
                 .then((response) => {
-                    console.log(response.data)
+                    console.log(response.data.data)
                 })
                 .catch((reportError) => {
                     console.log(reportError)
