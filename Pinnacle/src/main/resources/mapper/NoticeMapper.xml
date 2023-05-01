@@ -20,17 +20,54 @@
 
     <!--  查询所有公告  -->
     <select id="selectAllNotice" resultMap="NoticeAllResultMap">
-        select *
+        select u.id         uid,
+               username,
+               passwd,
+               department_id,
+               u.deleted    ude,
+               u.version    uve,
+               n.id         nid,
+               title,
+               content,
+               type_id,
+               sender_id,
+               create_time,
+               send_time,
+               end_time,
+               priority,
+               top,
+               modify_time,
+               origin_id,
+               old,
+               n.deleted    nde,
+               n.version    nve,
+               type.id      typeId,
+               name,
+               enable,
+               type.deleted typeDe,
+               type.version typeVe
         from t_user u,
              t_notice n,
              t_notice_type type
         where u.id = n.sender_id
-          and type.id=n.type_id
+          and type.id = n.type_id
           and n.deleted = 0
-          and n.old=0
+          and n.old = 0
+
     </select>
     <resultMap id="NoticeAllResultMap" type="notice" autoMapping="true">
-        <association property="sender" javaType="user" autoMapping="true"/>
-        <association property="noticeType" javaType="noticeType" autoMapping="true"/>
+        <id property="id" column="nid"/>
+        <result property="deleted" column="nde"/>
+        <result property="version" column="nve"/>
+        <association property="sender" javaType="user" autoMapping="true">
+            <id property="id" column="uid"/>
+            <result property="deleted" column="ude"/>
+            <result property="version" column="uve"/>
+        </association>
+        <association property="noticeType" javaType="noticeType" autoMapping="true">
+            <id property="id" column="typeId"/>
+            <result property="deleted" column="typeDe"/>
+            <result property="version" column="typeVe"/>
+        </association>
     </resultMap>
 </mapper>

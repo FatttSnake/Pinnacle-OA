@@ -10,6 +10,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -30,6 +32,7 @@ public class Notice implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId("id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -48,6 +51,7 @@ public class Notice implements Serializable {
      * 公告类型Id
      */
     @TableField("type_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long typeId;
 
     /**
@@ -60,6 +64,7 @@ public class Notice implements Serializable {
      * 发布者id
      */
     @TableField("sender_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long senderId;
 
     /**
@@ -108,6 +113,7 @@ public class Notice implements Serializable {
      * 源ID
      */
     @TableField("origin_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long originId;
 
     /**

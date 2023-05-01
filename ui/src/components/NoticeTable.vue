@@ -63,23 +63,36 @@
         <el-table-column label="Operations">
             <template #default="scope">
                 <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-                    >编辑</el-button
-                >
+                    >编辑
+                </el-button>
                 <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)"
-                    >删除</el-button
-                >
+                    >删除
+                </el-button>
             </template>
         </el-table-column>
     </el-table>
+    <!--        编辑会话框-->
+    <el-dialog v-model="dialogFormVisible">
+        <template #title>
+            {{ dialogFormTitle }}
+        </template>
+        <notice-edit />
+    </el-dialog>
 </template>
 
-<script>
-import axios from 'axios'
+<script lang="ts">
+import axios from "axios";
+import NoticeEdit from "@/components/NoticeEdit.vue";
+
 
 export default {
+    components: {NoticeEdit},
+    component: {NoticeEdit},
     data() {
         return {
-            tableData: []
+            tableData: [],
+            dialogFormVisible: false,
+            dialogFormTitle: ''
         }
     },
     methods: {
@@ -108,10 +121,11 @@ export default {
             return dt
         },
         handleEdit(index, row) {
-            console.log(index, row.id)
+            this.dialogFormVisible = true
+            this.dialogFormTitle = row.title
+            console.log(index + "   " + row);
         },
         handleDelete(index, row) {
-            // console.log(row.id)
             axios.delete('http://localhost:8621/notice/' + row.id).then((response) => {
                 console.log(response.data)
                 this.selectAllNotice()
@@ -120,7 +134,7 @@ export default {
         selectAllNotice() {
             axios.get('http://localhost:8621/notice').then((response) => {
                 this.tableData = response.data.data;
-                console.log(response.data.data[0].id)
+                console.log(response.data.data)
             })
         }
     },

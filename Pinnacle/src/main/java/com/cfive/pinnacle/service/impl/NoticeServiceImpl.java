@@ -45,7 +45,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
              noticeReceives) {
             noticeReceiveMapper.deleteById(nrc.getId());
         }
-        return noticeMapper.deleteById(nid)==0;
+        return noticeMapper.deleteById(nid)>0;
     }
 
 }

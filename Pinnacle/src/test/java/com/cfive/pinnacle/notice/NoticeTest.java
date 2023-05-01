@@ -52,17 +52,19 @@ public class NoticeTest {
 
     @Test
     void insertNoticeTest() {
-        Notice notice = new Notice();
-        notice.setTitle("title1");
-        notice.setTypeId(1652684907554496514L);
-        notice.setSenderId(1652714496280469506L);
-        LocalDateTime sendTime = LocalDateTime.parse("2023-05-11 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime endTime = LocalDateTime.parse("2023-09-01 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        notice.setPriority(2);
-        notice.setSendTime(sendTime);
-        notice.setEndTime(endTime);
-        notice.setContent("Content1");
-        noticeController.addNotice(notice);
+        for (int i = 2; i < 20; i++) {
+            Notice notice = new Notice();
+            notice.setTitle("title"+i);
+            notice.setTypeId(1652684907554496514L);
+            notice.setSenderId(1652714496280469506L);
+            LocalDateTime sendTime = LocalDateTime.parse("2023-05-11 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            LocalDateTime endTime = LocalDateTime.parse("2023-09-01 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            notice.setPriority(2);
+            notice.setSendTime(sendTime);
+            notice.setEndTime(endTime);
+            notice.setContent("Content"+i);
+            noticeController.addNotice(notice);
+        }
     }
     @Test
     void insertNoticeTypeTest(){

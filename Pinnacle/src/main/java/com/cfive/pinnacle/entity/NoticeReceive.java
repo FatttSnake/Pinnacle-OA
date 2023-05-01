@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.annotation.Version;
 import java.io.Serial;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -29,12 +31,14 @@ public class NoticeReceive implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId("id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
      * 用户Id
      */
     @TableField("user_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     /**
@@ -47,6 +51,7 @@ public class NoticeReceive implements Serializable {
      * 公告Id
      */
     @TableField("notice_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long noticeId;
 
     /**
