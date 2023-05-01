@@ -52,7 +52,13 @@
                                 <el-menu-item
                                     v-for="(sub, index) in route.children"
                                     :key="index"
-                                    :index="sub.path ?? ''"
+                                    :index="
+                                        sub.path
+                                            ? route.path
+                                                ? route.path + '/' + sub.path
+                                                : ''
+                                            : ''
+                                    "
                                 >
                                     <el-icon>
                                         <component :is="sub.meta.icon" />
