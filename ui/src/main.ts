@@ -2,10 +2,10 @@ import { createApp } from 'vue'
 import App from '@/App.vue'
 import router from '@/router'
 
-import { PRODUCTION_NAME } from './constants/Common.constants.js'
-
 import '@/assets/css/base.css'
+import '@/assets/css/common.css'
 
+/*
 router.beforeEach((to, from, next) => {
     if (to.matched.length === 0) {
         from.path ? next({ path: from.path }) : next('/')
@@ -15,6 +15,7 @@ router.beforeEach((to, from, next) => {
         }
     }
 })
+*/
 
 const app = createApp(App)
 
