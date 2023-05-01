@@ -46,8 +46,8 @@ public class NoticeReceive implements Serializable {
     /**
      * 已读
      */
-    @TableField("read")
-    private Integer read;
+    @TableField("already_read")
+    private Integer alreadyRead;
 
     @TableField("deleted")
     @TableLogic
