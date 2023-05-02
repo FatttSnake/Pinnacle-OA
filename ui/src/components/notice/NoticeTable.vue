@@ -1,13 +1,17 @@
 <template>
-    <el-button @click="resetDateFilter">reset date filter</el-button>
-    <el-button @click="clearFilter">reset all filters</el-button>
+    <el-button @click="clearFilter">清除筛选条件</el-button>
     <el-table
         ref="tableRef"
-        row-key="date"
-        :data="tableData"
+        :data="selectData"
         style="width: 100%"
         border
         highlight-current-row
+        :header-cell-style="{
+            background: 'darksalmon',
+            'text-align': 'center',
+            color: '#fff',
+            'font-size': '20px'
+        }"
     >
         <el-table-column
             prop="title"
@@ -23,14 +27,6 @@
             label="生效时间"
             sortable
             width="180"
-            column-key="date"
-            :filters="[
-                { text: '2016-05-01', value: '2016-05-01' },
-                { text: '2016-05-02', value: '2016-05-02' },
-                { text: '2016-05-03', value: '2016-05-03' },
-                { text: '2016-05-04', value: '2016-05-04' }
-            ]"
-            :filter-method="filterHandler"
             :formatter="formatDate"
         />
         <el-table-column
@@ -45,27 +41,28 @@
             prop="sender.username"
             label="发布人"
             width="100"
-            :filters="[
-                { text: 'Home', value: 'Home' },
-                { text: 'Office', value: 'Office' }
-            ]"
+            column-key="senderName"
+            :filters="filterSenderName"
             :filter-method="filterTag"
             filter-placement="bottom-end"
         >
             <template #default="scope">
                 <el-tag
-                    :type="scope.row.sender.userName === 'Home' ? '' : 'success'"
+                    :type="scope.row.sender.username === 'cyb' ? '' : 'success'"
                     disable-transitions
                     >{{ scope.row.sender.username }}
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="Operations">
+        <el-table-column label="操作">
             <template #default="scope">
-                <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
+                <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)"
                     >编辑
                 </el-button>
-                <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)"
+                <el-button
+                    size="small"
+                    type="danger"
+                    @click="this.$emit('handleDelete', scope.row.id)"
                     >删除
                 </el-button>
             </template>
@@ -81,26 +78,19 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import NoticeEdit from "@/components/NoticeEdit.vue";
-
-
 export default {
-    components: {NoticeEdit},
-    component: {NoticeEdit},
     data() {
         return {
-            tableData: [],
+            filterSenderName: [],
             dialogFormVisible: false,
             dialogFormTitle: ''
         }
     },
+    props: ['msg', 'selectData'],
     methods: {
-        resetDateFilter() {
-            this.$refs.tableRef.clearFilter(['date'])
-        },
         clearFilter() {
-            this.$refs.tableRef.clearFilter()
+            this.$refs.tableRef.clearFilter(['senderName'])
+            this.$emit('clearFilter')
         },
         formatter(row, column) {
             return row.title
@@ -108,38 +98,37 @@ export default {
         filterTag(value, row) {
             return row.sender.username === value
         },
-        filterHandler(value, row, column) {
-            const property = column['property']
-            return row[property] === value
-        },
         formatDate(row, column) {
             // 获取单元格数据
-            let data = row[column.property]
+            const data = row[column.property]
             if (data == null) return null
 
-            let dt = data.replace('T', ' ')
+            const dt = data.replace('T', ' ')
             return dt
         },
         handleEdit(index, row) {
             this.dialogFormVisible = true
             this.dialogFormTitle = row.title
-            console.log(index + "   " + row);
-        },
-        handleDelete(index, row) {
-            axios.delete('http://localhost:8621/notice/' + row.id).then((response) => {
-                console.log(response.data)
-                this.selectAllNotice()
-            })
-        },
-        selectAllNotice() {
-            axios.get('http://localhost:8621/notice').then((response) => {
-                this.tableData = response.data.data;
-                console.log(response.data.data)
-            })
+            console.log(index + '   ' + row)
         }
     },
-    mounted() {
-        this.selectAllNotice()
+    mounted() {},
+    updated() {
+        this.filterSenderName = []
+        const nameArray = []
+        for (let i = 0; i < this.selectData.length; i++) {
+            nameArray.push(this.selectData[i].sender.username)
+        }
+        const newArr = nameArray.filter((item, i, arr) => {
+            return arr.indexOf(item) === i
+        })
+        for (let j = 0; j < newArr.length; j++) {
+            const senderName = { text: '', value: '' }
+            senderName.text = newArr[j]
+            senderName.value = newArr[j]
+            this.filterSenderName.push(senderName)
+        }
+        console.log(this.filterSenderName)
     }
 }
 </script>

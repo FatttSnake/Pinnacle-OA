@@ -40,12 +40,19 @@ public class NoticeController {
 
     //添加公告
     @GetMapping
-    public ResponseResult selectAllNotice() {
-        List<Notice> noticeList = noticeService.selectAllNotice();
-        Integer code = noticeList != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
+    public ResponseResult selectAllNotice(String title) {
+        List<Notice> noticeList;
+        if (title == null) {
+            noticeList = noticeService.selectAllNotice();
+        } else {
+            noticeList = noticeService.selectByTitle(title);
+        }
+
+        int code = noticeList != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticeList != null ? "" : "数据查询失败，请尝试！";
         return ResponseResult.build(code, msg, noticeList);
     }
+
 
     @PostMapping
     public ResponseResult updateNotice(@RequestBody Notice notice) {

@@ -39,7 +39,7 @@ public class NoticeTest {
 
     @Test
     void selectAllTest() {
-        ResponseResult noticeList = noticeController.selectAllNotice();
+        ResponseResult noticeList = noticeController.selectAllNotice(null);
         System.out.println(noticeList.getData());
     }
 

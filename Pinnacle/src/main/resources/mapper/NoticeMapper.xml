@@ -43,7 +43,7 @@
                n.version    nve,
                type.id      typeId,
                name,
-               enable,
+               type.enable,
                type.deleted typeDe,
                type.version typeVe
         from t_user u,
