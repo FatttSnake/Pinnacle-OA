@@ -49,6 +49,12 @@ public class User implements Serializable {
     @TableField("department_id")
     private Long departmentId;
 
+    /**
+     * 启用
+     */
+    @TableField("enable")
+    private Integer enable;
+
     @TableField("deleted")
     @TableLogic
     private Integer deleted;

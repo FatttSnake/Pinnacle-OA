@@ -113,6 +113,7 @@ create table `t_user`
     `username`      varchar(20) not null comment '用户名',
     `passwd`        char(70)    not null comment '密码',
     `department_id` bigint      null comment '部门',
+    `enable`        int         not null comment '启用',
     `deleted`       int         not null default 0,
     `version`       int         not null default 0,
     constraint t_user_department_id_fk foreign key (department_id) references t_department (id)
@@ -239,12 +240,12 @@ create table `t_notice`
 
 create table `t_notice_receive`
 (
-    `id`        bigint not null primary key,
-    `user_id`   bigint not null comment '用户',
-    `notice_id` bigint not null comment '公告',
-    `already_read`      int    not null default 0 comment '已读',
-    `deleted`   int    not null default 0,
-    `version`   int    not null default 0,
+    `id`           bigint not null primary key,
+    `user_id`      bigint not null comment '用户',
+    `notice_id`    bigint not null comment '公告',
+    `already_read` int    not null default 0 comment '已读',
+    `deleted`      int    not null default 0,
+    `version`      int    not null default 0,
     constraint t_notice_receive_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_notice_receive_notice_if_fk foreign key (notice_id) references t_notice (id)
 ) comment '公告接收';
@@ -317,6 +318,6 @@ create table `t_attendance`
     `modify_time` datetime not null default CURRENT_TIMESTAMP comment '修改时间',
     `deleted`     int      not null default 0,
     `version`     int      not null default 0,
-    constraint t_attendance_user_id_fk foreign key (user_id) references t_user(id),
-    constraint t_attendance_modify_id_fk foreign key (modify_id) references t_user(id)
+    constraint t_attendance_user_id_fk foreign key (user_id) references t_user (id),
+    constraint t_attendance_modify_id_fk foreign key (modify_id) references t_user (id)
 ) comment '考勤';
