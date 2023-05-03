@@ -1,5 +1,6 @@
 package com.cfive.pinnacle.service;
 
+import com.cfive.pinnacle.entity.UserWork;
 import com.cfive.pinnacle.entity.Work;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -23,4 +24,8 @@ public interface IWorkService extends IService<Work> {
     String getUserName(Long userId);
     boolean addWork(Work work);
     boolean deleteByWorkId(Long wid);
+
+    boolean updateStatus(UserWork userWork);
+
+    boolean updateWork(Work work);
 }

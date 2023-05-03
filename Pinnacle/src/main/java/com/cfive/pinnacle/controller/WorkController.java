@@ -52,18 +52,23 @@ public class WorkController {
 
     @PostMapping
     public ResponseResult addWork(@RequestBody Work work) {
-        System.out.println(work);
         return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", workService.addWork(work));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseResult deleteById(@PathVariable long id) {
+    public ResponseResult deleteById(@PathVariable Long id) {
         System.out.println(id);
         return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", workService.deleteByWorkId(id));
     }
 
-    @PutMapping("/setComplete")
-    public ResponseResult updateWork(@RequestBody UserWork userWork) {
-        return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", userWorkService.updateById(userWork));
+    @PutMapping("/setStatus")
+    public ResponseResult updateStatus(@RequestBody UserWork userWork) {
+        System.out.println(userWork);
+        return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", workService.updateStatus(userWork));
+    }
+
+    @PutMapping
+    public ResponseResult updateWork(@RequestBody Work work) {
+        return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", workService.updateWork(work));
     }
 }

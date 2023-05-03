@@ -3,7 +3,7 @@
         <div class="main-table">
             <el-table :data="tableData" style="width: 100%">
                 <el-table-column prop="content" label="内容" width="800" />
-                <el-table-column prop="publisherName" label="发布者ID" width="120" />
+                <el-table-column prop="publisherName" label="发布者" width="120" />
                 <el-table-column prop="worker" label="工作人员" width="200">
                     <template #default="{ row }">
                         <span v-for="item in row.worker" :key="item.userId">
@@ -25,16 +25,15 @@
                         />
                     </template>
                 </el-table-column>
-                <el-table-column fixed="right" label="操作" width="200">
+                <el-table-column fixed="right" label="操作" width="150">
                     <template #default="scope">
-                        <el-button link type="primary" size="large" @click="handleClick"
+                        <el-button link type="primary" size="large" @click="handleClick(scope.row)"
                             >编辑</el-button
                         >
                         <el-popconfirm
                             width="220"
                             confirm-button-text="是"
                             cancel-button-text="否"
-                            :icon="InfoFilled"
                             icon-color="#00d4ff"
                             title="是否确定删除？"
                             @confirm="deleteConfirmEvent(scope.row)"
@@ -44,36 +43,29 @@
                                 <el-button link type="primary" size="default">删除</el-button>
                             </template>
                         </el-popconfirm>
-                        <!--                        <el-popconfirm-->
-                        <!--                            width="220"-->
-                        <!--                            confirm-button-text="是"-->
-                        <!--                            cancel-button-text="否"-->
-                        <!--                            :icon="InfoFilled"-->
-                        <!--                            icon-color="#00d4ff"-->
-                        <!--                            title="是否确认完成？"-->
-                        <!--                            @confirm="completeConfirmEvent"-->
-                        <!--                            @cancel="completeCancelEvent"-->
-                        <!--                        >-->
-                        <!--                            <template #reference>-->
-                        <!--                                <el-button link type="primary" size="default">完成</el-button>-->
-                        <!--                            </template>-->
-                        <!--                        </el-popconfirm>-->
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <div class="main-add-content">
             <div class="main-add-box">
-                <el-button @click="dialogFormVisible = true">添加</el-button>
+                <el-button size="large" @click="addVisible = true">添加</el-button>
             </div>
-            <el-dialog v-model="dialogFormVisible" width="60%">
-                <edit-work @setDialogVisible="setDialogVisible"></edit-work>
+            <el-dialog v-model="addVisible" width="60%">
+                <edit-work @setDialogVisible="setDialogVisible" @addWork="addWork"></edit-work>
+            </el-dialog>
+            <el-dialog v-model="editVisible" width="60%">
+                <edit-work
+                    :editForm="rowData"
+                    @setDialogVisible="setDialogVisible"
+                    @updateWork="updateWork"
+                ></edit-work>
             </el-dialog>
         </div>
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import axios from 'axios'
 import EditWork from '@/components/EditWork.vue'
 
@@ -82,7 +74,9 @@ export default {
     data() {
         return {
             tableData: [],
-            dialogFormVisible: false
+            rowData: [],
+            addVisible: false,
+            editVisible: false
         }
     },
     methods: {
@@ -90,12 +84,13 @@ export default {
             console.log(new Date(deadline).toLocaleString())
             return new Date(deadline).toLocaleString()
         },
-        handleClick() {
+        handleClick(row) {
+            this.rowData = row
+            this.editVisible = true
             console.log('click')
         },
         deleteConfirmEvent(row) {
             this.deleteTableData(row)
-            location.reload()
             console.log('delete confirm!')
         },
         deleteCancelEvent() {
@@ -123,6 +118,7 @@ export default {
             axios
                 .delete('http://localhost:8621/work/' + row.id)
                 .then((response) => {
+                    this.getTableData()
                     console.log(response.data.data)
                 })
                 .catch((reportError) => {
@@ -131,8 +127,33 @@ export default {
         },
         setDialogVisible(dialogVisible) {
             console.log(dialogVisible)
-            this.dialogFormVisible = dialogVisible
-            location.reload()
+            this.addVisible = dialogVisible
+            this.editVisible = dialogVisible
+            this.getTableData()
+        },
+        updateWork(form) {
+            axios
+                .put('http://localhost:8621/work', form)
+                .then((response) => {
+                    this.editVisible = false
+                    this.getTableData()
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
+        },
+        addWork(form) {
+            console.log(form)
+            axios
+                .post('http://localhost:8621/work', form)
+                .then((response) => {
+                    this.addVisible = false
+                    this.getTableData()
+                    console.log(response.data)
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
         }
     },
     created() {

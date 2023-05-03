@@ -17,5 +17,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserWorkServiceImpl extends ServiceImpl<UserWorkMapper, UserWork> implements IUserWorkService {
 
-
 }

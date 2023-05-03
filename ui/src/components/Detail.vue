@@ -3,7 +3,7 @@
         title="Vertical list with border"
         direction="vertical"
         :column="4"
-        :size="size"
+        :size="5"
         :data="taskData"
         border
     >

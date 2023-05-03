@@ -1,6 +1,7 @@
 package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.entity.UserWork;
 import com.cfive.pinnacle.entity.Work;
@@ -43,12 +44,22 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
 
     @Override
     public List<Work> getTodo(Long userId) {
-        return workMapper.getTodo(userId);
+        List<Work> workList = workMapper.getTodo(userId);
+        for (Work work:
+                workList) {
+            work.setPublisherName(getUserName(work.getPublisherId()));
+        }
+        return workList;
     }
 
     @Override
     public List<Work> getComplete(Long userId) {
-        return workMapper.getComplete(userId);
+        List<Work> workList = workMapper.getComplete(userId);
+        for (Work work:
+                workList) {
+            work.setPublisherName(getUserName(work.getPublisherId()));
+        }
+        return workList;
     }
 
     @Override
@@ -67,9 +78,9 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
 
     @Override
     public boolean addWork(Work work) {
-        boolean flag = false;
-        if (workMapper.insert(work) > 0) {
-            flag = true;
+        boolean flag = true;
+        if (workMapper.insert(work) <= 0) {
+            flag = false;
         }
         long workId = work.getId();
         for (User user :
@@ -89,6 +100,32 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
         boolean flag = false;
         if (userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", workId)) > 0 && workMapper.deleteById(workId) > 0) {
             flag = true;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean updateStatus(UserWork userWork) {
+        return userWorkMapper.update(userWork, new UpdateWrapper<UserWork>().eq("work_id", userWork.getWorkId()).eq("user_id", userWork.getUserId())) > 0;
+    }
+
+    @Override
+    public boolean updateWork(Work work) {
+        boolean flag = true;
+        if (userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", work.getId())) <= 0) {
+            flag = false;
+        }
+        if (workMapper.updateById(work)<=0) {
+            flag = false;
+        }
+        for (User user :
+                work.getWorker()) {
+            UserWork userWork = new UserWork();
+            userWork.setWorkId(work.getId());
+            userWork.setUserId(user.getId());
+            if (userWorkMapper.insert(userWork) <= 0) {
+                flag = false;
+            }
         }
         return flag;
     }

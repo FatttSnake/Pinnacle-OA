@@ -22,6 +22,8 @@
                 <el-date-picker
                     v-model="form.deadline"
                     type="datetime"
+                    format="YYYY-MM-DD HH:mm"
+                    value-format="YYYY-MM-DDTHH:mm:ss"
                     placeholder="请选择时间"
                     style="width: 100%"
                 />
@@ -31,18 +33,30 @@
             <el-input v-model="form.content" type="textarea" />
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="onSubmit(form)">创建</el-button>
+            <el-button type="primary" @click="onSubmit(form)">
+                <template #default> {{ this.commitButton }}</template>
+            </el-button>
             <el-button @click="reset">重置</el-button>
             <el-button @click="cancel">取消</el-button>
         </el-form-item>
     </el-form>
 </template>
 
-<script>
+<script lang="ts">
 import axios from 'axios'
 export default {
+    props: {
+        editForm: {
+            publisherId: '',
+            createTime: '',
+            deadline: '',
+            content: '',
+            worker: []
+        }
+    },
     data() {
         return {
+            commitButton: '创建',
             form: {
                 publisherId: '',
                 createTime: '',
@@ -65,7 +79,6 @@ export default {
                 ],
                 deadline: [
                     {
-                        type: 'date',
                         required: true,
                         message: '请输入终止日期'
                     }
@@ -92,26 +105,17 @@ export default {
                     console.log(reportError)
                 })
         },
-        addWork(form) {
-            console.log(form)
-            axios
-                .post('http://localhost:8621/work', form)
-                .then((response) => {
-                    console.log(response.data)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
-        },
         onSubmit(form) {
-            //表单校验
+            // 表单校验
             this.$refs.ruleForm.validate((value) => {
                 if (value) {
                     console.log(form.deadline)
-                    form.createTime = new Date()
                     form.publisherId = String(1)
-                    this.addWork(form)
-                    this.$emit('setDialogVisible', false)
+                    if (this.editForm) {
+                        this.$emit('updateWork', form)
+                    } else {
+                        this.$emit('addWork', form)
+                    }
                     console.log('submit!')
                 } else {
                     console.log('fault!')
@@ -125,7 +129,18 @@ export default {
             this.$emit('setDialogVisible', false)
         }
     },
+    updated() {
+        if (this.editForm) {
+            this.form = this.editForm
+            this.commitButton = '保存'
+        }
+        this.getFormData()
+    },
     created() {
+        if (this.editForm) {
+            this.form = this.editForm
+            this.commitButton = '保存'
+        }
         this.getFormData()
     }
 }

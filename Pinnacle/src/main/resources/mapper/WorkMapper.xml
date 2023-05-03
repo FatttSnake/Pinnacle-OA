@@ -64,7 +64,7 @@
           and status = false
           and w.deleted = 0
           and tuw.deleted = 0
-        order by u.id desc;
+        order by w.id desc;
     </select>
     <select id="getComplete" parameterType="long" resultMap="workMap">
         select w.id,
@@ -84,7 +84,7 @@
           and status = true
           and w.deleted = 0
           and tuw.deleted = 0
-        order by u.id desc;
+        order by w.id desc;
     </select>
     <delete id="deleteWorkById" parameterType="int">
         delete
