@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/user")
 public class LoginController {
 
     private ILoginService loginService;
@@ -26,6 +25,16 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseResult login(@RequestBody User user) {
         HashMap<String, String> hashMap = loginService.login(user);
-        return ResponseResult.build(ResponseCode.LOGIN_SUCCESS, "success", hashMap);
+        return ResponseResult.build(ResponseCode.LOGIN_SUCCESS, "Login Success", hashMap);
+    }
+
+    @RequestMapping("/logout")
+    public ResponseResult logout() {
+        boolean result = loginService.logout();
+        if (result) {
+            return ResponseResult.build(ResponseCode.LOGOUT_SUCCESS, "Logout Success", null);
+        } else {
+            return ResponseResult.build(ResponseCode.LOGOUT_FAILED, "Logout Failed", null);
+        }
     }
 }
