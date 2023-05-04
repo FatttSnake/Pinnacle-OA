@@ -1,101 +1,79 @@
+drop table if exists `t_affair`;
+drop table if exists `t_affair_type`;
+drop table if exists `t_attendance`;
+drop table if exists `t_user_work`;
+drop table if exists `t_work`;
+drop table if exists `t_notice_receive`;
+drop table if exists `t_notice`;
+drop table if exists `t_notice_type`;
+drop table if exists `t_staff`;
+drop table if exists `t_operation_log`;
+drop table if exists `t_user_role`;
+drop table if exists `t_user_group`;
+drop table if exists `t_user`;
+drop table if exists `t_department`;
+drop table if exists `t_role_group`;
+drop table if exists `t_group`;
+drop table if exists `t_power_role`;
+drop table if exists `t_role`;
+drop table if exists `t_operation`;
+drop table if exists `t_menu`;
+drop table if exists `t_element`;
+drop table if exists `t_file`;
+drop table if exists `t_power`;
+drop table if exists `t_power_type`;
+
+
 create table `t_power_type`
 (
-    `id`      bigint      not null primary key,
-    `name`    varchar(50) not null comment '权限类型名',
-    `deleted` int         not null default 0,
-    `version` int         not null default 0
+    `id`   bigint      not null primary key auto_increment,
+    `name` varchar(50) not null comment '权限类型名'
 ) comment '权限类型';
 
 create table `t_power`
 (
-    `id`      bigint not null primary key,
+    `id`      bigint not null primary key auto_increment,
     `type_id` bigint not null comment '权限类型',
-    `deleted` int    not null default 0,
-    `version` int    not null default 0,
     constraint t_power_type_id_fk foreign key (type_id) references t_power_type (id)
 ) comment '权限';
 
 create table `t_menu`
 (
-    `id`        bigint       not null primary key,
+    `id`        bigint       not null primary key auto_increment,
     `name`      varchar(30)  not null comment ' 菜单名',
     `url`       varchar(100) null comment 'URL',
-    `parent_id` long         null comment '父ID',
-    `deleted`   int          not null default 0,
-    `version`   int          not null default 0
+    `power_id`  bigint       not null comment '权限ID',
+    `parent_id` bigint       null comment '父ID',
+    constraint t_menu_power_id_fk foreign key (power_id) references t_power (id)
 ) comment '菜单';
-
-create table `t_power_menu`
-(
-    `id`       bigint not null primary key,
-    `power_id` bigint not null comment '权限',
-    `menu_id`  bigint not null comment '菜单',
-    `deleted`  int    not null default 0,
-    `version`  int    not null default 0,
-    constraint t_power_menu_power_id_fk foreign key (power_id) references t_power (id),
-    constraint t_power_menu_menu_id_fk foreign key (menu_id) references t_menu (id)
-) comment '中间表-权限-菜单';
 
 create table `t_element`
 (
-    `id`      bigint       not null primary key,
-    `name`    varchar(100) not null comment '元素名',
-    `deleted` int          not null default 0,
-    `version` int          not null default 0
+    `id`       bigint       not null primary key auto_increment,
+    `name`     varchar(100) not null comment '元素名',
+    `power_id` bigint       not null comment '权限ID',
+    constraint t_element_power_id_fk foreign key (power_id) references t_power (id)
 ) comment '页面元素';
-
-create table `t_power_element`
-(
-    `id`         bigint not null primary key,
-    `power_id`   bigint not null comment '权限',
-    `element_id` bigint not null comment '页面元素',
-    `deleted`    int    not null default 0,
-    `version`    int    not null default 0,
-    constraint t_power_element_power_id_fk foreign key (power_id) references t_power (id),
-    constraint t_power_element_element_id_fk foreign key (element_id) references t_element (id)
-) comment '中间表-权限-页面元素';
 
 create table `t_file`
 (
-    `id`      bigint       not null primary key,
-    `name`    varchar(50)  not null comment '文件名',
-    `path`    varchar(100) not null comment '文件路径',
-    `deleted` int          not null default 0,
-    `version` int          not null default 0
+    `id`       bigint       not null primary key auto_increment,
+    `name`     varchar(50)  not null comment '文件名',
+    `path`     varchar(100) not null comment '文件路径',
+    `power_id` bigint       not null comment '权限ID',
+    constraint t_file_power_id_fk foreign key (power_id) references t_power (id)
 ) comment '文件';
-
-create table `t_power_file`
-(
-    `id`       bigint not null primary key,
-    `power_id` bigint not null comment '权限',
-    `file_id`  bigint not null comment '文件',
-    `deleted`  int    not null default 0,
-    `version`  int    not null default 0,
-    constraint t_power_file_power_id_fk foreign key (power_id) references t_power (id),
-    constraint t_power_file_file_id_fk foreign key (file_id) references t_file (id)
-) comment '中间表-权限-文件';
 
 create table `t_operation`
 (
-    `id`         bigint       not null primary key,
+    `id`         bigint       not null primary key auto_increment,
     `name`       varchar(50)  not null comment '功能名',
     `code`       varchar(50)  null comment '功能编码',
     `url_prefix` varchar(100) null comment 'URL 前缀',
+    `power_id`   bigint       not null comment '权限ID',
     `parent_id`  bigint       null comment '父ID',
-    `deleted`    int          not null default 0,
-    `version`    int          not null default 0
+    constraint t_operation_power_id_fk foreign key (power_id) references t_power (id)
 ) comment '功能';
-
-create table `t_power_operation`
-(
-    `id`           bigint not null primary key,
-    `power_id`     bigint not null comment '权限',
-    `operation_id` bigint not null comment '功能',
-    `deleted`      int    not null default 0,
-    `version`      int    not null default 0,
-    constraint t_power_operation_power_id_fk foreign key (power_id) references t_power (id),
-    constraint t_power_operation_operation_id_fk foreign key (operation_id) references t_operation (id)
-) comment '中间表-权限-功能';
 
 create table `t_department`
 (
@@ -175,8 +153,8 @@ create table `t_power_role`
     `role_id`  bigint not null comment '角色',
     `deleted`  int    not null default 0,
     `version`  int    not null default 0,
-    constraint t_power_role_power_id foreign key (power_id) references t_power (id),
-    constraint t_power_role_role_id foreign key (role_id) references t_role (id)
+    constraint t_power_role_power_id_fk foreign key (power_id) references t_power (id),
+    constraint t_power_role_role_id_fk foreign key (role_id) references t_role (id)
 ) comment '中间表-权限-角色';
 
 create table `t_operation_log`
@@ -185,11 +163,11 @@ create table `t_operation_log`
     `user_id`        bigint       not null comment '用户',
     `operation_id`   bigint       not null comment '功能',
     `content`        varchar(500) not null comment '操作内容',
-    `operating_time` datetime     not null default CURRENT_TIMESTAMP comment '操作时间',
+    `operating_time` datetime     not null default (utc_timestamp()) comment '操作时间',
     `deleted`        int          not null default 0,
     `version`        int          not null default 0,
-    constraint t_operation_log_user_id foreign key (user_id) references t_user (id),
-    constraint t_operation_log_operation_id foreign key (operation_id) references t_operation (id)
+    constraint t_operation_log_user_id_fk foreign key (user_id) references t_user (id),
+    constraint t_operation_log_operation_id_fk foreign key (operation_id) references t_operation (id)
 ) comment '操作日志';
 
 create table `t_staff`
@@ -224,12 +202,12 @@ create table `t_notice`
     `content`     text        not null comment '公告内容',
     `type_id`     bigint      not null comment '公告类型',
     `sender_id`   bigint      not null comment '发布者',
-    `create_time` datetime    not null default CURRENT_TIMESTAMP comment '创建时间',
+    `create_time` datetime    not null default (utc_timestamp()) comment '创建时间',
     `send_time`   datetime    not null comment '发送时间',
     `end_time`    datetime    not null comment '失效时间',
     `priority`    int         not null default 1 comment '优先级',
     `top`         int         not null default 0 comment '置顶',
-    `modify_time` datetime    not null default CURRENT_TIMESTAMP comment '修改时间',
+    `modify_time` datetime    not null default (utc_timestamp()) comment '修改时间',
     `origin_id`   bigint      null comment '源ID',
     `old`         int         not null default 0 comment '已修改',
     `deleted`     int         not null default 0,
@@ -255,9 +233,9 @@ create table `t_work`
     `id`           bigint       not null primary key,
     `content`      varchar(100) not null comment '工作内容',
     `publisher_id` bigint       not null comment '发布者',
-    `create_time`  datetime     not null default CURRENT_TIMESTAMP comment '创建时间',
+    `create_time`  datetime     not null default (utc_timestamp()) comment '创建时间',
     `deadline`     datetime     not null comment '截止时间',
-    `modify_time`  datetime     not null default CURRENT_TIMESTAMP comment '修改时间',
+    `modify_time`  datetime     not null default (utc_timestamp()) comment '修改时间',
     `old`          int          not null default 0 comment '已修改',
     `origin_id`    bigint       null comment '源ID',
     `deleted`      int          not null default 0,
@@ -295,10 +273,10 @@ create table `t_affair`
     `status`       int         not null default 0 comment '事务状态',
     `applicant_id` bigint      not null comment '申请者',
     `inspector_id` bigint      not null comment '审核者',
-    `create_time`  datetime    not null default CURRENT_TIMESTAMP comment '创建时间',
+    `create_time`  datetime    not null default (utc_timestamp()) comment '创建时间',
     `inspect_time` datetime    null comment '审核时间',
     `priority`     int         not null default 1 comment '优先级',
-    `modify_time`  datetime             default CURRENT_TIMESTAMP comment '修改时间',
+    `modify_time`  datetime             default (utc_timestamp()) comment '修改时间',
     `origin_id`    bigint      null comment '源ID',
     `old`          int         not null default 0 comment '已修改',
     `deleted`      int         not null default 0,
@@ -312,12 +290,40 @@ create table `t_attendance`
 (
     `id`          bigint   not null primary key,
     `user_id`     bigint   not null comment '用户',
-    `att_time`    datetime not null default CURRENT_TIMESTAMP comment '考勤时间',
+    `att_time`    datetime not null default (utc_timestamp()) comment '考勤时间',
     `status`      int      not null default 0 comment '考勤状态',
     `modify_id`   bigint   not null comment '修改人',
-    `modify_time` datetime not null default CURRENT_TIMESTAMP comment '修改时间',
+    `modify_time` datetime not null default (utc_timestamp()) comment '修改时间',
     `deleted`     int      not null default 0,
     `version`     int      not null default 0,
     constraint t_attendance_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_attendance_modify_id_fk foreign key (modify_id) references t_user (id)
 ) comment '考勤';
+
+insert into t_power_type (id, name)
+values (1, 'operation'),
+       (2, 'menu'),
+       (3, 'element'),
+       (4, 'file');
+
+begin;
+insert into t_power (type_id)
+values (1);
+insert into t_operation (name, code, url_prefix, power_id, parent_id)
+values ('Select All Power Type', 'select_all_power_type', 'GET:/powerType', last_insert_id(), null);
+commit;
+
+
+begin;
+insert into t_power (type_id)
+values (1);
+insert into t_operation (name, code, url_prefix, power_id, parent_id)
+values ('Select All Power Type', 'select_all_power_type', 'GET:/powerType', last_insert_id(), null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (1);
+insert into t_operation (name, code, url_prefix, power_id, parent_id)
+values ('Select All User', 'select_all_user', 'GET:/user', last_insert_id(), null);
+commit;
