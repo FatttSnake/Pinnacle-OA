@@ -1,6 +1,7 @@
 package com.cfive.pinnacle.config;
 
 import com.cfive.pinnacle.filter.JwtAuthenticationTokenFilter;
+import com.cfive.pinnacle.handler.AuthenticationEntryPointHandler;
 import com.cfive.pinnacle.service.permission.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private UserDetailsServiceImpl userDetailsService;
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    private AuthenticationEntryPointHandler authenticationEntryPointHandler;
 
     @Autowired
     public void setUserDetailsService(UserDetailsServiceImpl userDetailsService) {
@@ -27,6 +29,11 @@ public class SecurityConfig {
     @Autowired
     public void setJwtAuthenticationTokenFilter(JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter) {
         this.jwtAuthenticationTokenFilter = jwtAuthenticationTokenFilter;
+    }
+
+    @Autowired
+    public void setAuthenticationEntryPointHandler(AuthenticationEntryPointHandler authenticationEntryPointHandler) {
+        this.authenticationEntryPointHandler = authenticationEntryPointHandler;
     }
 
     @Bean
@@ -55,10 +62,17 @@ public class SecurityConfig {
 
                 // Allow anonymous access
                 .authorizeHttpRequests()
-                .requestMatchers("/user/login").anonymous()
+                .requestMatchers("/login").anonymous()
 
                 // Authentication required
                 .anyRequest().authenticated()
+                .and()
+
+                .logout()
+                .disable()
+
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPointHandler)
                 .and()
 
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)

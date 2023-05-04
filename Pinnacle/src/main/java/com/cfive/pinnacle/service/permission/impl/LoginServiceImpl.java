@@ -51,11 +51,11 @@ public class LoginServiceImpl implements ILoginService {
     }
 
     @Override
-    public void logout() {
+    public boolean logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
 
         Long userId = loginUser.getUser().getId();
-        redisCache.deleteObject("login:" + userId);
+        return redisCache.deleteObject("login:" + userId);
     }
 }
