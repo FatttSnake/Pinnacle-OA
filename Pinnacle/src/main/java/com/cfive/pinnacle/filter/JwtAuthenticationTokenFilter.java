@@ -4,6 +4,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cfive.pinnacle.entity.permission.LoginUser;
 import com.cfive.pinnacle.utils.JwtUtil;
 import com.cfive.pinnacle.utils.RedisCache;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,8 +45,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         String redisKey = "login:" + userId;
-        System.out.println(redisCache.getCacheObject(redisKey).toString());
-        LoginUser loginUser = redisCache.getCacheObject(redisKey);
+        LoginUser loginUser = new ObjectMapper().convertValue(redisCache.getCacheObject(redisKey), LoginUser.class);
         if (Objects.isNull(loginUser)) {
             throw new RuntimeException("Not logged in");
         }

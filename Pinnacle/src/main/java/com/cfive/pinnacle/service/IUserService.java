@@ -3,6 +3,8 @@ package com.cfive.pinnacle.service;
 import com.cfive.pinnacle.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户 服务类
@@ -12,5 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-04-30
  */
 public interface IUserService extends IService<User> {
+    List<User> getBasicInfo();
 
+    User getBasicInfo(int id);
 }
