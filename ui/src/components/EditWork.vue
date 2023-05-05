@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios'
+import request from '@/services'
 export default {
     props: {
         editForm: {
@@ -93,8 +93,8 @@ export default {
     },
     methods: {
         getFormData() {
-            axios
-                .get('http://localhost:8621/user')
+            request
+                .get('/user')
                 .then((response) => {
                     console.log(response.data.data)
                     this.workers = response.data.data

@@ -76,7 +76,7 @@ export default {
         },
         getTableData() {
             request
-                .get('http://localhost:8621/work/complete/1652714496280469506')
+                .get('/work/complete/1652714496280469506')
                 .then((response) => {
                     this.tableData = response.data.data
                     if (this.tableData) {
@@ -90,7 +90,7 @@ export default {
         getTaskData(workId) {
             console.log(workId)
             request
-                .get('http://localhost:8621/work/' + workId)
+                .get('/work/' + workId)
                 .then((response) => {
                     console.log(response.data.data)
                     this.taskData = response.data.data
@@ -105,7 +105,7 @@ export default {
         setTaskStatus(userWork) {
             console.log(userWork)
             request
-                .put('http://localhost:8621/work/setStatus', userWork)
+                .put('/work/setStatus', userWork)
                 .then((response) => {
                     console.log(response.data.data)
                     this.getTableData()

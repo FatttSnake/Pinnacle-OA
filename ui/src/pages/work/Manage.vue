@@ -112,7 +112,7 @@ export default {
         },
         getTableData() {
             request
-                .get('http://localhost:8621/work')
+                .get('/work')
                 .then((response) => {
                     this.tableData = response.data.data
                     if (this.tableData) {
@@ -125,7 +125,7 @@ export default {
         },
         deleteTableData(row) {
             request
-                .delete('http://localhost:8621/work/' + row.id)
+                .delete('/work/' + row.id)
                 .then((response) => {
                     this.getTableData()
                     console.log(response.data.data)
@@ -142,7 +142,7 @@ export default {
         },
         updateWork(form) {
             request
-                .put('http://localhost:8621/work', form)
+                .put('/work', form)
                 .then((response) => {
                     this.editVisible = false
                     this.getTableData()
@@ -153,7 +153,7 @@ export default {
         },
         addWork(form) {
             request
-                .post('http://localhost:8621/work', form)
+                .post('/work', form)
                 .then((response) => {
                     this.addVisible = false
                     this.getTableData()
