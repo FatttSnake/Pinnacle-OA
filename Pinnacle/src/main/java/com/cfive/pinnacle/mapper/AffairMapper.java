@@ -2,7 +2,9 @@ package com.cfive.pinnacle.mapper;
 
 import com.cfive.pinnacle.entity.Affair;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +16,32 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AffairMapper extends BaseMapper<Affair> {
+
+    @Insert("insert into t_affair(title,type_id,content,applicant_id,inspector_id,create_time) values(#{title},#{typeId},#{content},#{applicantId},#{inspectorId},#{createTime})")
+    int insertAffair(Affair affair);
+    //添加事务
+    //不添加事务的状态(affairsStatus)，当事务进行添加时，添加的状态默认为'未审批'
+
+    @Delete("delete from t_affair where id=#{id}")
+    int deleteAffairs(Affair affair);
+    //根据id，撤回新建的事务，在新建事务时，会再进行一次确定
+    // (是否撤回,当用户撤回新建的事务时，根据新建的事务的id，删除该条事务在数据库中的信息)
+
+    @Update("update  t_affair set status=1 where id=#{id}")
+    int updateAffairs_Yes(Affair affair);
+    //管理员权限--->修改事务的状态(AffairsStatus)--->达到审批的效果
+    //同意
+
+    @Update("update t_affair set Status=2 where id=#{id}" )
+    int updateAffairs_NO(Affair affair);
+    //不同意
+
+
+
+
+
+    @Select("SELECT * from t_affair where status=0  ")
+    @ResultType(Affair.class)
+    List<Affair> selectAffairs_NotApproved();
 
 }
