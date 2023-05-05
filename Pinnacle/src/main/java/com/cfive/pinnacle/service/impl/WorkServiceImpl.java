@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -76,6 +77,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
         double completeNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id",workId).eq("status",1));
         double progress = 0;
         progress = (completeNum / workNum) * 100;
+        progress = (double) Math.round(progress * 100) / 100;
         return progress;
     }
 

@@ -64,7 +64,6 @@ export default {
         todoConfirmEvent(row) {
             const userWork = {
                 workId: '',
-                userId: '1652714496280469506',
                 status: 1
             }
             userWork.workId = row.id
@@ -76,7 +75,7 @@ export default {
         },
         getTableData() {
             request
-                .get('/work/complete/1652714496280469506')
+                .get('/work/complete')
                 .then((response) => {
                     this.tableData = response.data.data
                     if (this.tableData) {

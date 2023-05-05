@@ -12,6 +12,7 @@ import com.cfive.pinnacle.service.IUserWorkService;
 import com.cfive.pinnacle.service.IWorkService;
 import com.cfive.pinnacle.service.impl.UserWorkServiceImpl;
 import com.cfive.pinnacle.service.impl.WorkServiceImpl;
+import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,21 +34,21 @@ import java.util.List;
 public class WorkController {
     @Autowired
     private IWorkService workService;
-    @Autowired
-    private IUserWorkService userWorkService;
-
     @GetMapping
     public ResponseResult getAll() {
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getAll());
     }
 
-    @GetMapping("/todo/{userId}")
-    public ResponseResult getTodo(@PathVariable Long userId) {
+    @GetMapping("/todo")
+    public ResponseResult getTodo() {
+        Long userId = WebUtil.getLoginUser().getUser().getId();
+        System.out.println(userId);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getTodo(userId));
     }
 
-    @GetMapping("/complete/{userId}")
-    public ResponseResult getComplete(@PathVariable Long userId) {
+    @GetMapping("/complete")
+    public ResponseResult getComplete() {
+        Long userId = WebUtil.getLoginUser().getUser().getId();
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getComplete(userId));
     }
 
@@ -58,6 +59,7 @@ public class WorkController {
 
     @PostMapping
     public ResponseResult addWork(@RequestBody Work work) {
+        work.setPublisherId(WebUtil.getLoginUser().getUser().getId());
         return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", workService.addWork(work));
     }
 
@@ -70,11 +72,13 @@ public class WorkController {
     @PutMapping("/setStatus")
     public ResponseResult updateStatus(@RequestBody UserWork userWork) {
         System.out.println(userWork);
+        userWork.setUserId(WebUtil.getLoginUser().getUser().getId());
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", workService.updateStatus(userWork));
     }
 
     @PutMapping
     public ResponseResult updateWork(@RequestBody Work work) {
+        work.setPublisherId(WebUtil.getLoginUser().getUser().getId());
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", workService.updateWork(work));
     }
 }
