@@ -1,6 +1,7 @@
 package com.cfive.pinnacle.config;
 
 import com.cfive.pinnacle.filter.JwtAuthenticationTokenFilter;
+import com.cfive.pinnacle.handler.AccessDeniedHandler;
 import com.cfive.pinnacle.handler.AuthenticationEntryPointHandler;
 import com.cfive.pinnacle.service.permission.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class SecurityConfig {
     private UserDetailsServiceImpl userDetailsService;
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     private AuthenticationEntryPointHandler authenticationEntryPointHandler;
+    private AccessDeniedHandler accessDeniedHandler;
 
     @Autowired
     public void setUserDetailsService(UserDetailsServiceImpl userDetailsService) {
@@ -39,6 +41,11 @@ public class SecurityConfig {
     @Autowired
     public void setAuthenticationEntryPointHandler(AuthenticationEntryPointHandler authenticationEntryPointHandler) {
         this.authenticationEntryPointHandler = authenticationEntryPointHandler;
+    }
+
+    @Autowired
+    public void setAccessDeniedHandler(AccessDeniedHandler accessDeniedHandler) {
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -94,6 +101,7 @@ public class SecurityConfig {
 
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPointHandler)
+                .accessDeniedHandler(accessDeniedHandler)
                 .and()
 
                 .cors()

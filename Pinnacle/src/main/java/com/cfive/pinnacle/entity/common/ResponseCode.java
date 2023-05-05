@@ -22,6 +22,7 @@ public class ResponseCode {
     public static final int DATABASE_CONNECT_ERROR = 20036;
 
     public static final int UNAUTHORIZED = 30010;
+    public static final int ACCESS_DENIED = 30030;
 
     public static final int SYSTEM_ERROR = 50001;
     public static final int SYSTEM_TIMEOUT = 50002;
