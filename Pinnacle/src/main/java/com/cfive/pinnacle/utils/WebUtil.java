@@ -1,9 +1,13 @@
 package com.cfive.pinnacle.utils;
 
+import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.entity.permission.LoginUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 
@@ -22,5 +26,11 @@ public class WebUtil {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
         response.getWriter().print(string);
+    }
+
+    public static LoginUser getLoginUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        return (LoginUser) principal;
     }
 }

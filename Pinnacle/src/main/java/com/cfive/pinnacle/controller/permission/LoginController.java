@@ -4,9 +4,8 @@ import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.permission.ILoginService;
+import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -40,8 +39,6 @@ public class LoginController {
 
     @GetMapping("/userInfo")
     public ResponseResult getUserInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        return ResponseResult.success(principal);
+        return ResponseResult.success(WebUtil.getLoginUser());
     }
 }
