@@ -147,6 +147,17 @@ const router = createRouter({
                         requiresScrollbar: false,
                         requiresPadding: true
                     }
+                },
+                {
+                    path: '/notice',
+                    component: async () => await import('@/pages/notice/NoticeHome.vue'),
+                    name: 'noticeHome',
+                    meta: {
+                        title: '公告管理',
+                        icon: IconPinnacleNotice,
+                        requiresScrollbar: false,
+                        requiresPadding: true
+                    }
                 }
             ]
         },
