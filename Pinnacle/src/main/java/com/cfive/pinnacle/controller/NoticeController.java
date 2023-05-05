@@ -6,12 +6,11 @@ import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.INoticeReceiveService;
 import com.cfive.pinnacle.service.INoticeService;
-import lombok.Data;
+import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -68,7 +67,7 @@ public class NoticeController {
     //添加公告
     @PostMapping
     public ResponseResult addNotice(@RequestBody Notice notice) {
-        notice.setSenderId(1654151877520973826L);
+        notice.setSenderId(WebUtil.getLoginUser().getUser().getId());
         boolean insertNotice = noticeService.save(notice);
         Long noticeId = notice.getId();
         boolean flag = false;

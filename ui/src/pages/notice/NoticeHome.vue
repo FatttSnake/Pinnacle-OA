@@ -38,10 +38,10 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import 'element-plus/theme-chalk/el-message-box.css'
+import request from '@/services'
 
 export default {
     name: 'NoticeHome',
@@ -57,14 +57,12 @@ export default {
     },
     methods: {
         selectByCond(search) {
-            axios
+            request
                 .get('http://localhost:8621/notice', {
-                    params: {
-                        title: search.title,
-                        type: search.type,
-                        startTime: search.startTime,
-                        endTime: search.endTime
-                    }
+                    title: search.title,
+                    type: search.type,
+                    startTime: search.startTime,
+                    endTime: search.endTime
                 })
                 .then((response) => {
                     if (response.data.code === 20021) {
@@ -82,7 +80,7 @@ export default {
                 })
         },
         selectAllNotice() {
-            axios.get('http://localhost:8621/notice').then((response) => {
+            request.get('http://localhost:8621/notice').then((response) => {
                 this.selectData = response.data.data
                 if (this.selectData) {
                     this.getLoading = false
@@ -96,7 +94,7 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    axios.delete('http://localhost:8621/notice/' + deleteID).then((response) => {
+                    request.delete('http://localhost:8621/notice/' + deleteID).then((response) => {
                         if (response.data.code === 20024) {
                             this.dialogAddVisible = false
                             ElMessage({
@@ -115,17 +113,17 @@ export default {
                 .catch(() => {})
         },
         selectNoticeType() {
-            axios.get('http://localhost:8621/noticeType').then((response) => {
+            request.get('http://localhost:8621/noticeType').then((response) => {
                 this.noticeTypeList = response.data.data
             })
         },
         selectDepartment() {
-            axios.get('http://localhost:8621/department').then((response) => {
+            request.get('http://localhost:8621/department').then((response) => {
                 this.departmentList = response.data.data
             })
         },
         handleAddNotice(addFormData) {
-            axios.post('http://localhost:8621/notice', addFormData).then((response) => {
+            request.post('http://localhost:8621/notice', addFormData).then((response) => {
                 if (response.data.code === 20022) {
                     this.dialogAddVisible = false
                     ElMessage({
@@ -142,7 +140,7 @@ export default {
             this.$router.go(0)
         },
         handleUpdateNotice(updateNotice) {
-            axios.put('http://localhost:8621/notice', updateNotice).then((response) => {
+            request.put('http://localhost:8621/notice', updateNotice).then((response) => {
                 if (response.data.code === 20023) {
                     this.dialogUpdateVisible = false
                     ElMessage({
