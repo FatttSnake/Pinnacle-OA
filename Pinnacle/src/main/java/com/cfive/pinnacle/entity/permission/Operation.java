@@ -46,12 +46,6 @@ public class Operation implements Serializable {
     private String code;
 
     /**
-     * URL 前缀
-     */
-    @TableField("url_prefix")
-    private String urlPrefix;
-
-    /**
      *  权限ID
      */
     @TableField("power_id")

@@ -69,7 +69,6 @@ create table `t_operation`
     `id`         bigint       not null primary key auto_increment,
     `name`       varchar(50)  not null comment '功能名',
     `code`       varchar(50)  null comment '功能编码',
-    `url_prefix` varchar(100) null comment 'URL 前缀',
     `power_id`   bigint       not null comment '权限ID',
     `parent_id`  bigint       null comment '父ID',
     constraint t_operation_power_id_fk foreign key (power_id) references t_power (id)
@@ -299,31 +298,3 @@ create table `t_attendance`
     constraint t_attendance_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_attendance_modify_id_fk foreign key (modify_id) references t_user (id)
 ) comment '考勤';
-
-insert into t_power_type (id, name)
-values (1, 'operation'),
-       (2, 'menu'),
-       (3, 'element'),
-       (4, 'file');
-
-begin;
-insert into t_power (type_id)
-values (1);
-insert into t_operation (name, code, url_prefix, power_id, parent_id)
-values ('Select All Power Type', 'select_all_power_type', 'GET:/powerType', last_insert_id(), null);
-commit;
-
-
-begin;
-insert into t_power (type_id)
-values (1);
-insert into t_operation (name, code, url_prefix, power_id, parent_id)
-values ('Select All Power Type', 'select_all_power_type', 'GET:/powerType', last_insert_id(), null);
-commit;
-
-begin;
-insert into t_power (type_id)
-values (1);
-insert into t_operation (name, code, url_prefix, power_id, parent_id)
-values ('Select All User', 'select_all_user', 'GET:/user', last_insert_id(), null);
-commit;

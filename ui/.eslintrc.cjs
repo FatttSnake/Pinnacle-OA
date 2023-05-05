@@ -22,7 +22,7 @@ module.exports = {
   rules: {
     "no-cond-assign": "error",
     "eqeqeq": "error",
-    "indent": ["error", 4],
+    "indent": ["error", 4, {"SwitchCase": 1}],
     "prettier/prettier": [
       "error",
       {

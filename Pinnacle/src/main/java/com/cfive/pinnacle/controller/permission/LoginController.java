@@ -5,14 +5,14 @@ import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.permission.ILoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
 @RestController
+@CrossOrigin
 public class LoginController {
 
     private ILoginService loginService;
@@ -36,5 +36,12 @@ public class LoginController {
         } else {
             return ResponseResult.build(ResponseCode.LOGOUT_FAILED, "Logout Failed", null);
         }
+    }
+
+    @GetMapping("/userInfo")
+    public ResponseResult getUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        return ResponseResult.success(principal);
     }
 }
