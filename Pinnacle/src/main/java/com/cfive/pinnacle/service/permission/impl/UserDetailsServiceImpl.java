@@ -29,6 +29,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (Objects.isNull(user)) {
             throw new UsernameNotFoundException("Username not found in database");
         }
+
+        // Todo 权限
+
         return new LoginUser(user);
     }
 }

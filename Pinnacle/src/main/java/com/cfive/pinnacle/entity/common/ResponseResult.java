@@ -55,4 +55,20 @@ public class ResponseResult implements Serializable {
     public static ResponseResult fail(String msg, Object data) {
         return build(ResponseCode.SYSTEM_ERROR, msg, data);
     }
+
+    public static ResponseResult databaseSelectSuccess(Object object) {
+        return build(ResponseCode.DATABASE_SELECT_OK, "success", object);
+    }
+
+    public static ResponseResult databaseSaveSuccess(Object object) {
+        return build(ResponseCode.DATABASE_SAVE_OK, "success", object);
+    }
+
+    public static ResponseResult databaseUpdateSuccess(Object object) {
+        return build(ResponseCode.DATABASE_UPDATE_OK, "success", object);
+    }
+
+    public static ResponseResult databaseDeleteSuccess() {
+        return build(ResponseCode.DATABASE_DELETE_OK, "success", null);
+    }
 }

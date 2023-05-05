@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="user-info">
                                     <div class="user-name">
-                                        <span>用户名</span>
+                                        <span>{{ username }}</span>
                                     </div>
                                     <div class="user-desc">
                                         <span>用户介绍</span>
@@ -120,7 +120,7 @@
                                     <el-button style="width: 100%">个人档案</el-button>
                                 </div>
                                 <div>
-                                    <el-button style="width: 100%">退出</el-button>
+                                    <el-button @click="logout" style="width: 100%">退出</el-button>
                                 </div>
                             </div>
                         </template>
@@ -155,9 +155,17 @@ import {
     SIZE_ICON_SM
 } from '@/constants/Common.constants.js'
 import _ from 'lodash'
+import { getUsername, logout } from '@/utils/auth'
 
 export default {
     name: 'MainFrame',
+    data() {
+        return {
+            routes: _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.title'),
+            isCollapsed: false,
+            username: ''
+        }
+    },
     methods: {
         SIZE_ICON_LG() {
             return SIZE_ICON_LG
@@ -176,16 +184,16 @@ export default {
         },
         COLOR_FONT_MAIN() {
             return COLOR_FONT_MAIN
-        }
-    },
-    data() {
-        return {
-            routes: _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.title'),
-            isCollapsed: false
+        },
+        logout() {
+            logout()
+            this.$router.push({ name: 'Login' })
         }
     },
     mounted() {
-        console.log(this.routes)
+        getUsername().then((res) => {
+            this.username = res.toString()
+        })
     }
 }
 </script>

@@ -39,6 +39,7 @@ public class LoginServiceImpl implements ILoginService {
         }
 
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        loginUser.getUser().setPasswd("");
         String userId = loginUser.getUser().getId().toString();
         String jwt = JwtUtil.createJWT(userId);
 
