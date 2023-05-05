@@ -33,18 +33,23 @@
           and tuw.deleted = 0
         order by w.id desc;
     </select>
-    <select id="getWork" parameterType="work" resultType="work">
-        select id, user_id, content, create_time, deadline, task_status
-        from t_task
-        <where>
-            <if test="task_status!=null">
-                and task_status=#{task_status}
-            </if>
-            <if test="user_id!=null and user_id!=0">
-                and user_id=#{user_id}
-            </if>
-        </where>
-        order by deadline, id;
+    <select id="getWork" parameterType="long" resultMap="workMap">
+        select w.id,
+               content,
+               publisher_id,
+               create_time,
+               deadline,
+               tuw.user_id worker_id,
+               u.username  worker_name,
+               tuw.status  status
+        from t_work w,
+             t_user u,
+             t_user_work tuw
+        where w.id = #{id}
+          and w.id = tuw.work_id
+          and tuw.user_id = u.id
+          and w.deleted = 0
+          and tuw.deleted = 0;
     </select>
     <select id="getTodo" parameterType="long" resultMap="workMap">
         select w.id,

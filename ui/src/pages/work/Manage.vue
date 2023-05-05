@@ -1,14 +1,25 @@
 <template>
     <div class="main">
         <div class="main-table">
-            <el-table :data="tableData" style="width: 100%">
+            <el-table
+                :data="tableData"
+                style="width: 100%"
+                v-loading="loading"
+                element-loading-text="加载中..."
+            >
                 <el-table-column prop="content" label="内容" width="800" />
                 <el-table-column prop="publisherName" label="发布者" width="120" />
                 <el-table-column prop="worker" label="工作人员" width="200">
                     <template #default="{ row }">
-                        <span v-for="item in row.worker" :key="item.userId">
-                            {{ item.username }},&nbsp;
-                        </span>
+                        <el-tag
+                            v-for="item in row.worker"
+                            :key="item.userId"
+                            size="small"
+                            round
+                            style="margin-right: 10px"
+                        >
+                            {{ item.username }}
+                        </el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column prop="deadline" label="结束时间" width="200">
@@ -76,14 +87,11 @@ export default {
             tableData: [],
             rowData: [],
             addVisible: false,
-            editVisible: false
+            editVisible: false,
+            loading: true
         }
     },
     methods: {
-        formatDate(deadline) {
-            console.log(new Date(deadline).toLocaleString())
-            return new Date(deadline).toLocaleString()
-        },
         handleClick(row) {
             this.rowData = row
             this.editVisible = true
@@ -106,9 +114,10 @@ export default {
             axios
                 .get('http://localhost:8621/work')
                 .then((response) => {
-                    console.log(response.data.data)
                     this.tableData = response.data.data
-                    console.log(this.tableData)
+                    if (this.tableData) {
+                        this.loading = false
+                    }
                 })
                 .catch((reportError) => {
                     console.log(reportError)
@@ -143,7 +152,6 @@ export default {
                 })
         },
         addWork(form) {
-            console.log(form)
             axios
                 .post('http://localhost:8621/work', form)
                 .then((response) => {
@@ -154,6 +162,9 @@ export default {
                 .catch((reportError) => {
                     console.log(reportError)
                 })
+        },
+        formatDate(time) {
+            return new Date(time).toLocaleString()
         }
     },
     created() {

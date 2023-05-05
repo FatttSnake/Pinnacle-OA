@@ -1,7 +1,12 @@
 <template>
     <div class="main">
         <div class="main-table">
-            <el-table :data="tableData" style="width: 100%">
+            <el-table
+                :data="tableData"
+                style="width: 100%"
+                v-loading="loading"
+                element-loading-text="加载中..."
+            >
                 <el-table-column fixed prop="publisherName" label="发布者" width="150" />
                 <el-table-column prop="content" label="内容" width="800" />
                 <el-table-column prop="deadline" label="结束时间" width="200">
@@ -11,7 +16,9 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="150">
                     <template #default="scope">
-                        <el-button link type="primary" size="large">查看</el-button>
+                        <el-button link type="primary" size="large" @click="viewClick(scope.row.id)"
+                            >查看</el-button
+                        >
                         <el-popconfirm
                             width="220"
                             confirm-button-text="是"
@@ -30,6 +37,9 @@
                 </el-table-column>
             </el-table>
         </div>
+        <el-dialog v-model="visible" width="60%">
+            <detail-components :taskData="taskData"></detail-components>
+        </el-dialog>
     </div>
 </template>
 
@@ -39,13 +49,15 @@ export default {
     name: 'TodoPage',
     data() {
         return {
-            tableData: []
+            tableData: [],
+            visible: false,
+            taskData: [],
+            loading: true
         }
     },
     methods: {
-        formatDate(deadline) {
-            console.log(new Date(deadline).toLocaleString())
-            return new Date(deadline).toLocaleString()
+        formatDate(time) {
+            return new Date(time).toLocaleString()
         },
         completeConfirmEvent(row) {
             const userWork = {
@@ -65,12 +77,28 @@ export default {
             axios
                 .get('http://localhost:8621/work/todo/1652714496280469506')
                 .then((response) => {
-                    console.log(response.data.data)
                     this.tableData = response.data.data
-                    console.log(this.tableData)
+                    if (this.taskData) {
+                        this.loading = false
+                    }
                 })
                 .catch((reportError) => {
                     console.log(reportError)
+                })
+        },
+        getTaskData(workId) {
+            console.log(workId)
+            axios
+                .get('http://localhost:8621/work/' + workId)
+                .then((response) => {
+                    console.log(response.data.data)
+                    this.taskData = response.data.data
+                    console.log(this.tableData)
+                    return true
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                    return false
                 })
         },
         setTaskStatus(userWork) {
@@ -84,6 +112,10 @@ export default {
                 .catch((reportError) => {
                     console.log(reportError)
                 })
+        },
+        viewClick(workId) {
+            this.getTaskData(workId)
+            this.visible = true
         }
     },
     created() {

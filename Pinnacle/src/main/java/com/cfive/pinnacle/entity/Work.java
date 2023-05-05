@@ -56,12 +56,14 @@ public class Work implements Serializable {
      * 创建时间
      */
     @TableField("create_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime createTime;
 
     /**
      * 截止时间
      */
     @TableField("deadline")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime deadline;
 
     /**

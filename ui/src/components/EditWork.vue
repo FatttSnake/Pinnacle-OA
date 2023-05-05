@@ -18,12 +18,11 @@
             </el-select>
         </el-form-item>
         <el-form-item label="终止时间" prop="deadline">
-            <el-col :span="11">
+            <el-col :span="10">
                 <el-date-picker
                     v-model="form.deadline"
                     type="datetime"
                     format="YYYY-MM-DD HH:mm"
-                    value-format="YYYY-MM-DDTHH:mm:ss"
                     placeholder="请选择时间"
                     style="width: 100%"
                 />
@@ -110,6 +109,7 @@ export default {
             this.$refs.ruleForm.validate((value) => {
                 if (value) {
                     console.log(form.deadline)
+                    console.log(typeof form.deadline)
                     form.publisherId = String(1)
                     if (this.editForm) {
                         this.$emit('updateWork', form)

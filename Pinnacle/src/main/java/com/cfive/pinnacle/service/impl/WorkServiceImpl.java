@@ -63,6 +63,14 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     }
 
     @Override
+    public Work getOne(Long workId) {
+        Work work = workMapper.getWork(workId);
+        work.setProgress(getProgress(workId));
+        work.setPublisherName(getUserName(work.getPublisherId()));
+        return work;
+    }
+
+    @Override
     public double getProgress(Long workId) {
         double workNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id",workId));
         double completeNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id",workId).eq("status",1));

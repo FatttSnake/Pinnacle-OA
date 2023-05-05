@@ -22,4 +22,6 @@ public interface WorkMapper extends BaseMapper<Work> {
 
     List<Work> getComplete(Long userId);
 
+    Work getWork(Long workId);
+
 }

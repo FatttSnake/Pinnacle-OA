@@ -8,6 +8,7 @@ import com.cfive.pinnacle.entity.UserWork;
 import com.cfive.pinnacle.entity.Work;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.service.IUserWorkService;
 import com.cfive.pinnacle.service.IWorkService;
 import com.cfive.pinnacle.service.impl.UserWorkServiceImpl;
 import com.cfive.pinnacle.service.impl.WorkServiceImpl;
@@ -31,9 +32,9 @@ import java.util.List;
 @RequestMapping("/work")
 public class WorkController {
     @Autowired
-    private WorkServiceImpl workService;
+    private IWorkService workService;
     @Autowired
-    private UserWorkServiceImpl userWorkService;
+    private IUserWorkService userWorkService;
 
     @GetMapping
     public ResponseResult getAll() {
@@ -48,6 +49,11 @@ public class WorkController {
     @GetMapping("/complete/{userId}")
     public ResponseResult getComplete(@PathVariable Long userId) {
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getComplete(userId));
+    }
+
+    @GetMapping("/{workId}")
+    public ResponseResult getOne(@PathVariable Long workId) {
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success",workService.getOne(workId));
     }
 
     @PostMapping
