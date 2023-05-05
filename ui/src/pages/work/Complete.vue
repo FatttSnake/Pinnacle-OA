@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import request from '@/services'
 
 export default {
     name: 'CompletePage',
@@ -75,7 +75,7 @@ export default {
             console.log('complete cancel!')
         },
         getTableData() {
-            axios
+            request
                 .get('http://localhost:8621/work/complete/1652714496280469506')
                 .then((response) => {
                     this.tableData = response.data.data
@@ -89,7 +89,7 @@ export default {
         },
         getTaskData(workId) {
             console.log(workId)
-            axios
+            request
                 .get('http://localhost:8621/work/' + workId)
                 .then((response) => {
                     console.log(response.data.data)
@@ -104,7 +104,7 @@ export default {
         },
         setTaskStatus(userWork) {
             console.log(userWork)
-            axios
+            request
                 .put('http://localhost:8621/work/setStatus', userWork)
                 .then((response) => {
                     console.log(response.data.data)

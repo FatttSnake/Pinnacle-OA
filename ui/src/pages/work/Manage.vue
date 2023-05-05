@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios'
+import request from '@/services'
 import EditWork from '@/components/EditWork.vue'
 
 export default {
@@ -111,7 +111,7 @@ export default {
             console.log('complete cancel!')
         },
         getTableData() {
-            axios
+            request
                 .get('http://localhost:8621/work')
                 .then((response) => {
                     this.tableData = response.data.data
@@ -124,7 +124,7 @@ export default {
                 })
         },
         deleteTableData(row) {
-            axios
+            request
                 .delete('http://localhost:8621/work/' + row.id)
                 .then((response) => {
                     this.getTableData()
@@ -141,7 +141,7 @@ export default {
             this.getTableData()
         },
         updateWork(form) {
-            axios
+            request
                 .put('http://localhost:8621/work', form)
                 .then((response) => {
                     this.editVisible = false
@@ -152,7 +152,7 @@ export default {
                 })
         },
         addWork(form) {
-            axios
+            request
                 .post('http://localhost:8621/work', form)
                 .then((response) => {
                     this.addVisible = false
