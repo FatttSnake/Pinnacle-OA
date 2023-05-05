@@ -41,11 +41,6 @@ public class NoticeReceive implements Serializable {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
-    /**
-     * 用户
-     */
-    @TableField(exist = false)
-    private User user;
 
     /**
      * 公告Id
@@ -53,12 +48,6 @@ public class NoticeReceive implements Serializable {
     @TableField("notice_id")
     @JsonSerialize(using = ToStringSerializer.class)
     private Long noticeId;
-
-    /**
-     * 公告
-     */
-    @TableField(exist = false)
-    private Notice notice;
 
     /**
      * 已读

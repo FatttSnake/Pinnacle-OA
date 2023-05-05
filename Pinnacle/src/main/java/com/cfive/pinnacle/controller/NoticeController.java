@@ -1,11 +1,14 @@
 package com.cfive.pinnacle.controller;
 
 import com.cfive.pinnacle.entity.Notice;
+import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.service.INoticeReceiveService;
 import com.cfive.pinnacle.service.INoticeService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -25,7 +28,9 @@ import java.util.List;
 @CrossOrigin
 public class NoticeController {
     @Autowired
-    INoticeService noticeService;
+    private INoticeService noticeService;
+    @Autowired
+    private INoticeReceiveService noticeReceiveService;
 
     //根据公告id查公告信息及发布人
     @GetMapping("/{nid}")
@@ -36,16 +41,14 @@ public class NoticeController {
         return ResponseResult.build(code, msg, noticeById);
     }
 
-    ;
-
-    //添加公告
+    //查询所有公告
     @GetMapping
-    public ResponseResult selectAllNotice(String title) {
+    public ResponseResult selectAllNotice(String title, String type, String startTime,String endTime) {
         List<Notice> noticeList;
-        if (title == null) {
+        if (!StringUtils.hasText(title) &&  !StringUtils.hasText(type) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
             noticeList = noticeService.selectAllNotice();
         } else {
-            noticeList = noticeService.selectByTitle(title);
+            noticeList = noticeService.selectByCond(title, type, startTime,endTime);
         }
 
         int code = noticeList != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
@@ -54,22 +57,33 @@ public class NoticeController {
     }
 
 
-    @PostMapping
+    //更新公告
+    @PutMapping
     public ResponseResult updateNotice(@RequestBody Notice notice) {
-        notice.setId(null);  //清除id，使新插入的数据id自增
-        notice.setOriginId(notice.getId());
-        boolean updateById = noticeService.save(notice);
+        boolean updateById = noticeService.updateNotice(notice);
         String msg = updateById ? "" : "数据修改失败，请尝试！";
         return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateById);
     }
 
-    @PutMapping
+    //添加公告
+    @PostMapping
     public ResponseResult addNotice(@RequestBody Notice notice) {
+        notice.setSenderId(1654151877520973826L);
         boolean insertNotice = noticeService.save(notice);
-        String msg = insertNotice ? "" : "数据添加失败，请尝试！";
-        return ResponseResult.build(insertNotice ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, insertNotice);
+        Long noticeId = notice.getId();
+        boolean flag = false;
+        for (Long receiveId :
+                notice.getReceivers()) {
+            NoticeReceive noticeReceive = new NoticeReceive();
+            noticeReceive.setNoticeId(noticeId);
+            noticeReceive.setUserId(receiveId);
+            flag = noticeReceiveService.save(noticeReceive);
+        }
+        String msg = (insertNotice && flag) ? "" : "数据添加失败，请尝试！";
+        return ResponseResult.build((insertNotice && flag) ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, noticeId);
     }
 
+    //删除公告
     @DeleteMapping("/{nid}")
     public ResponseResult deleteByNoticeId(@PathVariable Long nid) {
         boolean removeById = noticeService.deleteById(nid);

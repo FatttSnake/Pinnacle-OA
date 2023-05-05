@@ -53,7 +53,7 @@
           and type.id = n.type_id
           and n.deleted = 0
           and n.old = 0
-
+        order by create_time desc
     </select>
     <resultMap id="NoticeAllResultMap" type="notice" autoMapping="true">
         <id property="id" column="nid"/>
@@ -70,4 +70,5 @@
             <result property="version" column="typeVe"/>
         </association>
     </resultMap>
+<!--    模糊查询-->
 </mapper>

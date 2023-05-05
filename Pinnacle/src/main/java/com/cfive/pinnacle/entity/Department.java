@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.Version;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -56,4 +57,10 @@ public class Department implements Serializable {
     @TableField("version")
     @Version
     private Integer version;
+
+    /**
+     * 部门成员
+     */
+    @TableField(exist = false)
+    private List<User> userList;
 }

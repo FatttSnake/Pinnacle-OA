@@ -1,6 +1,13 @@
 <template>
-    <el-button @click="clearFilter">清除筛选条件</el-button>
+    <el-button
+        size="large"
+        @click="clearFilter"
+        style="background-color: rgba(71, 138, 173, 0.85); color: white"
+        >清除筛选条件
+    </el-button>
     <el-table
+        v-loading="getLoading"
+        element-loading-text="加载中..."
         ref="tableRef"
         :data="selectData"
         style="width: 100%"
@@ -20,8 +27,25 @@
             :formatter="formatter"
             show-overflow-tooltip
         />
-        <el-table-column prop="noticeType.name" label="公告类别" width="180" />
+        <el-table-column prop="noticeType.name" label="公告类别" width="180">
+            <template #default="scope">
+                <el-tag
+                    size="default"
+                    :type="scope.row.noticeType.name === '通知公告' ? 'warning' : 'success'"
+                    disable-transitions
+                >
+                    {{ scope.row.noticeType.name }}
+                </el-tag>
+            </template>
+        </el-table-column>
         <el-table-column prop="priority" label="优先级" width="180" />
+        <el-table-column
+            prop="createTime"
+            label="创建时间"
+            sortable
+            width="180"
+            :formatter="formatDate"
+        />
         <el-table-column
             prop="sendTime"
             label="生效时间"
@@ -34,7 +58,6 @@
             label="失效时间"
             sortable
             width="180"
-            value-format="yyyy-MM-dd HH:mm:ss"
             :formatter="formatDate"
         />
         <el-table-column
@@ -56,24 +79,36 @@
         </el-table-column>
         <el-table-column label="操作">
             <template #default="scope">
+                <el-button size="small" color="#626aef" @click="handleShow(scope.$index, scope.row)"
+                    >查看
+                </el-button>
                 <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)"
                     >编辑
                 </el-button>
-                <el-button
-                    size="small"
-                    type="danger"
-                    @click="this.$emit('handleDelete', scope.row.id)"
+                <el-button size="small" type="danger" @click="handleDelete(scope.row.id)"
                     >删除
                 </el-button>
             </template>
         </el-table-column>
     </el-table>
     <!--        编辑会话框-->
-    <el-dialog v-model="dialogFormVisible">
-        <template #title>
-            {{ dialogFormTitle }}
+    <el-dialog v-model="dialogEditVisible" center>
+        <template #header>
+            <h2 style="color: red">编辑公告</h2>
         </template>
-        <notice-edit />
+        <commitForm
+            :noticeEdit="noticeEdit"
+            :noticeTypeList="noticeTypeList"
+            :departmentList="departmentList"
+            @handleUpdateNotice="handleUpdateNotice"
+        ></commitForm>
+    </el-dialog>
+    <!--        查看会话框-->
+    <el-dialog v-model="dialogShowVisible" center>
+        <template #header>
+            <h2 style="color: red">查看公告</h2>
+        </template>
+        <notice-show-dialog @showDialogVisible="showDialogVisible" :noticeShow="noticeShow" />
     </el-dialog>
 </template>
 
@@ -82,11 +117,14 @@ export default {
     data() {
         return {
             filterSenderName: [],
-            dialogFormVisible: false,
-            dialogFormTitle: ''
+            dialogEditVisible: false,
+            dialogShowVisible: false,
+            noticeEdit: {},
+            noticeShow: {},
+            getLoading: true
         }
     },
-    props: ['msg', 'selectData'],
+    props: ['noticeTypeList', 'selectData', 'departmentList', 'dialogUpdateVisible', 'getLoading'],
     methods: {
         clearFilter() {
             this.$refs.tableRef.clearFilter(['senderName'])
@@ -102,14 +140,25 @@ export default {
             // 获取单元格数据
             const data = row[column.property]
             if (data == null) return null
-
-            const dt = data.replace('T', ' ')
-            return dt
+            return new Date(data).toLocaleString()
         },
         handleEdit(index, row) {
-            this.dialogFormVisible = true
-            this.dialogFormTitle = row.title
-            console.log(index + '   ' + row)
+            this.dialogEditVisible = true
+            this.noticeEdit = row
+        },
+        handleUpdateNotice(updateData) {
+            this.$emit('handleUpdateNotice', updateData)
+            this.dialogEditVisible = this.dialogUpdateVisible
+        },
+        handleShow(index, row) {
+            this.dialogShowVisible = true
+            this.noticeShow = row
+        },
+        handleDelete(deleteId) {
+            this.$emit('handleDelete', deleteId)
+        },
+        showDialogVisible(visible) {
+            this.dialogShowVisible = visible
         }
     },
     mounted() {},
@@ -128,7 +177,7 @@ export default {
             senderName.value = newArr[j]
             this.filterSenderName.push(senderName)
         }
-        console.log(this.filterSenderName)
+        // console.log(this.filterSenderName)
     }
 }
 </script>

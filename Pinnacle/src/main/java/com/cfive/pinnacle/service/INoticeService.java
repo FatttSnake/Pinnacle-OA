@@ -18,7 +18,9 @@ public interface INoticeService extends IService<Notice> {
 
     List<Notice> selectAllNotice();
 
-    List<Notice> selectByTitle(String title);
+    List<Notice> selectByCond(String title,String type,String startTime,String endTime);
 
     Boolean deleteById(Long nid);
+
+    Boolean updateNotice(Notice notice);
 }

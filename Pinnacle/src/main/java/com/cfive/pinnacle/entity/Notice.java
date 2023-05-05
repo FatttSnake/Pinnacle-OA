@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.annotation.Version;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
@@ -77,18 +79,21 @@ public class Notice implements Serializable {
      * 创建时间
      */
     @TableField("create_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime createTime;
 
     /**
      * 发送时间
      */
     @TableField("send_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime sendTime;
 
     /**
      * 失效时间
      */
     @TableField("end_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime endTime;
 
     /**
@@ -107,6 +112,7 @@ public class Notice implements Serializable {
      * 修改时间
      */
     @TableField("modify_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime modifyTime;
 
     /**
@@ -130,5 +136,11 @@ public class Notice implements Serializable {
     @Version
     private Integer version;
 
+    /**
+     * 公告接收者
+     */
+    @TableField(exist = false)
+    @JsonSerialize(using = ToStringSerializer.class)
+    private List<Long> receivers;
 
 }
