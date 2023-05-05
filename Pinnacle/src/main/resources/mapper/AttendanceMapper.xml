@@ -2,4 +2,72 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.AttendanceMapper">
 
-</mapper>
+    <select id="getAllAttendanceAndUser" resultMap="AllAttendAndUserResult">
+        select att.id      attId,
+               att.user_id,
+               att.att_time,
+               att.status,
+               att.modify_id,
+               att.modify_time,
+               att.deleted attDel,
+               att.version attVer,
+               u.id        uId,
+               u.username,
+               u.passwd,
+               u.department_id,
+               u.deleted   uDel,
+               u.version   uVer
+        from t_attendance att,
+             t_user u
+        where att.user_id = u.id
+          and att.deleted = 0
+        order by att_time DESC
+    </select>
+    <resultMap id="AllAttendAndUserResult" type="attendance" autoMapping="true">
+        <id property="id" column="attId"/>
+        <result property="deleted" column="attDel"/>
+        <result property="version" column="attVer"/>
+        <association property="user" javaType="user" autoMapping="true">
+            <id property="id" column="uId"/>
+            <result property="deleted" column="uDel"/>
+            <result property="version" column="uVer"/>
+        </association>
+    </resultMap>
+
+
+
+
+
+    <select id="getAttendanceAndUserByid" resultMap="AttendAndUserResult">
+        select att.id      attId,
+               att.user_id,
+               att.att_time,
+               att.status,
+               att.modify_id,
+               att.modify_time,
+               att.deleted attDel,
+               att.version attVer,
+               u.id        uId,
+               u.username,
+               u.passwd,
+               u.department_id,
+               u.deleted   uDel,
+               u.version   uVer
+        from t_attendance att,
+             t_user u
+        where att.user_id = u.id
+          and att.deleted = 0 and att.user_id=#{userid}
+        order by att_time DESC
+    </select>
+    <resultMap id="AttendAndUserResult" type="attendance" autoMapping="true">
+        <id property="id" column="attId"/>
+        <result property="deleted" column="attDel"/>
+        <result property="version" column="attVer"/>
+        <association property="user" javaType="user" autoMapping="true">
+            <id property="id" column="uId"/>
+            <result property="deleted" column="uDel"/>
+            <result property="version" column="uVer"/>
+        </association>
+    </resultMap>
+
+    </mapper>
