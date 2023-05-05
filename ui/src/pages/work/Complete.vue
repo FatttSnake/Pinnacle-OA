@@ -7,7 +7,7 @@
                 v-loading="loading"
                 element-loading-text="加载中..."
             >
-                <el-table-column fixed prop="publisherName" label="发布者" width="150" />
+                <el-table-column fixed prop="publisherName" label="发布者" width="120" />
                 <el-table-column prop="content" label="内容" width="800" />
                 <el-table-column prop="deadline" label="结束时间" width="200">
                     <template #default="scope">
@@ -25,12 +25,12 @@
                             cancel-button-text="否"
                             :icon="InfoFilled"
                             icon-color="#00d4ff"
-                            title="是否确认完成？"
-                            @confirm="completeConfirmEvent(scope.row)"
-                            @cancel="completeCancelEvent"
+                            title="是否修改为未完成？"
+                            @confirm="todoConfirmEvent(scope.row)"
+                            @cancel="todoCancelEvent"
                         >
                             <template #reference>
-                                <el-button link type="primary" size="default">完成</el-button>
+                                <el-button link type="primary" size="default">未完成</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
@@ -45,8 +45,9 @@
 
 <script>
 import request from '@/services'
+
 export default {
-    name: 'TodoPage',
+    name: 'CompletePage',
     data() {
         return {
             tableData: [],
@@ -56,28 +57,28 @@ export default {
         }
     },
     methods: {
-        formatDate(time) {
-            return new Date(time).toLocaleString()
+        formatDate(deadline) {
+            console.log(new Date(deadline).toLocaleString())
+            return new Date(deadline).toLocaleString()
         },
-        completeConfirmEvent(row) {
+        todoConfirmEvent(row) {
             const userWork = {
                 workId: '',
-                status: 0
+                status: 1
             }
             userWork.workId = row.id
-            userWork.status = 1
+            userWork.status = 0
             this.setTaskStatus(userWork)
-            console.log('complete confirm!')
         },
-        completeCancelEvent() {
+        todoCancelEvent() {
             console.log('complete cancel!')
         },
         getTableData() {
             request
-                .get('/work/todo')
+                .get('/work/complete')
                 .then((response) => {
                     this.tableData = response.data.data
-                    if (this.taskData) {
+                    if (this.tableData) {
                         this.loading = false
                     }
                 })

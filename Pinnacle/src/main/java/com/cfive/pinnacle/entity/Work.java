@@ -9,7 +9,11 @@ import com.baomidou.mybatisplus.annotation.Version;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -30,6 +34,7 @@ public class Work implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId("id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -44,16 +49,21 @@ public class Work implements Serializable {
     @TableField("publisher_id")
     private Long publisherId;
 
+    @TableField(exist = false)
+    private String publisherName;
+
     /**
      * 创建时间
      */
     @TableField("create_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime createTime;
 
     /**
      * 截止时间
      */
     @TableField("deadline")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime deadline;
 
     /**
@@ -81,4 +91,10 @@ public class Work implements Serializable {
     @TableField("version")
     @Version
     private Integer version;
+    @TableField(exist = false)
+    private List<UserWork> userWorkList;
+    @TableField(exist = false)
+    private List<User> worker;
+    @TableField(exist = false)
+    private double progress;
 }

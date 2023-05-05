@@ -1,7 +1,10 @@
 package com.cfive.pinnacle.service;
 
+import com.cfive.pinnacle.entity.UserWork;
 import com.cfive.pinnacle.entity.Work;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,17 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-04-30
  */
 public interface IWorkService extends IService<Work> {
+    List<Work> getAll();
+    List<Work> getTodo(Long userId);
+    List<Work> getComplete(Long userId);
+    Work getOne(Long workId);
+    double getProgress(Long workId);
 
+    String getUserName(Long userId);
+    boolean addWork(Work work);
+    boolean deleteByWorkId(Long wid);
+
+    boolean updateStatus(UserWork userWork);
+
+    boolean updateWork(Work work);
 }
