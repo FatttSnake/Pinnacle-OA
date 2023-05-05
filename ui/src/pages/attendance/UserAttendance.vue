@@ -88,15 +88,6 @@
         <div>
             <el-dialog v-model="dialogFormVisible" title="考勤信息" width="25%">
                 <el-form ref="ruleForm" :rules="rules" :model="form" :label-width="formLabelWidth">
-                    <el-form-item label="用户编号" prop="userId">
-                        <el-input
-                            v-model="form.userId"
-                            autocomplete="off"
-                            style="width: 200px"
-                            disabled
-                        />
-                    </el-form-item>
-
                     <el-form-item label="考勤时间" v-model="attTime" prop="attTime">
                         <div class="block">
                             <el-date-picker
@@ -121,11 +112,12 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios'
 import { SIZE_ICON_SM, SIZE_ICON_XL } from '@/constants/Common.constants.js'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import _ from 'lodash'
+import '@/assets/css/attendance.css'
+import request from '@/services'
 
 export default {
     name: 'UserAttendance',
@@ -133,7 +125,7 @@ export default {
         return {
             attendance: '',
             id: '',
-            userId: 1,
+            userId: '',
             username: '',
             attTime: '',
             attTimeB: [],
@@ -197,13 +189,10 @@ export default {
             const start = this.handleDateFormatUTC(this.attTimeB[0])
             const end = this.handleDateFormatUTC(this.attTimeB[1])
             console.log(start + '\t' + end)
-            axios
-                .get('http://localhost:8621/attendance/findOneAttendanceByTime', {
-                    params: {
-                        startTime: start,
-                        endTime: end,
-                        userId: this.userId
-                    }
+            request
+                .get('/attendance/findOneAttendanceByTime', {
+                    startTime: start,
+                    endTime: end
                 })
                 .then((response) => {
                     console.log(response.data.data)
@@ -223,8 +212,8 @@ export default {
                 })
         },
         getAttendancesByUserId() {
-            axios
-                .get('http://localhost:8621/attendance/selectAttendance/' + this.userId)
+            request
+                .get('/attendance/selectAttendance')
                 .then((response) => {
                     console.log(response.data.data)
                     this.tableData = response.data.data
@@ -246,8 +235,8 @@ export default {
             })
         },
         doSave() {
-            axios
-                .post('http://localhost:8621/attendance/saveOneAttendance', this.form)
+            request
+                .post('/attendance/saveOneAttendance', this.form)
                 .then((response) => {
                     this.dialogFormVisible = false
                     this.getAttendancesByUserId()

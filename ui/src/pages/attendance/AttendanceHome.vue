@@ -157,12 +157,13 @@
     </div>
 </template>
 <script lang="ts">
-import axios from 'axios'
 import { SIZE_ICON_SM, SIZE_ICON_XL } from '@/constants/Common.constants.js'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
-import _ from 'lodash'
+import '@/assets/css/attendance.css'
 
+import _ from 'lodash'
+import request from '@/services'
 export default {
     name: 'AttendanceHome',
     data() {
@@ -220,8 +221,8 @@ export default {
         },
         // 获取所有考勤信息
         getAttendances() {
-            axios
-                .get('http://localhost:8621/attendance/findAllAttendance')
+            request
+                .get('/attendance/findAllAttendance')
                 .then((response) => {
                     console.log(response.data.data)
                     this.tableData = response.data.data
@@ -235,12 +236,10 @@ export default {
             const start = this.handleDateFormatUTC(this.attTime[0])
             const end = this.handleDateFormatUTC(this.attTime[1])
             console.log(start + '\t' + end)
-            axios
-                .get('http://localhost:8621/attendance/findAttendanceByTime', {
-                    params: {
-                        startTime: start,
-                        endTime: end
-                    }
+            request
+                .get('/attendance/findAttendanceByTime', {
+                    startTime: start,
+                    endTime: end
                 })
                 .then((response) => {
                     console.log(response.data.data)
@@ -294,8 +293,8 @@ export default {
         },
         // 处理保存
         doSave() {
-            axios
-                .post('http://localhost:8621/attendance/saveAttendance', this.form)
+            request
+                .post('/attendance/saveAttendance', this.form)
                 .then((response) => {
                     this.dialogFormVisible = false
                     this.getAttendances()
@@ -340,8 +339,8 @@ export default {
         // 操作删除
         handleDelete(id) {
             console.log(id)
-            axios
-                .delete('http://localhost:8621/attendance/delAttendance/' + id)
+            request
+                .delete('/attendance/delAttendance/' + id)
                 .then((response) => {
                     if (response) {
                         ElMessage({
@@ -368,8 +367,8 @@ export default {
         // 批量删除
         delBatch() {
             const map = this.multipleSelection.map((v) => v.id)
-            axios
-                .post('http://localhost:8621/attendance/delBatchAttendance', map)
+            request
+                .post('/attendance/delBatchAttendance', map)
                 .then((response) => {
                     if (response) {
                         ElMessage({

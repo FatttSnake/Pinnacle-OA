@@ -1,12 +1,10 @@
 package com.cfive.pinnacle.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cfive.pinnacle.entity.Attendance;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IAttendanceService;
+import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,14 +42,17 @@ public class AttendanceController {
     }
     //用户个人模糊时间查询
     @GetMapping("/findOneAttendanceByTime")
-    public ResponseResult findOneAttendanceAndUser(String startTime,String endTime,Long userId) {
+    public ResponseResult findOneAttendanceAndUser(String startTime,String endTime) {
+        Long userId = WebUtil.getLoginUser().getUser().getId();
         List<Attendance> attendances = attendanceService.selectOneByTime(startTime, endTime,userId);
+        System.out.println(attendances);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }
     //添加或更新考勤信息
     @PostMapping("/saveAttendance")
     public ResponseResult saveAttendance(@RequestBody Attendance attendance) {
         attendance.setModifyId(1652714496280469506L);
+        attendance.setUserId(WebUtil.getLoginUser().getUser().getId());
         return attendanceService.saveOrUpdate(attendance) ? ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", attendance) :
                 ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "error", null);
 
@@ -61,6 +62,7 @@ public class AttendanceController {
     @PostMapping("/saveOneAttendance")
     public ResponseResult saveOneAttendance(@RequestBody Attendance attendance) {
         attendance.setModifyId(1652714496280469506L);
+        attendance.setUserId(WebUtil.getLoginUser().getUser().getId());
         if (attendance.getAttTime().getHour() > 1 && attendance.getAttTime().getHour() < 10) {
 //            迟到
             attendance.setStatus(3);
@@ -86,8 +88,9 @@ public class AttendanceController {
 
     }
 //查询个人考勤
-    @GetMapping("/selectAttendance/{userId}")
-    public ResponseResult findAttendanceAndUser(@PathVariable Long userId) {
+    @GetMapping("/selectAttendance")
+    public ResponseResult findAttendanceAndUser() {
+        Long userId = WebUtil.getLoginUser().getUser().getId();
         List<Attendance> attendances = attendanceService.getAttendanceAndUserByid(userId);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }

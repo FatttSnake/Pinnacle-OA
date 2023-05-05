@@ -41,7 +41,8 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
     @Override
     public List<Attendance> getAttendanceAndUserByid(Long userId) {
-        return attendanceMapper.getAttendanceAndUserByid(userId);
+        List<Attendance> attendances = attendanceMapper.getAttendanceAndUserByid(userId);
+        return attendances;
     }
 
     @Override
@@ -67,7 +68,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         System.out.println(start);
         System.out.println(end);
         LambdaQueryWrapper<Attendance> lqw = new LambdaQueryWrapper<>();
-        lqw.ge(null != start, Attendance::getAttTime, start).le(null != end, Attendance::getAttTime, end);
+        lqw.ge(null != start, Attendance::getAttTime, start).le(null != end, Attendance::getAttTime, end).eq(Attendance::getDeleted,0).eq(Attendance::getUserId,userId);
         List<Attendance> oneAttendancesByTime = attendanceMapper.selectList(lqw);
         for (Attendance attendance:
                 oneAttendancesByTime) {
