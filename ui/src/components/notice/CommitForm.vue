@@ -110,10 +110,10 @@ export default {
                     { required: true, message: '请输入公告标题', trigger: 'blur' },
                     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
                 ],
-                type: [
+                typeId: [
                     { type:'array',required: true, message: '请选择公告类型', trigger: 'change' }
                 ],
-                startTime: [
+                sendTime: [
                     { type: 'date', required: true, message: '请选择生效时间', trigger: 'change' }
                 ],
                 endTime: [
