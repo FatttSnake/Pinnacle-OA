@@ -42,7 +42,6 @@ public class WorkController {
     @GetMapping("/todo")
     public ResponseResult getTodo() {
         Long userId = WebUtil.getLoginUser().getUser().getId();
-        System.out.println(userId);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getTodo(userId));
     }
 
@@ -65,13 +64,11 @@ public class WorkController {
 
     @DeleteMapping("/{id}")
     public ResponseResult deleteById(@PathVariable Long id) {
-        System.out.println(id);
         return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", workService.deleteByWorkId(id));
     }
 
     @PutMapping("/setStatus")
     public ResponseResult updateStatus(@RequestBody UserWork userWork) {
-        System.out.println(userWork);
         userWork.setUserId(WebUtil.getLoginUser().getUser().getId());
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", workService.updateStatus(userWork));
     }
