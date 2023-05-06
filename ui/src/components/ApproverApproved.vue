@@ -28,10 +28,17 @@
 
         <el-table-column label="事务名称" prop="title" />
 
-        <el-table-column label="事务类型" prop="typeId" />
+        <el-table-column label="事务类型" prop="typeId">
+            <template #default="scope">
+                {{ scope.row.typeId === 1 ? '病假' : '事假' }}
+            </template>
+        </el-table-column>
 
-        <el-table-column label="申请者" prop="applicantId" />
-
+        <el-table-column label="申请者" prop="applicantId">
+            <template #default="scope">
+                {{ scope.row.applicantId === 1 ? 'ggb' : 'gzw' }}
+            </template>
+        </el-table-column>
         <el-table-column label="提交日期" prop="createTime">
             <template #default="scope">
                 {{ format(scope.row.createTime) }}
@@ -55,7 +62,11 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="审批者" width="90" prop="inspectorId" />
+        <el-table-column label="审批结果" width="90" prop="status">
+            <template #default="scope">
+                {{ scope.row.status === 1 ? '同意' : '驳回' }}
+            </template>
+        </el-table-column>
     </el-table>
 
     <el-divider :data="labelData">
