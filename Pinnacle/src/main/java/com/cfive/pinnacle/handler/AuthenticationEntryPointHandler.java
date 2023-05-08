@@ -18,7 +18,7 @@ public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         String objectResponse;
         if (authException instanceof BadCredentialsException) {
-            objectResponse = WebUtil.objectResponse(ResponseCode.LOGOUT_FAILED, authException.getMessage(), null);
+            objectResponse = WebUtil.objectResponse(ResponseCode.LOGIN_USERNAME_PASSWORD_ERROR, authException.getMessage(), null);
         } else if (authException instanceof InsufficientAuthenticationException) {
             objectResponse = WebUtil.objectResponse(ResponseCode.UNAUTHORIZED, authException.getMessage(), null);
         } else {

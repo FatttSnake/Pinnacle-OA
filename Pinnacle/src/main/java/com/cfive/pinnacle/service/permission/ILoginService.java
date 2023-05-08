@@ -7,5 +7,5 @@ import java.util.HashMap;
 public interface ILoginService {
     HashMap<String, String> login(User user);
 
-    boolean logout();
+    boolean logout(String token);
 }

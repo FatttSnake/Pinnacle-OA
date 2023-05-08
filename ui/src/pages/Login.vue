@@ -80,8 +80,8 @@
 import { getCaptchaSrc, login, verifyCaptcha } from '@/utils/auth'
 import backShape from '@/assets/svg/back-shape.svg'
 import { ElMessage } from 'element-plus'
-import 'element-plus/theme-chalk/el-message.css'
-import { PRODUCTION_NAME } from '@/constants/Common.constants'
+import { LOGIN_SUCCESS, PRODUCTION_NAME } from '@/constants/Common.constants'
+import { setToken } from '@/utils/common'
 
 export default {
     name: 'LoginPage',
@@ -102,7 +102,8 @@ export default {
         getNewCaptcha() {
             this.captchaSrc = getCaptchaSrc()
         },
-        async login() {
+        login() {
+            const _this = this
             if (!this.userName) {
                 ElMessage.error({
                     dangerouslyUseHTMLString: true,
@@ -131,22 +132,25 @@ export default {
                 })
                 return
             }
-            if (await login(this.userName, this.password)) {
-                ElMessage.success({
-                    dangerouslyUseHTMLString: true,
-                    message: '<strong>登录成功</strong>'
-                })
-                this.loggingIn = true
-                const _this = this
-                setTimeout(function () {
-                    _this.$router.push('/')
-                }, 1500)
-            } else {
-                ElMessage.error({
-                    dangerouslyUseHTMLString: true,
-                    message: '<strong>用户名</strong> 或 <strong>密码</strong> 错误'
-                })
-            }
+            login(this.userName, this.password).then((res) => {
+                const data = res.data
+                if (data.code === LOGIN_SUCCESS) {
+                    setToken(data.data.token)
+                    ElMessage.success({
+                        dangerouslyUseHTMLString: true,
+                        message: '<strong>登录成功</strong>'
+                    })
+                    this.loggingIn = true
+                    setTimeout(function () {
+                        _this.$router.push('/')
+                    }, 1500)
+                } else {
+                    ElMessage.error({
+                        dangerouslyUseHTMLString: true,
+                        message: '<strong>用户名</strong> 或 <strong>密码</strong> 错误'
+                    })
+                }
+            })
         }
     }
 }

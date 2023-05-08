@@ -1,6 +1,5 @@
 package com.cfive.pinnacle.utils;
 
-import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.entity.permission.LoginUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
