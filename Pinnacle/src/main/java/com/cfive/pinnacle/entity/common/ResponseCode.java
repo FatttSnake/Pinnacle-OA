@@ -10,6 +10,8 @@ public class ResponseCode {
     public static final int LOGIN_USERNAME_PASSWORD_ERROR = 20011;
     public static final int LOGOUT_SUCCESS = 20015;
     public static final int LOGOUT_FAILED = 20016;
+    public static final int TOKEN_IS_ILLEGAL = 20017;
+    public static final int TOKEN_HAS_EXPIRED = 20018;
     public static final int DATABASE_SELECT_OK = 20021;
     public static final int DATABASE_SAVE_OK = 20022;
     public static final int DATABASE_UPDATE_OK = 20023;

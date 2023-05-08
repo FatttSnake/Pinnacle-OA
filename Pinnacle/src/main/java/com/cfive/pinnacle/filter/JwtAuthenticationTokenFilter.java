@@ -1,10 +1,12 @@
 package com.cfive.pinnacle.filter;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.permission.LoginUser;
 import com.cfive.pinnacle.utils.JwtUtil;
 import com.cfive.pinnacle.utils.RedisCache;
+import com.cfive.pinnacle.utils.WebUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,26 +31,29 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("token");
         if (!StringUtils.hasText(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String userId;
         try {
-            DecodedJWT decodedJWT = JwtUtil.parseJWT(token);
-            userId = decodedJWT.getSubject();
+            JwtUtil.parseJWT(token);
         } catch (Exception e) {
-            throw new RuntimeException("Token is illegal");
+            String objectResponse = WebUtil.objectResponse(ResponseCode.TOKEN_IS_ILLEGAL, "Token is illegal", null);
+            WebUtil.renderString(response, objectResponse);
+            return;
         }
 
-        String redisKey = "login:" + userId;
+        String redisKey = "login:" + token;
         LoginUser loginUser = new ObjectMapper().convertValue(redisCache.getCacheObject(redisKey), LoginUser.class);
         if (Objects.isNull(loginUser)) {
-            throw new RuntimeException("Not logged in");
+            String objectResponse = WebUtil.objectResponse(ResponseCode.TOKEN_HAS_EXPIRED, "Token has expired", null);
+            WebUtil.renderString(response, objectResponse);
+            return;
         }
+
         // Todo 权限
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

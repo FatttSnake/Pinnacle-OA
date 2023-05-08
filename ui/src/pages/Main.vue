@@ -156,6 +156,7 @@ import {
 } from '@/constants/Common.constants.js'
 import _ from 'lodash'
 import { getUsername, logout } from '@/utils/auth'
+import { ElMessage } from 'element-plus'
 
 export default {
     name: 'MainFrame',
@@ -187,7 +188,13 @@ export default {
         },
         logout() {
             logout()
-            this.$router.push({ name: 'Login' })
+            ElMessage.success({
+                dangerouslyUseHTMLString: true,
+                message: '<strong>退出登录</strong>'
+            })
+            setTimeout(() => {
+                this.$router.push({ name: 'Login' })
+            }, 1500)
         }
     },
     mounted() {

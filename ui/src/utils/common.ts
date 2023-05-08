@@ -77,6 +77,10 @@ function removeToken(): void {
     removeLocalStorage(TOKEN_NAME)
 }
 
+function clearLocalStorage(): void {
+    localStorage.clear()
+}
+
 function randomInt(start: number, end: number): number {
     if (start > end) {
         const t = start
@@ -149,5 +153,6 @@ export {
     removeCookie,
     removeLocalStorage,
     removeToken,
+    clearLocalStorage,
     getCaptcha
 }

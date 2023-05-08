@@ -1,6 +1,8 @@
 import axios, { type AxiosError } from 'axios'
-import { getToken, removeToken } from '@/utils/common'
+import { clearLocalStorage, getToken } from '@/utils/common'
 import router from '@/router'
+import { TOKEN_HAS_EXPIRED, TOKEN_IS_ILLEGAL, UNAUTHORIZED } from '@/constants/Common.constants'
+import { ElMessage } from 'element-plus'
 
 const service = axios.create({
     baseURL: 'http://localhost:8621',
@@ -23,17 +25,26 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
     (response) => {
+        switch (response.data.code) {
+            case UNAUTHORIZED:
+            case TOKEN_IS_ILLEGAL:
+            case TOKEN_HAS_EXPIRED:
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                console.log(`request error: ${response.data.code} - ${response.data.msg}`)
+                clearLocalStorage()
+                ElMessage.error({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>登录已过期</strong>'
+                })
+                setTimeout(function () {
+                    void router.push({ name: 'Login' })
+                }, 1500)
+        }
         return response
     },
     async (error) => {
         if (error.response != null) {
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            console.log(`request error: ${error.response.code} - ${error.response.msg}`)
-            switch (error.response.code) {
-                case 30010:
-                    removeToken()
-                    await router.push({ name: 'Login' })
-            }
+            /* empty */
         }
         return await Promise.reject(error?.response?.data)
     }

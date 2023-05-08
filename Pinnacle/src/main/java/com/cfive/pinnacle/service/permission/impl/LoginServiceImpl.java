@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class LoginServiceImpl implements ILoginService {
@@ -46,17 +46,13 @@ public class LoginServiceImpl implements ILoginService {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("token", jwt);
 
-        redisCache.setCacheObject("login:" + userId, loginUser);
+        redisCache.setCacheObject("login:" + jwt, loginUser, 10, TimeUnit.MINUTES);
 
         return hashMap;
     }
 
     @Override
-    public boolean logout() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-
-        Long userId = loginUser.getUser().getId();
-        return redisCache.deleteObject("login:" + userId);
+    public boolean logout(String token) {
+        return redisCache.deleteObject("login:" + token);
     }
 }

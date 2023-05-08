@@ -5,6 +5,7 @@ import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.permission.ILoginService;
 import com.cfive.pinnacle.utils.WebUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +29,8 @@ public class LoginController {
     }
 
     @RequestMapping("/logout")
-    public ResponseResult logout() {
-        boolean result = loginService.logout();
+    public ResponseResult logout(HttpServletRequest request) {
+        boolean result = loginService.logout(request.getHeader("token"));
         if (result) {
             return ResponseResult.build(ResponseCode.LOGOUT_SUCCESS, "Logout Success", null);
         } else {
