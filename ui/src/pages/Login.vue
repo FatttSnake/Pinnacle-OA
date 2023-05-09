@@ -103,6 +103,11 @@ export default {
             this.captchaSrc = getCaptchaSrc()
         },
         login() {
+            if (this.loggingIn) {
+                return
+            }
+            this.loggingIn = true
+
             const _this = this
             if (!this.userName) {
                 ElMessage.error({
@@ -140,7 +145,6 @@ export default {
                         dangerouslyUseHTMLString: true,
                         message: '<strong>登录成功</strong>'
                     })
-                    this.loggingIn = true
                     setTimeout(function () {
                         _this.$router.push('/')
                     }, 1500)
@@ -149,6 +153,8 @@ export default {
                         dangerouslyUseHTMLString: true,
                         message: '<strong>用户名</strong> 或 <strong>密码</strong> 错误'
                     })
+                    this.getNewCaptcha()
+                    this.loggingIn = false
                 }
             })
         }
