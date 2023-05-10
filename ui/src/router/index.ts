@@ -19,7 +19,7 @@ const router = createRouter({
                     name: 'home',
                     meta: {
                         title: '首页',
-                        icon: IconPinnacleHome,
+                        icon: shallowRef(IconPinnacleHome),
                         requiresScrollbar: false,
                         requiresPadding: true
                     }
@@ -65,7 +65,7 @@ const router = createRouter({
                     ],
                     meta: {
                         title: '工作事项',
-                        icon: IconPinnacleWork,
+                        icon: shallowRef(IconPinnacleWork),
                         requiresScrollbar: false,
                         requiresPadding: true
                     }
@@ -99,7 +99,7 @@ const router = createRouter({
                     ],
                     meta: {
                         title: '考勤',
-                        icon: IconPinnacleAttendance,
+                        icon: shallowRef(IconPinnacleAttendance),
                         requiresScrollbar: false,
                         requiresPadding: true
                     }
@@ -143,7 +143,7 @@ const router = createRouter({
                     ],
                     meta: {
                         title: '事务',
-                        icon: IconPinnacleHome,
+                        icon: shallowRef(IconPinnacleHome),
                         requiresScrollbar: false,
                         requiresPadding: true
                     }
@@ -154,7 +154,30 @@ const router = createRouter({
                     name: 'noticeHome',
                     meta: {
                         title: '公告管理',
-                        icon: IconPinnacleNotice,
+                        icon: shallowRef(IconPinnacleNotice),
+                        requiresScrollbar: false,
+                        requiresPadding: true
+                    }
+                },
+                {
+                    path: '/system',
+                    name: 'systemManagement',
+                    children: [
+                        {
+                            path: 'role',
+                            name: 'systemRole',
+                            component: async () =>
+                                await import('@/pages/system/RoleManagement.vue'),
+                            meta: {
+                                title: '角色管理',
+                                requiresScrollbar: false,
+                                requiresPadding: true
+                            }
+                        }
+                    ],
+                    meta: {
+                        title: '系统管理',
+                        icon: shallowRef(IconPinnacleSetting),
                         requiresScrollbar: false,
                         requiresPadding: true
                     }
