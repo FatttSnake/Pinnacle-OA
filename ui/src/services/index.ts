@@ -29,8 +29,6 @@ service.interceptors.response.use(
             case UNAUTHORIZED:
             case TOKEN_IS_ILLEGAL:
             case TOKEN_HAS_EXPIRED:
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                console.log(`request error: ${response.data.code} - ${response.data.msg}`)
                 clearLocalStorage()
                 ElMessage.error({
                     dangerouslyUseHTMLString: true,
