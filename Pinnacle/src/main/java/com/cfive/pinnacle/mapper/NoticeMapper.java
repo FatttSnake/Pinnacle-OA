@@ -4,6 +4,7 @@ import com.cfive.pinnacle.entity.Notice;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,4 +20,6 @@ public interface NoticeMapper extends BaseMapper<Notice> {
     Notice selectByNoticeId(Long nid);
 
     List<Notice> selectAllNotice();
+
+    List<Notice> selectByCond(String title, String type, LocalDateTime startTime, LocalDateTime endTime);
 }

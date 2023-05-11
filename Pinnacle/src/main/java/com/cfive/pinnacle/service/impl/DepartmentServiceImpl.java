@@ -29,13 +29,6 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     private UserMapper userMapper;
     @Override
     public List<Department> getDepartAndUser() {
-        List<Department> departments = departmentMapper.selectList(null);
-        for (Department department:
-             departments) {
-            LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(User::getDepartmentId, department.getId());
-            department.setUserList(userMapper.selectList(lqw));
-        }
-        return departments;
+        return departmentMapper.getDepartAndUser();
     }
 }

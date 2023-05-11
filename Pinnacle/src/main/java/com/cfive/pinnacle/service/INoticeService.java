@@ -23,4 +23,6 @@ public interface INoticeService extends IService<Notice> {
     Boolean deleteById(Long nid);
 
     Boolean updateNotice(Notice notice);
+
+    Boolean addNotice(Notice notice);
 }

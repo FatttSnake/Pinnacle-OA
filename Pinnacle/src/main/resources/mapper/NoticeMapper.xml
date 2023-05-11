@@ -8,10 +8,10 @@
              t_notice n,
              t_notice_type type
         where u.id = n.sender_id
-          and type.id=n.type_id
+          and type.id = n.type_id
           and n.id = #{nid}
           and n.deleted = 0
-          and n.old=0
+          and n.old = 0
     </select>
     <resultMap id="NoticeByIdResultMap" type="notice" autoMapping="true">
         <association property="sender" javaType="user" autoMapping="true"/>
@@ -20,13 +20,9 @@
 
     <!--  查询所有公告  -->
     <select id="selectAllNotice" resultMap="NoticeAllResultMap">
-        select u.id         uid,
+        select u.id    uid,
                username,
-               passwd,
-               department_id,
-               u.deleted    ude,
-               u.version    uve,
-               n.id         nid,
+               n.id    nid,
                title,
                content,
                type_id,
@@ -38,37 +34,62 @@
                top,
                modify_time,
                origin_id,
-               old,
-               n.deleted    nde,
-               n.version    nve,
-               type.id      typeId,
+               type.id typeId,
                name,
-               type.enable,
-               type.deleted typeDe,
-               type.version typeVe
-        from t_user u,
-             t_notice n,
-             t_notice_type type
-        where u.id = n.sender_id
-          and type.id = n.type_id
-          and n.deleted = 0
+               type.enable
+        from t_notice n
+                 left join t_notice_type type on n.type_id = type.id
+                 left join t_user u on n.sender_id = u.id
+        where n.deleted = 0
           and n.old = 0
         order by create_time desc
     </select>
     <resultMap id="NoticeAllResultMap" type="notice" autoMapping="true">
         <id property="id" column="nid"/>
-        <result property="deleted" column="nde"/>
-        <result property="version" column="nve"/>
         <association property="sender" javaType="user" autoMapping="true">
             <id property="id" column="uid"/>
-            <result property="deleted" column="ude"/>
-            <result property="version" column="uve"/>
         </association>
         <association property="noticeType" javaType="noticeType" autoMapping="true">
             <id property="id" column="typeId"/>
-            <result property="deleted" column="typeDe"/>
-            <result property="version" column="typeVe"/>
         </association>
     </resultMap>
-<!--    模糊查询-->
+    <!--    模糊查询-->
+    <select id="selectByCond" resultMap="NoticeAllResultMap">
+        select u.id uid,
+        username,
+        n.id nid,
+        title,
+        content,
+        type_id,
+        sender_id,
+        create_time,
+        send_time,
+        end_time,
+        priority,
+        top,
+        modify_time,
+        origin_id,
+        type.id typeId,
+        type.name,
+        type.enable
+        from t_notice n
+        left join t_notice_type type on n.type_id = type.id
+        left join t_user u on n.sender_id = u.id
+        <where>
+            <if test="null!=title and title!=''">
+                and instr(title,#{title})&gt;0
+            </if>
+            <if test="null!=type and type!=''">
+                and instr(type.name,#{type})&gt;0
+            </if>
+            <if test="null!=startTime">
+                and send_time &gt;= #{startTime}
+            </if>
+            <if test="null !=endTime">
+                and end_time &lt; #{endTime}
+            </if>
+            and n.deleted = 0
+            and n.old = 0
+        </where>
+    </select>
 </mapper>

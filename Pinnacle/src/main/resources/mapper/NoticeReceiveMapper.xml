@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.NoticeReceiveMapper">
-
+    <select id="selectAllByUserId" parameterType="Long" resultMap="selectAllMap">
+        select u.id    uid,
+               username,
+               n.id    nid,
+               title,
+               content,
+               type_id,
+               sender_id,
+               create_time,
+               send_time,
+               end_time,
+               priority,
+               top,
+               modify_time,
+               origin_id,
+               type.id typeId,
+               name,
+               type.enable,
+               notice_receive.id receiveId,
+               notice_receive.already_read receiveRead
+        from t_notice_receive notice_receive
+                 left join t_notice n on n.id = notice_receive.notice_id
+                 left join t_notice_type type on type.id = n.type_id
+                 left join t_user u on n.sender_id = u.id
+        where notice_receive.user_id=#{userId}
+    </select>
+    <resultMap id="selectAllMap" type="notice" autoMapping="true">
+        <id property="id" column="nid"/>
+        <result property="isRead" column="receiveRead"/>
+        <association property="noticeType" javaType="noticeType" autoMapping="true">
+            <id property="id" column="typeId"/>
+        </association>
+        <association property="sender" javaType="user" autoMapping="true">
+            <id property="id" column="uid"/>
+        </association>
+    </resultMap>
 </mapper>

@@ -42,12 +42,12 @@ public class NoticeController {
 
     //查询所有公告
     @GetMapping
-    public ResponseResult selectAllNotice(String title, String type, String startTime,String endTime) {
+    public ResponseResult selectAllNotice(String title, String type, String startTime, String endTime) {
         List<Notice> noticeList;
-        if (!StringUtils.hasText(title) &&  !StringUtils.hasText(type) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
+        if (!StringUtils.hasText(title) && !StringUtils.hasText(type) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
             noticeList = noticeService.selectAllNotice();
         } else {
-            noticeList = noticeService.selectByCond(title, type, startTime,endTime);
+            noticeList = noticeService.selectByCond(title, type, startTime, endTime);
         }
 
         int code = noticeList != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
@@ -55,6 +55,14 @@ public class NoticeController {
         return ResponseResult.build(code, msg, noticeList);
     }
 
+    //根据登录用户id查询所接收的公告
+    @GetMapping("/ByUserId")
+    public ResponseResult selectAllByUserId() {
+        List<Notice> noticesByUserId = noticeReceiveService.selectAllByUserId();
+        Integer code = noticesByUserId != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
+        String msg = noticesByUserId != null ? "" : "数据查询失败，请尝试！";
+        return ResponseResult.build(code, msg, noticesByUserId);
+    }
 
     //更新公告
     @PutMapping
@@ -67,19 +75,9 @@ public class NoticeController {
     //添加公告
     @PostMapping
     public ResponseResult addNotice(@RequestBody Notice notice) {
-        notice.setSenderId(WebUtil.getLoginUser().getUser().getId());
-        boolean insertNotice = noticeService.save(notice);
-        Long noticeId = notice.getId();
-        boolean flag = false;
-        for (Long receiveId :
-                notice.getReceivers()) {
-            NoticeReceive noticeReceive = new NoticeReceive();
-            noticeReceive.setNoticeId(noticeId);
-            noticeReceive.setUserId(receiveId);
-            flag = noticeReceiveService.save(noticeReceive);
-        }
-        String msg = (insertNotice && flag) ? "" : "数据添加失败，请尝试！";
-        return ResponseResult.build((insertNotice && flag) ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, noticeId);
+        Boolean insertNotice = noticeService.addNotice(notice);
+        String msg = insertNotice ? "" : "数据添加失败，请尝试！";
+        return ResponseResult.build(insertNotice ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, insertNotice);
     }
 
     //删除公告
@@ -88,6 +86,6 @@ public class NoticeController {
         boolean removeById = noticeService.deleteById(nid);
         String msg = removeById ? "" : "数据删除失败，请尝试！";
         return ResponseResult.build(removeById ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, removeById);
-
     }
+
 }

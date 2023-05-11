@@ -1,10 +1,15 @@
 package com.cfive.pinnacle.service.impl;
 
+import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.mapper.NoticeReceiveMapper;
 import com.cfive.pinnacle.service.INoticeReceiveService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cfive.pinnacle.utils.WebUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +21,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class NoticeReceiveServiceImpl extends ServiceImpl<NoticeReceiveMapper, NoticeReceive> implements INoticeReceiveService {
-
+    @Autowired
+    private NoticeReceiveMapper noticeReceiveMapper;
+    @Override
+    public List<Notice> selectAllByUserId() {
+        Long userId = WebUtil.getLoginUser().getUser().getId();
+        return noticeReceiveMapper.selectAllByUserId(userId);
+    }
 }

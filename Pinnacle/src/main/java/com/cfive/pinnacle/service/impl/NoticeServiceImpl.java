@@ -11,6 +11,7 @@ import com.cfive.pinnacle.mapper.NoticeTypeMapper;
 import com.cfive.pinnacle.mapper.UserMapper;
 import com.cfive.pinnacle.service.INoticeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -47,55 +48,58 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     @Override
     public List<Notice> selectAllNotice() {
         List<Notice> notices = noticeMapper.selectAllNotice();
-        if (null != notices) {
-            for (Notice notice :
-                    notices) {
-                LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
-                lqw.eq(NoticeReceive::getNoticeId, notice.getId());
-                List<NoticeReceive> noticeReceives = noticeReceiveMapper.selectList(lqw);
-                List<Long> receiverIdList = new ArrayList<>();
-                for (NoticeReceive noticeReceive :
-                        noticeReceives) {
-                    receiverIdList.add(noticeReceive.getUserId());
-                }
-                notice.setReceivers(receiverIdList);
-            }
-        }
+//        if (null != notices) {
+//            for (Notice notice :
+//                    notices) {
+//                LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
+//                lqw.eq(NoticeReceive::getNoticeId, notice.getId());
+//                List<NoticeReceive> noticeReceives = noticeReceiveMapper.selectList(lqw);
+//                List<Long> receiverIdList = new ArrayList<>();
+//                for (NoticeReceive noticeReceive :
+//                        noticeReceives) {
+//                    receiverIdList.add(noticeReceive.getUserId());
+//                }
+//                notice.setReceivers(receiverIdList);
+//            }
+//        }
         return notices;
     }
 
     @Override
     public List<Notice> selectByCond(String title, String type, String startTime,String endTime) {
-        List<Notice> notices = new ArrayList<>();
-        LocalDateTime start = null;
-        LocalDateTime end = null;
+        LocalDateTime start;
+        LocalDateTime end;
         try {
             start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         } catch (Exception e) {
-            startTime = null;
-            endTime = null;
+            start = null;
+            end = null;
         }
-        LambdaQueryWrapper<Notice> lqw_notice = new LambdaQueryWrapper<>();
-        LambdaQueryWrapper<NoticeType> lqw_type = new LambdaQueryWrapper<>();
-        lqw_type.like(null != type, NoticeType::getName, type);
-        List<NoticeType> noticeTypes = noticeTypeMapper.selectList(lqw_type);
-        for (NoticeType noticeType : noticeTypes
-        ) {
-            lqw_notice.clear();
-            lqw_notice.eq(!noticeTypes.isEmpty(), Notice::getTypeId, noticeType.getId()).like(null != title, Notice::getTitle, title);
-            lqw_notice.ge(StringUtils.hasText(startTime), Notice::getSendTime, start);
-            lqw_notice.le(StringUtils.hasText(endTime), Notice::getEndTime, end);
-            List<Notice> temp_notice = noticeMapper.selectList(lqw_notice);
-            notices.addAll(temp_notice);
-        }
-        for (Notice n : notices
-        ) {
-            n.setSender(userMapper.selectById(n.getSenderId()));
-            n.setNoticeType(noticeTypeMapper.selectById(n.getTypeId()));
-        }
+//        LambdaQueryWrapper<Notice> lqw_notice = new LambdaQueryWrapper<>();
+//        LambdaQueryWrapper<NoticeType> lqw_type = new LambdaQueryWrapper<>();
+//        lqw_type.like(null != type, NoticeType::getName, type);
+//        List<NoticeType> noticeTypes = noticeTypeMapper.selectList(lqw_type);
+//        for (NoticeType noticeType : noticeTypes
+//        ) {
+//            lqw_notice.clear();
+//            lqw_notice.eq(!noticeTypes.isEmpty(), Notice::getTypeId, noticeType.getId()).like(null != title, Notice::getTitle, title);
+//            lqw_notice.ge(StringUtils.hasText(startTime), Notice::getSendTime, start);
+//            lqw_notice.le(StringUtils.hasText(endTime), Notice::getEndTime, end);
+//            lqw_notice.eq(Notice::getOld, 0);
+//            List<Notice> temp_notice = noticeMapper.selectList(lqw_notice);
+//            notices.addAll(temp_notice);
+//        }
+//        for (Notice n : notices
+//        ) {
+//            n.setSender(userMapper.selectById(n.getSenderId()));
+//            n.setNoticeType(noticeTypeMapper.selectById(n.getTypeId()));
+//        }
+
+        List<Notice> notices=noticeMapper.selectByCond(title, type, start, end);
         return notices;
     }
+
 
     @Override
     public Boolean deleteById(Long nid) {
@@ -118,6 +122,26 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
         notice.setModifyTime(null);
         notice.setOld(0);
         return noticeMapper.insert(notice) > 0;
+    }
+
+    @Override
+    public Boolean addNotice(Notice notice) {
+        Boolean noticeFlag,noticeRecFlag=false;
+//        notice.setSenderId(WebUtil.getLoginUser().getUser().getId());
+        notice.setSenderId(1652714496280469506L);
+        noticeFlag = noticeMapper.insert(notice)>0;
+        Long noticeId = notice.getId();
+        for (Long receiveId :
+                notice.getReceivers()) {
+            NoticeReceive noticeReceive = new NoticeReceive();
+            noticeReceive.setNoticeId(noticeId);
+            noticeReceive.setUserId(receiveId);
+            noticeRecFlag = noticeReceiveMapper.insert(noticeReceive)>0;
+            if (!noticeRecFlag){
+                break;
+            }
+        }
+        return noticeFlag && noticeRecFlag;
     }
 
 }
