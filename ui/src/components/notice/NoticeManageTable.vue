@@ -6,7 +6,7 @@
         >清除筛选条件
     </el-button>
     <el-table
-        v-loading="getLoading"
+        v-loading="loading"
         element-loading-text="加载中..."
         ref="tableRef"
         :data="selectData"
@@ -27,7 +27,7 @@
             :formatter="formatter"
             show-overflow-tooltip
         />
-        <el-table-column prop="noticeType.name" label="公告类别" width="180">
+        <el-table-column prop="noticeType.name" label="公告类别" width="150">
             <template #default="scope">
                 <el-tag
                     size="default"
@@ -38,7 +38,7 @@
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column prop="priority" label="优先级" width="180" />
+        <el-table-column prop="priority" label="优先级" width="100" />
         <el-table-column
             prop="createTime"
             label="创建时间"
@@ -77,7 +77,7 @@
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="200">
             <template #default="scope">
                 <el-button size="small" color="#626aef" @click="handleShow(scope.$index, scope.row)"
                     >查看
@@ -124,7 +124,7 @@ export default {
             getLoading: true
         }
     },
-    props: ['noticeTypeList', 'selectData', 'departmentList', 'dialogUpdateVisible', 'getLoading'],
+    props: ['noticeTypeList', 'selectData', 'departmentList', 'dialogUpdateVisible', 'loading'],
     methods: {
         clearFilter() {
             this.$refs.tableRef.clearFilter(['senderName'])
@@ -163,6 +163,7 @@ export default {
     },
     mounted() {},
     updated() {
+        this.$refs.tableRef.clearFilter(['senderName'])
         this.filterSenderName = []
         const nameArray = []
         for (let i = 0; i < this.selectData.length; i++) {

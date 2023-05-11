@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cfive.pinnacle.controller.NoticeController;
 import com.cfive.pinnacle.entity.*;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.mapper.NoticeMapper;
 import com.cfive.pinnacle.service.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import java.util.List;
 public class NoticeTest {
     @Autowired
     private NoticeController noticeController;
+    @Autowired
+    private NoticeMapper noticeMapper;
     @Autowired
     private INoticeService iNoticeService;
     @Autowired
@@ -48,7 +51,7 @@ public class NoticeTest {
 
     @Test
     void insertNoticeTest() {
-        for (int i = 20; i < 40; i++) {
+        for (int i = 11; i < 40; i++) {
             Notice notice = new Notice();
             notice.setTitle("title" + i);
             notice.setTypeId(1654069011361476609L);
@@ -59,7 +62,7 @@ public class NoticeTest {
             notice.setSendTime(sendTime);
             notice.setEndTime(endTime);
             notice.setContent("Content" + i);
-            noticeController.addNotice(notice);
+            noticeMapper.insert(notice);
         }
     }
 
@@ -86,7 +89,7 @@ public class NoticeTest {
     @Test
     void insertNoticeRecTest() {
         NoticeReceive receive = new NoticeReceive();
-        receive.setNoticeId(1654070031407886338L);
+        receive.setNoticeId(1655408487006437377L);
         receive.setUserId(1652714496280469506L);
         iNoticeReceiveService.save(receive);
     }

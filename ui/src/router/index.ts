@@ -180,7 +180,29 @@ const router = createRouter({
                         icon: shallowRef(IconPinnacleSetting),
                         requiresScrollbar: false,
                         requiresPadding: true
-                    }
+                    },
+                    children: [
+                        {
+                            path: 'noticeManage',
+                            component: async () => await import('@/pages/notice/NoticeManage.vue'),
+                            name: 'noticeManage',
+                            meta: {
+                                title: '公告管理',
+                                requiresScrollbar: false,
+                                requiresPadding: true
+                            }
+                        },
+                        {
+                            path: 'noticeView',
+                            component: async () => await import('@/pages/notice/NoticeView.vue'),
+                            name: 'noticeView',
+                            meta: {
+                                title: '公告查看',
+                                requiresScrollbar: false,
+                                requiresPadding: true
+                            }
+                        }
+                    ]
                 }
             ]
         },

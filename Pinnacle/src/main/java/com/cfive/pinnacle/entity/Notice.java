@@ -128,6 +128,9 @@ public class Notice implements Serializable {
     @TableField("old")
     private Integer old;
 
+    @TableField(exist = false)
+    private Integer isRead;
+
     @TableField("deleted")
     @TableLogic
     private Integer deleted;

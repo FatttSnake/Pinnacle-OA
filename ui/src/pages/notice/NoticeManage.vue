@@ -1,40 +1,38 @@
 <template>
-    <div class="notice-home-layout">
-        <el-container>
-            <el-header>
-                <notice-head @selectByCond="selectByCond"></notice-head>
-            </el-header>
-            <el-main>
-                <el-button
-                    size="large"
-                    style="background-color: rgba(71, 138, 173, 0.85); color: white"
-                    @click="dialogAddVisible = true"
-                    >发布公告</el-button
-                >
-                <!-- 添加公告对话框-->
-                <el-dialog v-model="dialogAddVisible" center>
-                    <template #header>
-                        <h2 style="color: red">发布公告</h2>
-                    </template>
-                    <commitForm
-                        :noticeTypeList="this.noticeTypeList"
-                        :departmentList="this.departmentList"
-                        @handleAddNotice="handleAddNotice"
-                    ></commitForm>
-                </el-dialog>
-                <notice-table
-                    :selectData="selectData"
-                    :noticeTypeList="noticeTypeList"
-                    :departmentList="departmentList"
-                    :dialogUpdateVisible="dialogUpdateVisible"
-                    :getLoading="getLoading"
-                    @handleDelete="handleDelete"
-                    @clearFilter="clearFilter"
-                    @handleUpdateNotice="handleUpdateNotice"
-                ></notice-table>
-            </el-main>
-        </el-container>
-    </div>
+    <el-container>
+        <el-header>
+            <notice-head @selectByCond="selectByCond"></notice-head>
+        </el-header>
+        <el-main>
+            <el-button
+                size="large"
+                style="background-color: rgba(71, 138, 173, 0.85); color: white"
+                @click="openAddNoticeDialog"
+                >发布公告</el-button
+            >
+            <!-- 添加公告对话框-->
+            <el-dialog v-model="dialogAddVisible" center>
+                <template #header>
+                    <h2 style="color: red">发布公告</h2>
+                </template>
+                <commitForm
+                    :noticeTypeList="this.noticeTypeList"
+                    :departmentList="this.departmentList"
+                    @handleAddNotice="handleAddNotice"
+                ></commitForm>
+            </el-dialog>
+            <notice-manage-table
+                :selectData="selectData"
+                :noticeTypeList="noticeTypeList"
+                :departmentList="departmentList"
+                :dialogUpdateVisible="dialogUpdateVisible"
+                :loading="loading"
+                @handleDelete="handleDelete"
+                @clearFilter="clearFilter"
+                @handleUpdateNotice="handleUpdateNotice"
+            ></notice-manage-table>
+        </el-main>
+    </el-container>
 </template>
 
 <script lang="ts">
@@ -52,7 +50,7 @@ export default {
             dialogAddVisible: false,
             dialogUpdateVisible: false,
             departmentList: [],
-            getLoading: true
+            loading: true
         }
     },
     methods: {
@@ -83,7 +81,7 @@ export default {
             request.get('http://localhost:8621/notice').then((response) => {
                 this.selectData = response.data.data
                 if (this.selectData) {
-                    this.getLoading = false
+                    this.loading = false
                 }
             })
         },
@@ -121,6 +119,11 @@ export default {
             request.get('http://localhost:8621/department').then((response) => {
                 this.departmentList = response.data.data
             })
+        },
+        openAddNoticeDialog() {
+            this.dialogAddVisible = true
+            this.selectNoticeType()
+            this.selectDepartment()
         },
         handleAddNotice(addFormData) {
             request.post('http://localhost:8621/notice', addFormData).then((response) => {
@@ -164,21 +167,16 @@ export default {
     },
     mounted() {
         this.selectAllNotice()
-        this.selectNoticeType()
-        this.selectDepartment()
     }
 }
 </script>
 
 <style scoped>
-.el-container {
-}
 .el-header {
     background-color: #fff;
-    //border: #9e9e9e solid 1px;
 }
 .el-main {
-    padding: 0px;
+    padding: 0;
     margin-top: 20px;
 }
 </style>

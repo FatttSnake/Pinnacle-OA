@@ -65,7 +65,6 @@ export default {
             return SIZE_ICON_MD
         },
         selectByCondition() {
-            console.log(this.timeRang)
             if (!_.isEmpty(this.timeRang)) {
                 this.search_info.startTime = this.handleDateFormatUTC(this.timeRang[0])
                 this.search_info.endTime = this.handleDateFormatUTC(this.timeRang[1])

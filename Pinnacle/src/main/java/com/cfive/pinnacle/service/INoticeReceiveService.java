@@ -1,7 +1,10 @@
 package com.cfive.pinnacle.service;
 
+import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-04-30
  */
 public interface INoticeReceiveService extends IService<NoticeReceive> {
-
+    List<Notice> selectAllByUserId();
 }

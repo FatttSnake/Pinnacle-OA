@@ -111,7 +111,7 @@ export default {
                     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
                 ],
                 typeId: [
-                    { type:'array',required: true, message: '请选择公告类型', trigger: 'change' }
+                    { required: true, message: '请选择公告类型', trigger: 'change' }
                 ],
                 sendTime: [
                     { type: 'date', required: true, message: '请选择生效时间', trigger: 'change' }
@@ -167,12 +167,16 @@ export default {
         }
         if (this.noticeEdit) {
             this.addData = this.noticeEdit
+            // 判断是否置顶
+            this.addData.top=this.noticeEdit.top===1;
             console.log(this.addData)
         }
     },
     updated() {
         if (this.noticeEdit) {
             this.addData = this.noticeEdit
+            // 判断是否置顶
+            this.addData.top=this.noticeEdit.top===1;
             console.log(this.addData)
         }
     },
