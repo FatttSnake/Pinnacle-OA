@@ -46,9 +46,9 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="操作" key="slot" width="240">
+        <el-table-column label="操作" width="240" prop="content">
             <template #default="scope">
-                <el-button size="small" type="text" @click="handleYes(scope.row)"
+                <el-button size="small" type="text" @click="dialogTure(scope.row)"
                     >具体内容
                 </el-button>
 
@@ -62,6 +62,30 @@
             </template>
         </el-table-column>
     </el-table>
+
+    <el-dialog title="详细内容" v-model="dialogVisible" width="50%" :data="dialogData" center>
+        <el-row>
+            <el-col :span="3"></el-col>
+            <el-col :span="4">事务标题:</el-col>
+            <el-col :span="1">{{ dialogData.title }}</el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="3"></el-col>
+            <el-col :span="4">具体内容:</el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="7"></el-col>
+            <el-col :span="1">{{ dialogData.content }}</el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="11"></el-col>
+            <el-col :span="2">
+                <span class="dialog-footer">
+                    <el-button @click="dialogFalse">返 回</el-button>
+                </span>
+            </el-col>
+        </el-row>
+    </el-dialog>
 
     <el-divider :data="labelData">
         <div class="block">
@@ -114,6 +138,26 @@ export default {
                     currentPage3: 5,
                     currentPage4: 4
                 }
+            ],
+            dialogVisible: false,
+            dialogData: [
+                {
+                    id: '',
+                    title: '',
+                    content: '',
+                    type_id: '',
+                    status: '',
+                    applicant_id: '',
+                    inspector_id: '',
+                    create_time: '',
+                    inspect_time: '',
+                    priority: '',
+                    modify_time: '',
+                    origin_id: '',
+                    old: '',
+                    deleted: '',
+                    version: ''
+                }
             ]
         }
     },
@@ -128,7 +172,7 @@ export default {
                 })
                 .catch((reportError) => {
                     console.log(reportError)
-                })
+                }) // 执行审批同意
         },
         handleNo(row) {
             console.log(row)
@@ -140,7 +184,7 @@ export default {
                 })
                 .catch((reportError) => {
                     console.log(reportError)
-                })
+                }) // 审批驳回
         },
 
         handleSizeChange(val) {
@@ -148,7 +192,7 @@ export default {
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`)
-        },
+        }, // 标签页
         getApproed() {
             request
                 .get('http://localhost:8621/affair/NotApproved')
@@ -158,16 +202,24 @@ export default {
                 })
                 .catch((reportError) => {
                     console.log(reportError)
-                })
+                }) // 获取事务信息或者重新刷新页面
         },
         format(time) {
             return new Date(time).toLocaleString()
+        }, // 时间格式转换
+        dialogTure(data) {
+            this.dialogVisible = true
+            this.dialogData = data
+        },
+        dialogFalse() {
+            this.dialogVisible = false
         }
     },
     created() {
         this.getApproed()
+        this.dialogFalse()
         console.log(this.tableData)
-    }
+    } // 获取事务信息
 }
 </script>
 <style></style>

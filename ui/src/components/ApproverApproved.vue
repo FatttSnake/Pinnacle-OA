@@ -51,13 +51,13 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="操作" key="slot" width="180">
+        <el-table-column label="操作" key="slot" width="180" prop="content">
             <template #default="scope">
+                <el-button size="small" type="text" @click="dialogTure(scope.row)"
+                    >具体内容
+                </el-button>
                 <el-button size="small" type="danger" @click="handleDelete(scope.row)">
                     删除
-                </el-button>
-                <el-button size="small" type="text" @click="handleEdit(scope.$index, scope.row)"
-                    >具体内容
                 </el-button>
             </template>
         </el-table-column>
@@ -68,6 +68,30 @@
             </template>
         </el-table-column>
     </el-table>
+
+    <el-dialog title="详细内容" v-model="dialogVisible" width="50%" :data="dialogData" center>
+        <el-row>
+            <el-col :span="3"></el-col>
+            <el-col :span="4">事务标题:</el-col>
+            <el-col :span="1">{{ dialogData.title }}</el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="3"></el-col>
+            <el-col :span="4">具体内容:</el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="7"></el-col>
+            <el-col :span="1">{{ dialogData.content }}</el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="11"></el-col>
+            <el-col :span="2">
+                <span class="dialog-footer">
+                    <el-button @click="dialogFalse">返 回</el-button>
+                </span>
+            </el-col>
+        </el-row>
+    </el-dialog>
 
     <el-divider :data="labelData">
         <div class="block">
@@ -118,6 +142,26 @@ export default {
                     currentPage2: 5,
                     currentPage3: 5,
                     currentPage4: 4
+                }
+            ],
+            dialogVisible: false,
+            dialogData: [
+                {
+                    id: '',
+                    title: '',
+                    content: '',
+                    type_id: '',
+                    status: '',
+                    applicant_id: '',
+                    inspector_id: '',
+                    create_time: '',
+                    inspect_time: '',
+                    priority: '',
+                    modify_time: '',
+                    origin_id: '',
+                    old: '',
+                    deleted: '',
+                    version: ''
                 }
             ]
         }
@@ -179,10 +223,18 @@ export default {
         },
         format(time) {
             return new Date(time).toLocaleString()
+        }, // 时间格式转换
+        dialogTure(data) {
+            this.dialogVisible = true
+            this.dialogData = data
+        },
+        dialogFalse() {
+            this.dialogVisible = false
         }
     },
     created() {
         this.getApproed()
+        this.dialogFalse()
         console.log(this.tableData)
     }
 }
