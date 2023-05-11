@@ -150,34 +150,10 @@ const router = createRouter({
                 },
                 {
                     path: '/notice',
-                    component: async () => await import('@/pages/notice/NoticeHome.vue'),
                     name: 'noticeHome',
                     meta: {
                         title: '公告管理',
                         icon: shallowRef(IconPinnacleNotice),
-                        requiresScrollbar: false,
-                        requiresPadding: true
-                    }
-                },
-                {
-                    path: '/system',
-                    name: 'systemManagement',
-                    children: [
-                        {
-                            path: 'role',
-                            name: 'systemRole',
-                            component: async () =>
-                                await import('@/pages/system/RoleManagement.vue'),
-                            meta: {
-                                title: '角色管理',
-                                requiresScrollbar: false,
-                                requiresPadding: true
-                            }
-                        }
-                    ],
-                    meta: {
-                        title: '系统管理',
-                        icon: shallowRef(IconPinnacleSetting),
                         requiresScrollbar: false,
                         requiresPadding: true
                     },
@@ -204,6 +180,29 @@ const router = createRouter({
                         }
                     ]
                 }
+                // {
+                //     path: '/system',
+                //     name: 'systemManagement',
+                //     children: [
+                //         {
+                //             path: 'role',
+                //             name: 'systemRole',
+                //             component: async () =>
+                //                 await import('@/pages/system/RoleManagement.vue'),
+                //             meta: {
+                //                 title: '角色管理',
+                //                 requiresScrollbar: false,
+                //                 requiresPadding: true
+                //             }
+                //         }
+                //     ],
+                //     meta: {
+                //         title: '系统管理',
+                //         icon: shallowRef(IconPinnacleSetting),
+                //         requiresScrollbar: false,
+                //         requiresPadding: true
+                //     }
+                // }
             ]
         },
         {
