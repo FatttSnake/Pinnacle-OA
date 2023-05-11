@@ -113,6 +113,9 @@
 </template>
 
 <script lang="ts">
+import { useNoticeManageStore } from '@/store/notice-manage'
+const noticeManageStore = useNoticeManageStore()
+
 export default {
     data() {
         return {
@@ -121,10 +124,12 @@ export default {
             dialogShowVisible: false,
             noticeEdit: {},
             noticeShow: {},
-            getLoading: true
+            getLoading: true,
+            selectData: [],
+            loading: true
         }
     },
-    props: ['noticeTypeList', 'selectData', 'departmentList', 'dialogUpdateVisible', 'loading'],
+    props: ['noticeTypeList', 'departmentList', 'dialogUpdateVisible'],
     methods: {
         clearFilter() {
             this.$refs.tableRef.clearFilter(['senderName'])
@@ -161,7 +166,11 @@ export default {
             this.dialogShowVisible = visible
         }
     },
-    mounted() {},
+    mounted() {
+        noticeManageStore.selectAllNotice()
+        this.selectData = noticeManageStore.selectData
+        this.loading = noticeManageStore.loading
+    },
     updated() {
         this.$refs.tableRef.clearFilter(['senderName'])
         this.filterSenderName = []
@@ -178,7 +187,6 @@ export default {
             senderName.value = newArr[j]
             this.filterSenderName.push(senderName)
         }
-        // console.log(this.filterSenderName)
     }
 }
 </script>
