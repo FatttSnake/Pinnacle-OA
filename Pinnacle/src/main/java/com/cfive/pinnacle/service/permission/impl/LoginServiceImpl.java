@@ -46,7 +46,7 @@ public class LoginServiceImpl implements ILoginService {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("token", jwt);
 
-        redisCache.setCacheObject("login:" + jwt, loginUser, 10, TimeUnit.MINUTES);
+        redisCache.setCacheObject("login:" + jwt, loginUser, 30, TimeUnit.MINUTES);
 
         return hashMap;
     }
