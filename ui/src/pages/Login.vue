@@ -102,6 +102,10 @@ export default {
         getNewCaptcha() {
             this.captchaSrc = getCaptchaSrc()
         },
+        resetLogin() {
+            this.getNewCaptcha()
+            this.loggingIn = false
+        },
         login() {
             if (this.loggingIn) {
                 return
@@ -114,6 +118,7 @@ export default {
                     dangerouslyUseHTMLString: true,
                     message: '<strong>用户名</strong> 为空'
                 })
+                this.loggingIn = false
                 return
             }
             if (!this.password) {
@@ -121,6 +126,7 @@ export default {
                     dangerouslyUseHTMLString: true,
                     message: '<strong>密码</strong> 为空'
                 })
+                this.loggingIn = false
                 return
             }
             if (!this.captcha) {
@@ -128,6 +134,7 @@ export default {
                     dangerouslyUseHTMLString: true,
                     message: '<strong>验证码</strong> 为空'
                 })
+                this.loggingIn = false
                 return
             }
             if (!verifyCaptcha(this.captcha)) {
@@ -135,6 +142,7 @@ export default {
                     dangerouslyUseHTMLString: true,
                     message: '<strong>验证码</strong> 错误'
                 })
+                this.loggingIn = false
                 return
             }
             login(this.userName, this.password).then((res) => {
@@ -153,8 +161,7 @@ export default {
                         dangerouslyUseHTMLString: true,
                         message: '<strong>用户名</strong> 或 <strong>密码</strong> 错误'
                     })
-                    this.getNewCaptcha()
-                    this.loggingIn = false
+                    this.resetLogin()
                 }
             })
         }
