@@ -24,46 +24,44 @@ public class AffairController {
     IAffairService affairService;
 
 
-
     @PostMapping("/add")
-    public ResponseResult addAffair(@RequestBody Affair affair){
-        return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK,"success",affairService.save(affair));
+    public ResponseResult addAffair(@RequestBody Affair affair) {
+        return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", affairService.save(affair));
     }
 
     @GetMapping("/NotApproved")
-    public ResponseResult select_NotApproved(){
+    public ResponseResult select_NotApproved() {
         LambdaQueryWrapper<Affair> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Affair::getStatus, 0);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
     }
 
 
-
     @GetMapping("/Approved")
-    public ResponseResult select_Approved(){
-       LambdaQueryWrapper<Affair> wrapper2 =new LambdaQueryWrapper<>();
-       wrapper2.ne(Affair::getStatus,0);
-       return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.list(wrapper2)) ;
+    public ResponseResult select_Approved() {
+        LambdaQueryWrapper<Affair> wrapper2 = new LambdaQueryWrapper<>();
+        wrapper2.ne(Affair::getStatus, 0);
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper2));
     }
 
     @PutMapping("/yes")
-    public ResponseResult updateAffair_yes(@RequestBody Affair affair){
+    public ResponseResult updateAffair_yes(@RequestBody Affair affair) {
         System.out.println(affair);
-        return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK,"success",affairService.updateAffair_Yes(affair));
+        return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", affairService.updateAffair_Yes(affair));
         //审批同意
     }
 
     @PutMapping("/no")
-    public  ResponseResult updateAffair_No(@RequestBody Affair affair){
-        return  ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK,"success",affairService.updateAffair_No(affair));
+    public ResponseResult updateAffair_No(@RequestBody Affair affair) {
+        return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", affairService.updateAffair_No(affair));
         //审批驳回
     }
 
 
     @DeleteMapping("/{id}")
-    public  ResponseResult deleteAffair_Apprioved(@PathVariable Long id){
+    public ResponseResult deleteAffair_Approved(@PathVariable Long id) {
         System.out.println("affair");
-        return  ResponseResult.build(ResponseCode.DATABASE_DELETE_OK,"success",affairService.removeById(id));
+        return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", affairService.removeById(id));
         //删除已审批事务
 
     }
