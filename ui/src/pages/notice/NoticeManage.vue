@@ -22,11 +22,9 @@
                 ></commitForm>
             </el-dialog>
             <notice-manage-table
-                :selectData="selectData"
                 :noticeTypeList="noticeTypeList"
                 :departmentList="departmentList"
                 :dialogUpdateVisible="dialogUpdateVisible"
-                :loading="loading"
                 @handleDelete="handleDelete"
                 @clearFilter="clearFilter"
                 @handleUpdateNotice="handleUpdateNotice"
@@ -45,12 +43,10 @@ export default {
     name: 'NoticeHome',
     data() {
         return {
-            selectData: [],
             noticeTypeList: [],
             dialogAddVisible: false,
             dialogUpdateVisible: false,
-            departmentList: [],
-            loading: true
+            departmentList: []
         }
     },
     methods: {
@@ -64,7 +60,7 @@ export default {
                 })
                 .then((response) => {
                     if (response.data.code === 20021) {
-                        this.selectData = response.data.data
+                        // this.selectData = response.data.data
                         ElMessage({
                             message: '查询成功.',
                             type: 'success'
@@ -76,14 +72,6 @@ export default {
                         })
                     }
                 })
-        },
-        selectAllNotice() {
-            request.get('http://localhost:8621/notice').then((response) => {
-                this.selectData = response.data.data
-                if (this.selectData) {
-                    this.loading = false
-                }
-            })
         },
         handleDelete(deleteID) {
             ElMessageBox.confirm('确定是否要删除？该操作将无法回退', '警告', {
@@ -165,9 +153,7 @@ export default {
             this.$router.go(0)
         }
     },
-    mounted() {
-        this.selectAllNotice()
-    }
+    mounted() {}
 }
 </script>
 

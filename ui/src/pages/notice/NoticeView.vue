@@ -14,43 +14,36 @@
                 <el-menu-item index="2">已读</el-menu-item>
                 <el-menu-item index="3"><a href="#">未读</a></el-menu-item>
             </el-menu>
-            <notice-view-table
-                :selectData="selectData"
-                :getLoading="getLoading"
-            ></notice-view-table>
+            <notice-view-table></notice-view-table>
         </el-main>
     </el-container>
 </template>
 
 <script lang="ts">
-import request from '@/services'
-
+import { useNoticeViewStore } from '@/store/notice-view'
+const noticeViewStore = useNoticeViewStore()
 export default {
     name: 'NoticeView',
     data() {
         return {
-            activeIndex: '1',
-            selectData: [],
-            getLoading: true
+            activeIndex: '1'
         }
     },
     methods: {
         handleSelect(key, keyPath) {
             console.log(key, keyPath)
-        },
-        selectAllNoticeByUserId() {
-            request.get('http://localhost:8621/notice/ByUserId').then((response) => {
-                this.selectData = response.data.data
-                if (this.selectData) {
-                    this.getLoading = false
-                }
-            })
         }
     },
-    mounted() {
-        this.selectAllNoticeByUserId()
-    }
+    mounted() {}
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.el-header {
+    background-color: #fff;
+}
+.el-main {
+    padding: 0;
+    margin-top: 20px;
+}
+</style>

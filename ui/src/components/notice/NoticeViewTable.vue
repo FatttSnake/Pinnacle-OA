@@ -6,10 +6,10 @@
         >清除筛选条件
     </el-button>
     <el-table
-        v-loading="getLoading"
+        v-loading="loading"
         element-loading-text="加载中..."
         ref="tableRef"
-        :data="selectData"
+        :data="tableData"
         style="width: 100%"
         border
         highlight-current-row
@@ -102,15 +102,22 @@
 </template>
 
 <script lang="ts">
+import { useNoticeViewStore } from '@/store/notice-view'
+// import { mapState } from 'pinia'
+// import {  storeToRefs } from 'pinia'
+const noticeViewStore = useNoticeViewStore()
+// const { selectData, getLoading } = storeToRefs(noticeViewStore)
 export default {
     data() {
         return {
             filterSenderName: [],
             dialogShowVisible: false,
-            noticeShow: {}
+            noticeShow: {},
+            tableData: [],
+            loading: true
         }
     },
-    props: ['selectData', 'getLoading'],
+    props: [],
     methods: {
         clearFilter() {
             this.$refs.tableRef.clearFilter(['senderName'])
@@ -137,13 +144,17 @@ export default {
             this.dialogShowVisible = visible
         }
     },
-    mounted() {},
+    mounted() {
+        noticeViewStore.selectAllNoticeByUserId()
+        this.loading = noticeViewStore.getLoading
+        this.tableData = noticeViewStore.selectData
+    },
     updated() {
         this.$refs.tableRef.clearFilter(['senderName'])
         this.filterSenderName = []
         const nameArray = []
-        for (let i = 0; i < this.selectData.length; i++) {
-            nameArray.push(this.selectData[i].sender.username)
+        for (let i = 0; i < noticeViewStore.selectData.length; i++) {
+            nameArray.push(noticeViewStore.selectData[i].sender.username)
         }
         const newArr = nameArray.filter((item, i, arr) => {
             return arr.indexOf(item) === i
