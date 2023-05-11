@@ -24,4 +24,6 @@ public interface WorkMapper extends BaseMapper<Work> {
 
     Work getWork(Long workId);
 
+    List<Work> getWorkByContent(String content);
+
 }

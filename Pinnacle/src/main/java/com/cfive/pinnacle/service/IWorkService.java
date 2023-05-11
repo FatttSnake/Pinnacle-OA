@@ -19,6 +19,8 @@ public interface IWorkService extends IService<Work> {
     List<Work> getTodo(Long userId);
     List<Work> getComplete(Long userId);
     Work getOne(Long workId);
+
+    List<Work> getWorkByContent(String content);
     double getProgress(Long workId);
 
     String getUserName(Long userId);

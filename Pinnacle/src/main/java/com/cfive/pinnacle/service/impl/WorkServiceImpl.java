@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -69,6 +70,17 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
         work.setProgress(getProgress(workId));
         work.setPublisherName(getUserName(work.getPublisherId()));
         return work;
+    }
+
+    @Override
+    public List<Work> getWorkByContent(String content) {
+        List<Work> workList = workMapper.getWorkByContent(content);
+        for (Work work:
+                workList) {
+            work.setProgress(getProgress(work.getId()));
+            work.setPublisherName(getUserName(work.getPublisherId()));
+        }
+        return workList;
     }
 
     @Override
