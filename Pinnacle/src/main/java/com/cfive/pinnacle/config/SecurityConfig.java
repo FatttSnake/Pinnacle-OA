@@ -1,8 +1,8 @@
 package com.cfive.pinnacle.config;
 
 import com.cfive.pinnacle.filter.JwtAuthenticationTokenFilter;
-import com.cfive.pinnacle.handler.AccessDeniedHandler;
-import com.cfive.pinnacle.handler.AuthenticationEntryPointHandler;
+import com.cfive.pinnacle.handler.CustomAccessDeniedHandler;
+import com.cfive.pinnacle.handler.CustomAuthenticationEntryPointHandler;
 import com.cfive.pinnacle.service.permission.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +25,8 @@ import java.util.List;
 public class SecurityConfig {
     private UserDetailsServiceImpl userDetailsService;
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
-    private AuthenticationEntryPointHandler authenticationEntryPointHandler;
-    private AccessDeniedHandler accessDeniedHandler;
+    private CustomAuthenticationEntryPointHandler authenticationEntryPointHandler;
+    private CustomAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
     public void setUserDetailsService(UserDetailsServiceImpl userDetailsService) {
@@ -39,12 +39,12 @@ public class SecurityConfig {
     }
 
     @Autowired
-    public void setAuthenticationEntryPointHandler(AuthenticationEntryPointHandler authenticationEntryPointHandler) {
+    public void setAuthenticationEntryPointHandler(CustomAuthenticationEntryPointHandler authenticationEntryPointHandler) {
         this.authenticationEntryPointHandler = authenticationEntryPointHandler;
     }
 
     @Autowired
-    public void setAccessDeniedHandler(AccessDeniedHandler accessDeniedHandler) {
+    public void setAccessDeniedHandler(CustomAccessDeniedHandler accessDeniedHandler) {
         this.accessDeniedHandler = accessDeniedHandler;
     }
 
