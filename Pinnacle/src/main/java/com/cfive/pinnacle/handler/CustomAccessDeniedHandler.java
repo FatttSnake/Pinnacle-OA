@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class AccessDeniedHandler implements org.springframework.security.web.access.AccessDeniedHandler {
+public class CustomAccessDeniedHandler implements org.springframework.security.web.access.AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         String objectResponse = WebUtil.objectResponse(ResponseCode.ACCESS_DENIED, "Access denied", null);
