@@ -20,8 +20,6 @@
 </template>
 
 <script lang="ts">
-import { useNoticeViewStore } from '@/store/notice-view'
-const noticeViewStore = useNoticeViewStore()
 export default {
     name: 'NoticeView',
     data() {

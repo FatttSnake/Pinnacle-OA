@@ -105,12 +105,8 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     public Boolean deleteById(Long nid) {
         LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
         lqw.eq(NoticeReceive::getNoticeId, nid);
-        List<NoticeReceive> noticeReceives = noticeReceiveMapper.selectList(lqw);
-        for (NoticeReceive nrc :
-                noticeReceives) {
-            noticeReceiveMapper.deleteById(nrc.getId());
-        }
-        return noticeMapper.deleteById(nid) > 0;
+        Boolean flag = noticeReceiveMapper.delete(lqw)>0;
+        return flag&&(noticeMapper.deleteById(nid) > 0);
     }
 
     @Override
@@ -118,7 +114,6 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
         noticeMapper.update(null, new UpdateWrapper<Notice>().eq("id", notice.getId()).set("old", 1)); //修改原始数据
         notice.setOriginId(notice.getId());
         notice.setId(null); //清除id，使新插入的数据id重新生成
-        notice.setCreateTime(null);
         notice.setModifyTime(null);
         notice.setOld(0);
         return noticeMapper.insert(notice) > 0;

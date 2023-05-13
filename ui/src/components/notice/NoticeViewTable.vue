@@ -1,15 +1,15 @@
 <template>
-    <el-button
-        size="large"
-        @click="clearFilter"
-        style="background-color: rgba(71, 138, 173, 0.85); color: white"
-        >清除筛选条件
-    </el-button>
+    <!--    <el-button-->
+    <!--        size="large"-->
+    <!--        @click="clearFilter"-->
+    <!--        style="background-color: rgba(71, 138, 173, 0.85); color: white"-->
+    <!--        >清除筛选条件-->
+    <!--    </el-button>-->
     <el-table
-        v-loading="loading"
+        v-loading="this.loading"
         element-loading-text="加载中..."
         ref="tableRef"
-        :data="tableData"
+        :data="this.selectData"
         style="width: 100%"
         border
         highlight-current-row
@@ -97,28 +97,26 @@
         <template #header>
             <h2 style="color: red">查看公告</h2>
         </template>
-        <notice-show-dialog @showDialogVisible="showDialogVisible" :noticeShow="noticeShow" />
+        <notice-show-dialog />
     </el-dialog>
 </template>
 
 <script lang="ts">
-import { useNoticeViewStore } from '@/store/notice-view'
-// import { mapState } from 'pinia'
 // import {  storeToRefs } from 'pinia'
-const noticeViewStore = useNoticeViewStore()
 // const { selectData, getLoading } = storeToRefs(noticeViewStore)
+import { mapState } from 'pinia'
+import { useNoticeStore } from '@/store/notice'
+const noticeStore = useNoticeStore()
+
 export default {
     data() {
         return {
-            filterSenderName: [],
-            dialogShowVisible: false,
-            noticeShow: {},
-            tableData: [],
-            loading: true
+            filterSenderName: []
         }
     },
     props: [],
     methods: {
+        // ...mapActions(useNoticeStore, ['selectAllNoticeByUserId']),
         clearFilter() {
             this.$refs.tableRef.clearFilter(['senderName'])
             this.$emit('clearFilter')
@@ -137,24 +135,21 @@ export default {
         },
         modifyStatus(row) {},
         handleShow(index, row) {
-            this.dialogShowVisible = true
-            this.noticeShow = row
-        },
-        showDialogVisible(visible) {
-            this.dialogShowVisible = visible
+            noticeStore.$patch((state) => {
+                state.dialogShowVisible = true
+                state.noticeShowData = row
+            })
         }
     },
     mounted() {
-        noticeViewStore.selectAllNoticeByUserId()
-        this.loading = noticeViewStore.getLoading
-        this.tableData = noticeViewStore.selectData
+        noticeStore.selectAllNoticeByUserId()
     },
     updated() {
         this.$refs.tableRef.clearFilter(['senderName'])
         this.filterSenderName = []
         const nameArray = []
-        for (let i = 0; i < noticeViewStore.selectData.length; i++) {
-            nameArray.push(noticeViewStore.selectData[i].sender.username)
+        for (let i = 0; i < this.selectData.length; i++) {
+            nameArray.push(this.selectData[i].sender.username)
         }
         const newArr = nameArray.filter((item, i, arr) => {
             return arr.indexOf(item) === i
@@ -165,8 +160,20 @@ export default {
             senderName.value = newArr[j]
             this.filterSenderName.push(senderName)
         }
+    },
+    computed: {
+        ...mapState(useNoticeStore, [
+            'selectData',
+            'loading',
+            'dialogShowVisible',
+            'noticeShowData'
+        ])
     }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.el-table {
+    margin-top: 10px;
+}
+</style>
