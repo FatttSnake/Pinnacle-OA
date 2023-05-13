@@ -64,7 +64,7 @@
             prop="sender.username"
             label="发布人"
             width="100"
-            column-key="senderName"
+            column-key="sender.username"
             :filters="filterSenderName"
             :filter-method="filterTag"
             filter-placement="bottom-end"
@@ -85,7 +85,7 @@
                 <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)"
                     >编辑
                 </el-button>
-                <el-button size="small" type="danger" @click="handleDelete(scope.row.id)"
+                <el-button size="small" type="danger" @click="handleDeleteById(scope.row.id)"
                     >删除
                 </el-button>
             </template>
@@ -108,25 +108,29 @@
         <template #header>
             <h2 style="color: red">查看公告</h2>
         </template>
-        <notice-show-dialog @showDialogVisible="showDialogVisible" :noticeShow="noticeShow" />
+        <notice-show-dialog />
     </el-dialog>
 </template>
 
 <script lang="ts">
-import { useNoticeManageStore } from '@/store/notice-manage'
-const noticeManageStore = useNoticeManageStore()
+import { mapState } from 'pinia'
+import { useNoticeStore } from '@/store/notice'
+const noticeStore = useNoticeStore()
 
 export default {
+    computed: {
+        ...mapState(useNoticeStore, [
+            'selectData',
+            'loading',
+            'dialogShowVisible',
+            'noticeShowData'
+        ])
+    },
     data() {
         return {
             filterSenderName: [],
             dialogEditVisible: false,
-            dialogShowVisible: false,
-            noticeEdit: {},
-            noticeShow: {},
-            getLoading: true,
-            selectData: [],
-            loading: true
+            noticeEdit: {}
         }
     },
     props: ['noticeTypeList', 'departmentList', 'dialogUpdateVisible'],
@@ -156,23 +160,22 @@ export default {
             this.dialogEditVisible = this.dialogUpdateVisible
         },
         handleShow(index, row) {
-            this.dialogShowVisible = true
-            this.noticeShow = row
+            noticeStore.$patch((state) => {
+                state.dialogShowVisible = true
+                state.noticeShowData = row
+            })
         },
-        handleDelete(deleteId) {
-            this.$emit('handleDelete', deleteId)
-        },
-        showDialogVisible(visible) {
-            this.dialogShowVisible = visible
+        handleDeleteById(deleteId) {
+            this.$emit('handleDeleteById', deleteId)
         }
     },
     mounted() {
-        noticeManageStore.selectAllNotice()
-        this.selectData = noticeManageStore.selectData
-        this.loading = noticeManageStore.loading
+        console.log('mounted')
+        noticeStore.selectAllNotice()
     },
     updated() {
-        this.$refs.tableRef.clearFilter(['senderName'])
+        console.log('updated')
+        this.$refs.tableRef.clearFilter(['sender.username'])
         this.filterSenderName = []
         const nameArray = []
         for (let i = 0; i < this.selectData.length; i++) {

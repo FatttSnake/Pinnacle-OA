@@ -20,7 +20,7 @@
                             v-for="item in noticeTypeList"
                             :key="item.id"
                             :label="item.name"
-                            :value="item.id"
+                            :value="item.name"
                         />
                     </el-select>
                 </el-form-item>
@@ -54,63 +54,19 @@
             </el-col>
         </el-row>
     </el-form>
-
-    <!--    <el-row>-->
-    <!--        <el-col :span="2" :xs="3" :sm="2"-->
-    <!--            ><el-text-->
-    <!--                class="mx-1"-->
-    <!--                size="large"-->
-    <!--                style="color: rgba(71, 138, 173, 0.85); font-weight: bolder"-->
-    <!--                >公告标题：</el-text-->
-    <!--            ></el-col-->
-    <!--        >-->
-    <!--        <el-col :span="4">-->
-    <!--            <el-input v-model="search_info.title" placeholder="请输入公告标题"> </el-input>-->
-    <!--        </el-col>-->
-    <!--        <el-col :span="1"></el-col>-->
-    <!--        <el-col :span="2" :xs="3" :sm="2"-->
-    <!--            ><el-text-->
-    <!--                class="mx-1"-->
-    <!--                size="large"-->
-    <!--                style="color: rgba(71, 138, 173, 0.85); font-weight: bolder"-->
-    <!--                >公告类型：</el-text-->
-    <!--            ></el-col-->
-    <!--        >-->
-    <!--        <el-col :span="4">-->
-    <!--            <el-input v-model="search_info.type" placeholder="请输入公告类型"> </el-input>-->
-    <!--        </el-col>-->
-    <!--        <el-col :span="1"></el-col>-->
-    <!--        <el-col :span="5">-->
-    <!--            <el-date-picker-->
-    <!--                v-model="timeRang"-->
-    <!--                type="datetimerange"-->
-    <!--                range-separator="至"-->
-    <!--                start-placeholder="开始日期"-->
-    <!--                end-placeholder="结束日期"-->
-    <!--            >-->
-    <!--            </el-date-picker>-->
-    <!--        </el-col>-->
-    <!--        <el-col :span="2"></el-col>-->
-    <!--        <el-col :span="3">-->
-    <!--            <el-button type="primary" @click="selectByCondition">-->
-    <!--                <el-icon :size="SIZE_ICON_SM()" style="color: white; margin-right: 5px">-->
-    <!--                    <icon-pinnacle-notice_search />-->
-    <!--                </el-icon>-->
-    <!--                搜索-->
-    <!--            </el-button>-->
-    <!--        </el-col>-->
-    <!--    </el-row>-->
 </template>
 
 <script lang="ts">
 import { COLOR_PRODUCTION, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
 import _ from 'lodash'
+import { useNoticeStore } from '@/store/notice'
+import { mapState } from 'pinia'
+// const noticeStore = useNoticeStore()
 
 export default {
     name: 'NoticeHead',
     data() {
         return {
-            noticeTypeList: [],
             timeRang: [],
             search_info: {
                 title: '',
@@ -153,6 +109,9 @@ export default {
             this.timeRang = []
             this.$refs.searchForm.resetFields()
         }
+    },
+    computed: {
+        ...mapState(useNoticeStore, ['noticeTypeList'])
     }
 }
 </script>

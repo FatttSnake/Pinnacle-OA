@@ -79,17 +79,22 @@
             <el-input type="textarea" v-model="addData.content"></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="submitForm('addData')">发布</el-button>
+            <el-button type="primary" @click="submitForm">发布</el-button>
+            <el-button type="primary" @click="closeForm">取消</el-button>
             <el-button @click="resetForm()">重置</el-button>
         </el-form-item>
     </el-form>
 </template>
 
 <script lang="js">
+import { useNoticeStore } from '@/store/notice'
+import { mapState } from 'pinia'
+const noticeStore = useNoticeStore()
 export default {
+    computed:{
+        ...mapState(useNoticeStore,['noticeTypeList','departmentList'])
+    },
     props:{
-        departmentList: [],
-        noticeTypeList: [],
         noticeEdit:{}
     },
     data() {
@@ -130,7 +135,7 @@ export default {
 
     },
     methods: {
-        submitForm(formtitle) {
+        submitForm() {
             this.addData.top=this.addData.top?1:0;
             const receiveId=[]
             for (let i = 0; i < this.addData.receivers.length; i++) {
@@ -140,16 +145,19 @@ export default {
             this.$refs.addData.validate((valid) => {
                 if (valid) {
                     if (this.noticeEdit){
-                        console.log("edit")
                         this.$emit("handleUpdateNotice",this.addData)
                     }else {
-                        console.log("add")
-                        this.$emit("handleAddNotice",this.addData)
+                        noticeStore.handleAddNotice(this.addData)
                     }
                 } else {
                     return false;
                 }
             });
+        },
+        closeForm(){
+            noticeStore.$patch(state=>{
+                state.dialogAddVisible=false
+            })
         },
         resetForm() {
             this.$refs.addData.resetFields();
@@ -181,7 +189,7 @@ export default {
         }
     },
     mounted() {
-        console.log("mounted")
+        noticeStore.selectDepartment()
     }
 
 }
