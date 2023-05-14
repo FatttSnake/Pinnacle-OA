@@ -24,20 +24,19 @@
         <el-form-item label="事务类型:">
             <el-col :span="8">
                 <el-radio-group v-model="form.typeId">
-                    <el-radio :label="1" name="type">事假</el-radio>
-                    <el-radio :label="2" name="type">病假</el-radio>
-                    <el-radio :label="3" name="type">财务报销</el-radio>
-                    <el-radio :label="4" name="type">调休</el-radio>
+                    <el-radio label="1" name="type1">事假</el-radio>
+                    <el-radio label="2" name="type2">病假</el-radio>
+                    <el-radio label="3" name="type3">财务报销</el-radio>
+                    <el-radio label="4" name="type4">调休</el-radio>
                 </el-radio-group>
             </el-col>
         </el-form-item>
 
-        <el-form-item label="发送日期:">
-            <el-col :span="1"><i class="el-icon-date"></i></el-col>
+        <el-form-item v-model="form.createTime" label="发送日期:">
             <el-col :span="5">
                 <el-date-picker
                     v-model="form.createTime"
-                    type="date"
+                    type="datetime"
                     placeholder="请选择要发送日期"
                     style="width: 100%"
                 />
@@ -45,23 +44,12 @@
         </el-form-item>
 
         <el-form-item label="具体内容:">
-            <el-row :span="20">
-                <el-col :span="40">
-                    <el-input
-                        v-model="form.content"
-                        type="textarea"
-                        class="textarea"
-                        rows="15"
-                        cols="20"
-                    />
-                </el-col>
-            </el-row>
+            <el-input v-model="form.content" type="textarea" class="textarea" rows="15" cols="20" />
         </el-form-item>
-
         <el-form-item>
             <el-col :span="6">
                 <el-button type="primary" @click="onSubmit(form)">提交</el-button>
-                <el-button type="danger" @click="getApproed()">重置</el-button>
+                <el-button type="danger" @click="this.resetForm">重置</el-button>
             </el-col>
         </el-form-item>
     </el-form>
@@ -70,6 +58,8 @@
 <script>
 import 'element-plus/theme-chalk/index.css'
 import request from '@/services'
+import _ from 'lodash'
+import { ElMessage } from 'element-plus'
 export default {
     data() {
         return {
@@ -109,20 +99,69 @@ export default {
     //     // }
     // },
     methods: {
-        onSubmit(form) {
+        onSubmit: function (form) {
             console.log(form)
-            request
-                .post('http://localhost:8621/affair/add', form)
-                .then((response) => {
-                    console.log(response.data)
-                    this.getApproed()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            if (
+                !_.isEmpty(form.title) &&
+                !_.isEmpty(form.content) &&
+                !_.isEmpty(form.typeId) &&
+                !_.isEmpty(form.applicantId) &&
+                !_.isEmpty(form.inspectorId)
+            ) {
+                request
+                    .post('http://localhost:8621/affair/add', form)
+                    .then((response) => {
+                        console.log(response.data)
+                        this.resetForm()
+                    })
+                    .catch((reportError) => {
+                        this.resetForm()
+                        console.log(reportError)
+                    })
+                this.$router.go()
+            } else {
+                if (_.isEmpty(form.title)) {
+                    ElMessage({
+                        message: '错误！事务标题不能为空！',
+                        type: 'error'
+                    })
+                }
+                if (_.isEmpty(form.content)) {
+                    ElMessage({
+                        message: '错误！事务内容不能为空!',
+                        type: 'error'
+                    })
+                }
+                if (_.isEmpty(form.typeId)) {
+                    ElMessage({
+                        message: '错误！请选择事务类型!',
+                        type: 'error'
+                    })
+                }
+                if (_.isEmpty(form.applicantId)) {
+                    ElMessage({
+                        message: '错误！请输入申请者id!',
+                        type: 'error'
+                    })
+                }
+                if (_.isEmpty(form.inspectorId)) {
+                    ElMessage({
+                        message: '错误！请选择审批者!',
+                        type: 'error'
+                    })
+                }
+                if (_.isEmpty(form.createTime)) {
+                    ElMessage({
+                        message: '错误！发送时间不能为空！',
+                        type: 'error'
+                    })
+                }
+            }
         },
-        getApproed() {
-            history.go(0)
+        resetForm() {
+            this.$nextTick(() => {
+                this.$refs.ruleForm.resetFields()
+            })
         }
     }
 }
