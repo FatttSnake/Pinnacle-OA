@@ -18,10 +18,8 @@
                 <commitForm />
             </el-dialog>
             <notice-manage-table
-                :dialogUpdateVisible="dialogUpdateVisible"
                 @handleDeleteById="handleDeleteById"
                 @clearFilter="clearFilter"
-                @handleUpdateNotice="handleUpdateNotice"
             ></notice-manage-table>
         </el-main>
     </el-container>
@@ -39,14 +37,14 @@ const noticeStore = useNoticeStore()
 export default {
     name: 'NoticeHome',
     data() {
-        return {
-            dialogUpdateVisible: false
-        }
+        return {}
     },
     methods: {
-        selectByCond(search) {
+        selectByCond(currentPage, pageSize, search) {
             request
-                .get('/notice', {
+                .get('/notice/page', {
+                    currentPage,
+                    pageSize,
                     title: search.title,
                     type: search.type,
                     startTime: search.startTime,
@@ -80,7 +78,7 @@ export default {
                                 message: '删除成功.',
                                 type: 'success'
                             })
-                            noticeStore.selectAllNotice()
+                            noticeStore.selectAllNotice(1, 5)
                         } else if (response.data.code === 20034) {
                             ElMessage({
                                 message: response.data.msg,
@@ -94,24 +92,8 @@ export default {
         openAddNoticeDialog() {
             noticeStore.$patch((state) => {
                 state.dialogAddVisible = true
+                state.editFlag = false
             })
-        },
-        handleUpdateNotice(updateNotice) {
-            request.put('/notice', updateNotice).then((response) => {
-                if (response.data.code === 20023) {
-                    this.dialogUpdateVisible = false
-                    ElMessage({
-                        message: '发布成功.',
-                        type: 'success'
-                    })
-                } else if (response.data.code === 20033) {
-                    ElMessage({
-                        message: response.data.msg,
-                        type: 'error'
-                    })
-                }
-            })
-            this.$router.go(0)
         },
         clearFilter() {
             // this.selectAllNotice()

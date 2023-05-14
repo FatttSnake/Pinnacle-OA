@@ -91,7 +91,7 @@ export default {
                 this.search_info.startTime = this.handleDateFormatUTC(this.timeRang[0])
                 this.search_info.endTime = this.handleDateFormatUTC(this.timeRang[1])
             }
-            this.$emit('selectByCond', this.search_info)
+            this.$emit('selectByCond', 1, 5, this.search_info)
         },
         handleDateFormatUTC(date) {
             let newFormat = ''

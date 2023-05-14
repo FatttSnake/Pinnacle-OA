@@ -10,16 +10,17 @@
         element-loading-text="加载中..."
         ref="tableRef"
         :data="selectData"
-        style="width: 100%"
         border
         highlight-current-row
+        @selection-change="handleSelectionChange"
         :header-cell-style="{
             background: 'darksalmon',
             'text-align': 'center',
             color: '#fff',
             'font-size': '20px'
         }"
-    >
+        ><el-table-column type="selection" width="55" />
+        <el-table-column type="index" label="序号" width="70" />
         <el-table-column
             prop="title"
             label="公告标题"
@@ -91,17 +92,32 @@
             </template>
         </el-table-column>
     </el-table>
+    <!--    分页条-->
+    <div class="pagination">
+        <el-pagination
+            style="text-align: center"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            layout="total, sizes, prev, pager, next, jumper"
+            background
+            :page-sizes="[5, 10, 20, 40]"
+            :total="total"
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+        >
+        </el-pagination>
+    </div>
     <!--        编辑会话框-->
-    <el-dialog v-model="dialogEditVisible" center>
+    <el-dialog
+        v-model="dialogEditVisible"
+        center
+        v-if="hackReset"
+        :before-close="handleDialogClose"
+    >
         <template #header>
             <h2 style="color: red">编辑公告</h2>
         </template>
-        <commitForm
-            :noticeEdit="noticeEdit"
-            :noticeTypeList="noticeTypeList"
-            :departmentList="departmentList"
-            @handleUpdateNotice="handleUpdateNotice"
-        ></commitForm>
+        <commitForm />
     </el-dialog>
     <!--        查看会话框-->
     <el-dialog v-model="dialogShowVisible" center>
@@ -120,26 +136,34 @@ const noticeStore = useNoticeStore()
 export default {
     computed: {
         ...mapState(useNoticeStore, [
+            'total',
             'selectData',
             'loading',
             'dialogShowVisible',
-            'noticeShowData'
+            'noticeShowData',
+            'dialogEditVisible',
+            'hackReset'
         ])
     },
     data() {
         return {
             filterSenderName: [],
-            dialogEditVisible: false,
-            noticeEdit: {}
+            multipleSelection: [],
+            currentPage: 1,
+            pageSize: 5
         }
     },
-    props: ['noticeTypeList', 'departmentList', 'dialogUpdateVisible'],
+    props: [],
     methods: {
+        handleSelectionChange(val) {
+            // val的值为所勾选行的数组对象
+            this.multipleSelection = val
+        },
         clearFilter() {
             this.$refs.tableRef.clearFilter(['senderName'])
             this.$emit('clearFilter')
         },
-        formatter(row, column) {
+        formatter(row) {
             return row.title
         },
         filterTag(value, row) {
@@ -152,12 +176,19 @@ export default {
             return new Date(data).toLocaleString()
         },
         handleEdit(index, row) {
-            this.dialogEditVisible = true
-            this.noticeEdit = row
+            noticeStore.$patch((state) => {
+                state.hackReset = true
+                state.noticeShowData = row
+                state.editFlag = true
+                state.dialogEditVisible = true
+            })
         },
-        handleUpdateNotice(updateData) {
-            this.$emit('handleUpdateNotice', updateData)
-            this.dialogEditVisible = this.dialogUpdateVisible
+        handleDialogClose() {
+            noticeStore.$patch((state) => {
+                state.dialogEditVisible = false
+                state.editFlag = false
+                state.hackReset = false
+            })
         },
         handleShow(index, row) {
             noticeStore.$patch((state) => {
@@ -167,14 +198,20 @@ export default {
         },
         handleDeleteById(deleteId) {
             this.$emit('handleDeleteById', deleteId)
+        },
+        handleSizeChange(pageSize) {
+            // pageSize：每页多少条数据
+            noticeStore.selectAllNotice(this.currentPage, parseInt(pageSize))
+        },
+        handleCurrentChange(currentPage) {
+            // currentPage：当前第几页
+            noticeStore.selectAllNotice(parseInt(currentPage), this.pageSize)
         }
     },
     mounted() {
-        console.log('mounted')
-        noticeStore.selectAllNotice()
+        noticeStore.selectAllNotice(this.currentPage, this.pageSize)
     },
     updated() {
-        console.log('updated')
         this.$refs.tableRef.clearFilter(['sender.username'])
         this.filterSenderName = []
         const nameArray = []
@@ -194,4 +231,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.pagination {
+    margin: 30px 400px;
+}
+</style>

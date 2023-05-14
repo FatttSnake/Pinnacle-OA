@@ -2,6 +2,7 @@ package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.entity.NoticeType;
@@ -48,20 +49,6 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     @Override
     public List<Notice> selectAllNotice() {
         List<Notice> notices = noticeMapper.selectAllNotice();
-//        if (null != notices) {
-//            for (Notice notice :
-//                    notices) {
-//                LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
-//                lqw.eq(NoticeReceive::getNoticeId, notice.getId());
-//                List<NoticeReceive> noticeReceives = noticeReceiveMapper.selectList(lqw);
-//                List<Long> receiverIdList = new ArrayList<>();
-//                for (NoticeReceive noticeReceive :
-//                        noticeReceives) {
-//                    receiverIdList.add(noticeReceive.getUserId());
-//                }
-//                notice.setReceivers(receiverIdList);
-//            }
-//        }
         return notices;
     }
 
@@ -105,8 +92,8 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     public Boolean deleteById(Long nid) {
         LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
         lqw.eq(NoticeReceive::getNoticeId, nid);
-        Boolean flag = noticeReceiveMapper.delete(lqw)>0;
-        return flag&&(noticeMapper.deleteById(nid) > 0);
+        Boolean flag=noticeReceiveMapper.delete(lqw)>0;
+        return flag&&noticeMapper.deleteById(nid) > 0;
     }
 
     @Override
@@ -122,21 +109,48 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     @Override
     public Boolean addNotice(Notice notice) {
         Boolean noticeFlag,noticeRecFlag=false;
-//        notice.setSenderId(WebUtil.getLoginUser().getUser().getId());
-        notice.setSenderId(1652714496280469506L);
+        notice.setSenderId(WebUtil.getLoginUser().getUser().getId());
+//        notice.setSenderId(1652714496280469506L);
         noticeFlag = noticeMapper.insert(notice)>0;
         Long noticeId = notice.getId();
-        for (Long receiveId :
-                notice.getReceivers()) {
+        if (notice.getReceivers().size()==0){
+            //该公告仅发布者自己可见
             NoticeReceive noticeReceive = new NoticeReceive();
             noticeReceive.setNoticeId(noticeId);
-            noticeReceive.setUserId(receiveId);
+            noticeReceive.setUserId(WebUtil.getLoginUser().getUser().getId());
             noticeRecFlag = noticeReceiveMapper.insert(noticeReceive)>0;
-            if (!noticeRecFlag){
-                break;
+        }else {
+            for (Long receiveId :
+                    notice.getReceivers()) {
+                NoticeReceive noticeReceive = new NoticeReceive();
+                noticeReceive.setNoticeId(noticeId);
+                noticeReceive.setUserId(receiveId);
+                noticeRecFlag = noticeReceiveMapper.insert(noticeReceive)>0;
+                if (!noticeRecFlag){
+                    break;
+                }
             }
         }
         return noticeFlag && noticeRecFlag;
+    }
+
+    @Override
+    public IPage<Notice> selectPageAllNotice(IPage<?> page) {
+        return noticeMapper.selectPageAllNotice(page);
+    }
+
+    @Override
+    public IPage<Notice> selectPageByCond(IPage<?> page, String title, String type, String startTime, String endTime) {
+        LocalDateTime start;
+        LocalDateTime end;
+        try {
+            start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        } catch (Exception e) {
+            start = null;
+            end = null;
+        }
+        return noticeMapper.selectPageByCond(page,title, type, start, end);
     }
 
 }
