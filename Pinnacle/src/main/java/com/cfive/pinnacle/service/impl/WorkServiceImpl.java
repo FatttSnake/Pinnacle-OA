@@ -2,6 +2,7 @@ package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.entity.UserWork;
 import com.cfive.pinnacle.entity.Work;
@@ -137,7 +138,17 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
         if (userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", work.getId())) <= 0) {
             flag = false;
         }
-        if (workMapper.updateById(work)<=0) {
+        if (workMapper.update(null, new UpdateWrapper<Work>().eq("id", work.getId()).set("old", 1)) <= 0) {
+            flag = false;
+        }
+        else{
+            work.setOriginId(work.getId());
+            work.setId(null); //清除id，使新插入的数据id重新生成
+            work.setCreateTime(null);
+            work.setModifyTime(null);
+            work.setOld(0);
+        }
+        if (workMapper.insert(work)<=0) {
             flag = false;
         }
         for (User user :

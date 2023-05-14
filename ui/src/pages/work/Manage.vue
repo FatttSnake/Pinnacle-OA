@@ -93,6 +93,7 @@
 <script lang="ts">
 import request from '@/services'
 import EditWork from '@/components/work/EditWork.vue'
+import { ElMessage } from 'element-plus'
 
 export default {
     name: 'AllTaskPage',
@@ -172,10 +173,18 @@ export default {
                 .then((response) => {
                     this.addVisible = false
                     this.getTableData()
+                    ElMessage({
+                        message: '添加成功',
+                        type: 'success'
+                    })
                     console.log(response.data)
                 })
                 .catch((reportError) => {
                     console.log(reportError)
+                    ElMessage({
+                        message: '添加出错',
+                        type: 'error'
+                    })
                 })
         },
         formatDate(time) {
