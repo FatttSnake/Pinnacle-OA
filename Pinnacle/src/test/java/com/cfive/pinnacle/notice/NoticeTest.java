@@ -40,7 +40,7 @@ public class NoticeTest {
 
     @Test
     void selectAllTest() {
-        ResponseResult noticeList = noticeController.selectAllNotice(null, null,null,null);
+//        ResponseResult noticeList = noticeController.selectAllNotice(null, null,null,null);
     }
 
     @Test

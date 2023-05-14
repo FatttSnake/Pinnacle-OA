@@ -15,44 +15,65 @@ export interface IAddFormData {
 export const useNoticeStore = defineStore('notice', {
     state: () => {
         return {
+            total: 0,
             selectData: [],
             loading: true,
             dialogShowVisible: false,
             dialogAddVisible: false,
+            dialogEditVisible: false,
+            editFlag: false,
+            hackReset: true,
             noticeTypeList: [],
             departmentList: [],
             noticeShowData: {
-                content: String,
-                createTime: String,
-                endTime: String,
-                id: String,
-                priority: Number,
+                content: '',
+                createTime: '',
+                endTime: '',
+                id: '',
+                modifyTime: '',
+                priority: 0,
                 receivers: [],
-                sendTime: String,
-                title: String,
-                top: Number,
+                sendTime: '',
+                title: '',
+                top: 0,
                 noticeType: {
-                    id: String,
-                    name: String,
-                    enable: Number
+                    id: '',
+                    name: '',
+                    enable: 0
                 },
                 sender: {
-                    id: String,
-                    username: String
-                }
+                    id: '',
+                    username: '',
+                    enable: 0
+                },
+                senderId: '',
+                typeId: ''
             }
         }
     },
     getters: {},
     actions: {
-        selectAllNotice() {
-            console.log('selectAll')
-            void request.get('/notice').then((response) => {
-                this.selectData = response.data.data
-                if (this.selectData.length !== 0) {
-                    this.loading = false
-                }
-            })
+        // selectAllNotice() {
+        //     void request.get('/notice/page').then((response) => {
+        //         this.selectData = response.data.data
+        //         if (this.selectData.length !== 0) {
+        //             this.loading = false
+        //         }
+        //     })
+        // },
+        selectAllNotice(currentPage: number, pageSize: number) {
+            void request
+                .get('/notice/page', {
+                    currentPage,
+                    pageSize
+                })
+                .then((response) => {
+                    this.selectData = response.data.data
+                    this.total = parseInt(response.data.msg)
+                    if (this.selectData.length !== 0) {
+                        this.loading = false
+                    }
+                })
         },
         async selectAllNoticeByUserId() {
             await request.get('/notice/ByUserId').then((response) => {
@@ -87,7 +108,25 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            this.selectAllNotice()
+            this.selectAllNotice(1, 5)
+        },
+        async handleUpdateNotice(updateNotice: IAddFormData) {
+            await request.put('/notice', updateNotice).then((response) => {
+                if (response.data.code === 20023) {
+                    this.dialogEditVisible = false
+                    ElMessage({
+                        message: '修改成功.',
+                        type: 'success'
+                    })
+                } else if (response.data.code === 20033) {
+                    ElMessage({
+                        message: response.data.msg,
+                        type: 'error'
+                    })
+                }
+            })
+            this.selectAllNotice(1, 5)
+            this.hackReset = false
         }
     }
 })

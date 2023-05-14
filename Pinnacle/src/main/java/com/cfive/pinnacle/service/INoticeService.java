@@ -1,5 +1,6 @@
 package com.cfive.pinnacle.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Notice;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -18,11 +19,15 @@ public interface INoticeService extends IService<Notice> {
 
     List<Notice> selectAllNotice();
 
-    List<Notice> selectByCond(String title,String type,String startTime,String endTime);
+    List<Notice> selectByCond(String title, String type, String startTime, String endTime);
 
     Boolean deleteById(Long nid);
 
     Boolean updateNotice(Notice notice);
 
     Boolean addNotice(Notice notice);
+
+    IPage<Notice> selectPageAllNotice(IPage<?> page);
+
+    IPage<Notice> selectPageByCond(IPage<?> page, String title, String type, String startTime, String endTime);
 }

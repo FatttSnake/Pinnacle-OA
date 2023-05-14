@@ -1,5 +1,7 @@
 package com.cfive.pinnacle.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.entity.common.ResponseCode;
@@ -40,7 +42,7 @@ public class NoticeController {
         return ResponseResult.build(code, msg, noticeById);
     }
 
-    //查询所有公告
+    //查询所有公告或模糊查询
     @GetMapping
     public ResponseResult selectAllNotice(String title, String type, String startTime, String endTime) {
         List<Notice> noticeList;
@@ -86,6 +88,29 @@ public class NoticeController {
         boolean removeById = noticeService.deleteById(nid);
         String msg = removeById ? "" : "数据删除失败，请尝试！";
         return ResponseResult.build(removeById ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, removeById);
+    }
+
+    //分页查询所有公告或分页模糊查询
+    @GetMapping("/page")
+    public ResponseResult selectPageAllNotice(Integer currentPage,Integer pageSize,String title, String type, String startTime, String endTime) {
+        IPage<Notice> noticePageList;
+        Page<?> page = new Page();
+        if (null!=currentPage&&null!=pageSize){
+            page.setCurrent(currentPage.intValue());
+            page.setSize(pageSize.intValue());
+        }else {
+            // 不进行分页
+            page.setCurrent(1);
+            page.setSize(-1);
+        }
+        if (!StringUtils.hasText(title) && !StringUtils.hasText(type) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
+            noticePageList = noticeService.selectPageAllNotice(page);
+        } else {
+            noticePageList = noticeService.selectPageByCond(page,title, type, startTime, endTime);
+        }
+        int code = noticePageList.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
+        String msg = noticePageList.getRecords() != null ? String.valueOf(noticePageList.getTotal()) : "数据查询失败，请尝试！";
+        return ResponseResult.build(code, msg, noticePageList.getRecords());
     }
 
 }

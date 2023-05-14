@@ -1,5 +1,5 @@
 <template>
-    <el-form :model="addData" :rules="rules" ref="addData" label-width="100px">
+    <el-form :model="addData" :rules="rules" ref="addData" label-width="150px">
         <el-form-item label="公告标题" prop="title">
             <el-input v-model="addData.title"></el-input>
         </el-form-item>
@@ -24,7 +24,6 @@
                             v-model="addData.sendTime"
                             style="width: 100%"
                             size="large"
-                            :picker-options="pickerOptions"
                         ></el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -50,7 +49,10 @@
         <el-form-item label="公告优先级" prop="priority">
             <el-slider v-model="addData.priority" show-input show-stops :max="15" size="large" />
         </el-form-item>
-        <el-form-item label="发送至：" prop="receivers">
+        <el-form-item label="是否仅自己可见：">
+            <el-switch v-model="visible" inline-prompt active-text="是" inactive-text="否" />
+        </el-form-item>
+        <el-form-item label="发送至：" prop="receivers" v-show="!visible">
             <el-cascader
                 v-model="addData.receivers"
                 collapse-tags
@@ -65,10 +67,10 @@
                 placeholder="选择公告接收者"
             >
                 <template #default="scope">
-                    <span v-if="scope.node.level == 1">{{
+                    <span v-if="scope.node.level === 1">{{
                         ((scope.node.value = scope.data.id), (scope.node.label = scope.data.name))
                     }}</span>
-                    <span v-if="scope.node.level == 2">{{
+                    <span v-if="scope.node.level === 2">{{
                         ((scope.node.value = scope.data.id),
                         (scope.node.label = scope.data.username))
                     }}</span>
@@ -92,13 +94,11 @@ import { mapState } from 'pinia'
 const noticeStore = useNoticeStore()
 export default {
     computed:{
-        ...mapState(useNoticeStore,['noticeTypeList','departmentList'])
-    },
-    props:{
-        noticeEdit:{}
+        ...mapState(useNoticeStore,['noticeTypeList','departmentList','noticeShowData'])
     },
     data() {
         return {
+            visible:false,
             addData: {
                 title: '',
                 typeId: '',
@@ -109,7 +109,6 @@ export default {
                 content: '',
                 receivers:[]
             },
-            pickerOptions: {},
             rules: {
                 title: [
                     { required: true, message: '请输入公告标题', trigger: 'blur' },
@@ -126,10 +125,10 @@ export default {
                 ],
                 content: [
                     { required: true, message: '请填写公告内容', trigger: 'blur' }
-                ],
-                receivers: [
-                    { type:'array',required: true, message: '请选择公告接收者', trigger: 'change' }
                 ]
+                // receivers: [
+                //     { type:'array',required: true, message: '请选择公告接收者', trigger: 'change' }
+                // ]
             }
         }
 
@@ -138,15 +137,19 @@ export default {
         submitForm() {
             this.addData.top=this.addData.top?1:0;
             const receiveId=[]
-            for (let i = 0; i < this.addData.receivers.length; i++) {
-                receiveId.push(this.addData.receivers[i][1])
+            if (this.addData.receivers!==[]){
+                for (let i = 0; i < this.addData.receivers.length; i++) {
+                    receiveId.push(this.addData.receivers[i][1])
+                }
             }
             this.addData.receivers=receiveId
             this.$refs.addData.validate((valid) => {
                 if (valid) {
-                    if (this.noticeEdit){
-                        this.$emit("handleUpdateNotice",this.addData)
+                    if (noticeStore.editFlag===true){
+                        // 编辑操作
+                        noticeStore.handleUpdateNotice(this.addData)
                     }else {
+                        // 添加操作
                         noticeStore.handleAddNotice(this.addData)
                     }
                 } else {
@@ -157,6 +160,9 @@ export default {
         closeForm(){
             noticeStore.$patch(state=>{
                 state.dialogAddVisible=false
+                state.dialogEditVisible=false
+                state.hackReset=false
+                state.editFlag=false
             })
         },
         resetForm() {
@@ -164,34 +170,19 @@ export default {
         }
     },
     created() {
-        this.pickerOptions.disabledDate=(time)=> {
-            if (this.addData.sendTime !== '') {
-                const tempTime = 3600 * 1000 * 24 * 2;
-                const timer = new Date(this.currentDate).getTime();
-                const minTime = timer - tempTime;
-                const maxTime = timer + tempTime;
-                return time.getTime() < minTime || time.getTime() > Date.now() || time.getTime() > maxTime;
-            }
-        }
-        if (this.noticeEdit) {
-            this.addData = this.noticeEdit
-            // 判断是否置顶
-            this.addData.top=this.noticeEdit.top===1;
+        // 编辑操作
+        if (noticeStore.editFlag===true) {
+            this.addData = noticeStore.noticeShowData
+            console.log("created")
             console.log(this.addData)
-        }
-    },
-    updated() {
-        if (this.noticeEdit) {
-            this.addData = this.noticeEdit
             // 判断是否置顶
-            this.addData.top=this.noticeEdit.top===1;
-            console.log(this.addData)
+            this.addData.top=(noticeStore.noticeShowData.top===1);
         }
     },
     mounted() {
+        console.log("mounted")
         noticeStore.selectDepartment()
     }
-
 }
 </script>
 <style scoped>
