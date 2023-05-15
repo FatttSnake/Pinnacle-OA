@@ -48,9 +48,15 @@
         @open="handleDialogOpen"
     >
         <template #default>
-            <el-form label-width="80px" v-loading="dialogLoading" :rules="rules">
-                <el-form-item label="角色名称" prop="name">
-                    <el-input autocomplete="off" v-model="inputRoleName" />
+            <el-form
+                label-width="80px"
+                v-loading="dialogLoading"
+                :rules="rules"
+                ref="formRef"
+                :model="roleForm"
+            >
+                <el-form-item label="角色名称" prop="inputRoleName">
+                    <el-input autocomplete="off" v-model="roleForm.inputRoleName" />
                 </el-form-item>
                 <el-form-item label="角色权限">
                     <el-tree
@@ -78,7 +84,8 @@ import request from '@/services'
 import {
     DATABASE_DELETE_OK,
     DATABASE_SAVE_OK,
-    DATABASE_SELECT_OK
+    DATABASE_SELECT_OK,
+    DATABASE_UPDATE_OK
 } from '@/constants/Common.constants'
 import _ from 'lodash'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -96,16 +103,19 @@ export default {
                 label: 'name',
                 children: 'children'
             },
-            inputRoleName: '',
-            selectedPower: new Set(),
+            roleForm: {
+                inputRoleName: '',
+                selectedPower: new Set()
+            },
             isAddNew: true,
             defaultSelectedPower: [],
             dialogTitle: '',
             editRoleId: '',
             rules: {
-                name: [
+                inputRoleName: [
                     {
-                        required: true
+                        required: true,
+                        message: '角色名称为必填项'
                     }
                 ]
             }
@@ -159,8 +169,8 @@ export default {
 
             if (this.isAddNew) {
                 this.defaultSelectedPower = []
-                this.inputRoleName = ''
-                this.selectedPower.clear()
+                this.roleForm.inputRoleName = ''
+                this.roleForm.selectedPower.clear()
                 this.dialogTitle = '添加角色'
             } else {
                 this.dialogTitle = '编辑角色'
@@ -201,9 +211,9 @@ export default {
         },
         handleSelectedPowerChange(data, checked, indeterminate) {
             if (checked || indeterminate) {
-                this.selectedPower.add(data.powerId)
+                this.roleForm.selectedPower.add(data.powerId)
             } else {
-                this.selectedPower.delete(data.powerId)
+                this.roleForm.selectedPower.delete(data.powerId)
             }
         },
         handleAddBtn() {
@@ -211,19 +221,19 @@ export default {
             this.dialogVisible = true
         },
         handleEdit(index, row) {
-            this.inputRoleName = row.name
+            this.roleForm.inputRoleName = row.name
             this.editRoleId = row.id
-            this.selectedPower.clear()
+            this.roleForm.selectedPower.clear()
             this.defaultSelectedPower = []
             for (const operation of row.operations) {
                 this.defaultSelectedPower.push(operation.powerId)
-                this.selectedPower.add(operation.powerId)
+                this.roleForm.selectedPower.add(operation.powerId)
             }
             for (const element of row.elements) {
-                this.selectedPower.add(element.powerId)
+                this.roleForm.selectedPower.add(element.powerId)
             }
             for (const menu of row.menus) {
-                this.selectedPower.add(menu.powerId)
+                this.roleForm.selectedPower.add(menu.powerId)
             }
             this.isAddNew = false
             this.dialogVisible = true
@@ -249,57 +259,61 @@ export default {
                 })
             })
         },
-        handleSubmit() {
-            this.dialogLoading = true
-            const roleObject = {
-                name: this.inputRoleName,
-                powers: [],
-                id: ''
-            }
-            for (const powerId of this.selectedPower) {
-                const power = {
-                    id: powerId
+        async handleSubmit() {
+            await this.$refs.formRef.validate((valid) => {
+                if (valid) {
+                    this.dialogLoading = true
+                    const roleObject = {
+                        name: this.roleForm.inputRoleName,
+                        powers: [],
+                        id: ''
+                    }
+                    for (const powerId of this.roleForm.selectedPower) {
+                        const power = {
+                            id: powerId
+                        }
+                        roleObject.powers.push(power)
+                    }
+                    if (this.isAddNew) {
+                        request.post('/role', roleObject).then((res) => {
+                            const response = res.data
+                            if (response.code === DATABASE_SAVE_OK) {
+                                ElMessage.success({
+                                    dangerouslyUseHTMLString: true,
+                                    message: '<strong>添加成功</strong>'
+                                })
+                                this.dialogVisible = false
+                                this.loadRoleTable()
+                            } else {
+                                ElMessage.error({
+                                    dangerouslyUseHTMLString: true,
+                                    message: '<strong>添加失败</strong>: ' + response.msg
+                                })
+                                this.dialogLoading = false
+                            }
+                        })
+                    } else {
+                        roleObject.id = this.editRoleId
+                        request.put('/role', roleObject).then((res) => {
+                            const response = res.data
+                            if (response.code === DATABASE_UPDATE_OK) {
+                                ElMessage.success({
+                                    dangerouslyUseHTMLString: true,
+                                    message: '<strong>修改成功</strong>'
+                                })
+                                this.dialogVisible = false
+                                this.loadRoleTable()
+                            } else {
+                                ElMessage.error({
+                                    dangerouslyUseHTMLString: true,
+                                    message: '<strong>修改失败</strong>: ' + response.msg
+                                })
+                                this.dialogLoading = false
+                            }
+                        })
+                    }
                 }
-                roleObject.powers.push(power)
-            }
-            if (this.isAddNew) {
-                request.post('/role', roleObject).then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_SAVE_OK) {
-                        ElMessage.success({
-                            dangerouslyUseHTMLString: true,
-                            message: '<strong>添加成功</strong>'
-                        })
-                        this.dialogVisible = false
-                        this.loadRoleTable()
-                    } else {
-                        ElMessage.error({
-                            dangerouslyUseHTMLString: true,
-                            message: '<strong>添加失败</strong>: ' + response.msg
-                        })
-                        this.dialogLoading = false
-                    }
-                })
-            } else {
-                roleObject.id = this.editRoleId
-                request.put('/role', roleObject).then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_SAVE_OK) {
-                        ElMessage.success({
-                            dangerouslyUseHTMLString: true,
-                            message: '<strong>修改成功</strong>'
-                        })
-                        this.dialogVisible = false
-                        this.loadRoleTable()
-                    } else {
-                        ElMessage.error({
-                            dangerouslyUseHTMLString: true,
-                            message: '<strong>修改失败</strong>: ' + response.msg
-                        })
-                        this.dialogLoading = false
-                    }
-                })
-            }
+            })
         },
         handleCancel() {
             this.dialogVisible = false
