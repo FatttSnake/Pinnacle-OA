@@ -6,6 +6,7 @@ import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,10 +38,13 @@ public class RoleController {
 
     @PostMapping
     public ResponseResult addRole(@RequestBody Role role) {
+        if (!StringUtils.hasText(role.getName())) {
+            return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "Name cannot be empty", null);
+        }
         if (roleService.addRole(role)) {
             return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", null);
         } else {
-            return ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "error", null);
+            return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "error", null);
         }
     }
 
@@ -57,10 +61,13 @@ public class RoleController {
 
     @PutMapping()
     public ResponseResult modifyRole(@RequestBody Role role) {
+        if (!StringUtils.hasText(role.getName())) {
+            return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "Name cannot be empty", null);
+        }
         if (roleService.modifyRole(role)) {
-            return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", null);
+            return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", null);
         } else {
-            return ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "error", null);
+            return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "error", null);
         }
     }
 }
