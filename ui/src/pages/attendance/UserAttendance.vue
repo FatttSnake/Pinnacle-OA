@@ -86,7 +86,13 @@
             />
         </div>
         <div>
-            <el-dialog v-model="dialogFormVisible" title="考勤信息" width="25%">
+            <el-dialog
+                v-model="dialogFormVisible"
+                title="考勤信息"
+                width="25%"
+                :close-on-click-modal="false"
+                :show-close="false"
+            >
                 <el-form ref="ruleForm" :model="form" :label-width="formLabelWidth">
                     <el-form-item label="考勤时间" v-model="attTime" prop="attTime">
                         <div class="block">

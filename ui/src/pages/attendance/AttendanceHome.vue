@@ -115,7 +115,13 @@
         </div>
 
         <div>
-            <el-dialog v-model="dialogFormVisible" title="考勤信息" width="25%">
+            <el-dialog
+                v-model="dialogFormVisible"
+                title="考勤信息"
+                width="25% "
+                :close-on-click-modal="false"
+                :show-close="false"
+            >
                 <edit-attendance
                     :users="users"
                     :form-data="form"
