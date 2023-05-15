@@ -30,17 +30,35 @@
 
         <el-table-column label="事务类型" prop="typeId">
             <template #default="scope">
-                {{ scope.row.typeId === 1 ? '病假' : '事假' }}
+                {{
+                    scope.row.typeId === 1
+                        ? '事假'
+                        : scope.row.typeId === 2
+                        ? '病假'
+                        : scope.row.typeId === 3
+                        ? '财务报销'
+                        : '调休'
+                }}
             </template>
         </el-table-column>
 
         <el-table-column label="申请者" prop="applicantId">
             <template #default="scope">
-                {{ scope.row.applicantId === 1 ? 'ggb' : 'gzw' }}
+                {{
+                    scope.row.applicantId === 1
+                        ? 'ggb'
+                        : scope.row.applicantId === 1652714496280469506
+                        ? 'cyb'
+                        : scope.row.applicantId === 1654151146072145921
+                        ? 'syf'
+                        : scope.row.applicantId === 1654151877520973826
+                        ? 'gzw'
+                        : 'yrm'
+                }}
             </template>
         </el-table-column>
 
-        <el-table-column label="日期" prop="createTime">
+        <el-table-column label="提交时间" prop="createTime">
             <template #default="scope">
                 {{ format(scope.row.createTime) }}
             </template>

@@ -17,6 +17,9 @@
                 <el-select v-model="form.inspectorId" placeholder="请选择审批者">
                     <el-option value="1" label="ggb" />
                     <el-option value="1652714496280469506" label="cyb" />
+                    <el-option value="1654151146072145921" label="syf" />
+                    <el-option value="1654151877520973826" label="gzw" />
+                    <el-option value="1654151930402746370" label="yrm" />
                 </el-select>
             </el-col>
         </el-form-item>
