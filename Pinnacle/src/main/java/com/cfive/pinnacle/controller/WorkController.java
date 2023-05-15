@@ -35,14 +35,26 @@ public class WorkController {
     @Autowired
     private IWorkService workService;
     @GetMapping
-    public ResponseResult getAll() {
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getAll());
+    public ResponseResult getAll(String content) {
+        if (content != null) {
+            List<Work> workList = workService.getWorkByContent(content);
+            return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success",workList);
+        } else {
+            return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getAll());
+        }
     }
 
     @GetMapping("/todo")
     public ResponseResult getTodo() {
         Long userId = WebUtil.getLoginUser().getUser().getId();
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getTodo(userId));
+    }
+
+    @GetMapping("/card")
+    public ResponseResult getCard() {
+//        Long userId = WebUtil.getLoginUser().getUser().getId();
+        long userId = 1;
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getCard(userId));
     }
 
     @GetMapping("/complete")

@@ -1,4 +1,23 @@
 <template>
+    <div class="head">
+        <el-row style="width: 50%">
+            <el-col :span="17">
+                <el-input
+                    v-model="searchContent"
+                    placeholder="请输入查询的工作内容"
+                    size="default"
+                    clearable
+                />
+            </el-col>
+            <el-col :span="1" />
+            <el-col :span="3">
+                <el-button size="default" type="primary" @click="searchByContent">搜索</el-button>
+            </el-col>
+            <el-col :span="3">
+                <el-button size="default" @click="addVisible = true">添加</el-button>
+            </el-col>
+        </el-row>
+    </div>
     <div class="main">
         <div class="main-table">
             <el-table
@@ -22,12 +41,12 @@
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="deadline" label="结束时间" width="200">
+                <el-table-column prop="deadline" label="结束时间" width="200" sortable>
                     <template #default="scope">
                         {{ formatDate(scope.row.deadline) }}
                     </template>
                 </el-table-column>
-                <el-table-column fixed="right" prop="progress" label="进度" width="200">
+                <el-table-column fixed="right" prop="progress" label="进度" width="200" sortable>
                     <template #default="scope">
                         <el-progress
                             :text-inside="true"
@@ -58,27 +77,23 @@
                 </el-table-column>
             </el-table>
         </div>
-        <div class="main-add-content">
-            <div class="main-add-box">
-                <el-button size="large" @click="addVisible = true">添加</el-button>
-            </div>
-            <el-dialog v-model="addVisible" width="60%">
-                <edit-work @setDialogVisible="setDialogVisible" @addWork="addWork"></edit-work>
-            </el-dialog>
-            <el-dialog v-model="editVisible" width="60%">
-                <edit-work
-                    :editForm="rowData"
-                    @setDialogVisible="setDialogVisible"
-                    @updateWork="updateWork"
-                ></edit-work>
-            </el-dialog>
-        </div>
+        <el-dialog v-model="addVisible" width="60%">
+            <edit-work @setDialogVisible="setDialogVisible" @addWork="addWork"></edit-work>
+        </el-dialog>
+        <el-dialog v-model="editVisible" width="60%">
+            <edit-work
+                :editForm="rowData"
+                @setDialogVisible="setDialogVisible"
+                @updateWork="updateWork"
+            ></edit-work>
+        </el-dialog>
     </div>
 </template>
 
 <script lang="ts">
 import request from '@/services'
-import EditWork from '@/components/EditWork.vue'
+import EditWork from '@/components/work/EditWork.vue'
+import { ElMessage } from 'element-plus'
 
 export default {
     name: 'AllTaskPage',
@@ -88,7 +103,8 @@ export default {
             rowData: [],
             addVisible: false,
             editVisible: false,
-            loading: true
+            loading: true,
+            searchContent: ''
         }
     },
     methods: {
@@ -157,14 +173,35 @@ export default {
                 .then((response) => {
                     this.addVisible = false
                     this.getTableData()
+                    ElMessage({
+                        message: '添加成功',
+                        type: 'success'
+                    })
                     console.log(response.data)
                 })
                 .catch((reportError) => {
                     console.log(reportError)
+                    ElMessage({
+                        message: '添加出错',
+                        type: 'error'
+                    })
                 })
         },
         formatDate(time) {
             return new Date(time).toLocaleString()
+        },
+        searchByContent() {
+            request
+                .get('/work', { content: this.searchContent })
+                .then((response) => {
+                    this.tableData = response.data.data
+                    if (this.tableData) {
+                        this.loading = false
+                    }
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
         }
     },
     created() {

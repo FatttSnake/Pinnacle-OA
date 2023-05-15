@@ -9,9 +9,9 @@
             >
                 <el-table-column fixed prop="publisherName" label="发布者" width="150" />
                 <el-table-column prop="content" label="内容" width="800" />
-                <el-table-column prop="deadline" label="结束时间" width="200">
+                <el-table-column prop="deadline" label="结束时间" width="200" sortable>
                     <template #default="scope">
-                        {{ formatDate(scope.row.deadline) }}
+                        <span :style="{ color: scope.row.color1 }">{{ formatDate(scope) }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="150">
@@ -52,12 +52,25 @@ export default {
             tableData: [],
             visible: false,
             taskData: [],
-            loading: true
+            loading: true,
+            color1: '#000000'
         }
     },
     methods: {
-        formatDate(time) {
-            return new Date(time).toLocaleString()
+        formatDate(scope) {
+            const deadDate = new Date(scope.row.deadline)
+            const beforeTime = new Date(deadDate)
+            const beforeDate = new Date(beforeTime.setDate(deadDate.getDate() - 3))
+            const nowTime = new Date()
+            console.log(scope)
+            if (nowTime <= beforeDate) {
+                scope.row.color1 = '#909399'
+            } else if (nowTime > beforeDate && nowTime < deadDate) {
+                scope.row.color1 = '#E6A23C'
+            } else if (nowTime >= deadDate) {
+                scope.row.color1 = '#F56C6C'
+            }
+            return new Date(scope.row.deadline).toLocaleString()
         },
         completeConfirmEvent(row) {
             const userWork = {
@@ -101,6 +114,7 @@ export default {
                 })
         },
         setTaskStatus(userWork) {
+            userWork.completeTime = new Date()
             console.log(userWork)
             request
                 .put('/work/setStatus', userWork)

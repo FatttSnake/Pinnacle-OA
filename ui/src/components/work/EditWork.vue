@@ -11,7 +11,7 @@
             >
                 <el-option
                     v-for="item in workers"
-                    :key="item.userId"
+                    :key="item.id"
                     :label="item.username"
                     :value="item"
                 />
@@ -65,7 +65,7 @@ export default {
             },
             workers: [
                 {
-                    userId: '',
+                    id: '',
                     username: ''
                 }
             ],

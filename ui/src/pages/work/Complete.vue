@@ -9,6 +9,18 @@
             >
                 <el-table-column fixed prop="publisherName" label="发布者" width="120" />
                 <el-table-column prop="content" label="内容" width="800" />
+                <el-table-column prop="status" label="完成状态" width="100">
+                    <template #default="scope">
+                        <el-tag :type="scope.row.tagType">
+                            {{ statusTag(scope.row) }}
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="completeTime" label="完成时间" width="200" sortable>
+                    <template #default="scope">
+                        {{ formatDate(scope.row.userWorkList[0].completeTime) }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="deadline" label="结束时间" width="200">
                     <template #default="scope">
                         {{ formatDate(scope.row.deadline) }}
@@ -53,13 +65,23 @@ export default {
             tableData: [],
             visible: false,
             taskData: [],
-            loading: true
+            loading: true,
+            tagType: 'info'
         }
     },
     methods: {
-        formatDate(deadline) {
-            console.log(new Date(deadline).toLocaleString())
-            return new Date(deadline).toLocaleString()
+        formatDate(time) {
+            console.log(new Date(time).toLocaleString())
+            return new Date(time).toLocaleString()
+        },
+        statusTag(row) {
+            if (row.userWorkList[0].completeTime <= row.deadline) {
+                row.tagType = 'success'
+                return '已完成'
+            } else {
+                row.tagType = 'danger'
+                return '超时完成'
+            }
         },
         todoConfirmEvent(row) {
             const userWork = {
@@ -79,6 +101,7 @@ export default {
                 .then((response) => {
                     this.tableData = response.data.data
                     if (this.tableData) {
+                        console.log(this.tableData)
                         this.loading = false
                     }
                 })

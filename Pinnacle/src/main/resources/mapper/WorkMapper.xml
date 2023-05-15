@@ -9,6 +9,7 @@
         <result property="deadline" column="deadline"/>
         <collection property="userWorkList" ofType="userWork">
             <result property="status" column="status"/>
+            <result property="completeTime" column="complete_time"/>
         </collection>
         <collection property="worker" ofType="user">
             <id property="id" column="worker_id"/>
@@ -23,7 +24,8 @@
                deadline,
                tuw.user_id worker_id,
                u.username  worker_name,
-               tuw.status  status
+               tuw.status  status,
+               tuw.complete_time complete_time
         from t_work w,
              t_user u,
              t_user_work tuw
@@ -41,11 +43,31 @@
                deadline,
                tuw.user_id worker_id,
                u.username  worker_name,
-               tuw.status  status
+               tuw.status  status,
+               tuw.complete_time completeTime
         from t_work w,
              t_user u,
              t_user_work tuw
         where w.id = #{id}
+          and w.id = tuw.work_id
+          and tuw.user_id = u.id
+          and w.deleted = 0
+          and tuw.deleted = 0;
+    </select>
+    <select id="getWorkByContent" parameterType="String" resultMap="workMap">
+        select w.id,
+               content,
+               publisher_id,
+               create_time,
+               deadline,
+               tuw.user_id       worker_id,
+               u.username        worker_name,
+               tuw.status        status,
+               tuw.complete_time completeTime
+        from t_work w,
+             t_user u,
+             t_user_work tuw
+        where w.content like '%${content}%'
           and w.id = tuw.work_id
           and tuw.user_id = u.id
           and w.deleted = 0
@@ -69,7 +91,29 @@
           and status = false
           and w.deleted = 0
           and tuw.deleted = 0
-        order by w.id desc;
+        order by w.deadline asc, w.id desc;
+    </select>
+    <select id="getCard" parameterType="long" resultMap="workMap">
+        select w.id,
+        content,
+        publisher_id,
+        create_time,
+        deadline,
+        tuw.user_id worker_id,
+        u.username worker_name,
+        tuw.status status
+        from t_work w,
+        t_user u,
+        t_user_work tuw
+        where w.id = tuw.work_id
+        and tuw.user_id = u.id
+        and tuw.user_id = #{userId}
+        and status = false
+        and w.deleted = 0
+        and tuw.deleted = 0
+        order by w.deadline asc, w.id desc
+        limit 5;
+
     </select>
     <select id="getComplete" parameterType="long" resultMap="workMap">
         select w.id,
@@ -79,50 +123,18 @@
                deadline,
                tuw.user_id worker_id,
                u.username  worker_name,
-               tuw.status status
+               tuw.status status,
+               tuw.complete_time complete_time
         from t_work w,
              t_user u,
              t_user_work tuw
-        where w.id = tuw.work_id
+        where tuw.user_id = #{userId}
           and tuw.user_id = u.id
-          and tuw.user_id = #{userId}
-          and status = true
+          and w.id = tuw.work_id
+          and tuw.status = true
           and w.deleted = 0
           and tuw.deleted = 0
         order by w.id desc;
-    </select>
-    <delete id="deleteWorkById" parameterType="int">
-        delete
-        from t_task
-        where id = #{id};
-    </delete>
-    <delete id="deleteWork" parameterType="list">
-        delete
-        from t_task
-        <where>
-            <foreach collection="list" item="id" open="id in(" close=")" separator=",">
-                #{id}
-            </foreach>
-        </where>
-    </delete>
-    <update id="updateWork" parameterType="Work">
-        update t_task
-        <set>
-            <if test="publisher_id!=null and publisher_id!=0">
-                publisher_id = #{publisher_id}
-            </if>
-            <if test="taskStatus!=null">
-                task_status=#{taskStatus}
-            </if>
-        </set>
-        where id = #{id};
-    </update>
-    <select id="getOneById" resultMap="workMap">
-        select id, user_id, userName, task_content, create_time, deadline, task_status
-        from t_task,
-             t_user
-        where user_id = userID
-          and id = #{id};
     </select>
 
 </mapper>

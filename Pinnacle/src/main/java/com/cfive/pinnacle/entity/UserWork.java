@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.annotation.Version;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
@@ -53,6 +55,10 @@ public class UserWork implements Serializable {
      */
     @TableField("status")
     private Integer status;
+
+    @TableField("complete_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
+    private LocalDateTime completeTime;
 
     @TableField("deleted")
     @TableLogic
