@@ -143,7 +143,7 @@ const router = createRouter({
                     ],
                     meta: {
                         title: '事务',
-                        icon: shallowRef(IconPinnacleHome),
+                        icon: shallowRef(IconPinnacleAffairs),
                         requiresScrollbar: false,
                         requiresPadding: true
                     }
