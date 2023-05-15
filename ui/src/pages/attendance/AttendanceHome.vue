@@ -77,6 +77,12 @@
                                     ? 'primary'
                                     : scope.row.status === 3
                                     ? 'warning'
+                                    : scope.row.status === 1 + ''
+                                    ? 'success'
+                                    : scope.row.status === 2 + ''
+                                    ? 'primary'
+                                    : scope.row.status === 3 + ''
+                                    ? 'warning'
                                     : 'danger'
                             "
                             disable-transitions
@@ -86,6 +92,12 @@
                                     : scope.row.status === 2
                                     ? '签退'
                                     : scope.row.status === 3
+                                    ? '迟到'
+                                    : scope.row.status === 1 + ''
+                                    ? '签到'
+                                    : scope.row.status === 2 + ''
+                                    ? '签退'
+                                    : scope.row.status === 3 + ''
                                     ? '迟到'
                                     : '异常'
                             }}
