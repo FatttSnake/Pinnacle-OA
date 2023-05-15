@@ -1,10 +1,17 @@
 package com.cfive.pinnacle.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cfive.pinnacle.entity.Group;
+import com.cfive.pinnacle.entity.RoleGroup;
 import com.cfive.pinnacle.mapper.GroupMapper;
+import com.cfive.pinnacle.mapper.RoleGroupMapper;
 import com.cfive.pinnacle.service.IGroupService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +23,73 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
+    private GroupMapper groupMapper;
+    private RoleGroupMapper roleGroupMapper;
 
+    @Autowired
+    public void setGroupMapper(GroupMapper groupMapper) {
+        this.groupMapper = groupMapper;
+    }
+
+    @Autowired
+    public void setRoleGroupMapper(RoleGroupMapper roleGroupMapper) {
+        this.roleGroupMapper = roleGroupMapper;
+    }
+
+    @Override
+    public List<Group> getAllGroup() {
+        return groupMapper.getAll();
+    }
+
+    @Override
+    public Group getGroup(Long id) {
+        return groupMapper.getOneById(id);
+    }
+
+    @Override
+    public boolean addGroup(Group group) {
+        if (groupMapper.insert(group) == 1) {
+            group.getRoles().forEach(role -> {
+                RoleGroup roleGroup = new RoleGroup();
+                roleGroup.setGroupId(group.getId());
+                roleGroup.setRoleId(role.getId());
+                if (roleGroupMapper.insert(roleGroup) != 1) {
+                    throw new RuntimeException("Add role_group failure");
+                }
+            });
+            return true;
+        } else {
+            throw new RuntimeException("Add group failure");
+        }
+    }
+
+    @Override
+    public boolean modifyGroup(Group group) {
+        groupMapper.updateById(group);
+        Group originalGroup = getGroup(group.getId());
+        HashSet<Long> newRoleIds = new HashSet<>();
+        group.getRoles().forEach(role -> newRoleIds.add(role.getId()));
+        HashSet<Long> addRoleIds = new HashSet<>(newRoleIds);
+        if (originalGroup != null) {
+            HashSet<Long> originalRoleIds = new HashSet<>();
+            originalGroup.getRoles().forEach(role -> originalRoleIds.add(role.getId()));
+            HashSet<Long> deleteRoleIds = new HashSet<>(originalRoleIds);
+            deleteRoleIds.removeAll(newRoleIds);
+            addRoleIds.removeAll(originalRoleIds);
+            deleteRoleIds.forEach(deleteRoleId -> {
+                LambdaQueryWrapper<RoleGroup> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(RoleGroup::getGroupId, group.getId())
+                        .eq(RoleGroup::getRoleId, deleteRoleId);
+                roleGroupMapper.delete(wrapper);
+            });
+        }
+        addRoleIds.forEach(addRoleId -> {
+            RoleGroup roleGroup = new RoleGroup();
+            roleGroup.setGroupId(group.getId());
+            roleGroup.setRoleId(addRoleId);
+            roleGroupMapper.insert(roleGroup);
+        });
+
+        return true;
+    }
 }

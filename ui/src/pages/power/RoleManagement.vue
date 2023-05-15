@@ -14,32 +14,13 @@
         </template>
         <template #default> 添加 </template>
     </el-button>
-    <el-table
-        :data="roleTable"
-        v-loading="tableLoading"
-        element-loading-text="Loading..."
-        style="margin-top: 10px"
-    >
-        <el-table-column type="selection" />
-        <el-table-column type="index" label="序号" />
-        <el-table-column prop="name" label="名称" />
-        <el-table-column prop="menus" label="权限">
-            <template #default="scope">
-                <el-tag v-if="scope.row.powers.length === 0" type="info">无</el-tag>
-                <el-tag v-for="(power, index) in scope.row.powers" :key="index">{{ power }}</el-tag>
-            </template>
-        </el-table-column>
-        <el-table-column label="操作">
-            <template #default="scope">
-                <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-                    >编辑
-                </el-button>
-                <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)"
-                    >删除
-                </el-button>
-            </template>
-        </el-table-column>
-    </el-table>
+    <common-table
+        :table-date="roleTable"
+        :table-loading="tableLoading"
+        @onEdit="handleEdit"
+        @onDelete="handleDelete"
+        customColumnLabel="权限"
+    />
     <el-dialog
         :title="dialogTitle"
         :close-on-click-modal="false"
@@ -67,7 +48,8 @@
                         :render-after-expand="false"
                         :default-checked-keys="defaultSelectedPower"
                         @check-change="handleSelectedPowerChange"
-                /></el-form-item>
+                    />
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>
@@ -129,7 +111,7 @@ export default {
                 if (response.code === DATABASE_SELECT_OK) {
                     const roles = response.data
                     for (const role of roles) {
-                        role.powers = []
+                        role.customColumn = []
                         const menus = role.menus
                         const elements = role.elements
                         const operations = role.operations
@@ -151,7 +133,9 @@ export default {
                             _.forEach(element.operations, (value) => {
                                 operas.push(value.name)
                             })
-                            role.powers.push(`${menu.name}/${element.name}/${_.join(operas, ';')}`)
+                            role.customColumn.push(
+                                `${menu.name}/${element.name}/${_.join(operas, ';')}`
+                            )
                         }
                     }
                     this.roleTable = roles
@@ -264,9 +248,9 @@ export default {
                 if (valid) {
                     this.dialogLoading = true
                     const roleObject = {
+                        id: '',
                         name: this.roleForm.inputRoleName,
-                        powers: [],
-                        id: ''
+                        powers: []
                     }
                     for (const powerId of this.roleForm.selectedPower) {
                         const power = {

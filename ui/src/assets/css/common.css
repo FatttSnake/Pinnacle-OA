@@ -116,3 +116,7 @@ body {
 .el-popconfirm__action button:last-child {
     margin-left: 0;
 }
+
+.el-table__cell .el-tag:not(:first-child) {
+    margin-left: 5px;
+}

@@ -3,32 +3,33 @@
 <mapper namespace="com.cfive.pinnacle.mapper.RoleMapper">
 
     <select id="getAll" resultMap="roleMap">
-        select t_role.id as role_id,
-               t_role.name as role_name,
+        select t_role.id      as role_id,
+               t_role.name    as role_name,
                t_role.deleted as role_deleted,
                t_role.version as role_version,
-               tm.id as menu_id,
-               tm.name as menu_name,
-               tm.url as menu_url,
-               tm.power_id as menu_power_id,
-               tm.parent_id as menu_parent_id,
-               te.id as element_id,
-               te.name as element_name,
-               te.power_id as element_power_id,
-               te.menu_id as element_menu_id,
-               t.id as operation_id,
-               t.name as operation_name,
-               t.code as operation_code,
-               t.power_id as operation_power_id,
-               t.element_id as operation_element_id,
-               t.parent_id as operation_parent_id
+               tm.id          as menu_id,
+               tm.name        as menu_name,
+               tm.url         as menu_url,
+               tm.power_id    as menu_power_id,
+               tm.parent_id   as menu_parent_id,
+               te.id          as element_id,
+               te.name        as element_name,
+               te.power_id    as element_power_id,
+               te.menu_id     as element_menu_id,
+               t.id           as operation_id,
+               t.name         as operation_name,
+               t.code         as operation_code,
+               t.power_id     as operation_power_id,
+               t.element_id   as operation_element_id,
+               t.parent_id    as operation_parent_id
         from t_role
                  left join t_power_role tpr on t_role.id = tpr.role_id
                  left join t_power tp on tp.id = tpr.power_id
                  left join t_menu tm on tp.id = tm.power_id
                  left join t_element te on tp.id = te.power_id
                  left join t_operation t on tp.id = t.power_id
-        where t_role.deleted = 0 and (tpr.deleted = 0 or tpr.deleted is null);
+        where t_role.deleted = 0
+          and (tpr.deleted = 0 or tpr.deleted is null);
     </select>
     <select id="getOneById" resultMap="roleMap">
         select t_role.id      as role_id,
@@ -57,7 +58,7 @@
                  left join t_element te on tp.id = te.power_id
                  left join t_operation t on tp.id = t.power_id
         where t_role.deleted = 0
-          and tpr.deleted = 0
+          and (tpr.deleted = 0 or tpr.deleted is null)
           and t_role.id = #{id};
     </select>
 
