@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serial;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +33,7 @@ public class File implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId("id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -49,5 +52,6 @@ public class File implements Serializable {
      *  权限ID
      */
     @TableField("power_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long powerId;
 }

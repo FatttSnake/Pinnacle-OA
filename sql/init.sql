@@ -52,7 +52,9 @@ create table `t_element`
     `id`       bigint       not null primary key auto_increment,
     `name`     varchar(100) not null comment '元素名',
     `power_id` bigint       not null comment '权限ID',
-    constraint t_element_power_id_fk foreign key (power_id) references t_power (id)
+    `menu_id`  bigint       not null comment '菜单ID',
+    constraint t_element_power_id_fk foreign key (power_id) references t_power (id),
+    constraint t_element_menu_id_fk foreign key (menu_id) references t_menu (id)
 ) comment '页面元素';
 
 create table `t_file`
@@ -66,12 +68,14 @@ create table `t_file`
 
 create table `t_operation`
 (
-    `id`         bigint       not null primary key auto_increment,
-    `name`       varchar(50)  not null comment '功能名',
-    `code`       varchar(50)  null comment '功能编码',
-    `power_id`   bigint       not null comment '权限ID',
-    `parent_id`  bigint       null comment '父ID',
-    constraint t_operation_power_id_fk foreign key (power_id) references t_power (id)
+    `id`         bigint      not null primary key auto_increment,
+    `name`       varchar(50) not null comment '功能名',
+    `code`       varchar(50) null comment '功能编码',
+    `power_id`   bigint      not null comment '权限ID',
+    `parent_id`  bigint      null comment '父ID',
+    `element_id` bigint      not null comment '页面元素ID',
+    constraint t_operation_power_id_fk foreign key (power_id) references t_power (id),
+    constraint t_operation_element_id_fk foreign key (element_id) references t_element (id)
 ) comment '功能';
 
 create table `t_department`

@@ -47,6 +47,7 @@ public class Work implements Serializable {
      * 发布者
      */
     @TableField("publisher_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long publisherId;
 
     @TableField(exist = false)
@@ -82,6 +83,7 @@ public class Work implements Serializable {
      * 源ID
      */
     @TableField("origin_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long originId;
 
     @TableField("deleted")

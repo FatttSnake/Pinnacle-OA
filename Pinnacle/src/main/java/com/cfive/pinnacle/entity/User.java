@@ -50,6 +50,7 @@ public class User implements Serializable {
      * 部门
      */
     @TableField("department_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long departmentId;
 
     /**

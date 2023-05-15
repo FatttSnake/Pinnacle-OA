@@ -31,6 +31,7 @@ public class UserWork implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId("id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**

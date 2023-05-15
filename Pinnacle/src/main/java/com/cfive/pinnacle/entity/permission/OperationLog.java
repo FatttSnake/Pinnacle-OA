@@ -10,6 +10,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,18 +36,21 @@ public class OperationLog implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId("id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
      * 用户
      */
     @TableField("user_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     /**
      * 功能
      */
     @TableField("operation_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long operationId;
 
     /**
