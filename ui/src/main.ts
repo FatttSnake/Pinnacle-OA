@@ -6,6 +6,7 @@ import '@/assets/css/base.css'
 import '@/assets/css/common.css'
 
 import 'element-plus/theme-chalk/el-message.css'
+import 'element-plus/theme-chalk/el-message-box.css'
 import { createPinia } from 'pinia'
 
 const app = createApp(App)

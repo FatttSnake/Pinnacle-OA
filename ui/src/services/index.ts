@@ -35,7 +35,7 @@ service.interceptors.response.use(
                     message: '<strong>登录已过期</strong>'
                 })
                 setTimeout(function () {
-                    void router.push({ name: 'Login' })
+                    router.go(0)
                 }, 1500)
         }
         return response
