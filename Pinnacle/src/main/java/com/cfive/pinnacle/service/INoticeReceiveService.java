@@ -15,5 +15,5 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface INoticeReceiveService extends IService<NoticeReceive> {
-    List<Notice> selectAllByUserId();
+    List<Notice> selectByUserId(Integer readStatus);
 }

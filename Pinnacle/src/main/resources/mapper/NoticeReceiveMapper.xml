@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.NoticeReceiveMapper">
-    <select id="selectAllByUserId" parameterType="Long" resultMap="selectAllMap">
-        select u.id    uid,
-               username,
-               n.id    nid,
-               title,
-               content,
-               type_id,
-               sender_id,
-               create_time,
-               send_time,
-               end_time,
-               priority,
-               top,
-               modify_time,
-               origin_id,
-               type.id typeId,
-               name,
-               type.enable,
-               notice_receive.id receiveId,
-               notice_receive.already_read receiveRead
+<!--查询所有或根据用户阅读状态进行查询-->
+    <select id="selectByUserId" resultMap="selectAllMap">
+        select u.id uid,
+        u.username,
+        n.id nid,
+        n.title,
+        n.content,
+        n.type_id,
+        n.sender_id,
+        n.create_time,
+        n.send_time,
+        n.end_time,
+        n.priority,
+        n.top,
+        n.modify_time,
+        n.origin_id,
+        type.id typeId,
+        type.name,
+        type.enable,
+        notice_receive.id receiveId,
+        notice_receive.already_read receiveRead
         from t_notice_receive notice_receive
-                 left join t_notice n on n.id = notice_receive.notice_id
-                 left join t_notice_type type on type.id = n.type_id
-                 left join t_user u on n.sender_id = u.id
-        where notice_receive.user_id=#{userId}
+        left join t_notice n on n.id = notice_receive.notice_id
+        left join t_notice_type type on type.id = n.type_id
+        left join t_user u on n.sender_id = u.id
+        <where>
+            <if test="null!=readStatus and readStatus>=0">
+                and notice_receive.already_read=#{readStatus}
+            </if>
+            and notice_receive.user_id=#{userId}
+        </where>
     </select>
     <resultMap id="selectAllMap" type="notice" autoMapping="true">
         <id property="id" column="nid"/>

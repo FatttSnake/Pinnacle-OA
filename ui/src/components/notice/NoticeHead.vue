@@ -17,7 +17,7 @@
                 <el-form-item label="公告类型：" prop="type">
                     <el-select v-model="search_info.type" placeholder="请选择公告类型">
                         <el-option
-                            v-for="item in noticeTypeList"
+                            v-for="item in EnableNoticeTypeList"
                             :key="item.id"
                             :label="item.name"
                             :value="item.name"
@@ -111,7 +111,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(useNoticeStore, ['noticeTypeList'])
+        ...mapState(useNoticeStore, ['EnableNoticeTypeList'])
     }
 }
 </script>

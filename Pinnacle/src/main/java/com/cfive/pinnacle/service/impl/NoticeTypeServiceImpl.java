@@ -2,6 +2,7 @@ package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.cfive.pinnacle.entity.NoticeType;
 import com.cfive.pinnacle.mapper.NoticeTypeMapper;
 import com.cfive.pinnacle.service.INoticeTypeService;
@@ -26,9 +27,24 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
     NoticeTypeMapper noticeTypeMapper;
     @Override
     public List<NoticeType> selectTypeList() {
+        return noticeTypeMapper.selectList(null);
+    }
+
+    @Override
+    public List<NoticeType> selectEnableTypeList() {
         LambdaQueryWrapper<NoticeType> lqw = new LambdaQueryWrapper<>();
         lqw.eq(NoticeType::getEnable, 1);
         List<NoticeType> noticeTypes = noticeTypeMapper.selectList(lqw);
         return noticeTypes;
+    }
+
+    @Override
+    public Boolean updateTypeEnableById(Long typeId, Integer enable) {
+        if ((null==typeId)||(null==enable)){
+            return false;
+        }
+        LambdaUpdateWrapper<NoticeType> luw = new LambdaUpdateWrapper<>();
+        luw.eq(null!=typeId,NoticeType::getId, typeId).set(null!=enable,NoticeType::getEnable,enable);
+        return noticeTypeMapper.update(null, luw)>0;
     }
 }

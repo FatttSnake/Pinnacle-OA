@@ -38,7 +38,7 @@ public class NoticeController {
     public ResponseResult selectByNoticeId(@PathVariable Long nid) {
         Notice noticeById = noticeService.selectByNoticeId(nid);
         Integer code = noticeById != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
-        String msg = noticeById != null ? "" : "数据查询失败，请尝试！";
+        String msg = noticeById != null ? "" : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticeById);
     }
 
@@ -53,16 +53,16 @@ public class NoticeController {
         }
 
         int code = noticeList != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
-        String msg = noticeList != null ? "" : "数据查询失败，请尝试！";
+        String msg = noticeList != null ? "" : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticeList);
     }
 
     //根据登录用户id查询所接收的公告
     @GetMapping("/ByUserId")
-    public ResponseResult selectAllByUserId() {
-        List<Notice> noticesByUserId = noticeReceiveService.selectAllByUserId();
+    public ResponseResult selectByUserId(Integer readStatus) {
+        List<Notice> noticesByUserId = noticeReceiveService.selectByUserId(readStatus);
         Integer code = noticesByUserId != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
-        String msg = noticesByUserId != null ? "" : "数据查询失败，请尝试！";
+        String msg = noticesByUserId != null ? "" : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticesByUserId);
     }
 
@@ -70,7 +70,7 @@ public class NoticeController {
     @PutMapping
     public ResponseResult updateNotice(@RequestBody Notice notice) {
         boolean updateById = noticeService.updateNotice(notice);
-        String msg = updateById ? "" : "数据修改失败，请尝试！";
+        String msg = updateById ? "" : "数据修改失败，请重试！";
         return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateById);
     }
 
@@ -78,7 +78,7 @@ public class NoticeController {
     @PostMapping
     public ResponseResult addNotice(@RequestBody Notice notice) {
         Boolean insertNotice = noticeService.addNotice(notice);
-        String msg = insertNotice ? "" : "数据添加失败，请尝试！";
+        String msg = insertNotice ? "" : "数据添加失败，请重试！";
         return ResponseResult.build(insertNotice ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, insertNotice);
     }
 
@@ -86,7 +86,7 @@ public class NoticeController {
     @DeleteMapping("/{nid}")
     public ResponseResult deleteByNoticeId(@PathVariable Long nid) {
         boolean removeById = noticeService.deleteById(nid);
-        String msg = removeById ? "" : "数据删除失败，请尝试！";
+        String msg = removeById ? "" : "数据删除失败，请重试！";
         return ResponseResult.build(removeById ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, removeById);
     }
 
@@ -109,7 +109,7 @@ public class NoticeController {
             noticePageList = noticeService.selectPageByCond(page,title, type, startTime, endTime);
         }
         int code = noticePageList.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
-        String msg = noticePageList.getRecords() != null ? String.valueOf(noticePageList.getTotal()) : "数据查询失败，请尝试！";
+        String msg = noticePageList.getRecords() != null ? String.valueOf(noticePageList.getTotal()) : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticePageList.getRecords());
     }
 

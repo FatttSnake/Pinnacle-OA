@@ -1,10 +1,4 @@
 <template>
-    <!--    <el-button-->
-    <!--        size="large"-->
-    <!--        @click="clearFilter"-->
-    <!--        style="background-color: rgba(71, 138, 173, 0.85); color: white"-->
-    <!--        >清除筛选条件-->
-    <!--    </el-button>-->
     <el-table
         v-loading="this.loading"
         element-loading-text="加载中..."
@@ -130,7 +124,7 @@ export default {
         formatDate(row, column) {
             // 获取单元格数据
             const data = row[column.property]
-            if (data == null) return null
+            if (data == null) return '暂无数据'
             return new Date(data).toLocaleString()
         },
         modifyStatus(row) {},
@@ -141,9 +135,7 @@ export default {
             })
         }
     },
-    mounted() {
-        noticeStore.selectAllNoticeByUserId()
-    },
+    mounted() {},
     updated() {
         this.$refs.tableRef.clearFilter(['senderName'])
         this.filterSenderName = []
