@@ -71,22 +71,24 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     public boolean modifyRole(Role role) {
         roleMapper.updateById(role);
         Role originalRole = getRole(role.getId());
-        HashSet<Long> originalPowerIds = new HashSet<>();
-        originalRole.getMenus().forEach(menu -> originalPowerIds.add(menu.getPowerId()));
-        originalRole.getElements().forEach(element -> originalPowerIds.add(element.getPowerId()));
-        originalRole.getOperations().forEach(operation -> originalPowerIds.add(operation.getPowerId()));
         HashSet<Long> newPowerIds = new HashSet<>();
         role.getPowers().forEach(power -> newPowerIds.add(power.getId()));
-        HashSet<Long> deletePowerIds = new HashSet<>(originalPowerIds);
-        deletePowerIds.removeAll(newPowerIds);
         HashSet<Long> addPowerIds = new HashSet<>(newPowerIds);
-        addPowerIds.removeAll(originalPowerIds);
-        deletePowerIds.forEach(deletePowerId -> {
-            LambdaQueryWrapper<PowerRole> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(PowerRole::getRoleId, role.getId())
-                    .eq(PowerRole::getPowerId, deletePowerId);
-            powerRoleMapper.delete(wrapper);
-        });
+        if (originalRole != null) {
+            HashSet<Long> originalPowerIds = new HashSet<>();
+            originalRole.getMenus().forEach(menu -> originalPowerIds.add(menu.getPowerId()));
+            originalRole.getElements().forEach(element -> originalPowerIds.add(element.getPowerId()));
+            originalRole.getOperations().forEach(operation -> originalPowerIds.add(operation.getPowerId()));
+            HashSet<Long> deletePowerIds = new HashSet<>(originalPowerIds);
+            deletePowerIds.removeAll(newPowerIds);
+            addPowerIds.removeAll(originalPowerIds);
+            deletePowerIds.forEach(deletePowerId -> {
+                LambdaQueryWrapper<PowerRole> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(PowerRole::getRoleId, role.getId())
+                        .eq(PowerRole::getPowerId, deletePowerId);
+                powerRoleMapper.delete(wrapper);
+            });
+        }
         addPowerIds.forEach(addPowerId -> {
             PowerRole powerRole = new PowerRole();
             powerRole.setRoleId(role.getId());
