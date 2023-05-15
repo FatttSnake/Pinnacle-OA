@@ -102,3 +102,17 @@ body {
     width: 23px;
     height: 23px;
 }
+
+.el-message-box__btns button:first-child {
+    margin-left: 10px;
+    order: 1;
+}
+
+.el-popconfirm__action button:first-child {
+    margin-left: 12px;
+    float: right;
+}
+
+.el-popconfirm__action button:last-child {
+    margin-left: 0;
+}
