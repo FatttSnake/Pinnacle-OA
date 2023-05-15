@@ -52,7 +52,6 @@ public class AttendanceController {
     @PostMapping("/saveAttendance")
     public ResponseResult saveAttendance(@RequestBody Attendance attendance) {
         attendance.setModifyId(1652714496280469506L);
-        attendance.setUserId(WebUtil.getLoginUser().getUser().getId());
         return attendanceService.saveOrUpdate(attendance) ? ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", attendance) :
                 ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "error", null);
 
