@@ -93,6 +93,28 @@
           and tuw.deleted = 0
         order by w.deadline asc, w.id desc;
     </select>
+    <select id="getCard" parameterType="long" resultMap="workMap">
+        select w.id,
+        content,
+        publisher_id,
+        create_time,
+        deadline,
+        tuw.user_id worker_id,
+        u.username worker_name,
+        tuw.status status
+        from t_work w,
+        t_user u,
+        t_user_work tuw
+        where w.id = tuw.work_id
+        and tuw.user_id = u.id
+        and tuw.user_id = #{userId}
+        and status = false
+        and w.deleted = 0
+        and tuw.deleted = 0
+        order by w.deadline asc, w.id desc
+        limit 5;
+
+    </select>
     <select id="getComplete" parameterType="long" resultMap="workMap">
         select w.id,
                content,

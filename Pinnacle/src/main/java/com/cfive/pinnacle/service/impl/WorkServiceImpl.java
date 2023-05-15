@@ -13,6 +13,9 @@ import com.cfive.pinnacle.service.IWorkService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -48,6 +51,16 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     @Override
     public List<Work> getTodo(Long userId) {
         List<Work> workList = workMapper.getTodo(userId);
+        for (Work work:
+                workList) {
+            work.setPublisherName(getUserName(work.getPublisherId()));
+        }
+        return workList;
+    }
+
+    @Override
+    public List<Work> getCard(Long userId) {
+        List<Work> workList = workMapper.getCard(userId);
         for (Work work:
                 workList) {
             work.setPublisherName(getUserName(work.getPublisherId()));
@@ -100,6 +113,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     public boolean addWork(Work work) {
         boolean flag = true;
         if (workMapper.insert(work) <= 0) {
@@ -119,6 +133,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     public boolean deleteByWorkId(Long workId) {
         boolean flag = false;
         if (userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", workId)) > 0 && workMapper.deleteById(workId) > 0) {
@@ -128,11 +143,13 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     public boolean updateStatus(UserWork userWork) {
         return userWorkMapper.update(userWork, new UpdateWrapper<UserWork>().eq("work_id", userWork.getWorkId()).eq("user_id", userWork.getUserId())) > 0;
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     public boolean updateWork(Work work) {
         boolean flag = true;
         if (userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", work.getId())) <= 0) {

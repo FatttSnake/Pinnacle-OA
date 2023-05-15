@@ -19,7 +19,7 @@ public interface WorkMapper extends BaseMapper<Work> {
     List<Work> getAll();
 
     List<Work> getTodo(Long userId);
-
+    List<Work> getCard(Long userId);
     List<Work> getComplete(Long userId);
 
     Work getWork(Long workId);
