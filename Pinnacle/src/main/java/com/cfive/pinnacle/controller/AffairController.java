@@ -5,6 +5,7 @@ import com.cfive.pinnacle.entity.Affair;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IAffairService;
+import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class AffairController {
     @GetMapping("/NotApproved")
     public ResponseResult select_NotApproved() {
         LambdaQueryWrapper<Affair> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Affair::getStatus, 0);
+        wrapper.eq(Affair::getStatus, 0).eq(Affair::getInspectorId,WebUtil.getLoginUser().getUser().getId());
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
     }
 
