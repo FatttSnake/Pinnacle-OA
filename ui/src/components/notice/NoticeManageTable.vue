@@ -129,6 +129,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash'
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
 const noticeStore = useNoticeStore()
@@ -172,7 +173,7 @@ export default {
         formatDate(row, column) {
             // 获取单元格数据
             const data = row[column.property]
-            if (data == null) return null
+            if (data == null) return '暂无数据'
             return new Date(data).toLocaleString()
         },
         handleEdit(index, row) {
@@ -215,17 +216,19 @@ export default {
         this.$refs.tableRef.clearFilter(['sender.username'])
         this.filterSenderName = []
         const nameArray = []
-        for (let i = 0; i < this.selectData.length; i++) {
-            nameArray.push(this.selectData[i].sender.username)
-        }
-        const newArr = nameArray.filter((item, i, arr) => {
-            return arr.indexOf(item) === i
-        })
-        for (let j = 0; j < newArr.length; j++) {
-            const senderName = { text: '', value: '' }
-            senderName.text = newArr[j]
-            senderName.value = newArr[j]
-            this.filterSenderName.push(senderName)
+        if (!_.isEmpty(this.selectData)) {
+            for (let i = 0; i < this.selectData.length; i++) {
+                nameArray.push(this.selectData[i].sender.username)
+            }
+            const newArr = nameArray.filter((item, i, arr) => {
+                return arr.indexOf(item) === i
+            })
+            for (let j = 0; j < newArr.length; j++) {
+                const senderName = { text: '', value: '' }
+                senderName.text = newArr[j]
+                senderName.value = newArr[j]
+                this.filterSenderName.push(senderName)
+            }
         }
     }
 }

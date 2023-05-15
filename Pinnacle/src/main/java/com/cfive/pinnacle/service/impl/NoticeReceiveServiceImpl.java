@@ -24,8 +24,8 @@ public class NoticeReceiveServiceImpl extends ServiceImpl<NoticeReceiveMapper, N
     @Autowired
     private NoticeReceiveMapper noticeReceiveMapper;
     @Override
-    public List<Notice> selectAllByUserId() {
+    public List<Notice> selectByUserId(Integer readStatus) {
         Long userId = WebUtil.getLoginUser().getUser().getId();
-        return noticeReceiveMapper.selectAllByUserId(userId);
+        return noticeReceiveMapper.selectByUserId(userId,readStatus);
     }
 }

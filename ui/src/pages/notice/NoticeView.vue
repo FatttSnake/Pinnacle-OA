@@ -5,16 +5,17 @@
         </el-header>
         <el-main>
             <el-menu
-                :default-active="activeIndex"
+                :default-active="$route.path"
                 class="el-menu-demo"
                 mode="horizontal"
                 @select="handleSelect"
+                router
             >
-                <el-menu-item index="1">所有公告</el-menu-item>
-                <el-menu-item index="2">已读</el-menu-item>
-                <el-menu-item index="3"><a href="#">未读</a></el-menu-item>
+                <el-menu-item index="/notice/noticeView/all">所有公告</el-menu-item>
+                <el-menu-item index="/notice/noticeView/alRead">已读</el-menu-item>
+                <el-menu-item index="/notice/noticeView/toRead">未读</el-menu-item>
             </el-menu>
-            <notice-view-table></notice-view-table>
+            <router-view />
         </el-main>
     </el-container>
 </template>
@@ -23,9 +24,7 @@
 export default {
     name: 'NoticeView',
     data() {
-        return {
-            activeIndex: '1'
-        }
+        return {}
     },
     methods: {
         handleSelect(key, keyPath) {

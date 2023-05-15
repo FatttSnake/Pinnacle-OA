@@ -15,5 +15,8 @@ import java.util.List;
  */
 public interface INoticeTypeService extends IService<NoticeType> {
     List<NoticeType> selectTypeList();
+    List<NoticeType> selectEnableTypeList();
+
+    Boolean updateTypeEnableById(Long typeId, Integer enable);
 
 }

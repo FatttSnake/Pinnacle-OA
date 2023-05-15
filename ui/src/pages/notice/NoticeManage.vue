@@ -53,6 +53,7 @@ export default {
                 .then((response) => {
                     if (response.data.code === 20021) {
                         noticeStore.selectData = response.data.data
+                        noticeStore.total = parseInt(response.data.msg)
                         ElMessage({
                             message: '查询成功.',
                             type: 'success'
@@ -102,7 +103,7 @@ export default {
         }
     },
     mounted() {
-        noticeStore.selectNoticeType()
+        noticeStore.selectEnableNoticeType()
     },
     computed: {
         ...mapState(useNoticeStore, ['dialogAddVisible'])

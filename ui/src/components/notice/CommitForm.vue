@@ -6,7 +6,7 @@
         <el-form-item label="公告类型" prop="typeId">
             <el-select v-model="addData.typeId" filterable placeholder="请选择公告类型">
                 <el-option
-                    v-for="item in noticeTypeList"
+                    v-for="item in EnableNoticeTypeList"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
@@ -94,7 +94,7 @@ import { mapState } from 'pinia'
 const noticeStore = useNoticeStore()
 export default {
     computed:{
-        ...mapState(useNoticeStore,['noticeTypeList','departmentList','noticeShowData'])
+        ...mapState(useNoticeStore,['EnableNoticeTypeList','departmentList','noticeShowData'])
     },
     data() {
         return {
@@ -173,14 +173,11 @@ export default {
         // 编辑操作
         if (noticeStore.editFlag===true) {
             this.addData = noticeStore.noticeShowData
-            console.log("created")
-            console.log(this.addData)
             // 判断是否置顶
             this.addData.top=(noticeStore.noticeShowData.top===1);
         }
     },
     mounted() {
-        console.log("mounted")
         noticeStore.selectDepartment()
     }
 }

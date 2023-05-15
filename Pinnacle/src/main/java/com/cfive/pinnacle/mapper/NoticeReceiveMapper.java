@@ -17,6 +17,6 @@ import java.util.List;
  */
 @Mapper
 public interface NoticeReceiveMapper extends BaseMapper<NoticeReceive> {
-    List<Notice> selectAllByUserId(Long userId);
+    List<Notice> selectByUserId(Long userId,Integer readStatus);
 
 }

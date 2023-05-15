@@ -23,7 +23,14 @@ export const useNoticeStore = defineStore('notice', {
             dialogEditVisible: false,
             editFlag: false,
             hackReset: true,
-            noticeTypeList: [],
+            EnableNoticeTypeList: [],
+            noticeTypeList: [
+                {
+                    id: '',
+                    name: '',
+                    enable: true
+                }
+            ],
             departmentList: [],
             noticeShowData: {
                 content: '',
@@ -75,17 +82,32 @@ export const useNoticeStore = defineStore('notice', {
                     }
                 })
         },
-        async selectAllNoticeByUserId() {
-            await request.get('/notice/ByUserId').then((response) => {
-                this.selectData = response.data.data
-                if (this.selectData.length !== 0) {
-                    this.loading = false
-                }
+        async selectAllNoticeByUserId(readStatus: number) {
+            await request
+                .get('/notice/ByUserId', {
+                    readStatus
+                })
+                .then((response) => {
+                    this.selectData = response.data.data
+                    if (this.selectData.length !== 0) {
+                        this.loading = false
+                    }
+                })
+        },
+        async selectEnableNoticeType() {
+            await request.get('/noticeType/enable').then((response) => {
+                this.EnableNoticeTypeList = response.data.data
             })
         },
         async selectNoticeType() {
             await request.get('/noticeType').then((response) => {
                 this.noticeTypeList = response.data.data
+                if (response.data.data.length >= 0) {
+                    for (let i = 0; i < this.noticeTypeList.length; i++) {
+                        this.noticeTypeList[i].enable = response.data.data[i].enable === 1
+                    }
+                    this.loading = false
+                }
             })
         },
         async selectDepartment() {
@@ -127,6 +149,28 @@ export const useNoticeStore = defineStore('notice', {
             })
             this.selectAllNotice(1, 5)
             this.hackReset = false
+        },
+        async updateNoticeTypeEnable(typeId: string, enable: boolean) {
+            await request
+                .put('/noticeType', {
+                    typeId,
+                    enable
+                })
+                .then((response) => {
+                    if (response.data.code === 20023) {
+                        ElMessage({
+                            message: '修改成功.',
+                            type: 'success'
+                        })
+                        return true
+                    } else if (response.data.code === 20033) {
+                        ElMessage({
+                            message: response.data.msg,
+                            type: 'error'
+                        })
+                        return false
+                    }
+                })
         }
     }
 })
