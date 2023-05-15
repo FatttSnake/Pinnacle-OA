@@ -3,6 +3,9 @@ package com.cfive.pinnacle.mapper;
 import com.cfive.pinnacle.entity.Group;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface GroupMapper extends BaseMapper<Group> {
+    List<Group> getAll();
 
+    Group getOneById(@Param("id") long id);
 }

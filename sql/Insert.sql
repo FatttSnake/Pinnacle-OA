@@ -95,6 +95,8 @@ VALUES (1656219345971326978, 1, 1655784840189972481),
        (1656219345971326985, 8, 1655785102375940098),
        (1656219345971326986, 9, 1655785102375940098);
 
+SET FOREIGN_KEY_CHECKS = 1;
+
 select * from t_role
 left join t_power_role tpr on t_role.id = tpr.role_id
 left join t_power tp on tp.id = tpr.power_id
@@ -102,4 +104,6 @@ left join t_menu tm on tp.id = tm.power_id
 left join t_element te on tp.id = te.power_id
 left join t_operation t on tp.id = t.power_id;
 
-SET FOREIGN_KEY_CHECKS = 1;
+select * from t_group
+left join t_role_group trg on t_group.id = trg.group_id
+left join t_role tr on tr.id = trg.role_id
