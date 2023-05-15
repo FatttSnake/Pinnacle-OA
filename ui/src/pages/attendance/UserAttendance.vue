@@ -87,7 +87,7 @@
         </div>
         <div>
             <el-dialog v-model="dialogFormVisible" title="考勤信息" width="25%">
-                <el-form ref="ruleForm" :rules="rules" :model="form" :label-width="formLabelWidth">
+                <el-form ref="ruleForm" :model="form" :label-width="formLabelWidth">
                     <el-form-item label="考勤时间" v-model="attTime" prop="attTime">
                         <div class="block">
                             <el-date-picker
@@ -143,11 +143,7 @@ export default {
                 attTime: new Date()
             },
             tableData: [],
-            dialogFormVisible: false,
-            rules: {
-                userId: [{ required: true, message: '请输入用户编号', trigger: 'change' }],
-                attTime: [{ required: true, message: '请选择考勤时间', trigger: 'change' }]
-            }
+            dialogFormVisible: false
         }
     },
     methods: {

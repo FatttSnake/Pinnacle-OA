@@ -116,42 +116,13 @@
 
         <div>
             <el-dialog v-model="dialogFormVisible" title="考勤信息" width="25%">
-                <el-form ref="ruleForm" :rules="rules" :model="form" :label-width="formLabelWidth">
-                    <el-form-item label="用户编号" prop="userId">
-                        <el-input v-model="form.userId" autocomplete="off" style="width: 200px" />
-                    </el-form-item>
-
-                    <el-form-item label="考勤状态" prop="status">
-                        <el-select
-                            v-model="form.status"
-                            placeholder="请选择考勤状态"
-                            style="width: 200px"
-                        >
-                            <el-option label="签到" value="1" />
-                            <el-option label="签退" value="2" />
-                            <el-option label="迟到" value="3" />
-                        </el-select>
-                    </el-form-item>
-
-                    <el-form-item label="考勤时间" v-model="form.attTime" prop="attTime">
-                        <div class="block">
-                            <el-date-picker
-                                v-model="form.attTime"
-                                type="datetime"
-                                format="YYYY-MM-DD HH:mm:ss"
-                                placeholder="请选择考勤时间"
-                                style="width: 200px"
-                            />
-                        </div>
-                    </el-form-item>
-                </el-form>
-
-                <template #footer>
-                    <span class="dialog-footer">
-                        <el-button type="primary" @click="submitForm">确认</el-button>
-                        <el-button @click="cancel">取消</el-button>
-                    </span>
-                </template>
+                <edit-attendance
+                    :users="users"
+                    :form-data="form"
+                    :isDisabled="isDisabled"
+                    @addAttendance="addAttendance"
+                    @setDialogVisible="setDialogVisible"
+                ></edit-attendance>
             </el-dialog>
         </div>
     </div>
@@ -164,6 +135,7 @@ import '@/assets/css/attendance.css'
 
 import _ from 'lodash'
 import request from '@/services'
+
 export default {
     name: 'AttendanceHome',
     data() {
@@ -177,21 +149,18 @@ export default {
             pageSize: 10,
             total: 0,
             multipleSelection: [],
-            formLabelWidth: '80px',
             value1: '',
+            users: [],
+            tableData: [],
+            dialogFormVisible: false,
             form: {
                 userId: '',
                 userName: '',
                 status: '',
                 attTime: ''
             },
-            tableData: [],
-            dialogFormVisible: false,
-            rules: {
-                userId: [{ required: true, message: '请输入用户编号', trigger: 'change' }],
-                status: [{ required: true, message: '请选择考勤状态', trigger: 'change' }],
-                attTime: [{ required: true, message: '请选择考勤时间', trigger: 'change' }]
-            },
+            isDisabled: false,
+
             options: [
                 {
                     value: 1,
@@ -204,6 +173,12 @@ export default {
                 {
                     value: 3,
                     label: '迟到'
+                }
+            ],
+            nameOptions: [
+                {
+                    userId: '',
+                    username: ''
                 }
             ]
         }
@@ -218,6 +193,18 @@ export default {
         },
         formatDate(time) {
             return new Date(time).toLocaleString()
+        },
+        // 获取所有user信息
+        getFormData() {
+            request
+                .get('/user')
+                .then((response) => {
+                    console.log(response.data.data)
+                    this.users = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
         },
         // 获取所有考勤信息
         getAttendances() {
@@ -280,23 +267,22 @@ export default {
                 type: 'success'
             })
         },
-        // 表单重置
-        resetForm() {
-            this.$nextTick(() => {
-                this.$refs.ruleForm.resetFields()
-            })
+        setDialogVisible(dialogVisible) {
+            console.log(dialogVisible)
+            this.dialogFormVisible = dialogVisible
+            this.getAttendances()
         },
         // 打开添加弹窗
         handleAdd() {
+            this.getFormData()
             this.dialogFormVisible = true
-            this.resetForm()
+            this.isDisabled = false
         },
         // 处理保存
-        doSave() {
+        doSave(formData) {
             request
-                .post('/attendance/saveAttendance', this.form)
+                .post('/attendance/saveAttendance', formData)
                 .then((response) => {
-                    this.dialogFormVisible = false
                     this.getAttendances()
                     console.log(response.data.data)
                 })
@@ -306,36 +292,33 @@ export default {
         },
         // 获取更改数据
         viewUpdate(row) {
+            this.getFormData()
             this.dialogFormVisible = true
-            this.$nextTick(() => {
-                this.form = row
-                this.form.status = row.status + ''
-            })
+            this.isDisabled = true
+            this.form = row
+            this.form.status = row.status + ''
+        },
+        addAttendance(formData) {
+            this.doSave(formData)
+            console.log(formData)
+            this.dialogFormVisible = false
         },
         // 点击取消
         cancel() {
-            this.dialogFormVisible = false
+            this.resetForm()
             ElMessage({
                 message: '取消操作',
                 type: 'warning'
             })
             this.getAttendances()
         },
-        // 提交表单
-        submitForm() {
-            this.$refs.ruleForm.validate((valid) => {
-                if (valid) {
-                    this.doSave()
-                    ElMessage({
-                        message: '操作成功',
-                        type: 'success'
-                    })
-                } else {
-                    ElMessage.error('操作失败')
-                    return false
-                }
+        // 表单重置
+        resetForm() {
+            this.$nextTick(() => {
+                this.$refs.ruleForm.resetFields()
             })
         },
+
         // 操作删除
         handleDelete(id) {
             console.log(id)
