@@ -181,14 +181,13 @@ const router = createRouter({
                     ]
                 },
                 {
-                    path: '/system',
+                    path: '/power',
                     name: 'systemManagement',
                     children: [
                         {
                             path: 'role',
                             name: 'systemRole',
-                            component: async () =>
-                                await import('@/pages/system/RoleManagement.vue'),
+                            component: async () => await import('@/pages/power/RoleManagement.vue'),
                             meta: {
                                 title: '角色管理',
                                 requiresScrollbar: false,
@@ -197,8 +196,8 @@ const router = createRouter({
                         }
                     ],
                     meta: {
-                        title: '系统管理',
-                        icon: shallowRef(IconPinnacleSetting),
+                        title: '权限管理',
+                        icon: shallowRef(IconPinnaclePower),
                         requiresScrollbar: false,
                         requiresPadding: true
                     }
