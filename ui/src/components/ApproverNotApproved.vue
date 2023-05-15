@@ -17,7 +17,7 @@
             </div>
         </el-col>
 
-        <el-col :span="4">
+        <el-col :span="6">
             <el-button type="warning" round>待审批</el-button>
             <el-button type="success" round>已审批</el-button>
         </el-col>
