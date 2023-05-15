@@ -48,8 +48,8 @@
         @open="handleDialogOpen"
     >
         <template #default>
-            <el-form label-width="80px" v-loading="dialogLoading">
-                <el-form-item label="角色名称" required>
+            <el-form label-width="80px" v-loading="dialogLoading" :rules="rules">
+                <el-form-item label="角色名称" prop="name">
                     <el-input autocomplete="off" v-model="inputRoleName" />
                 </el-form-item>
                 <el-form-item label="角色权限">
@@ -101,7 +101,14 @@ export default {
             isAddNew: true,
             defaultSelectedPower: [],
             dialogTitle: '',
-            editRoleId: ''
+            editRoleId: '',
+            rules: {
+                name: [
+                    {
+                        required: true
+                    }
+                ]
+            }
         }
     },
     methods: {
@@ -131,7 +138,7 @@ export default {
                             menu.elements.push(element)
 
                             const operas = []
-                            _(element.operations).forEach((value) => {
+                            _.forEach(element.operations, (value) => {
                                 operas.push(value.name)
                             })
                             role.powers.push(`${menu.name}/${element.name}/${_.join(operas, ';')}`)
