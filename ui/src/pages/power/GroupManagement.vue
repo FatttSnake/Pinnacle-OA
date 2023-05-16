@@ -19,7 +19,7 @@
         :table-loading="tableLoading"
         @onEdit="handleEdit"
         @onDelete="handleDelete"
-        customColumnLabel="角色"
+        custom-column-label_1="角色"
     />
     <el-dialog
         :title="dialogTitle"
@@ -104,10 +104,10 @@ export default {
                 if (response.code === DATABASE_SELECT_OK) {
                     const groups = response.data
                     for (const group of groups) {
-                        group.customColumn = []
+                        group.customColumn_1 = []
                         const roles = group.roles
                         for (const role of roles) {
-                            group.customColumn.push(role.name)
+                            group.customColumn_1.push(role.name)
                         }
                     }
                     this.groupTable = groups

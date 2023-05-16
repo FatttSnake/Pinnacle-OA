@@ -8,14 +8,26 @@
         <el-table-column type="selection" />
         <el-table-column type="index" label="序号" />
         <el-table-column prop="name" label="名称" />
-        <el-table-column prop="menus" :label="customColumnLabel">
+        <el-table-column v-if="customColumnLabel_1" :label="customColumnLabel_1">
             <template #default="scope">
                 <el-tag
-                    v-if="!scope.row.customColumn || scope.row.customColumn.length === 0"
+                    v-if="!scope.row.customColumn_1 || scope.row.customColumn_1.length === 0"
                     type="info"
                     >无</el-tag
                 >
-                <el-tag v-for="(column, index) in scope.row.customColumn" :key="index">{{
+                <el-tag v-for="(column, index) in scope.row.customColumn_1" :key="index">{{
+                    column
+                }}</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column v-if="customColumnLabel_2" :label="customColumnLabel_2">
+            <template #default="scope">
+                <el-tag
+                    v-if="!scope.row.customColumn_2 || scope.row.customColumn_2.length === 0"
+                    type="info"
+                    >无</el-tag
+                >
+                <el-tag v-for="(column, index) in scope.row.customColumn_2" :key="index">{{
                     column
                 }}</el-tag>
             </template>
@@ -42,7 +54,8 @@ export default {
     props: {
         tableDate: Array,
         tableLoading: Boolean,
-        customColumnLabel: String
+        customColumnLabel_1: String,
+        customColumnLabel_2: String
     }
 }
 </script>
