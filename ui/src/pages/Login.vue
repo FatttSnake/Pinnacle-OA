@@ -171,8 +171,6 @@ export default {
 
 <style scoped>
 .background {
-    width: 100vw;
-    min-width: 900px;
     height: 100vh;
     min-height: 500px;
     background: linear-gradient(to right, #5495f1, #82b5ff);
