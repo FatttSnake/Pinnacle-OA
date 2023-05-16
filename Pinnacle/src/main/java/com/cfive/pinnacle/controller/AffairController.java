@@ -34,6 +34,7 @@ public class AffairController {
     public ResponseResult select_NotApproved() {
         LambdaQueryWrapper<Affair> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Affair::getStatus, 0).eq(Affair::getInspectorId,WebUtil.getLoginUser().getUser().getId());
+        wrapper.orderByDesc(Affair::getCreateTime);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
     }
 
@@ -41,7 +42,8 @@ public class AffairController {
     @GetMapping("/Approved")
     public ResponseResult select_Approved() {
         LambdaQueryWrapper<Affair> wrapper2 = new LambdaQueryWrapper<>();
-        wrapper2.ne(Affair::getStatus, 0);
+        wrapper2.ne(Affair::getStatus, 0).eq(Affair::getInspectorId,WebUtil.getLoginUser().getUser().getId());
+        wrapper2.orderByDesc(Affair::getInspectTime);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper2));
     }
 

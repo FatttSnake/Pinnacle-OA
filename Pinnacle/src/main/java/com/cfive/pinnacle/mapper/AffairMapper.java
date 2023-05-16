@@ -27,7 +27,7 @@ public interface AffairMapper extends BaseMapper<Affair> {
     //根据id，撤回新建的事务，在新建事务时，会再进行一次确定
     // (是否撤回,当用户撤回新建的事务时，根据新建的事务的id，删除该条事务在数据库中的信息)
 
-    @Update("update  t_affair set status=1 where id=#{id}")
+    @Update("update  t_affair set status=1,inspect_time=#{inspectTime} where id=#{id}")
     int updateAffairs_Yes(Affair affair);
     //管理员权限--->修改事务的状态(AffairsStatus)--->达到审批的效果
     //同意

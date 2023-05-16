@@ -84,6 +84,7 @@ public class Affair implements Serializable {
      * 审核时间
      */
     @TableField("inspect_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",timezone = "UTC")
     private LocalDateTime inspectTime;
 
     /**
