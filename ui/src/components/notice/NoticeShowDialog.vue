@@ -1,19 +1,21 @@
 <template>
     <el-descriptions direction="vertical" :column="3" border>
         <template #title>{{ this.noticeShowData.title }}</template>
-        <el-descriptions-item label="发布人"
+        <el-descriptions-item label="发布人" width="120"
             ><el-tag size="large" type="success">{{
                 this.noticeShowData.sender.username
             }}</el-tag></el-descriptions-item
         >
-        <el-descriptions-item label="生效时间">{{
+        <el-descriptions-item label="生效时间" width="180">{{
             formatDate(this.noticeShowData.sendTime)
         }}</el-descriptions-item>
-        <el-descriptions-item label="优先级" :span="12">{{
-            this.noticeShowData.priority
-        }}</el-descriptions-item>
-        <el-descriptions-item label="公告类型">
-            <el-tag size="large">{{ this.noticeShowData.noticeType.name }}</el-tag>
+        <el-descriptions-item label="公告类型"
+            ><el-tag size="large">{{
+                this.noticeShowData.noticeType.name
+            }}</el-tag></el-descriptions-item
+        >
+        <el-descriptions-item label="优先级"
+            >{{ this.noticeShowData.priority }}
         </el-descriptions-item>
         <el-descriptions-item label="失效时间">{{
             formatDate(this.noticeShowData.endTime)

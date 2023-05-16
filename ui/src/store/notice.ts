@@ -16,7 +16,33 @@ export const useNoticeStore = defineStore('notice', {
     state: () => {
         return {
             total: 0,
-            selectData: [],
+            selectData: [
+                {
+                    content: '',
+                    createTime: '',
+                    endTime: '',
+                    id: '',
+                    modifyTime: '',
+                    priority: 0,
+                    receivers: [],
+                    sendTime: '',
+                    title: '',
+                    top: 0,
+                    isRead: 0,
+                    noticeType: {
+                        id: '',
+                        name: '',
+                        enable: 0
+                    },
+                    sender: {
+                        id: '',
+                        username: '',
+                        enable: 0
+                    },
+                    senderId: '',
+                    typeId: ''
+                }
+            ],
             loading: true,
             dialogShowVisible: false,
             dialogAddVisible: false,
@@ -152,7 +178,7 @@ export const useNoticeStore = defineStore('notice', {
         },
         async updateNoticeTypeEnable(typeId: string, enable: boolean) {
             await request
-                .put('/noticeType', {
+                .get('/noticeType/update', {
                     typeId,
                     enable
                 })
@@ -162,13 +188,11 @@ export const useNoticeStore = defineStore('notice', {
                             message: '修改成功.',
                             type: 'success'
                         })
-                        return true
                     } else if (response.data.code === 20033) {
                         ElMessage({
                             message: response.data.msg,
                             type: 'error'
                         })
-                        return false
                     }
                 })
         }

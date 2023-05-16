@@ -22,7 +22,7 @@
             <template #default="scope">
                 <el-switch
                     v-model="scope.row.enable"
-                    style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                    style="--el-switch-on-color: #13ce66; --el-switch-off-color: #afb2b8"
                     active-text="启用"
                     inactive-text="禁用"
                     @change="switchChang(scope.row.id, scope.row.enable)"
@@ -100,9 +100,10 @@ export default {
             this.multipleSelection = val
         },
         switchChang(id, value) {
-            if (!noticeStore.updateNoticeTypeEnable(id, value)) {
+            noticeStore.updateNoticeTypeEnable(id, value)
+            setTimeout(() => {
                 noticeStore.selectNoticeType()
-            }
+            }, 800)
         },
         handleEdit(index, row) {
             noticeStore.$patch((state) => {

@@ -1,10 +1,5 @@
 <template>
-    <el-button
-        size="large"
-        @click="clearFilter"
-        style="background-color: rgba(71, 138, 173, 0.85); color: white"
-        >清除筛选条件
-    </el-button>
+    <el-button size="large" @click="clearFilter" type="primary">清除筛选条件 </el-button>
     <el-table
         v-loading="loading"
         element-loading-text="加载中..."
@@ -13,22 +8,24 @@
         border
         highlight-current-row
         @selection-change="handleSelectionChange"
+        style="font-size: 18px"
         :header-cell-style="{
             background: 'darksalmon',
             'text-align': 'center',
             color: '#fff',
             'font-size': '20px'
         }"
-        ><el-table-column type="selection" width="55" />
-        <el-table-column type="index" label="序号" width="70" />
+        ><el-table-column type="selection" width="55" align="center" />
+        <el-table-column type="index" label="序号" width="70" align="center" />
         <el-table-column
             prop="title"
             label="公告标题"
-            width="180"
+            width="200"
             :formatter="formatter"
             show-overflow-tooltip
+            align="center"
         />
-        <el-table-column prop="noticeType.name" label="公告类别" width="150">
+        <el-table-column prop="noticeType.name" label="公告类别" width="160" align="center">
             <template #default="scope">
                 <el-tag
                     size="default"
@@ -39,27 +36,30 @@
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column prop="priority" label="优先级" width="100" />
+        <el-table-column prop="priority" label="优先级" width="100" align="center" />
         <el-table-column
             prop="createTime"
             label="创建时间"
             sortable
-            width="180"
+            width="220"
             :formatter="formatDate"
+            align="center"
         />
         <el-table-column
             prop="sendTime"
             label="生效时间"
             sortable
-            width="180"
+            width="220"
             :formatter="formatDate"
+            align="center"
         />
         <el-table-column
             prop="endTime"
             label="失效时间"
             sortable
-            width="180"
+            width="220"
             :formatter="formatDate"
+            align="center"
         />
         <el-table-column
             prop="sender.username"
@@ -69,6 +69,7 @@
             :filters="filterSenderName"
             :filter-method="filterTag"
             filter-placement="bottom-end"
+            align="center"
         >
             <template #default="scope">
                 <el-tag
@@ -78,7 +79,7 @@
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" min-width="200px" align="center">
             <template #default="scope">
                 <el-button size="small" color="#626aef" @click="handleShow(scope.$index, scope.row)"
                     >查看
@@ -235,6 +236,9 @@ export default {
 </script>
 
 <style scoped>
+.el-table {
+    margin-top: 10px;
+}
 .pagination {
     margin: 30px 400px;
 }

@@ -4,6 +4,8 @@ import com.cfive.pinnacle.entity.NoticeType;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.INoticeTypeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,8 @@ import java.util.List;
 @RequestMapping("/noticeType")
 @CrossOrigin
 public class NoticeTypeController {
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     @Autowired
     INoticeTypeService noticeTypeService;
 
@@ -41,11 +45,10 @@ public class NoticeTypeController {
         return ResponseResult.build(code, msg, selectTypeList);
     }
 
-    @PutMapping
+    @GetMapping("/update")
     public ResponseResult updateTypeEnableById(String typeId,Boolean enable){
-        System.out.println(typeId+'\t'+enable);
         Long tid=null;
-        Integer isEnable=null;
+        Integer isEnable = null;
         if (StringUtils.hasText(typeId)&&null!=enable){
             tid = Long.parseLong(typeId);
             isEnable = (enable == true ? 1 : 0);
