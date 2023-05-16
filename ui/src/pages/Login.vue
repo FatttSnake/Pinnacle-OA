@@ -8,71 +8,75 @@
             </div>
             <img class="back-shape" :src="backShape" alt="back-shape" />
         </div>
-        <div class="card-front">
-            <div class="login-title">登录</div>
-            <div class="input-box user-name-box">
-                <div class="center-box" style="padding: 10px">
-                    <el-icon size="18">
-                        <icon-pinnacle-user />
-                    </el-icon>
-                </div>
-                <label for="user-name"></label
-                ><input
-                    type="text"
-                    name="user-name"
-                    id="user-name"
-                    v-model="userName"
-                    @keyup="userName = userName.replace(/\s+/g, '')"
-                    placeholder="用户名"
-                />
-            </div>
-
-            <div class="input-box password-box">
-                <div class="center-box" style="padding: 10px">
-                    <el-icon size="18">
-                        <icon-pinnacle-password />
-                    </el-icon>
-                </div>
-                <label for="password"></label
-                ><input
-                    type="password"
-                    name="password"
-                    id="password"
-                    v-model="password"
-                    @keyup="password = password.replace(/\s+/g, '')"
-                    placeholder="密码"
-                />
-            </div>
-            <div class="captcha-set">
-                <div class="captcha-box">
-                    <div class="input-box" style="height: 100%">
-                        <label for="captcha"></label
-                        ><input
-                            type="text"
-                            name="captcha"
-                            id="captcha"
-                            v-model="captcha"
-                            placeholder="验证码"
-                        />
+        <form>
+            <div class="card-front">
+                <div class="login-title">登录</div>
+                <div class="input-box user-name-box">
+                    <div class="center-box" style="padding: 10px">
+                        <el-icon size="18">
+                            <icon-pinnacle-user />
+                        </el-icon>
                     </div>
+                    <label for="user-name"></label
+                    ><input
+                        type="text"
+                        name="user-name"
+                        id="user-name"
+                        autocomplete="username"
+                        v-model="userName"
+                        @keyup="userName = userName.replace(/\s+/g, '')"
+                        placeholder="用户名"
+                    />
                 </div>
-                <img :src="captchaSrc" alt="Captcha" @click="getNewCaptcha" />
-            </div>
 
-            <ElButton
-                size="large"
-                type="primary"
-                :disabled="loggingIn"
-                id="login-bt"
-                @click="login"
-            >
-                <template #default
-                    ><span style="font-size: clamp(2em, 1.5vw, 2.8em)"
-                        >登&ensp;&ensp;录</span
-                    ></template
+                <div class="input-box password-box">
+                    <div class="center-box" style="padding: 10px">
+                        <el-icon size="18">
+                            <icon-pinnacle-password />
+                        </el-icon>
+                    </div>
+                    <label for="password"></label
+                    ><input
+                        type="password"
+                        name="password"
+                        id="password"
+                        autocomplete="password"
+                        v-model="password"
+                        @keyup="password = password.replace(/\s+/g, '')"
+                        placeholder="密码"
+                    />
+                </div>
+                <div class="captcha-set">
+                    <div class="captcha-box">
+                        <div class="input-box" style="height: 100%">
+                            <label for="captcha"></label
+                            ><input
+                                type="text"
+                                name="captcha"
+                                id="captcha"
+                                v-model="captcha"
+                                placeholder="验证码"
+                            />
+                        </div>
+                    </div>
+                    <img :src="captchaSrc" alt="Captcha" @click="getNewCaptcha" />
+                </div>
+
+                <ElButton
+                    size="large"
+                    type="primary"
+                    :disabled="loggingIn"
+                    id="login-bt"
+                    @click="login"
                 >
-            </ElButton>
-        </div>
+                    <template #default
+                        ><span style="font-size: clamp(2em, 1.5vw, 2.8em)"
+                            >登&ensp;&ensp;录</span
+                        ></template
+                    >
+                </ElButton>
+            </div>
+        </form>
     </div>
 </template>
 
