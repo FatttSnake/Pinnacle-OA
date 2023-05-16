@@ -19,7 +19,7 @@
         :table-loading="tableLoading"
         @onEdit="handleEdit"
         @onDelete="handleDelete"
-        customColumnLabel="权限"
+        custom-column-label_1="权限"
     />
     <el-dialog
         :title="dialogTitle"
@@ -111,7 +111,7 @@ export default {
                 if (response.code === DATABASE_SELECT_OK) {
                     const roles = response.data
                     for (const role of roles) {
-                        role.customColumn = []
+                        role.customColumn_1 = []
                         const menus = role.menus
                         const elements = role.elements
                         const operations = role.operations
@@ -133,7 +133,7 @@ export default {
                             _.forEach(element.operations, (value) => {
                                 operas.push(value.name)
                             })
-                            role.customColumn.push(
+                            role.customColumn_1.push(
                                 `${menu.name}/${element.name}/${_.join(operas, ';')}`
                             )
                         }
