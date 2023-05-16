@@ -99,11 +99,14 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     @Override
     public Boolean updateNotice(Notice notice) {
         noticeMapper.update(null, new UpdateWrapper<Notice>().eq("id", notice.getId()).set("old", 1)); //修改原始数据
+        LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(NoticeReceive::getNoticeId, notice.getId());
+        noticeReceiveMapper.delete(lqw);
         notice.setOriginId(notice.getId());
         notice.setId(null); //清除id，使新插入的数据id重新生成
         notice.setModifyTime(null);
         notice.setOld(0);
-        return noticeMapper.insert(notice) > 0;
+        return this.addNotice(notice);
     }
 
     @Override

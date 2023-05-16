@@ -21,6 +21,8 @@
 </template>
 
 <script lang="ts">
+import { useNoticeStore } from '@/store/notice'
+const noticeStore = useNoticeStore()
 export default {
     name: 'NoticeView',
     data() {
@@ -31,7 +33,9 @@ export default {
             console.log(key, keyPath)
         }
     },
-    mounted() {}
+    mounted() {
+        noticeStore.selectEnableNoticeType()
+    }
 }
 </script>
 

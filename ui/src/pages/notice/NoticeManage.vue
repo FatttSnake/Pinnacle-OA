@@ -6,8 +6,11 @@
         <el-main>
             <el-button
                 size="large"
-                style="background-color: rgba(71, 138, 173, 0.85); color: white"
+                type="primary"
                 @click="openAddNoticeDialog"
+                style="margin-right: 15px"
+                ><el-icon :size="SIZE_ICON_MD()" style="color: white; margin-right: 3px">
+                    <icon-pinnacle-add /> </el-icon
                 >发布公告</el-button
             >
             <!-- 添加公告对话框-->
@@ -32,6 +35,7 @@ import 'element-plus/theme-chalk/el-message-box.css'
 import request from '@/services'
 import { useNoticeStore } from '@/store/notice'
 import { mapState } from 'pinia'
+import { SIZE_ICON_MD } from '@/constants/Common.constants'
 const noticeStore = useNoticeStore()
 
 export default {
@@ -40,6 +44,9 @@ export default {
         return {}
     },
     methods: {
+        SIZE_ICON_MD() {
+            return SIZE_ICON_MD
+        },
         selectByCond(currentPage, pageSize, search) {
             request
                 .get('/notice/page', {

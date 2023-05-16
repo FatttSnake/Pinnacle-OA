@@ -31,7 +31,9 @@
                 and notice_receive.already_read=#{readStatus}
             </if>
             and notice_receive.user_id=#{userId}
+            and notice_receive.deleted=0
         </where>
+        order by n.send_time desc
     </select>
     <resultMap id="selectAllMap" type="notice" autoMapping="true">
         <id property="id" column="nid"/>

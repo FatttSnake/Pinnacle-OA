@@ -112,7 +112,7 @@ export default {
             rules: {
                 title: [
                     { required: true, message: '请输入公告标题', trigger: 'blur' },
-                    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+                    { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
                 ],
                 typeId: [
                     { required: true, message: '请选择公告类型', trigger: 'change' }
@@ -137,7 +137,7 @@ export default {
         submitForm() {
             this.addData.top=this.addData.top?1:0;
             const receiveId=[]
-            if (this.addData.receivers!==[]){
+            if (this.addData.receivers.length!=null){
                 for (let i = 0; i < this.addData.receivers.length; i++) {
                     receiveId.push(this.addData.receivers[i][1])
                 }
