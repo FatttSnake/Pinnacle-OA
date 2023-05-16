@@ -113,8 +113,10 @@ export default {
                     form.publisherId = String(1)
                     if (this.editForm) {
                         this.$emit('updateWork', form)
+                        this.reset()
                     } else {
                         this.$emit('addWork', form)
+                        this.reset()
                     }
                     console.log('submit!')
                 } else {

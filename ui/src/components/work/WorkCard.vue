@@ -1,5 +1,5 @@
 <template>
-    <el-card style="min-width: 640px">
+    <el-card style="min-width: 640px; height: 400px">
         <template #header>
             <div class="card-header">
                 <h2>待办工作</h2>
@@ -7,10 +7,10 @@
             </div>
         </template>
         <div v-for="item in tableData" :key="item" class="text item">
-            <el-row style="width: 100%">
+            <el-row style="width: 100%; height: 42px">
                 <el-col :span="1" />
-                <el-col :span="1">
-                    <el-avatar style="background-color: #5495f1">
+                <el-col :span="1" style="justify-content: center">
+                    <el-avatar style="background-color: #409eff" size="default">
                         <el-icon
                             color="white"
                             :size="SIZE_ICON_LG()"
@@ -22,14 +22,18 @@
                 </el-col>
                 <el-col :span="1" />
                 <el-col :span="7"
-                    ><el-text size="large" style="color: black">{{ item.content }}</el-text>
+                    ><el-text size="large" style="color: black; line-height: 42px">{{
+                        item.content
+                    }}</el-text>
                 </el-col>
                 <el-col :span="4" />
                 <el-col :span="7" style="text-align: right"
-                    ><el-text type="info">{{ formatDate(item.deadline) }}</el-text></el-col
+                    ><el-text type="info" style="line-height: 42px">{{
+                        formatDate(item.deadline)
+                    }}</el-text></el-col
                 >
                 <el-col :span="2" style="text-align: right"
-                    ><el-text type="info">截止</el-text></el-col
+                    ><el-text type="info" style="line-height: 42px">截止</el-text></el-col
                 >
                 <el-col :span="1" />
             </el-row>

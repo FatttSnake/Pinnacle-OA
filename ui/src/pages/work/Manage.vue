@@ -1,6 +1,6 @@
 <template>
     <div class="head">
-        <el-row style="width: 50%">
+        <el-row style="width: 640px">
             <el-col :span="17">
                 <el-input
                     v-model="searchContent"
