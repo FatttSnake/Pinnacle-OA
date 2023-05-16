@@ -6,8 +6,7 @@
         style="margin-top: 10px"
     >
         <el-table-column type="selection" />
-        <el-table-column type="index" label="序号" />
-        <el-table-column prop="name" label="名称" />
+        <el-table-column prop="name" label="名称" min-width="20" />
         <el-table-column v-if="customColumnLabel_1" :label="customColumnLabel_1">
             <template #default="scope">
                 <el-tag
@@ -32,7 +31,7 @@
                 }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="150" align="center">
             <template #default="scope">
                 <el-button size="small" @click="$emit('onEdit', scope.$index, scope.row)"
                     >编辑
