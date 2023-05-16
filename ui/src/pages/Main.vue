@@ -207,8 +207,6 @@ export default {
 
 <style scoped>
 .background {
-    width: 100vw;
-    min-width: 900px;
     height: 100vh;
     min-height: 500px;
     background: var(--background-color);
