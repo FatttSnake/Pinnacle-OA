@@ -124,6 +124,7 @@
 <script>
 import request from '@/services'
 import 'element-plus/theme-chalk/index.css'
+import _ from 'lodash'
 
 export default {
     data() {
@@ -133,15 +134,15 @@ export default {
                     id: '',
                     title: '',
                     content: '',
-                    type_id: '',
+                    typeId: '',
                     status: '',
-                    applicant_id: '',
-                    inspector_id: '',
-                    create_time: '',
-                    inspect_time: '',
+                    applicantId: '',
+                    inspectorId: '',
+                    createTime: new Date(),
+                    inspectTime: new Date(),
                     priority: '',
-                    modify_time: '',
-                    origin_id: '',
+                    modifyTime: '',
+                    originId: '',
                     old: '',
                     deleted: '',
                     version: ''
@@ -163,15 +164,15 @@ export default {
                     id: '',
                     title: '',
                     content: '',
-                    type_id: '',
+                    typeId: '',
                     status: '',
-                    applicant_id: '',
-                    inspector_id: '',
-                    create_time: '',
-                    inspect_time: '',
+                    applicantId: '',
+                    inspectorId: '',
+                    createTime: new Date(),
+                    inspectTime: '',
                     priority: '',
-                    modify_time: '',
-                    origin_id: '',
+                    modifyTime: '',
+                    originId: '',
                     old: '',
                     deleted: '',
                     version: ''
@@ -182,6 +183,7 @@ export default {
     methods: {
         handleYes(row) {
             console.log(row)
+            row.inspectTime = new Date()
             request
                 .put('http://localhost:8621/affair/yes', row)
                 .then((response) => {
@@ -225,13 +227,25 @@ export default {
         format(time) {
             return new Date(time).toLocaleString()
         }, // 时间格式转换
+        getDate() {
+            let newTime = ''
+            const date = new Date()
+            const yy = date.getUTCFullYear()
+            const mm = _.padStart((date.getUTCMonth() + 1).toString(), 2, '0')
+            const dd = _.padStart(date.getUTCDate().toString(), 2, '0')
+            const hh = _.padStart(date.getUTCHours().toString(), 2, '0')
+            const mf = _.padStart(date.getUTCMinutes().toString(), 2, '0')
+            const ss = _.padStart(date.getUTCSeconds().toString(), 2, '0')
+            newTime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
+            return newTime
+        }, // 获取当前时间与格式转换
         dialogTure(data) {
             this.dialogVisible = true
             this.dialogData = data
-        },
+        }, // 弹出框显示
         dialogFalse() {
             this.dialogVisible = false
-        }
+        } // 关闭弹出框
     },
     created() {
         this.getApproed()

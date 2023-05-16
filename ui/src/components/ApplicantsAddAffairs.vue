@@ -35,7 +35,7 @@
             </el-col>
         </el-form-item>
 
-        <el-form-item v-model="form.createTime" label="发送日期:">
+        <el-form-item v-model="form.createTime" label="创建时间:">
             <el-col :span="5">
                 <el-date-picker
                     v-model="form.createTime"
@@ -74,8 +74,8 @@ export default {
                 status: '',
                 applicantId: '',
                 inspectorId: '',
-                createTime: '',
-                inspectTime: '',
+                createTime: new Date(),
+                inspectTime: new Date(),
                 priority: '',
                 modifyTime: '',
                 originId: '',
@@ -165,7 +165,15 @@ export default {
             this.$nextTick(() => {
                 this.$refs.ruleForm.resetFields()
             })
+        },
+        alarm() {
+            setInterval(() => {
+                this.form.createTime = new Date()
+            }, 500)
         }
+    },
+    created() {
+        this.alarm()
     }
 }
 </script>
