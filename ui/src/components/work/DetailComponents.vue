@@ -3,7 +3,7 @@
         title="工作详细信息"
         direction="vertical"
         :column="3"
-        :size="size"
+        size="large"
         :data="taskData"
         border
     >

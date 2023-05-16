@@ -1,5 +1,5 @@
 <template>
-    <el-card style="min-width: 640px; height: 400px">
+    <el-card shadow="hover">
         <template #header>
             <div class="card-header">
                 <h2>待办工作</h2>
@@ -7,9 +7,8 @@
             </div>
         </template>
         <div v-for="item in tableData" :key="item" class="text item">
-            <el-row style="width: 100%; height: 42px">
-                <el-col :span="1" />
-                <el-col :span="1" style="justify-content: center">
+            <el-row gutter="10">
+                <el-col :xs="0" :sm="4" :md="4" :lg="3" :xl="2" style="justify-content: center">
                     <el-avatar style="background-color: #409eff" size="default">
                         <el-icon
                             color="white"
@@ -20,22 +19,19 @@
                         </el-icon>
                     </el-avatar>
                 </el-col>
-                <el-col :span="1" />
-                <el-col :span="7"
-                    ><el-text size="large" style="color: black; line-height: 42px">{{
+                <el-col :xs="5" :sm="5" :md="5" :lg="8" :xl="10"
+                    ><el-text size="large" style="color: black; line-height: 42px" truncated>{{
                         item.content
                     }}</el-text>
                 </el-col>
-                <el-col :span="4" />
-                <el-col :span="7" style="text-align: right"
+                <el-col :xs="15" :sm="11" :md="12" :lg="10" :xl="10" style="text-align: right"
                     ><el-text type="info" style="line-height: 42px">{{
                         formatDate(item.deadline)
                     }}</el-text></el-col
                 >
-                <el-col :span="2" style="text-align: right"
+                <el-col :xs="4" :sm="4" :md="3" :lg="3" :xl="2" style="text-align: right"
                     ><el-text type="info" style="line-height: 42px">截止</el-text></el-col
                 >
-                <el-col :span="1" />
             </el-row>
         </div>
     </el-card>

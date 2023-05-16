@@ -23,7 +23,6 @@
                             width="220"
                             confirm-button-text="是"
                             cancel-button-text="否"
-                            :icon="InfoFilled"
                             icon-color="#00d4ff"
                             title="是否确认完成？"
                             @confirm="completeConfirmEvent(scope.row)"
