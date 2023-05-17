@@ -9,6 +9,7 @@ import com.cfive.pinnacle.service.IGroupService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +48,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     }
 
     @Override
+    @Transactional
     public boolean addGroup(Group group) {
         if (groupMapper.insert(group) == 1) {
             group.getRoles().forEach(role -> {
@@ -64,6 +66,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     }
 
     @Override
+    @Transactional
     public boolean modifyGroup(Group group) {
         groupMapper.updateById(group);
         Group originalGroup = getGroup(group.getId());
