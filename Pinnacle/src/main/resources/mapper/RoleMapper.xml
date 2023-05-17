@@ -23,13 +23,12 @@
                t.element_id   as operation_element_id,
                t.parent_id    as operation_parent_id
         from t_role
-                 left join t_power_role tpr on t_role.id = tpr.role_id
+                 left join (select * from t_power_role where deleted = 0) as tpr on t_role.id = tpr.role_id
                  left join t_power tp on tp.id = tpr.power_id
                  left join t_menu tm on tp.id = tm.power_id
                  left join t_element te on tp.id = te.power_id
                  left join t_operation t on tp.id = t.power_id
         where t_role.deleted = 0
-          and (tpr.deleted = 0 or tpr.deleted is null);
     </select>
     <select id="getOneById" resultMap="roleMap">
         select t_role.id      as role_id,
@@ -52,13 +51,12 @@
                t.element_id   as operation_element_id,
                t.parent_id    as operation_parent_id
         from t_role
-                 left join t_power_role tpr on t_role.id = tpr.role_id
+                 left join (select * from t_power_role where deleted = 0) as tpr on t_role.id = tpr.role_id
                  left join t_power tp on tp.id = tpr.power_id
                  left join t_menu tm on tp.id = tm.power_id
                  left join t_element te on tp.id = te.power_id
                  left join t_operation t on tp.id = t.power_id
         where t_role.deleted = 0
-          and (tpr.deleted = 0 or tpr.deleted is null)
           and t_role.id = #{id};
     </select>
 
