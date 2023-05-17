@@ -1,6 +1,7 @@
 const powerRouter = {
     path: '/power',
     name: 'systemManagement',
+    redirect: '/power/role',
     children: [
         {
             path: 'role',
@@ -18,6 +19,16 @@ const powerRouter = {
             component: async () => await import('@/pages/power/GroupManagement.vue'),
             meta: {
                 title: '用户组管理',
+                requiresScrollbar: false,
+                requiresPadding: true
+            }
+        },
+        {
+            path: 'user',
+            name: 'userManagement',
+            component: async () => await import('@/pages/power/UserManagement.vue'),
+            meta: {
+                title: '用户管理',
                 requiresScrollbar: false,
                 requiresPadding: true
             }

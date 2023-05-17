@@ -2,4 +2,70 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.UserMapper">
 
+    <select id="getAll" resultMap="userMap">
+        select t_user.id            as user_id,
+               t_user.username      as user_username,
+               t_user.department_id as user_department,
+               t_user.enable        as user_enable,
+               t_user.deleted       as user_deleted,
+               t_user.version       as user_version,
+               tr.id                as role_id,
+               tr.name              as role_name,
+               tr.deleted           as role_deleted,
+               tr.version           as role_version,
+               tg.id                as group_id,
+               tg.name              as group_name,
+               tg.deleted           as group_deleted,
+               tg.version           as group_version
+        from t_user
+                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+        where t_user.deleted = 0;
+    </select>
+    <select id="getOneById" resultMap="userMap">
+        select t_user.id            as user_id,
+               t_user.username      as user_username,
+               t_user.department_id as user_department,
+               t_user.enable        as user_enable,
+               t_user.deleted       as user_deleted,
+               t_user.version       as user_version,
+               tr.id                as role_id,
+               tr.name              as role_name,
+               tr.deleted           as role_deleted,
+               tr.version           as role_version,
+               tg.id                as group_id,
+               tg.name              as group_name,
+               tg.deleted           as group_deleted,
+               tg.version           as group_version
+        from t_user
+                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+        where t_user.deleted = 0
+          and t_user.id = #{id};
+    </select>
+
+    <resultMap id="userMap" type="user">
+        <id property="id" column="user_id"/>
+        <result property="username" column="user_username"/>
+        <result property="departmentId" column="user_department"/>
+        <result property="enable" column="user_enable"/>
+        <result property="deleted" column="user_deleted"/>
+        <result property="version" column="user_version"/>
+        <collection property="roles" ofType="role">
+            <id property="id" column="role_id"/>
+            <result property="name" column="role_name"/>
+            <result property="deleted" column="role_deleted"/>
+            <result property="version" column="role_version"/>
+        </collection>
+        <collection property="groups" ofType="group">
+            <id property="id" column="group_id"/>
+            <result property="name" column="group_name"/>
+            <result property="deleted" column="group_deleted"/>
+            <result property="version" column="group_version"/>
+        </collection>
+    </resultMap>
 </mapper>

@@ -97,13 +97,49 @@ VALUES (1656219345971326978, 1, 1655784840189972481),
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-select * from t_role
-left join t_power_role tpr on t_role.id = tpr.role_id
-left join t_power tp on tp.id = tpr.power_id
-left join t_menu tm on tp.id = tm.power_id
-left join t_element te on tp.id = te.power_id
-left join t_operation t on tp.id = t.power_id;
+select *
+from t_role
+         left join t_power_role tpr on t_role.id = tpr.role_id
+         left join t_power tp on tp.id = tpr.power_id
+         left join t_menu tm on tp.id = tm.power_id
+         left join t_element te on tp.id = te.power_id
+         left join t_operation t on tp.id = t.power_id;
 
-select * from t_group
-left join t_role_group trg on t_group.id = trg.group_id
-left join t_role tr on tr.id = trg.role_id
+select *
+from t_group
+         left join t_role_group trg on t_group.id = trg.group_id
+         left join t_role tr on tr.id = trg.role_id;
+
+update t_user
+set deleted = id
+where id = 1658537970212278274;
+
+
+select *
+from t_user
+         inner join t_user_role tur on t_user.id = tur.user_id
+         inner join t_role tr on tr.id = tur.role_id
+         inner join t_user_group tug on t_user.id = tug.user_id
+         inner join t_group tg on tg.id = tug.group_id;
+
+select t_user.id            as user_id,
+       t_user.username      as user_username,
+       t_user.department_id as user_department,
+       t_user.enable        as user_enable,
+       t_user.deleted       as user_deleted,
+       t_user.version       as user_version,
+       tr.id                as role_id,
+       tr.name              as role_name,
+       tr.deleted           as role_deleted,
+       tr.version           as role_version,
+       tg.id                as group_id,
+       tg.name              as group_name,
+       tg.deleted           as group_deleted,
+       tg.version           as group_version
+from t_user
+         left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+         left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+         left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+         left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+where t_user.deleted = 0;
+

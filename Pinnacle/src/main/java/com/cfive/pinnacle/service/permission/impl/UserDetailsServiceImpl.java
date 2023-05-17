@@ -5,6 +5,7 @@ import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.entity.permission.LoginUser;
 import com.cfive.pinnacle.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ import java.util.Objects;
 public class UserDetailsServiceImpl implements UserDetailsService {
     private IUserService userService;
 
+    @Lazy
     @Autowired
     public void setUserService(IUserService userService) {
         this.userService = userService;
