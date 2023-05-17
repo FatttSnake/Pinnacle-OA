@@ -2,9 +2,7 @@ package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cfive.pinnacle.entity.*;
-import com.cfive.pinnacle.mapper.UserGroupMapper;
-import com.cfive.pinnacle.mapper.UserMapper;
-import com.cfive.pinnacle.mapper.UserRoleMapper;
+import com.cfive.pinnacle.mapper.*;
 import com.cfive.pinnacle.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +51,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public List<User> getAllUser() {
-        return userMapper.getAll();
+        List<User> users = userMapper.getAll();
+        users.forEach(user -> {
+            if (user.getId() == 1L) {
+                user.setRoles(List.of(new Role(0L, "超级管理员")));
+                user.setGroups(List.of(new Group(0L, "超级管理员")));
+            }
+        });
+        return users;
     }
 
     @Override
     public User getUser(long id) {
-        return userMapper.getOneById(id);
+        User user = userMapper.getOneById(id);
+        if (user.getId() == 1L) {
+            user.setRoles(List.of(new Role(0L, "超级管理员")));
+            user.setGroups(List.of(new Group(0L, "超级管理员")));
+        }
+        return user;
     }
 
     @Override
@@ -96,6 +106,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             String encryptedPassword = passwordEncoder.encode(user.getPasswd());
             user.setPasswd(encryptedPassword);
         }
+
+        // Protect administrator
+        if (user.getId() == 1L) {
+            user.setDepartmentId(null);
+            user.setEnable(1);
+            user.setDeleted(0L);
+            userMapper.updateById(user);
+            return true;
+        }
+
         userMapper.updateById(user);
         User originalUser = getUser(user.getId());
         HashSet<Long> newRoleIds = new HashSet<>();

@@ -16,7 +16,9 @@ import com.cfive.pinnacle.entity.permission.Operation;
 import com.cfive.pinnacle.entity.permission.Power;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -28,6 +30,8 @@ import lombok.experimental.Accessors;
  * @since 2023-04-30
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 @TableName("t_role")
 public class Role implements Serializable {
@@ -64,4 +68,9 @@ public class Role implements Serializable {
     @TableField("version")
     @Version
     private Integer version;
+
+    public Role(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

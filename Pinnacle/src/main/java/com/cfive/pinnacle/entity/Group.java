@@ -12,7 +12,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -24,6 +26,8 @@ import lombok.experimental.Accessors;
  * @since 2023-04-30
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 @TableName("t_group")
 public class Group implements Serializable {
@@ -51,4 +55,9 @@ public class Group implements Serializable {
 
     @TableField(exist = false)
     private List<Role> roles;
+
+    public Group(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

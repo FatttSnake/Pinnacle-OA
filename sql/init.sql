@@ -84,7 +84,7 @@ create table `t_department`
     `name`    varchar(50) not null comment '部门名',
     `tel`     varchar(20) null comment '部门电话',
     `address` varchar(20) null comment '部门地址',
-    `deleted` bigint         not null default 0,
+    `deleted` bigint      not null default 0,
     `version` int         not null default 0
 ) comment '部门';
 
@@ -95,7 +95,7 @@ create table `t_user`
     `passwd`        char(70)    not null comment '密码',
     `department_id` bigint      null comment '部门',
     `enable`        int         not null comment '启用',
-    `deleted`       bigint         not null default 0,
+    `deleted`       bigint      not null default 0,
     `version`       int         not null default 0,
     constraint t_user_department_id_fk foreign key (department_id) references t_department (id),
     constraint t_user_unique unique (username, deleted)
@@ -105,8 +105,9 @@ create table `t_group`
 (
     `id`      bigint      not null primary key,
     `name`    varchar(30) not null comment '用户组名',
-    `deleted` bigint         not null default 0,
-    `version` int         not null default 0
+    `deleted` bigint      not null default 0,
+    `version` int         not null default 0,
+    constraint t_group_unique unique (name, deleted)
 ) comment '用户组';
 
 create table `t_user_group`
@@ -114,7 +115,7 @@ create table `t_user_group`
     `id`       bigint not null primary key,
     `user_id`  bigint not null comment '用户',
     `group_id` bigint not null comment '用户组',
-    `deleted`  bigint    not null default 0,
+    `deleted`  bigint not null default 0,
     `version`  int    not null default 0,
     constraint t_user_group_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_user_group_group_id_fk foreign key (group_id) references t_group (id)
@@ -124,8 +125,9 @@ create table `t_role`
 (
     `id`      bigint      not null primary key,
     `name`    varchar(20) not null comment '角色名',
-    `deleted` bigint         not null default 0,
-    `version` int         not null default 0
+    `deleted` bigint      not null default 0,
+    `version` int         not null default 0,
+    constraint t_role_unique unique (name, deleted)
 ) comment '角色';
 
 create table `t_role_group`
@@ -133,7 +135,7 @@ create table `t_role_group`
     `id`       bigint not null primary key,
     `role_id`  bigint not null comment '角色',
     `group_id` bigint not null comment '群组',
-    `deleted`  bigint    not null default 0,
+    `deleted`  bigint not null default 0,
     `version`  int    not null default 0,
     constraint t_role_group_role_id_fk foreign key (role_id) references t_role (id),
     constraint t_role_group_group_id_fk foreign key (group_id) references t_group (id)
@@ -144,7 +146,7 @@ create table `t_user_role`
     `id`      bigint not null primary key,
     `user_id` bigint not null comment '用户',
     `role_id` bigint not null comment '角色',
-    `deleted` bigint    not null default 0,
+    `deleted` bigint not null default 0,
     `version` int    not null default 0,
     constraint t_user_role_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_user_role_role_id_fk foreign key (role_id) references t_role (id)
@@ -155,7 +157,7 @@ create table `t_power_role`
     `id`       bigint not null primary key,
     `power_id` bigint not null comment '权限',
     `role_id`  bigint not null comment '角色',
-    `deleted`  bigint    not null default 0,
+    `deleted`  bigint not null default 0,
     `version`  int    not null default 0,
     constraint t_power_role_power_id_fk foreign key (power_id) references t_power (id),
     constraint t_power_role_role_id_fk foreign key (role_id) references t_role (id)
@@ -168,7 +170,7 @@ create table `t_operation_log`
     `operation_id`   bigint       not null comment '功能',
     `content`        varchar(500) not null comment '操作内容',
     `operating_time` datetime     not null default (utc_timestamp()) comment '操作时间',
-    `deleted`        bigint          not null default 0,
+    `deleted`        bigint       not null default 0,
     `version`        int          not null default 0,
     constraint t_operation_log_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_operation_log_operation_id_fk foreign key (operation_id) references t_operation (id)
@@ -185,7 +187,7 @@ create table `t_staff`
     `email`      varchar(50) null comment '邮箱',
     `tel`        varchar(20) null comment '电话',
     `address`    varchar(50) null comment '地址',
-    `deleted`    bigint         not null default 0,
+    `deleted`    bigint      not null default 0,
     `version`    int         not null default 0,
     constraint t_staff_user_id_fk foreign key (user_id) references t_user (id)
 ) comment '员工';
@@ -195,7 +197,7 @@ create table `t_notice_type`
     `id`      bigint      not null primary key,
     `name`    varchar(20) not null comment '公告类型名',
     `enable`  int         not null default 1 comment '启用',
-    `deleted` bigint         not null default 0,
+    `deleted` bigint      not null default 0,
     `version` int         not null default 0
 ) comment '公告类型';
 
@@ -214,7 +216,7 @@ create table `t_notice`
     `modify_time` datetime    not null default (utc_timestamp()) comment '修改时间',
     `origin_id`   bigint      null comment '源ID',
     `old`         int         not null default 0 comment '已修改',
-    `deleted`     bigint         not null default 0,
+    `deleted`     bigint      not null default 0,
     `version`     int         not null default 0,
     constraint t_notice_type_id_fk foreign key (type_id) references t_notice_type (id),
     constraint t_notice_sender_id_fk foreign key (sender_id) references t_user (id)
@@ -226,7 +228,7 @@ create table `t_notice_receive`
     `user_id`      bigint not null comment '用户',
     `notice_id`    bigint not null comment '公告',
     `already_read` int    not null default 0 comment '已读',
-    `deleted`      bigint    not null default 0,
+    `deleted`      bigint not null default 0,
     `version`      int    not null default 0,
     constraint t_notice_receive_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_notice_receive_notice_if_fk foreign key (notice_id) references t_notice (id)
@@ -242,7 +244,7 @@ create table `t_work`
     `modify_time`  datetime     not null default (utc_timestamp()) comment '修改时间',
     `old`          int          not null default 0 comment '已修改',
     `origin_id`    bigint       null comment '源ID',
-    `deleted`      bigint          not null default 0,
+    `deleted`      bigint       not null default 0,
     `version`      int          not null default 0,
     constraint t_work_publisher_id_fk foreign key (publisher_id) references t_user (id)
 ) comment '工作事项';
@@ -253,7 +255,7 @@ create table `t_user_work`
     `user_id` bigint not null comment '用户',
     `work_id` bigint not null comment '工作事项',
     `status`  int    not null default 0 comment '工作状态',
-    `deleted` bigint    not null default 0,
+    `deleted` bigint not null default 0,
     `version` int    not null default 0,
     constraint t_user_work_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_user_work_work_id_fk foreign key (work_id) references t_work (id)
@@ -264,7 +266,7 @@ create table `t_affair_type`
     `id`      bigint      not null primary key,
     `name`    varchar(20) not null comment '事务类型名',
     `enable`  int         not null default 1 comment '启用',
-    `deleted` bigint         not null default 0,
+    `deleted` bigint      not null default 0,
     `version` int         not null default 0
 ) comment '事务类型';
 
@@ -283,7 +285,7 @@ create table `t_affair`
     `modify_time`  datetime             default (utc_timestamp()) comment '修改时间',
     `origin_id`    bigint      null comment '源ID',
     `old`          int         not null default 0 comment '已修改',
-    `deleted`      bigint         not null default 0,
+    `deleted`      bigint      not null default 0,
     `version`      int         not null default 0,
     constraint t_affair_type_id_fk foreign key (type_id) references t_affair_type (id),
     constraint t_affair_applicant_id_fk foreign key (applicant_id) references t_user (id),
@@ -298,7 +300,7 @@ create table `t_attendance`
     `status`      int      not null default 0 comment '考勤状态',
     `modify_id`   bigint   not null comment '修改人',
     `modify_time` datetime not null default (utc_timestamp()) comment '修改时间',
-    `deleted`     bigint      not null default 0,
+    `deleted`     bigint   not null default 0,
     `version`     int      not null default 0,
     constraint t_attendance_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_attendance_modify_id_fk foreign key (modify_id) references t_user (id)

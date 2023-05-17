@@ -57,7 +57,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseResult deleteRole(@PathVariable Long id) {
+    public ResponseResult deleteUser(@PathVariable Long id) {
+        if (id == 1L) {
+            return ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "Unable to remove super admin", null);
+        }
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getId, id);
         if (userService.remove(wrapper)) {
@@ -68,7 +71,7 @@ public class UserController {
     }
 
     @PutMapping()
-    public ResponseResult modifyRole(@RequestBody User user) {
+    public ResponseResult modifyUser(@RequestBody User user) {
         if (!StringUtils.hasText(user.getUsername())) {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "Username cannot be empty", null);
         }
