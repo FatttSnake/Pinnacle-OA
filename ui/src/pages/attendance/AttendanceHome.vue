@@ -74,13 +74,13 @@
                                 scope.row.status === 1
                                     ? 'success'
                                     : scope.row.status === 2
-                                    ? 'primary'
+                                    ? ''
                                     : scope.row.status === 3
                                     ? 'warning'
                                     : scope.row.status === 1 + ''
                                     ? 'success'
                                     : scope.row.status === 2 + ''
-                                    ? 'primary'
+                                    ? ''
                                     : scope.row.status === 3 + ''
                                     ? 'warning'
                                     : 'danger'
@@ -217,7 +217,6 @@ export default {
             request
                 .get('/user')
                 .then((response) => {
-                    console.log(response.data.data)
                     this.users = response.data.data
                 })
                 .catch((reportError) => {
@@ -229,7 +228,6 @@ export default {
             request
                 .get('/attendance/findAllAttendance')
                 .then((response) => {
-                    console.log(response.data.data)
                     this.tableData = response.data.data
                 })
                 .catch((reportError) => {
@@ -237,17 +235,14 @@ export default {
                 })
         },
         getAttendancesByTime() {
-            console.log(typeof this.attTime[0])
             const start = this.handleDateFormatUTC(this.attTime[0])
             const end = this.handleDateFormatUTC(this.attTime[1])
-            console.log(start + '\t' + end)
             request
                 .get('/attendance/findAttendanceByTime', {
                     startTime: start,
                     endTime: end
                 })
                 .then((response) => {
-                    console.log(response.data.data)
                     this.tableData = response.data.data
                     ElMessage({
                         message: '查询成功',
@@ -286,7 +281,6 @@ export default {
             })
         },
         setDialogVisible(dialogVisible) {
-            console.log(dialogVisible)
             this.dialogFormVisible = dialogVisible
             this.getAttendances()
         },
@@ -301,8 +295,8 @@ export default {
             request
                 .post('/attendance/saveAttendance', formData)
                 .then((response) => {
+                    console.log(response)
                     this.getAttendances()
-                    console.log(response.data.data)
                 })
                 .catch((reportError) => {
                     console.log(reportError)
@@ -318,7 +312,6 @@ export default {
         },
         addAttendance(formData) {
             this.doSave(formData)
-            console.log(formData)
             this.dialogFormVisible = false
         },
         // 点击取消
@@ -339,11 +332,11 @@ export default {
 
         // 操作删除
         handleDelete(id) {
-            console.log(id)
             request
                 .delete('/attendance/delAttendance/' + id)
                 .then((response) => {
                     if (response) {
+                        console.log(response)
                         ElMessage({
                             message: '删除成功',
                             type: 'success'
@@ -362,7 +355,6 @@ export default {
         },
         // 批量删除
         handleSelectionChange(val) {
-            console.log(val)
             this.multipleSelection = val
         },
         // 批量删除

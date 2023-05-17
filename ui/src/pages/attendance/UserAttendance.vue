@@ -53,7 +53,7 @@
                                 scope.row.status === 1
                                     ? 'success'
                                     : scope.row.status === 2
-                                    ? 'primary'
+                                    ? ''
                                     : scope.row.status === 3
                                     ? 'warning'
                                     : 'danger'
@@ -74,17 +74,7 @@
             </el-table>
         </div>
 
-        <div class="demo-pagination-block">
-            <el-pagination
-                small
-                :current-page="pageNum"
-                :page-size="pageSize"
-                :page-sizes="[5, 10, 20, 30]"
-                background
-                layout="total,sizes,prev, pager, next,jumper"
-                :total="total"
-            />
-        </div>
+        <div class="demo-pagination-block"></div>
         <div>
             <el-dialog
                 v-model="dialogFormVisible"
@@ -187,17 +177,14 @@ export default {
         },
 
         getOneAttendancesByTime() {
-            console.log(typeof this.attTimeB[0])
             const start = this.handleDateFormatUTC(this.attTimeB[0])
             const end = this.handleDateFormatUTC(this.attTimeB[1])
-            console.log(start + '\t' + end)
             request
                 .get('/attendance/findOneAttendanceByTime', {
                     startTime: start,
                     endTime: end
                 })
                 .then((response) => {
-                    console.log(response.data.data)
                     this.tableData = response.data.data
                     ElMessage({
                         message: '查询成功',
@@ -205,7 +192,6 @@ export default {
                     })
                 })
                 .catch((reportError) => {
-                    console.log(reportError)
                     ElMessage({
                         message: '查询失败',
                         type: 'error'
@@ -217,12 +203,9 @@ export default {
             request
                 .get('/attendance/selectAttendance')
                 .then((response) => {
-                    console.log(response.data.data)
                     this.tableData = response.data.data
                 })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                .catch((reportError) => {})
         },
         resetForm() {
             this.$refs.form.resetFields()
@@ -242,17 +225,13 @@ export default {
                 .then((response) => {
                     this.dialogFormVisible = false
                     this.getAttendancesByUserId()
-                    console.log(response.data.data)
                 })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                .catch((reportError) => {})
         },
 
         submitForm() {
             this.$refs.ruleForm.validate((valid) => {
                 if (valid) {
-                    console.log(this.form.attTime)
                     this.doSave()
                     ElMessage({
                         message: '操作成功',

@@ -74,7 +74,6 @@ export default {
         submitForm(form) {
             this.$refs.ruleForm.validate((valid) => {
                 if (valid) {
-                    console.log(form)
                     this.$emit('addAttendance', form)
                     this.resetForm()
                     ElMessage({
@@ -99,12 +98,10 @@ export default {
     created() {
         if (this.formData) {
             this.form = this.formData
-            console.log(this.isDisabled)
         }
     },
     updated() {
         if (this.formData) {
-            console.log(this.isDisabled)
             this.form = this.formData
         }
     }
