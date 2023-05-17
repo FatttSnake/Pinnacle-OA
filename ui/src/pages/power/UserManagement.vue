@@ -53,7 +53,12 @@
                     />
                 </el-form-item>
                 <el-form-item label="角色">
-                    <el-select v-model="userForm.selectedRoles" multiple style="width: 100%">
+                    <el-select
+                        :disabled="disableSelectRoles"
+                        v-model="userForm.selectedRoles"
+                        multiple
+                        style="width: 100%"
+                    >
                         <el-option
                             v-for="role in roles"
                             :key="role.id"
@@ -63,7 +68,12 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="用户组">
-                    <el-select v-model="userForm.selectedGroups" multiple style="width: 100%">
+                    <el-select
+                        :disabled="disableSelectGroups"
+                        v-model="userForm.selectedGroups"
+                        multiple
+                        style="width: 100%"
+                    >
                         <el-option
                             v-for="group in groups"
                             :key="group.id"
@@ -132,7 +142,9 @@ export default {
                         message: '密码不能为空'
                     }
                 ]
-            }
+            },
+            disableSelectRoles: false,
+            disableSelectGroups: false
         }
     },
     methods: {
@@ -205,10 +217,18 @@ export default {
             this.userForm.selectedRoles = []
             this.userForm.selectedGroups = []
             for (const role of row.roles) {
-                this.userForm.selectedRoles.push(role.id)
+                if (role.id === '0') {
+                    this.userForm.selectedRoles.push(role.name)
+                } else {
+                    this.userForm.selectedRoles.push(role.id)
+                }
             }
             for (const group of row.groups) {
-                this.userForm.selectedGroups.push(group.id)
+                if (group.id === '0') {
+                    this.userForm.selectedGroups.push(group.name)
+                } else {
+                    this.userForm.selectedGroups.push(group.id)
+                }
             }
             this.isAddNew = false
             this.dialogVisible = true
@@ -237,6 +257,9 @@ export default {
         handleDialogOpen() {
             this.getRoles()
 
+            this.disableSelectRoles = false
+            this.disableSelectGroups = false
+
             if (this.isAddNew) {
                 this.userForm.inputUsername = ''
                 this.userForm.inputPassword = ''
@@ -245,6 +268,10 @@ export default {
                 this.dialogTitle = '添加用户'
             } else {
                 this.dialogTitle = '编辑用户'
+                if (this.editUserId === '1') {
+                    this.disableSelectRoles = true
+                    this.disableSelectGroups = true
+                }
             }
         },
         async handleSubmit() {
@@ -258,18 +285,21 @@ export default {
                         roles: [],
                         groups: []
                     }
-                    for (const roleId of this.userForm.selectedRoles) {
-                        const role = {
-                            id: roleId
+                    if (this.editUserId !== '1') {
+                        for (const roleId of this.userForm.selectedRoles) {
+                            const role = {
+                                id: roleId
+                            }
+                            userObject.roles.push(role)
                         }
-                        userObject.roles.push(role)
-                    }
-                    for (const groupId of this.userForm.selectedGroups) {
-                        const group = {
-                            id: groupId
+                        for (const groupId of this.userForm.selectedGroups) {
+                            const group = {
+                                id: groupId
+                            }
+                            userObject.groups.push(group)
                         }
-                        userObject.groups.push(group)
                     }
+
                     if (this.isAddNew) {
                         request.post('/user', userObject).then((res) => {
                             const response = res.data
