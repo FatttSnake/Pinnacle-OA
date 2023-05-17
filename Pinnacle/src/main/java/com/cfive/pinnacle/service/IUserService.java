@@ -14,7 +14,12 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface IUserService extends IService<User> {
-    List<User> getBasicInfo();
 
-    User getBasicInfo(int id);
+    List<User> getAllUser();
+
+    User getUser(long id);
+
+    boolean addUser(User user);
+
+    boolean modifyUser(User user);
 }

@@ -86,7 +86,7 @@ public class Staff implements Serializable {
 
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Long deleted;
 
     @TableField("version")
     @Version

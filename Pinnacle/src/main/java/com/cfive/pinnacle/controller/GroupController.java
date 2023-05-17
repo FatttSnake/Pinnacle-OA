@@ -32,7 +32,7 @@ public class GroupController {
     @GetMapping
     public ResponseResult getAllGroup() {
         List<Group> groups = groupService.getAllGroup();
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", groups);
+        return ResponseResult.databaseSelectSuccess(groups);
     }
 
     @PostMapping
@@ -41,7 +41,7 @@ public class GroupController {
             return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "Name cannot be empty", null);
         }
         if (groupService.addGroup(group)) {
-            return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", null);
+            return ResponseResult.databaseSaveSuccess(group);
         } else {
             return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "error", null);
         }
@@ -52,7 +52,7 @@ public class GroupController {
         LambdaQueryWrapper<Group> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Group::getId, id);
         if (groupService.remove(wrapper)) {
-            return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", null);
+            return ResponseResult.databaseDeleteSuccess();
         } else {
             return ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "error", null);
         }
@@ -64,7 +64,7 @@ public class GroupController {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "Name cannot be empty", null);
         }
         if (groupService.modifyGroup(group)) {
-            return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", null);
+            return ResponseResult.databaseUpdateSuccess(group);
         } else {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "error", null);
         }

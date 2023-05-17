@@ -12,11 +12,9 @@
                tr.deleted      as role_deleted,
                tr.version      as role_version
         from t_group
-                 left join t_role_group trg on t_group.id = trg.group_id
-                 left join t_role tr on tr.id = trg.role_id
-        where t_group.deleted = 0
-          and (tr.deleted = 0 or tr.deleted is null)
-          and (trg.deleted = 0 or trg.deleted is null)
+                 left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
+        where t_group.deleted = 0;
     </select>
 
     <select id="getOneById" resultMap="groupMap">
@@ -29,8 +27,8 @@
                tr.deleted      as role_deleted,
                tr.version      as role_version
         from t_group
-                 left join t_role_group trg on t_group.id = trg.group_id
-                 left join t_role tr on tr.id = trg.role_id
+                 left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
         where t_group.deleted = 0
           and (tr.deleted = 0 or tr.deleted is null)
           and (trg.deleted = 0 or trg.deleted is null)
