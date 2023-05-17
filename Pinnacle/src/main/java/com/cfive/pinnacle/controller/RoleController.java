@@ -33,7 +33,7 @@ public class RoleController {
     @GetMapping
     public ResponseResult getAllRole() {
         List<Role> roles = roleService.getAllRole();
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", roles);
+        return ResponseResult.databaseSelectSuccess(roles);
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class RoleController {
             return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "Name cannot be empty", null);
         }
         if (roleService.addRole(role)) {
-            return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", null);
+            return ResponseResult.databaseSaveSuccess(role);
         } else {
             return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "error", null);
         }
@@ -53,7 +53,7 @@ public class RoleController {
         LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Role::getId, id);
         if (roleService.remove(wrapper)) {
-            return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", null);
+            return ResponseResult.databaseDeleteSuccess();
         } else {
             return ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "error", null);
         }
@@ -65,7 +65,7 @@ public class RoleController {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "Name cannot be empty", null);
         }
         if (roleService.modifyRole(role)) {
-            return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", null);
+            return ResponseResult.databaseUpdateSuccess(role);
         } else {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "error", null);
         }
