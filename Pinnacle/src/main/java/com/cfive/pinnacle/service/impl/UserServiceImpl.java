@@ -2,7 +2,13 @@ package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cfive.pinnacle.entity.*;
+import com.cfive.pinnacle.entity.permission.Element;
+import com.cfive.pinnacle.entity.permission.Menu;
+import com.cfive.pinnacle.entity.permission.Operation;
 import com.cfive.pinnacle.mapper.*;
+import com.cfive.pinnacle.mapper.permission.ElementMapper;
+import com.cfive.pinnacle.mapper.permission.MenuMapper;
+import com.cfive.pinnacle.mapper.permission.OperationMapper;
 import com.cfive.pinnacle.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +31,9 @@ import java.util.List;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     private UserMapper userMapper;
+    private MenuMapper menuMapper;
+    private ElementMapper elementMapper;
+    private OperationMapper operationMapper;
     private UserRoleMapper userRoleMapper;
     private UserGroupMapper userGroupMapper;
     private PasswordEncoder passwordEncoder;
@@ -35,10 +44,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Autowired
+    public void setMenuMapper(MenuMapper menuMapper) {
+        this.menuMapper = menuMapper;
+    }
+
+    @Autowired
+    public void setElementMapper(ElementMapper elementMapper) {
+        this.elementMapper = elementMapper;
+    }
+
+    @Autowired
+    public void setOperationMapper(OperationMapper operationMapper) {
+        this.operationMapper = operationMapper;
+    }
+
+    @Autowired
     public void setUserRoleMapper(UserRoleMapper userRoleMapper) {
         this.userRoleMapper = userRoleMapper;
     }
-
     @Autowired
     public void setUserGroupMapper(UserGroupMapper userGroupMapper) {
         this.userGroupMapper = userGroupMapper;
@@ -67,6 +90,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (user.getId() == 1L) {
             user.setRoles(List.of(new Role(0L, "超级管理员")));
             user.setGroups(List.of(new Group(0L, "超级管理员")));
+        }
+        return user;
+    }
+
+    @Override
+    public User getUserWithPower(String username) {
+        User user = userMapper.getOneWithPowerByUsername(username);
+        if (user.getId() == 1L) {
+            List<Menu> menus = menuMapper.selectList(null);
+            List<Element> elements = elementMapper.selectList(null);
+            List<Operation> operations = operationMapper.selectList(null);
+            user.setMenus(menus);
+            user.setElements(elements);
+            user.setOperations(operations);
         }
         return user;
     }

@@ -20,4 +20,6 @@ public interface UserMapper extends BaseMapper<User> {
     List<User> getAll();
 
     User getOneById(@Param("id") long id);
+
+    User getOneWithPowerByUsername(@Param("username") String username);
 }

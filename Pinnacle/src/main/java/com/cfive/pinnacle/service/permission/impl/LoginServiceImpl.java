@@ -5,6 +5,8 @@ import com.cfive.pinnacle.entity.permission.LoginUser;
 import com.cfive.pinnacle.service.permission.ILoginService;
 import com.cfive.pinnacle.utils.JwtUtil;
 import com.cfive.pinnacle.utils.RedisCache;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +43,13 @@ public class LoginServiceImpl implements ILoginService {
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         loginUser.getUser().setPasswd("");
         String userId = loginUser.getUser().getId().toString();
-        String jwt = JwtUtil.createJWT(userId);
+        String jwt;
+        try {
+            jwt = JwtUtil.createJWT(new ObjectMapper().writeValueAsString(loginUser.getUser()));
+        } catch (JsonProcessingException e) {
+            jwt = JwtUtil.createJWT(userId);
+        }
+
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("token", jwt);

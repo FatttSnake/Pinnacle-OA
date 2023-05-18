@@ -1,7 +1,6 @@
 package com.cfive.pinnacle.config;
 
 import com.cfive.pinnacle.filter.JwtAuthenticationTokenFilter;
-import com.cfive.pinnacle.handler.CustomAccessDeniedHandler;
 import com.cfive.pinnacle.handler.CustomAuthenticationEntryPointHandler;
 import com.cfive.pinnacle.service.permission.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,11 +22,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@EnableMethodSecurity()
 public class SecurityConfig {
     private UserDetailsServiceImpl userDetailsService;
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     private CustomAuthenticationEntryPointHandler authenticationEntryPointHandler;
-    private CustomAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
     public void setUserDetailsService(UserDetailsServiceImpl userDetailsService) {
@@ -41,11 +41,6 @@ public class SecurityConfig {
     @Autowired
     public void setAuthenticationEntryPointHandler(CustomAuthenticationEntryPointHandler authenticationEntryPointHandler) {
         this.authenticationEntryPointHandler = authenticationEntryPointHandler;
-    }
-
-    @Autowired
-    public void setAccessDeniedHandler(CustomAccessDeniedHandler accessDeniedHandler) {
-        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -101,7 +96,6 @@ public class SecurityConfig {
 
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPointHandler)
-                .accessDeniedHandler(accessDeniedHandler)
                 .and()
 
                 .cors()

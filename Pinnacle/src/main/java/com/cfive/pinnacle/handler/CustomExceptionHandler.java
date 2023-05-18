@@ -4,6 +4,7 @@ import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,6 +20,9 @@ public class CustomExceptionHandler {
         }
         if (e instanceof BadCredentialsException) {
             return ResponseResult.build(ResponseCode.LOGOUT_FAILED, e.getMessage(), null);
+        }
+        if (e instanceof AccessDeniedException) {
+            return ResponseResult.build(ResponseCode.ACCESS_DENIED, e.getMessage(), null);
         }
 
         log.debug(e.getMessage(), e);
