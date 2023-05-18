@@ -10,213 +10,178 @@
                 <template #dot v-if="notice.isRead === 0">
                     <el-badge is-dot class="item" />
                 </template>
-                <el-card @click="showNoticeDetail(notice)">
-                    <h4></h4>
-                    <p>Tom committed 2018/4/12 20:46</p>
+                <el-card
+                    @click="showNoticeDetail(notice)"
+                    @contextmenu.prevent="openMenu($event, notice)"
+                >
+                    <template #header>
+                        <el-tooltip content="鼠标右击进行更多操作" placement="top" effect="light">
+                            <div class="top">
+                                <el-icon :size="SIZE_ICON_MD()">
+                                    <icon-pinnacle-noticeItem />
+                                </el-icon>
+                                <el-tag
+                                    size="small"
+                                    :type="
+                                        notice.noticeType.name === '通知公告'
+                                            ? 'warning'
+                                            : notice.noticeType.name === '紧急公告'
+                                            ? 'danger'
+                                            : 'success'
+                                    "
+                                    disable-transitions
+                                    style="margin-right: 20px; margin-left: 10px"
+                                >
+                                    {{ notice.noticeType.name }}
+                                </el-tag>
+                                <h4>{{ notice.title }}</h4>
+                                <el-icon class="senderIcon">
+                                    <icon-pinnacle-user />
+                                </el-icon>
+                                发布者：
+                                <span class="sender">{{ notice.sender.username }}</span>
+                                <!--                            <div class="check">-->
+                                <!--                                <el-button-->
+                                <!--                                    type="info"-->
+                                <!--                                    v-if="notice.isRead === 1"-->
+                                <!--                                    @click.stop="changeIsRead"-->
+                                <!--                                >-->
+                                <!--                                    <template #icon>-->
+                                <!--                                        <input type="checkbox" :checked="isCheck" />-->
+                                <!--                                    </template>-->
+                                <!--                                    标为未读-->
+                                <!--                                </el-button>-->
+                                <!--                            </div>-->
+                            </div>
+                        </el-tooltip>
+                    </template>
+                    <p class="content">{{ contentSubstr(notice.content) }}</p>
                 </el-card>
+                <!-- 鼠标右击下拉菜单-->
+                <ul
+                    v-show="rightClickVisible"
+                    :style="{ left: left + 'px', top: top + 'px' }"
+                    class="contextmenu"
+                >
+                    <li>
+                        <el-icon :size="SIZE_ICON_MD()">
+                            <icon-pinnacle-top />
+                        </el-icon>
+                        置顶
+                    </li>
+                    <li v-if="this.isRead" @click.stop="modifyStatus(this.rightClickNid, 1)">
+                        <el-icon :size="SIZE_ICON_SM()">
+                            <icon-pinnacle-flag />
+                        </el-icon>
+                        标为已读
+                    </li>
+                    <li v-if="!this.isRead" @click.stop="modifyStatus(this.rightClickNid, 0)">
+                        <el-icon :size="SIZE_ICON_SM()">
+                            <icon-pinnacle-flag />
+                        </el-icon>
+                        标为未读
+                    </li>
+                    <li>
+                        <el-icon :size="SIZE_ICON_SM()">
+                            <icon-pinnacle-label />
+                        </el-icon>
+                        新建标签
+                    </li>
+                </ul>
             </el-timeline-item>
         </el-timeline>
         <!--        查看会话框-->
-        <el-dialog v-model="dialogShowVisible" center>
+        <el-dialog
+            v-model="dialogShowVisible"
+            center
+            :close-on-click-modal="false"
+            :before-close="handleDialogClose"
+        >
             <template #header>
                 <h2 style="color: red">公告详情</h2>
             </template>
             <notice-show-dialog />
         </el-dialog>
-        <!--        <el-collapse-->
-        <!--            @change="handleChange"-->
-        <!--            v-loading="this.loading"-->
-        <!--            element-loading-text="加载中..."-->
-        <!--        >-->
-        <!--            <el-collapse-item v-for="notice in selectData" :key="notice.id" :name="notice.id">-->
-        <!--                <template #title>-->
-        <!--                    <el-tag-->
-        <!--                        size="small"-->
-        <!--                        :type="-->
-        <!--                            notice.noticeType.name === '通知公告'-->
-        <!--                                ? 'warning'-->
-        <!--                                : notice.noticeType.name === '紧急公告'-->
-        <!--                                ? 'danger'-->
-        <!--                                : 'success'-->
-        <!--                        "-->
-        <!--                        disable-transitions-->
-        <!--                        style="margin-right: 30px"-->
-        <!--                    >-->
-        <!--                        {{ notice.noticeType.name }}-->
-        <!--                    </el-tag>-->
-        <!--                    <h3>{{ notice.title }}</h3>-->
-        <!--                </template>-->
-        <!--                <div>-->
-        <!--                    <el-card class="box-card" shadow="always">-->
-        <!--                        <template #header>-->
-        <!--                            <div class="card-header">-->
-        <!--                                <h4>优先级：</h4>-->
-        <!--                                <el-tag effect="light" size="large">{{ notice.priority }}</el-tag>-->
-        <!--                            </div>-->
-        <!--                            <div class="card-header">-->
-        <!--                                <h4>发布者：</h4>-->
-        <!--                                <el-tag effect="light" size="large">{{-->
-        <!--                                    notice.sender.username-->
-        <!--                                }}</el-tag>-->
-        <!--                            </div>-->
-        <!--                        </template>-->
-        <!--                        <h2 class="contentTitle">公告内容：</h2>-->
-        <!--                        <div class="content">-->
-        <!--                            {{ notice.content }}-->
-        <!--                        </div>-->
-        <!--                        <div class="date">-->
-        <!--                            <div class="sendTime">-->
-        <!--                                <h4>生效日期：</h4>-->
-        <!--                                <el-tag effect="plain" size="large" type="success">{{-->
-        <!--                                    formatDate(notice.sendTime)-->
-        <!--                                }}</el-tag>-->
-        <!--                            </div>-->
-        <!--                            <div class="endTime">-->
-        <!--                                <h4>失效日期：</h4>-->
-        <!--                                <el-tag effect="plain" size="large" type="info">{{-->
-        <!--                                    formatDate(notice.endTime)-->
-        <!--                                }}</el-tag>-->
-        <!--                            </div>-->
-        <!--                        </div>-->
-        <!--                    </el-card>-->
-        <!--                </div>-->
-        <!--            </el-collapse-item>-->
-        <!--        </el-collapse>-->
+        <!--        空状态-->
+        <el-empty v-if="selectData.length === 0" :image-size="200" />
     </div>
-    <!--    <el-table-->
-    <!--        v-loading="this.loading"-->
-    <!--        element-loading-text="加载中..."-->
-    <!--        ref="tableRef"-->
-    <!--        :data="this.selectData"-->
-    <!--        style="font-size: 18px"-->
-    <!--        border-->
-    <!--        highlight-current-row-->
-    <!--        :header-cell-style="{-->
-    <!--            background: 'darksalmon',-->
-    <!--            'text-align': 'center',-->
-    <!--            color: '#fff',-->
-    <!--            'font-size': '20px'-->
-    <!--        }"-->
-    <!--    >-->
-    <!--        <el-table-column-->
-    <!--            prop="title"-->
-    <!--            label="公告标题"-->
-    <!--            width="230"-->
-    <!--            :formatter="formatter"-->
-    <!--            show-overflow-tooltip-->
-    <!--            align="center"-->
-    <!--        />-->
-    <!--        <el-table-column prop="noticeType.name" label="公告类别" width="180" align="center">-->
-    <!--            <template #default="scope">-->
-    <!--                <el-tag-->
-    <!--                    size="default"-->
-    <!--                    :type="scope.row.noticeType.name === '通知公告' ? 'warning' : 'success'"-->
-    <!--                    disable-transitions-->
-    <!--                >-->
-    <!--                    {{ scope.row.noticeType.name }}-->
-    <!--                </el-tag>-->
-    <!--            </template>-->
-    <!--        </el-table-column>-->
-    <!--        <el-table-column prop="priority" label="优先级" width="100" align="center" />-->
-    <!--        <el-table-column prop="isRead" label="公告状态" width="180" align="center">-->
-    <!--            <template #default="scope">-->
-    <!--                <el-tag-->
-    <!--                    size="large"-->
-    <!--                    :type="scope.row.isRead === 0 ? 'danger' : 'success'"-->
-    <!--                    disable-transitions-->
-    <!--                >-->
-    <!--                    {{ scope.row.isRead === 0 ? '未读' : '已读' }}-->
-    <!--                </el-tag>-->
-    <!--            </template>-->
-    <!--        </el-table-column>-->
-    <!--        <el-table-column-->
-    <!--            prop="sendTime"-->
-    <!--            label="生效时间"-->
-    <!--            sortable-->
-    <!--            width="250"-->
-    <!--            :formatter="formatDate"-->
-    <!--            align="center"-->
-    <!--        />-->
-    <!--        <el-table-column-->
-    <!--            prop="endTime"-->
-    <!--            label="失效时间"-->
-    <!--            sortable-->
-    <!--            width="250"-->
-    <!--            :formatter="formatDate"-->
-    <!--            align="center"-->
-    <!--        />-->
-    <!--        <el-table-column-->
-    <!--            prop="sender.username"-->
-    <!--            label="发布人"-->
-    <!--            width="130"-->
-    <!--            column-key="senderName"-->
-    <!--            :filters="filterSenderName"-->
-    <!--            :filter-method="filterTag"-->
-    <!--            filter-placement="bottom-end"-->
-    <!--            align="center"-->
-    <!--        >-->
-    <!--            <template #default="scope">-->
-    <!--                <el-tag-->
-    <!--                    :type="scope.row.sender.username === 'cyb' ? '' : 'success'"-->
-    <!--                    disable-transitions-->
-    <!--                    >{{ scope.row.sender.username }}-->
-    <!--                </el-tag>-->
-    <!--            </template>-->
-    <!--        </el-table-column>-->
-    <!--        <el-table-column label="操作" align="center">-->
-    <!--            <template #default="scope">-->
-    <!--                <el-button size="small" color="#626aef" @click="handleShow(scope.$index, scope.row)"-->
-    <!--                    >查看-->
-    <!--                </el-button>-->
-    <!--                <el-button size="small" type="danger" @click="modifyStatus(scope.row)"-->
-    <!--                    >标记为{{ scope.row.isRead === 0 ? '已读' : '未读' }}-->
-    <!--                </el-button>-->
-    <!--            </template>-->
-    <!--        </el-table-column>-->
-    <!--    </el-table>-->
-    <!--    &lt;!&ndash;        查看会话框&ndash;&gt;-->
-    <!--    <el-dialog v-model="dialogShowVisible" center>-->
-    <!--        <template #header>-->
-    <!--            <h2 style="color: red">查看公告</h2>-->
-    <!--        </template>-->
-    <!--        <notice-show-dialog />-->
-    <!--    </el-dialog>-->
 </template>
 
 <script lang="ts">
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
+import { SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
+
 const noticeStore = useNoticeStore()
 
 export default {
     data() {
         return {
-            filterSenderName: []
+            isRead: true,
+            rightClickNid: '',
+            rightClickVisible: false,
+            top: 0,
+            left: 0
         }
     },
     props: [],
     methods: {
+        SIZE_ICON_MD() {
+            return SIZE_ICON_MD
+        },
+        SIZE_ICON_SM() {
+            return SIZE_ICON_SM
+        },
         showNoticeDetail(data) {
             noticeStore.$patch((state) => {
                 state.dialogShowVisible = true
                 state.noticeShowData = data
             })
         },
+        contentSubstr(title) {
+            if (title.length > 20) {
+                return title.substring(0, 20) + ' ...'
+            } else {
+                return title
+            }
+        },
         formatDate(date) {
             if (date == null) return null
             return new Date(date).toLocaleString()
         },
-        filterTag(value, row) {
-            return row.sender.username === value
+        async modifyStatus(nid, status) {
+            await noticeStore.modifyNoticeIsRead(nid, status)
+            this.closeMenu()
+            let flag = 0
+            if (this.currentViewPage === 'All') {
+                flag = -1
+            } else if (this.currentViewPage === 'ToRead') {
+                flag = 0
+            } else if (this.currentViewPage === 'AlRead') {
+                flag = 1
+            }
+            await noticeStore.selectAllNoticeByUserId(flag)
         },
-        modifyStatus(row) {
-            console.log(row)
-        },
-        handleShow(index, row) {
+        handleDialogClose() {
             noticeStore.$patch((state) => {
-                state.dialogShowVisible = true
-                state.noticeShowData = row
+                state.dialogEditVisible = false
+                state.dialogAddVisible = false
+                state.dialogShowVisible = false
+                state.editFlag = false
+                state.hackReset = false
             })
+        },
+        // 鼠标右击事件
+        openMenu(e, notice) {
+            this.left = e.pageX
+            this.top = e.pageY
+            this.isRead = notice.isRead === 0
+            this.rightClickNid = notice.id
+            this.rightClickVisible = true
+        },
+        // 关闭菜单
+        closeMenu() {
+            this.rightClickVisible = false
         }
     },
     mounted() {},
@@ -226,8 +191,23 @@ export default {
             'selectData',
             'loading',
             'dialogShowVisible',
-            'noticeShowData'
+            'noticeShowData',
+            'currentViewPage'
         ])
+    },
+    watch: {
+        //   监听属性对象，newValue为新的值，也就是改变后的值
+        rightClickVisible(newValue, oldValue) {
+            if (newValue) {
+                // 菜单显示的时候
+                // 在body上添加事件处理程序
+                document.body.addEventListener('click', this.closeMenu)
+            } else {
+                // 菜单隐藏的时候
+                // 移除body上添加的事件处理程序
+                document.body.removeEventListener('click', this.closeMenu)
+            }
+        }
     }
 }
 </script>
@@ -236,64 +216,106 @@ export default {
 .myTimeline {
     margin-top: 20px;
 }
+
 .el-timeline {
+    font-size: 18px;
     --el-timeline-node-size-normal: 16px;
     --el-timeline-node-size-large: 16px;
 }
-/deep/ .el-badge__content.is-dot {
+
+:deep(.el-badge__content.is-dot) {
     height: 16px;
     width: 16px;
 }
-/deep/ .el-timeline-item__timestamp.is-top {
+
+:deep(.el-timeline-item__timestamp.is-top) {
     font-size: 16px;
     font-weight: 600;
 }
-.el-collapse {
-    --el-collapse-header-height: 68px;
+
+.el-card {
+    --el-card-padding: 10px;
 }
-/deep/ .el-collapse-item__header {
-    padding-left: 25px;
-    font-weight: 400;
-    border-bottom: 2px solid #dcdfe6;
+
+:deep(.el-card__header) {
+    border-bottom: 2px solid #e4e7ed;
 }
-.box-card {
-    font-size: 16px;
-}
-/deep/ .el-card__header {
-    border-bottom: 1px dashed #6bd4ff;
-}
-.card-header {
-    display: inline-block;
-    margin-right: 40px;
-}
+
 .el-tag {
-    font-size: 15px;
+    font-size: 13px;
 }
+
 .contentTitle {
     font-size: 20px;
     font-weight: bold;
 }
+
 .content {
-    margin-top: 20px;
+    margin-top: 10px;
     margin-left: 20px;
     height: fit-content;
 }
-.date {
-    margin-top: 50px;
-}
-.sendTime {
-    display: inline-block;
-    margin-right: 25px;
-}
-.endTime {
-    display: inline-block;
-}
-h3 {
-    font-weight: 550;
-    font-size: 18px;
-}
+
 h4 {
-    font-weight: 500;
+    font-weight: 600;
     display: inline-block;
+}
+
+.senderIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #cdd0d6;
+    margin-left: 40px;
+    margin-top: 2px;
+}
+
+.sender {
+    display: inline-block;
+    margin-top: -6px;
+    width: fit-content;
+    padding: 8px;
+    height: fit-content;
+    line-height: 14px;
+    border-radius: 5px;
+    border: 1px solid cadetblue;
+    font-weight: 500;
+    text-align: center;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+}
+
+.check {
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.contextmenu {
+    background: #fff;
+    z-index: 3000;
+    position: fixed;
+    list-style-type: none;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    border: 1px solid #dadadc;
+    //box-shadow: 1px 1px 1px 1px rgba(21, 21, 21, 0.3);
+}
+
+.contextmenu li {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 7px 16px;
+    cursor: pointer;
+}
+
+.contextmenu li:hover {
+    background: #eee;
 }
 </style>

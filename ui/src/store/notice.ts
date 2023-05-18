@@ -48,6 +48,7 @@ export const useNoticeStore = defineStore('notice', {
             dialogAddVisible: false,
             dialogEditVisible: false,
             editFlag: false,
+            currentViewPage: 'All',
             hackReset: true,
             EnableNoticeTypeList: [],
             noticeTypeList: [
@@ -69,6 +70,7 @@ export const useNoticeStore = defineStore('notice', {
                 sendTime: '',
                 title: '',
                 top: 0,
+                isRead: 0,
                 noticeType: {
                     id: '',
                     name: '',
@@ -86,14 +88,6 @@ export const useNoticeStore = defineStore('notice', {
     },
     getters: {},
     actions: {
-        // selectAllNotice() {
-        //     void request.get('/notice/page').then((response) => {
-        //         this.selectData = response.data.data
-        //         if (this.selectData.length !== 0) {
-        //             this.loading = false
-        //         }
-        //     })
-        // },
         selectAllNotice(currentPage: number, pageSize: number) {
             void request
                 .get('/notice/page', {
@@ -189,6 +183,21 @@ export const useNoticeStore = defineStore('notice', {
                             type: 'success'
                         })
                     } else if (response.data.code === 20033) {
+                        ElMessage({
+                            message: response.data.msg,
+                            type: 'error'
+                        })
+                    }
+                })
+        },
+        async modifyNoticeIsRead(noticeId: string, readStatus: number) {
+            await request
+                .get('/notice/modifyNoticeIsRead', {
+                    noticeId,
+                    readStatus
+                })
+                .then((response) => {
+                    if (response.data.code === 20033) {
                         ElMessage({
                             message: response.data.msg,
                             type: 'error'

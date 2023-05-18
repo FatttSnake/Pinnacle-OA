@@ -99,6 +99,7 @@ export default {
     data() {
         return {
             visible:false,
+            rightClickVisible:false,
             addData: {
                 title: '',
                 typeId: '',
@@ -125,10 +126,10 @@ export default {
                 ],
                 content: [
                     { required: true, message: '请填写公告内容', trigger: 'blur' }
+                ],
+                receivers: [
+                    { type:'array',required: true, message: '请选择公告接收者', trigger: 'change' }
                 ]
-                // receivers: [
-                //     { type:'array',required: true, message: '请选择公告接收者', trigger: 'change' }
-                // ]
             }
         }
 

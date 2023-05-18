@@ -11,9 +11,9 @@ export default {
     methods: {},
     mounted() {
         noticeStore.selectAllNoticeByUserId(0)
-    },
-    unmounted() {
-        console.log('toRead:unmounted')
+        noticeStore.$patch((state) => {
+            state.currentViewPage = 'ToRead'
+        })
     }
 }
 </script>

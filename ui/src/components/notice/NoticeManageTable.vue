@@ -113,6 +113,7 @@
         v-model="dialogEditVisible"
         center
         v-if="hackReset"
+        :close-on-click-modal="false"
         :before-close="handleDialogClose"
     >
         <template #header>
@@ -121,7 +122,12 @@
         <commitForm />
     </el-dialog>
     <!--        查看会话框-->
-    <el-dialog v-model="dialogShowVisible" center>
+    <el-dialog
+        v-model="dialogShowVisible"
+        center
+        :close-on-click-modal="false"
+        :before-close="handleDialogClose"
+    >
         <template #header>
             <h2 style="color: red">查看公告</h2>
         </template>
@@ -188,6 +194,8 @@ export default {
         handleDialogClose() {
             noticeStore.$patch((state) => {
                 state.dialogEditVisible = false
+                state.dialogAddVisible = false
+                state.dialogShowVisible = false
                 state.editFlag = false
                 state.hackReset = false
             })

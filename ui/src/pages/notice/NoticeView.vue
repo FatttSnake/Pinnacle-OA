@@ -12,8 +12,8 @@
                 router
             >
                 <el-menu-item index="/notice/noticeView/all">所有公告</el-menu-item>
-                <el-menu-item index="/notice/noticeView/alRead">已读</el-menu-item>
                 <el-menu-item index="/notice/noticeView/toRead">未读</el-menu-item>
+                <el-menu-item index="/notice/noticeView/alRead">已读</el-menu-item>
             </el-menu>
             <router-view />
         </el-main>

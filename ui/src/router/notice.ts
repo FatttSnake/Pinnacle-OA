@@ -2,7 +2,7 @@ const noticeRouter = {
     path: '/notice',
     name: 'noticeHome',
     meta: {
-        title: '公告管理',
+        title: '公告',
         icon: shallowRef(IconPinnacleNotice),
         requiresScrollbar: false,
         requiresPadding: true
