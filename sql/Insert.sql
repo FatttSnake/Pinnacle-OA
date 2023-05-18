@@ -143,3 +143,37 @@ from t_user
          left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
 where t_user.deleted = 0;
 
+select distinct t_user.id            as user_id,
+                t_user.username      as user_username,
+                t_user.passwd        as user_passwd,
+                t_user.department_id as user_department,
+                t_user.enable        as user_enable,
+                t_user.deleted       as user_deleted,
+                t_user.version       as user_version,
+                tm.id                as menu_id,
+                tm.name              as menu_name,
+                tm.url               as menu_url,
+                tm.power_id          as menu_powerId,
+                tm.parent_id         as menu_parentId,
+                te.id                as element_id,
+                te.name              as element_name,
+                te.power_id          as element_powerId,
+                te.menu_id           as element_menuId,
+                t.id                 as operation_id,
+                t.name               as operation_name,
+                t.code               as operation_code,
+                t.power_id           as operation_powerId,
+                t.element_id         as operation_elementId,
+                t.parent_id          as operation_parentId
+from t_user
+         left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+         left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+         left join (select * from t_role_group where deleted = 0) as trg on tg.id = trg.group_id
+         left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+         left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id or tr.id = tur.role_id
+         left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
+         left join t_power as tp on tp.id = tpr.power_id
+         left join t_menu tm on tp.id = tm.power_id
+         left join t_element te on tp.id = te.power_id
+         left join t_operation t on tp.id = t.power_id
+where t_user.deleted = 0;

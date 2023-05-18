@@ -19,6 +19,8 @@ public interface IUserService extends IService<User> {
 
     User getUser(long id);
 
+    User getUserWithPower(String username);
+
     boolean addUser(User user);
 
     boolean modifyUser(User user);

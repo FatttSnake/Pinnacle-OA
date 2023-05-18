@@ -84,7 +84,7 @@
 import { getCaptchaSrc, login, verifyCaptcha } from '@/utils/auth'
 import backShape from '@/assets/svg/back-shape.svg'
 import { ElMessage } from 'element-plus'
-import { LOGIN_SUCCESS, PRODUCTION_NAME } from '@/constants/Common.constants'
+import { LOGIN_SUCCESS, LOGOUT_FAILED, PRODUCTION_NAME } from '@/constants/Common.constants'
 import { setToken } from '@/utils/common'
 
 export default {
@@ -151,21 +151,31 @@ export default {
             }
             login(this.userName, this.password).then((res) => {
                 const data = res.data
-                if (data.code === LOGIN_SUCCESS) {
-                    setToken(data.data.token)
-                    ElMessage.success({
-                        dangerouslyUseHTMLString: true,
-                        message: '<strong>登录成功</strong>'
-                    })
-                    setTimeout(function () {
-                        _this.$router.push('/')
-                    }, 1500)
-                } else {
-                    ElMessage.error({
-                        dangerouslyUseHTMLString: true,
-                        message: '<strong>用户名</strong> 或 <strong>密码</strong> 错误'
-                    })
-                    this.resetLogin()
+                switch (data.code) {
+                    case LOGIN_SUCCESS:
+                        setToken(data.data.token)
+                        ElMessage.success({
+                            dangerouslyUseHTMLString: true,
+                            message: '<strong>登录成功</strong>'
+                        })
+                        setTimeout(function () {
+                            _this.$router.push('/')
+                        }, 1500)
+                        break
+                    case LOGOUT_FAILED:
+                        ElMessage.error({
+                            dangerouslyUseHTMLString: true,
+                            message: '<strong>用户名</strong> 或 <strong>密码</strong> 错误'
+                        })
+                        this.resetLogin()
+                        break
+                    default:
+                        ElMessage.error({
+                            dangerouslyUseHTMLString: true,
+                            message: '<strong>服务器出错了</strong>，请稍后重试'
+                        })
+                        this.resetLogin()
+                        break
                 }
             })
         }

@@ -1,6 +1,5 @@
 package com.cfive.pinnacle.service.permission.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.entity.permission.LoginUser;
 import com.cfive.pinnacle.service.IUserService;
@@ -25,14 +24,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(User::getUsername, username);
-        User user = userService.getOne(wrapper);
+        User user = userService.getUserWithPower(username);
         if (Objects.isNull(user)) {
             throw new UsernameNotFoundException("Username not found in database");
         }
-
-        // Todo 权限
 
         return new LoginUser(user);
     }

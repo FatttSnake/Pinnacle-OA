@@ -9,6 +9,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+import com.cfive.pinnacle.entity.permission.Element;
+import com.cfive.pinnacle.entity.permission.Menu;
+import com.cfive.pinnacle.entity.permission.Operation;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
@@ -64,6 +67,15 @@ public class User implements Serializable {
 
     @TableField(exist = false)
     private List<Group> groups;
+
+    @TableField(exist = false)
+    private List<Menu> menus;
+
+    @TableField(exist = false)
+    private List<Element> elements;
+
+    @TableField(exist = false)
+    private List<Operation> operations;
 
     @TableField("deleted")
     private Long deleted;
