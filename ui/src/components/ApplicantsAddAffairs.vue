@@ -8,18 +8,30 @@
 
         <el-form-item label="申请者:">
             <el-col :span="3">
-                <el-input v-model="form.applicantId" class="shortInput" />
+                <el-input
+                    v-model="form.applicantId"
+                    class="shortInput"
+                    disabled
+                    :placeholder="currentUser.username"
+                />
             </el-col>
         </el-form-item>
 
         <el-form-item label="审批者:">
             <el-col :span="4">
-                <el-select v-model="form.inspectorId" placeholder="请选择审批者">
-                    <el-option value="1" label="ggb" />
-                    <el-option value="1652714496280469506" label="cyb" />
-                    <el-option value="1654151146072145921" label="syf" />
-                    <el-option value="1654151877520973826" label="gzw" />
-                    <el-option value="1654151930402746370" label="yrm" />
+                <el-select
+                    v-model="form.inspectorId"
+                    placeholder="请选择审批者"
+                    filterable
+                    ref="fieldSelect"
+                    popper-class="roleSelect"
+                >
+                    <el-option
+                        v-for="user in users"
+                        :label="user.username"
+                        :value="user.id"
+                        :key="user.id"
+                    />
                 </el-select>
             </el-col>
         </el-form-item>
@@ -82,7 +94,19 @@ export default {
                 old: '',
                 deleted: '',
                 version: ''
-            }
+            },
+            users: [
+                {
+                    id: '',
+                    username: ''
+                }
+            ],
+            currentUser: [
+                {
+                    id: '',
+                    username: ''
+                }
+            ]
         }
     },
     // created: {
@@ -103,6 +127,7 @@ export default {
     // },
     methods: {
         onSubmit: function (form) {
+            this.form.applicantId = this.currentUser.id
             console.log(form)
             if (
                 !_.isEmpty(form.title) &&
@@ -153,27 +178,54 @@ export default {
                         type: 'error'
                     })
                 }
-                if (_.isEmpty(form.createTime)) {
-                    ElMessage({
-                        message: '错误！发送时间不能为空！',
-                        type: 'error'
-                    })
-                }
+                // if (_.isEmpty(form.createTime)) {
+                //     ElMessage({
+                //         message: '错误！发送时间不能为空！',
+                //         type: 'error'
+                //     })
+                // }
             }
-        },
+        }, // 表单提交及验证
         resetForm() {
             this.$nextTick(() => {
                 this.$refs.ruleForm.resetFields()
             })
-        },
+        }, // 重置页面
         alarm() {
             setInterval(() => {
                 this.form.createTime = new Date()
             }, 500)
+        }, // 动态时钟
+        getUser() {
+            request
+                .get('http://localhost:8621/affair/add/getUser')
+                .then((response) => {
+                    this.users = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                }) // 数据库中获取用户
+        },
+        getCurrentUser() {
+            request
+                .get('http://localhost:8621/affair/add/getCurrentUser')
+                .then((response) => {
+                    this.currentUser = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
         }
     },
     created() {
         this.alarm()
+        this.getUser()
+        this.getCurrentUser()
+    },
+    mounted() {
+        this.$nextTick(function () {
+            this.$refs.fieldSelect.$refs.scrollbar.$el.classList.add('scroll-opacity')
+        })
     }
 }
 </script>
@@ -190,5 +242,8 @@ export default {
 .textarea {
     height: 70%;
     width: 70%;
+}
+.roleSelect {
+    height: 100px;
 }
 </style>

@@ -2,12 +2,17 @@ package com.cfive.pinnacle.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cfive.pinnacle.entity.Affair;
+import com.cfive.pinnacle.entity.Attendance;
+import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IAffairService;
+import com.cfive.pinnacle.service.IUserService;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -23,12 +28,20 @@ import org.springframework.web.bind.annotation.*;
 public class AffairController {
     @Autowired
     IAffairService affairService;
+//    IUserService userService;
+//    不用userService的方法了，userController中已经写好了直接拿来用
+    @Autowired
+    UserController userController;
 
 
     @PostMapping("/add")
     public ResponseResult addAffair(@RequestBody Affair affair) {
         return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", affairService.save(affair));
     }
+
+
+
+
 
     @GetMapping("/NotApproved")
     public ResponseResult select_NotApproved() {

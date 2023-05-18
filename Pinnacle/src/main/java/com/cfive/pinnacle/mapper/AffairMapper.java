@@ -40,7 +40,9 @@ public interface AffairMapper extends BaseMapper<Affair> {
 
 
 
-    @Select("SELECT * from t_affair where status=0  ")
+
+
+    @Select("SELECT t_affair.applicant_id,t_affair.inspector_id,t_user.id,t_user.username from t_affair,t_user ")
     @ResultType(Affair.class)
     List<Affair> selectAffairs_NotApproved();
 
