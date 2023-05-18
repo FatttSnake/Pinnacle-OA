@@ -39,6 +39,16 @@ public class AffairController {
         return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", affairService.save(affair));
     }
 
+    @GetMapping("/add/getUser")
+    public  ResponseResult getUser() {
+        List<User> userList = (List<User>)userController.getAllUser().getData();
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",userList);
+    }//获取数据库中所有用户
+
+    @GetMapping("/add/getCurrentUser")
+    public  ResponseResult getCurrentUser() {
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",WebUtil.getLoginUser().getUser());
+    }//获取当前用户
 
 
 

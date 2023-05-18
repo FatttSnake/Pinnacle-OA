@@ -6,16 +6,16 @@
             </el-col>
         </el-form-item>
 
-        <!--        <el-form-item label="申请者:">-->
-        <!--            <el-col :span="3">-->
-        <!--                <el-input-->
-        <!--                    v-model="form.applicantId"-->
-        <!--                    class="shortInput"-->
-        <!--                    disabled-->
-        <!--                    :placeholder="currentUser.username"-->
-        <!--                />-->
-        <!--            </el-col>-->
-        <!--        </el-form-item>-->
+        <el-form-item label="申请者:">
+            <el-col :span="3">
+                <el-input
+                    v-model="form.applicantId"
+                    class="shortInput"
+                    disabled
+                    :placeholder="currentUser.username"
+                />
+            </el-col>
+        </el-form-item>
 
         <el-form-item label="审批者:">
             <el-col :span="4">
@@ -109,22 +109,6 @@ export default {
             ]
         }
     },
-    // created: {
-    //     // request(form) {
-    //     //     post("localhost:8686/addAffairs",
-    //     //         {
-    //     //             affairsName: form.affairsName,
-    //     //             Applicants: form.Applicants,
-    //     //             Approver: form.Approver,
-    //     //             affairsType: form.affairsType,
-    //     //             Date: form.Date,
-    //     //             Time: form.Time,
-    //     //             affairsContent: form.affairsContent
-    //     //         },
-    //     //     )
-    //     //     get("localhost:8686/addAffairs")
-    //     // }
-    // },
     methods: {
         onSubmit: function (form) {
             this.form.applicantId = this.currentUser.id
@@ -205,23 +189,22 @@ export default {
                 .catch((reportError) => {
                     console.log(reportError)
                 }) // 数据库中获取用户
+        },
+        getCurrentUser() {
+            request
+                .get('http://localhost:8621/affair/add/getCurrentUser')
+                .then((response) => {
+                    this.currentUser = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
         }
-        // ,
-        // getCurrentUser() {
-        //     request
-        //         .get('http://localhost:8621/affair/add/getCurrentUser')
-        //         .then((response) => {
-        //             this.currentUser = response.data.data
-        //         })
-        //         .catch((reportError) => {
-        //             console.log(reportError)
-        //         })
-        // }
     },
     created() {
         this.alarm()
         this.getUser()
-        // this.getCurrentUser()
+        this.getCurrentUser()
     },
     mounted() {
         this.$nextTick(function () {
