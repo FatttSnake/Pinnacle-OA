@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CustomExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ResponseResult exceptionHandler(Exception e) {
+        e.printStackTrace();
         if (e instanceof DuplicateKeyException) {
             return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "无法添加重复数据", null);
         }
