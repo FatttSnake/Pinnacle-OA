@@ -1,7 +1,12 @@
 import axios, { type AxiosError } from 'axios'
 import { clearLocalStorage, getToken } from '@/utils/common'
 import router from '@/router'
-import { TOKEN_HAS_EXPIRED, TOKEN_IS_ILLEGAL, UNAUTHORIZED } from '@/constants/Common.constants'
+import {
+    ACCESS_DENIED,
+    TOKEN_HAS_EXPIRED,
+    TOKEN_IS_ILLEGAL,
+    UNAUTHORIZED
+} from '@/constants/Common.constants'
 import { ElMessage } from 'element-plus'
 
 const service = axios.create({
@@ -24,7 +29,7 @@ service.interceptors.request.use(
 )
 
 service.interceptors.response.use(
-    (response) => {
+    async (response) => {
         switch (response.data.code) {
             case UNAUTHORIZED:
             case TOKEN_IS_ILLEGAL:
@@ -37,6 +42,13 @@ service.interceptors.response.use(
                 setTimeout(function () {
                     router.go(0)
                 }, 1500)
+                return await Promise.reject(response?.data)
+            case ACCESS_DENIED:
+                ElMessage.error({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>暂无权限操作</strong>'
+                })
+                return await Promise.reject(response?.data)
         }
         return response
     },
