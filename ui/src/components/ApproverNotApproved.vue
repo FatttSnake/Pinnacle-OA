@@ -85,7 +85,7 @@
         <el-row>
             <el-col :span="3"></el-col>
             <el-col :span="4">事务标题:</el-col>
-            <el-col :span="1">{{ dialogData.title }}</el-col>
+            <el-col :span="17">{{ dialogData.title }}</el-col>
         </el-row>
         <el-row>
             <el-col :span="3"></el-col>
@@ -93,7 +93,7 @@
         </el-row>
         <el-row>
             <el-col :span="7"></el-col>
-            <el-col :span="1">{{ dialogData.content }}</el-col>
+            <el-col :span="17">{{ dialogData.content }}</el-col>
         </el-row>
         <el-row>
             <el-col :span="11"></el-col>
