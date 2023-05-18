@@ -1,30 +1,33 @@
 <template>
     <el-descriptions direction="vertical" :column="3" border>
-        <template #title>{{ this.noticeShowData.title }}</template>
-        <el-descriptions-item label="发布人" width="120"
+        <template #title
+            ><h2>{{ noticeShowData.title }}</h2></template
+        >
+        <el-descriptions-item label="发布者" width="120"
             ><el-tag size="large" type="success">{{
-                this.noticeShowData.sender.username
+                noticeShowData.sender.username
             }}</el-tag></el-descriptions-item
         >
         <el-descriptions-item label="生效时间" width="180">{{
-            formatDate(this.noticeShowData.sendTime)
+            formatDate(noticeShowData.sendTime)
         }}</el-descriptions-item>
         <el-descriptions-item label="公告类型"
             ><el-tag size="large">{{
-                this.noticeShowData.noticeType.name
+                noticeShowData.noticeType.name
             }}</el-tag></el-descriptions-item
         >
-        <el-descriptions-item label="优先级"
-            >{{ this.noticeShowData.priority }}
-        </el-descriptions-item>
+        <el-descriptions-item label="优先级">{{ noticeShowData.priority }} </el-descriptions-item>
         <el-descriptions-item label="失效时间">{{
-            formatDate(this.noticeShowData.endTime)
+            formatDate(noticeShowData.endTime)
         }}</el-descriptions-item>
-        <el-descriptions-item label="公告内容">{{
-            this.noticeShowData.content
-        }}</el-descriptions-item>
+        <el-descriptions-item label="公告内容">{{ noticeShowData.content }}</el-descriptions-item>
     </el-descriptions>
-    <el-button type="primary" @click="handleShowDialog" style="margin: 50px 400px">确 定</el-button>
+    <el-button
+        type="primary"
+        @click="handleShowDialog(noticeShowData.id, noticeShowData.isRead)"
+        style="margin: 50px 400px"
+        >确 定</el-button
+    >
 </template>
 <script lang="ts">
 import { mapState } from 'pinia'
@@ -34,16 +37,30 @@ const noticeStore = useNoticeStore()
 export default {
     name: 'NoticeShowDialog',
     computed: {
-        ...mapState(useNoticeStore, ['noticeShowData', 'dialogShowVisible'])
+        ...mapState(useNoticeStore, ['noticeShowData', 'dialogShowVisible', 'currentViewPage'])
     },
     data() {
         return {}
     },
     methods: {
-        handleShowDialog() {
+        handleShowDialog(nid, isRead) {
             noticeStore.$patch((state) => {
                 state.dialogShowVisible = false
             })
+            if (isRead === 0) {
+                noticeStore.modifyNoticeIsRead(nid, 1)
+                let flag = 0
+                if (this.currentViewPage === 'All') {
+                    flag = -1
+                } else if (this.currentViewPage === 'ToRead') {
+                    flag = 0
+                } else if (this.currentViewPage === 'AlRead') {
+                    flag = 1
+                }
+                setTimeout(() => {
+                    noticeStore.selectAllNoticeByUserId(flag)
+                }, 100)
+            }
         },
         formatDate(date) {
             if (date == null) return null
@@ -52,4 +69,11 @@ export default {
     }
 }
 </script>
-<style scoped></style>
+<style scoped>
+h2 {
+    margin-left: 20px;
+    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+</style>

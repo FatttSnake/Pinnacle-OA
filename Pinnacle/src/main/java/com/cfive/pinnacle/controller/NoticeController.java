@@ -66,6 +66,19 @@ public class NoticeController {
         return ResponseResult.build(code, msg, noticesByUserId);
     }
 
+    //修改登录用户所接收公告的阅读状态
+    @GetMapping("/modifyNoticeIsRead")
+    public ResponseResult modifyNoticeIsRead(String noticeId,Integer readStatus){
+        Long nid=null;
+        if (StringUtils.hasText(noticeId)){
+            nid = Long.parseLong(noticeId);
+        }
+        boolean updateById = noticeReceiveService.modifyNoticeIsRead(nid,readStatus);
+        String msg = updateById ? "" : "服务器出错，请重试！";
+        return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateById);
+
+    }
+
     //更新公告
     @PutMapping
     public ResponseResult updateNotice(@RequestBody Notice notice) {

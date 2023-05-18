@@ -42,7 +42,7 @@
                  left join t_user u on n.sender_id = u.id
         where n.deleted = 0
           and n.old = 0
-        order by create_time desc
+        order by n.top desc, n.create_time desc
     </select>
 
     <!--  分页查询所有公告  -->
@@ -69,7 +69,7 @@
                  left join t_user u on n.sender_id = u.id
         where n.deleted = 0
           and n.old = 0
-        order by create_time desc
+        order by n.top desc, n.create_time desc
     </select>
     <resultMap id="NoticeAllResultMap" type="notice" autoMapping="true">
         <id property="id" column="nid"/>
@@ -118,9 +118,10 @@
             and n.deleted = 0
             and n.old = 0
         </where>
+        order by n.top desc, n.create_time desc
     </select>
 
-    <!--   模糊查询公告-->
+    <!--   分页模糊查询公告-->
     <select id="selectPageByCond" resultMap="NoticeAllResultMap" resultType="notice">
         select u.id uid,
         u.username,
@@ -158,5 +159,6 @@
             and n.deleted = 0
             and n.old = 0
         </where>
+        order by n.top desc, n.create_time desc
     </select>
 </mapper>

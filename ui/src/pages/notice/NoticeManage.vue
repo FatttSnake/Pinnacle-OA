@@ -14,7 +14,12 @@
                 >发布公告</el-button
             >
             <!-- 添加公告对话框-->
-            <el-dialog v-model="dialogAddVisible" center>
+            <el-dialog
+                v-model="dialogAddVisible"
+                center
+                :close-on-click-modal="false"
+                :before-close="handleDialogClose"
+            >
                 <template #header>
                     <h2 style="color: red">发布公告</h2>
                 </template>
@@ -72,6 +77,15 @@ export default {
                         })
                     }
                 })
+        },
+        handleDialogClose() {
+            noticeStore.$patch((state) => {
+                state.dialogEditVisible = false
+                state.dialogAddVisible = false
+                state.dialogShowVisible = false
+                state.editFlag = false
+                state.hackReset = false
+            })
         },
         handleDeleteById(deleteID) {
             ElMessageBox.confirm('确定是否要删除？该操作将无法回退', '警告', {

@@ -1,5 +1,6 @@
 package com.cfive.pinnacle.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.mapper.NoticeReceiveMapper;
@@ -27,5 +28,13 @@ public class NoticeReceiveServiceImpl extends ServiceImpl<NoticeReceiveMapper, N
     public List<Notice> selectByUserId(Integer readStatus) {
         Long userId = WebUtil.getLoginUser().getUser().getId();
         return noticeReceiveMapper.selectByUserId(userId,readStatus);
+    }
+
+    @Override
+    public Boolean modifyNoticeIsRead(Long noticeId,Integer readStatus) {
+        LambdaUpdateWrapper<NoticeReceive> luw = new LambdaUpdateWrapper<>();
+        Long userId = WebUtil.getLoginUser().getUser().getId();
+        luw.eq(NoticeReceive::getNoticeId, noticeId).eq(NoticeReceive::getUserId, userId).set(null!=readStatus,NoticeReceive::getAlreadyRead, readStatus);
+        return noticeReceiveMapper.update(null,luw)>0;
     }
 }
