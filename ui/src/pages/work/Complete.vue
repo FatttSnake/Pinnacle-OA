@@ -35,7 +35,6 @@
                             width="220"
                             confirm-button-text="是"
                             cancel-button-text="否"
-                            :icon="InfoFilled"
                             icon-color="#00d4ff"
                             title="是否修改为未完成？"
                             @confirm="todoConfirmEvent(scope.row)"
