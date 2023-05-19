@@ -7,7 +7,28 @@
                     <el-menu
                         :collapse="isCollapsed"
                         :unique-opened="true"
-                        :default-active="$route.path"
+                        :default-active="
+                            this.$route.path.indexOf('/', this.$route.path.indexOf('/') + 1) !== -1
+                                ? this.$route.path.indexOf(
+                                      '/',
+                                      this.$route.path.indexOf(
+                                          '/',
+                                          this.$route.path.indexOf('/') + 1
+                                      ) + 1
+                                  ) !== -1
+                                    ? this.$route.path.substring(
+                                          0,
+                                          this.$route.path.indexOf(
+                                              '/',
+                                              this.$route.path.indexOf(
+                                                  '/',
+                                                  this.$route.path.indexOf('/') + 1
+                                              ) + 1
+                                          )
+                                      )
+                                    : this.$route.path
+                                : this.$route.path
+                        "
                         :router="true"
                         class="menu"
                         :text-color="COLOR_FONT_MAIN()"
