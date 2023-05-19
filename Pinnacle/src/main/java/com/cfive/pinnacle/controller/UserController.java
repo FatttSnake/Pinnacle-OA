@@ -31,20 +31,22 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('system:user:all')")
-    public ResponseResult getAllUser() {
+    @PreAuthorize("hasAnyAuthority('system:user:all', 'system:user:add', 'system:user:modify')")
+    public ResponseResult<List<User>> getAllUser() {
         List<User> users = userService.getAllUser();
         return ResponseResult.databaseSelectSuccess(users);
     }
 
     @GetMapping("/{id}")
-    public ResponseResult getUser(@PathVariable Long id) {
+    @PreAuthorize("hasAuthority('system:user:one')")
+    public ResponseResult<User> getUser(@PathVariable Long id) {
         User user = userService.getUser(id);
         return ResponseResult.databaseSelectSuccess(user);
     }
 
     @PostMapping
-    public ResponseResult addUser(@RequestBody User user) {
+    @PreAuthorize("hasAuthority('system:user:add')")
+    public ResponseResult<User> addUser(@RequestBody User user) {
         if (!StringUtils.hasText(user.getUsername())) {
             return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "Username cannot be empty", null);
         }
@@ -59,7 +61,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseResult deleteUser(@PathVariable Long id) {
+    @PreAuthorize("hasAuthority('system:user:delete')")
+    public ResponseResult<?> deleteUser(@PathVariable Long id) {
         if (id == 1L) {
             return ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "Unable to remove super admin", null);
         }
@@ -73,7 +76,8 @@ public class UserController {
     }
 
     @PutMapping()
-    public ResponseResult modifyUser(@RequestBody User user) {
+    @PreAuthorize("hasAuthority('system:user:modify')")
+    public ResponseResult<User> modifyUser(@RequestBody User user) {
         if (!StringUtils.hasText(user.getUsername())) {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "Username cannot be empty", null);
         }
