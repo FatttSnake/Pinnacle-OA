@@ -5,6 +5,7 @@
         <id property="id" column="id"/>
         <result property="content" column="content"/>
         <result property="publisherId" column="publisher_id"/>
+        <result property="publisherName" column="publisher_name"/>
         <result property="createTime" column="create_time"/>
         <result property="deadline" column="deadline"/>
         <collection property="userWorkList" ofType="userWork">
@@ -20,97 +21,93 @@
         select w.id,
                content,
                publisher_id,
+               u.username publisher_name,
                create_time,
                deadline,
                tuw.user_id worker_id,
-               u.username  worker_name,
+               tu.username  worker_name,
                tuw.status  status,
                tuw.complete_time complete_time
-        from t_work w,
-             t_user u,
-             t_user_work tuw
-        where w.id = tuw.work_id
-          and tuw.user_id = u.id
-          and w.deleted = 0
-          and tuw.deleted = 0
+        from t_work w
+            left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
+            left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
+            left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
+        where w.deleted = 0
         order by w.id desc;
     </select>
     <select id="getWork" parameterType="long" resultMap="workMap">
         select w.id,
                content,
                publisher_id,
+               u.username publisher_name,
                create_time,
                deadline,
                tuw.user_id worker_id,
-               u.username  worker_name,
+               tu.username  worker_name,
                tuw.status  status,
                tuw.complete_time completeTime
-        from t_work w,
-             t_user u,
-             t_user_work tuw
+        from t_work w
+                   left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
+                   left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
+                   left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
         where w.id = #{id}
-          and w.id = tuw.work_id
-          and tuw.user_id = u.id
-          and w.deleted = 0
-          and tuw.deleted = 0;
+          and w.deleted = 0;
     </select>
     <select id="getWorkByContent" parameterType="String" resultMap="workMap">
         select w.id,
                content,
                publisher_id,
+               u.username publisher_name,
                create_time,
                deadline,
                tuw.user_id       worker_id,
-               u.username        worker_name,
+               tu.username        worker_name,
                tuw.status        status,
                tuw.complete_time completeTime
-        from t_work w,
-             t_user u,
-             t_user_work tuw
+        from t_work w
+                 left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
+                 left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
+                 left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
         where w.content like '%${content}%'
-          and w.id = tuw.work_id
-          and tuw.user_id = u.id
-          and w.deleted = 0
-          and tuw.deleted = 0;
+          and w.deleted = 0;
     </select>
     <select id="getTodo" parameterType="long" resultMap="workMap">
         select w.id,
                content,
                publisher_id,
+               u.username publisher_name,
                create_time,
                deadline,
                tuw.user_id worker_id,
-               u.username  worker_name,
+               tu.username  worker_name,
                tuw.status  status
-        from t_work w,
-             t_user u,
-             t_user_work tuw
-        where w.id = tuw.work_id
-          and tuw.user_id = u.id
-          and tuw.user_id = #{userId}
+        from t_work w
+                 left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
+                 left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
+                 left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
+        where
+            tuw.user_id = #{userId}
           and status = false
           and w.deleted = 0
-          and tuw.deleted = 0
         order by w.deadline asc, w.id desc;
     </select>
     <select id="getCard" parameterType="long" resultMap="workMap">
         select w.id,
         content,
         publisher_id,
+        u.username publisher_name,
         create_time,
         deadline,
         tuw.user_id worker_id,
-        u.username worker_name,
+        tu.username worker_name,
         tuw.status status
-        from t_work w,
-        t_user u,
-        t_user_work tuw
-        where w.id = tuw.work_id
-        and tuw.user_id = u.id
-        and tuw.user_id = #{userId}
+        from t_work w
+                 left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
+                 left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
+                 left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
+        where tuw.user_id = #{userId}
         and status = false
         and w.deleted = 0
-        and tuw.deleted = 0
         order by w.deadline asc, w.id desc
         limit 5;
 
@@ -119,21 +116,20 @@
         select w.id,
                content,
                publisher_id,
+               u.username publisher_name,
                create_time,
                deadline,
                tuw.user_id worker_id,
                u.username  worker_name,
                tuw.status status,
                tuw.complete_time complete_time
-        from t_work w,
-             t_user u,
-             t_user_work tuw
+        from t_work w
+                 left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
+                 left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
+                 left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
         where tuw.user_id = #{userId}
-          and tuw.user_id = u.id
-          and w.id = tuw.work_id
           and tuw.status = true
           and w.deleted = 0
-          and tuw.deleted = 0
         order by w.id desc;
     </select>
 

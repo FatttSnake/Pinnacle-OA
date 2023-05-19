@@ -52,8 +52,8 @@ public class WorkController {
 
     @GetMapping("/card")
     public ResponseResult getCard() {
-//        Long userId = WebUtil.getLoginUser().getUser().getId();
-        long userId = 1;
+        Long userId = WebUtil.getLoginUser().getUser().getId();
+//        long userId = 1;
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", workService.getCard(userId));
     }
 
