@@ -1,8 +1,9 @@
 import type { Captcha } from './common'
-import { clearLocalStorage, getCaptcha, getLocalStorage, setLocalStorage } from './common'
+import { clearLocalStorage, getCaptcha, getLocalStorage, getToken } from './common'
 import { TOKEN_NAME } from '@/constants/Common.constants'
-import _ from 'lodash'
 import request from '@/services'
+import jwtDecode, { type JwtPayload } from 'jwt-decode'
+import _ from 'lodash'
 
 let captcha: Captcha
 
@@ -20,19 +21,19 @@ function getLoginStatus(): boolean {
     return getLocalStorage(TOKEN_NAME) != null
 }
 
-async function getUsername(): Promise<string | null> {
-    if (!_.isEmpty(getLocalStorage('username'))) {
-        return getLocalStorage('username')
+function getUsername(): string {
+    const token = getToken()
+
+    if (token === null) {
+        logout()
+        return ''
     }
 
-    let username = ''
-
-    await request.get('/userInfo').then((res) => {
-        username = res.data.data.user.username
-    })
-
-    setLocalStorage('username', username)
-    return username
+    const jwtPayload: JwtPayload = jwtDecode(token)
+    const user = JSON.parse(jwtPayload.sub ?? '')
+    return user.staff != null
+        ? `${_.toString(user.staff.lastName)}${_.toString(user.staff.firstName)}`
+        : user.username
 }
 
 function getCaptchaSrc(): string {

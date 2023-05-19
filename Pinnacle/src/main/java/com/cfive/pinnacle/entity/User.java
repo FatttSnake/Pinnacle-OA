@@ -63,6 +63,9 @@ public class User implements Serializable {
     private Integer enable;
 
     @TableField(exist = false)
+    private Staff staff;
+
+    @TableField(exist = false)
     private List<Role> roles;
 
     @TableField(exist = false)
