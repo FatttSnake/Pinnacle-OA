@@ -47,6 +47,7 @@
                         show-checkbox
                         :render-after-expand="false"
                         :default-checked-keys="defaultSelectedPower"
+                        style="min-width: 120px"
                         @check-change="handleSelectedPowerChange"
                     />
                 </el-form-item>
@@ -225,22 +226,27 @@ export default {
         handleDelete(index, row) {
             ElMessageBox.confirm('确定删除该角色吗？', '删除').then(() => {
                 this.tableLoading = true
-                request.delete('/role/' + row.id).then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_DELETE_OK) {
-                        ElMessage.success({
-                            dangerouslyUseHTMLString: true,
-                            message: '<strong>删除成功</strong>'
-                        })
-                        this.loadRoleTable()
-                    } else {
-                        ElMessage.error({
-                            dangerouslyUseHTMLString: true,
-                            message: '<strong>删除失败</strong>: ' + response.msg
-                        })
+                request
+                    .delete('/role/' + row.id)
+                    .then((res) => {
+                        const response = res.data
+                        if (response.code === DATABASE_DELETE_OK) {
+                            ElMessage.success({
+                                dangerouslyUseHTMLString: true,
+                                message: '<strong>删除成功</strong>'
+                            })
+                            this.loadRoleTable()
+                        } else {
+                            ElMessage.error({
+                                dangerouslyUseHTMLString: true,
+                                message: '<strong>删除失败</strong>: ' + response.msg
+                            })
+                            this.tableLoading = false
+                        }
+                    })
+                    .catch(() => {
                         this.tableLoading = false
-                    }
-                })
+                    })
             })
         },
         async handleSubmit() {

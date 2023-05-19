@@ -163,22 +163,27 @@ export default {
         handleDelete(index, row) {
             ElMessageBox.confirm('确定删除该用户组吗？', '删除').then(() => {
                 this.tableLoading = true
-                request.delete('/group/' + row.id).then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_DELETE_OK) {
-                        ElMessage.success({
-                            dangerouslyUseHTMLString: true,
-                            message: '<strong>删除成功</strong>'
-                        })
-                        this.loadGroupTable()
-                    } else {
-                        ElMessage.error({
-                            dangerouslyUseHTMLString: true,
-                            message: '<strong>删除失败</strong>: ' + response.msg
-                        })
+                request
+                    .delete('/group/' + row.id)
+                    .then((res) => {
+                        const response = res.data
+                        if (response.code === DATABASE_DELETE_OK) {
+                            ElMessage.success({
+                                dangerouslyUseHTMLString: true,
+                                message: '<strong>删除成功</strong>'
+                            })
+                            this.loadGroupTable()
+                        } else {
+                            ElMessage.error({
+                                dangerouslyUseHTMLString: true,
+                                message: '<strong>删除失败</strong>: ' + response.msg
+                            })
+                            this.tableLoading = false
+                        }
+                    })
+                    .catch(() => {
                         this.tableLoading = false
-                    }
-                })
+                    })
             })
         },
         async handleSubmit() {
