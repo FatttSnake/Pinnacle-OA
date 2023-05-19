@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "element-plus": "^2.3.4",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "pinia": "^2.0.36",
     "vite-plugin-inspect": "^0.7.24",

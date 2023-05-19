@@ -198,9 +198,7 @@ export default {
         }
     },
     mounted() {
-        getUsername().then((res) => {
-            this.username = res.toString()
-        })
+        this.username = getUsername()
     }
 }
 </script>

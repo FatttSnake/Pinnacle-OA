@@ -5,10 +5,15 @@
     <select id="getAll" resultMap="userMap">
         select t_user.id            as user_id,
                t_user.username      as user_username,
-               t_user.department_id as user_department,
+               t_user.department_id as user_department_id,
                t_user.enable        as user_enable,
                t_user.deleted       as user_deleted,
                t_user.version       as user_version,
+               ts.id                as staff_id,
+               ts.first_name        as staff_first_name,
+               ts.last_name         as staff_last_name,
+               ts.deleted           as staff_deleted,
+               ts.version           as staff_version,
                tr.id                as role_id,
                tr.name              as role_name,
                tr.deleted           as role_deleted,
@@ -18,6 +23,7 @@
                tg.deleted           as group_deleted,
                tg.version           as group_version
         from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
                  left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
                  left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
                  left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
@@ -27,10 +33,15 @@
     <select id="getOneById" resultMap="userMap">
         select t_user.id            as user_id,
                t_user.username      as user_username,
-               t_user.department_id as user_department,
+               t_user.department_id as user_department_id,
                t_user.enable        as user_enable,
                t_user.deleted       as user_deleted,
                t_user.version       as user_version,
+               ts.id                as staff_id,
+               ts.first_name        as staff_first_name,
+               ts.last_name         as staff_last_name,
+               ts.deleted           as staff_deleted,
+               ts.version           as staff_version,
                tr.id                as role_id,
                tr.name              as role_name,
                tr.deleted           as role_deleted,
@@ -40,6 +51,7 @@
                tg.deleted           as group_deleted,
                tg.version           as group_version
         from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
                  left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
                  left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
                  left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
@@ -51,26 +63,32 @@
         select distinct t_user.id            as user_id,
                         t_user.username      as user_username,
                         t_user.passwd        as user_passwd,
-                        t_user.department_id as user_department,
+                        t_user.department_id as user_department_id,
                         t_user.enable        as user_enable,
                         t_user.deleted       as user_deleted,
                         t_user.version       as user_version,
+                        ts.id                as staff_id,
+                        ts.first_name        as staff_first_name,
+                        ts.last_name         as staff_last_name,
+                        ts.deleted           as staff_deleted,
+                        ts.version           as staff_version,
                         tm.id                as menu_id,
                         tm.name              as menu_name,
                         tm.url               as menu_url,
-                        tm.power_id          as menu_powerId,
-                        tm.parent_id         as menu_parentId,
+                        tm.power_id          as menu_power_id,
+                        tm.parent_id         as menu_parent_id,
                         te.id                as element_id,
                         te.name              as element_name,
-                        te.power_id          as element_powerId,
-                        te.menu_id           as element_menuId,
+                        te.power_id          as element_power_id,
+                        te.menu_id           as element_menu_id,
                         t.id                 as operation_id,
                         t.name               as operation_name,
                         t.code               as operation_code,
-                        t.power_id           as operation_powerId,
-                        t.element_id         as operation_elementId,
-                        t.parent_id          as operation_parentId
+                        t.power_id           as operation_power_id,
+                        t.element_id         as operation_element_id,
+                        t.parent_id          as operation_parent_id
         from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
                  left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
                  left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
                  left join (select * from t_role_group where deleted = 0) as trg on tg.id = trg.group_id
@@ -88,10 +106,17 @@
     <resultMap id="userMap" type="user">
         <id property="id" column="user_id"/>
         <result property="username" column="user_username"/>
-        <result property="departmentId" column="user_department"/>
+        <result property="departmentId" column="user_department_id"/>
         <result property="enable" column="user_enable"/>
         <result property="deleted" column="user_deleted"/>
         <result property="version" column="user_version"/>
+        <association property="staff" javaType="staff">
+            <id property="id" column="staff_id"/>
+            <result property="firstName" column="staff_first_name"/>
+            <result property="lastName" column="staff_last_name"/>
+            <result property="deleted" column="staff_deleted"/>
+            <result property="version" column="staff_version"/>
+        </association>
         <collection property="roles" ofType="role">
             <id property="id" column="role_id"/>
             <result property="name" column="role_name"/>
@@ -110,30 +135,37 @@
         <id property="id" column="user_id"/>
         <result property="username" column="user_username"/>
         <result property="passwd" column="user_passwd"/>
-        <result property="departmentId" column="user_departmentId"/>
+        <result property="departmentId" column="user_department_id"/>
         <result property="enable" column="user_enable"/>
         <result property="deleted" column="user_deleted"/>
         <result property="version" column="user_version"/>
+        <association property="staff" javaType="staff">
+            <id property="id" column="staff_id"/>
+            <result property="firstName" column="staff_first_name"/>
+            <result property="lastName" column="staff_last_name"/>
+            <result property="deleted" column="staff_deleted"/>
+            <result property="version" column="staff_version"/>
+        </association>
         <collection property="menus" ofType="menu">
             <id property="id" column="menu_id"/>
             <result property="name" column="menu_name"/>
             <result property="url" column="menu_url"/>
-            <result property="powerId" column="menu_powerId"/>
-            <result property="parentId" column="menu_parentId"/>
+            <result property="powerId" column="menu_power_id"/>
+            <result property="parentId" column="menu_parent_id"/>
         </collection>
         <collection property="elements" ofType="element">
             <id property="id" column="element_id"/>
             <result property="name" column="element_name"/>
-            <result property="powerId" column="element_powerId"/>
-            <result property="menuId" column="element_menuId"/>
+            <result property="powerId" column="element_power_id"/>
+            <result property="menuId" column="element_menu_id"/>
         </collection>
         <collection property="operations" ofType="operation">
             <id property="id" column="operation_id"/>
             <result property="name" column="operation_name"/>
             <result property="code" column="operation_code"/>
-            <result property="powerId" column="operation_powerId"/>
-            <result property="elementId" column="operation_elementId"/>
-            <result property="parentId" column="operation_parentId"/>
+            <result property="powerId" column="operation_power_id"/>
+            <result property="elementId" column="operation_element_id"/>
+            <result property="parentId" column="operation_parent_id"/>
         </collection>
     </resultMap>
 </mapper>
