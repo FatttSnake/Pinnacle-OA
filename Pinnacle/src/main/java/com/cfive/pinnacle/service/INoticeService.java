@@ -25,6 +25,8 @@ public interface INoticeService extends IService<Notice> {
 
     Boolean updateNotice(Notice notice);
 
+    Boolean updateNoticeTop(Notice notice);
+
     Boolean addNotice(Notice notice);
 
     IPage<Notice> selectPageAllNotice(IPage<?> page);

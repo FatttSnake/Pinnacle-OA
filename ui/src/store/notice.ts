@@ -12,6 +12,31 @@ export interface IAddFormData {
     content: string
     receivers: []
 }
+export interface INotice {
+    content: string
+    createTime: string
+    endTime: string
+    id: string
+    modifyTime: string
+    priority: number
+    receivers: []
+    sendTime: string
+    title: string
+    top: number
+    isRead: number
+    noticeType: {
+        id: string
+        name: string
+        enable: number
+    }
+    sender: {
+        id: string
+        username: string
+        enable: number
+    }
+    senderId: string
+    typeId: string
+}
 export const useNoticeStore = defineStore('notice', {
     state: () => {
         return {
@@ -190,20 +215,30 @@ export const useNoticeStore = defineStore('notice', {
                     }
                 })
         },
-        async modifyNoticeIsRead(noticeId: string, readStatus: number) {
-            await request
-                .get('/notice/modifyNoticeIsRead', {
-                    noticeId,
-                    readStatus
-                })
-                .then((response) => {
-                    if (response.data.code === 20033) {
-                        ElMessage({
-                            message: response.data.msg,
-                            type: 'error'
-                        })
-                    }
-                })
+        async modifyNoticeIsRead(notice: INotice) {
+            await request.put('/notice/modifyNoticeIsRead', notice).then((response) => {
+                if (response.data.code === 20033) {
+                    ElMessage({
+                        message: response.data.msg,
+                        type: 'error'
+                    })
+                }
+            })
+        },
+        async modifyTop(notice: INotice) {
+            await request.put('/notice/updateNoticeTop', notice).then((response) => {
+                if (response.data.code === 20023) {
+                    ElMessage({
+                        message: response.data.msg,
+                        type: 'success'
+                    })
+                } else if (response.data.code === 20033) {
+                    ElMessage({
+                        message: response.data.msg,
+                        type: 'error'
+                    })
+                }
+            })
         }
     }
 })

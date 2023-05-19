@@ -67,13 +67,12 @@ public class NoticeController {
     }
 
     //修改登录用户所接收公告的阅读状态
-    @GetMapping("/modifyNoticeIsRead")
-    public ResponseResult modifyNoticeIsRead(String noticeId,Integer readStatus){
-        Long nid=null;
-        if (StringUtils.hasText(noticeId)){
-            nid = Long.parseLong(noticeId);
+    @PutMapping("/modifyNoticeIsRead")
+    public ResponseResult modifyNoticeIsRead(@RequestBody Notice notice) {
+        boolean updateById = false;
+        if (null != notice) {
+            updateById = noticeReceiveService.modifyNoticeIsRead(notice);
         }
-        boolean updateById = noticeReceiveService.modifyNoticeIsRead(nid,readStatus);
         String msg = updateById ? "" : "服务器出错，请重试！";
         return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateById);
 
@@ -85,6 +84,15 @@ public class NoticeController {
         boolean updateById = noticeService.updateNotice(notice);
         String msg = updateById ? "" : "数据修改失败，请重试！";
         return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateById);
+    }
+
+    //更新公告置顶
+    @PutMapping("/updateNoticeTop")
+    public ResponseResult updateNoticeTop(@RequestBody Notice notice) {
+        String operationMessage = notice.getTop() == 1 ? "取消置顶" : "置顶";
+        boolean updateResult = noticeService.updateNoticeTop(notice);
+        String msg = updateResult ? "已成功" + operationMessage : operationMessage + "失败，请重试！";
+        return ResponseResult.build(updateResult ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateResult);
     }
 
     //添加公告
@@ -105,13 +113,13 @@ public class NoticeController {
 
     //分页查询所有公告或分页模糊查询
     @GetMapping("/page")
-    public ResponseResult selectPageAllNotice(Integer currentPage,Integer pageSize,String title, String type, String startTime, String endTime) {
+    public ResponseResult selectPageAllNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime) {
         IPage<Notice> noticePageList;
         Page<?> page = new Page();
-        if (null!=currentPage&&null!=pageSize){
+        if (null != currentPage && null != pageSize) {
             page.setCurrent(currentPage.intValue());
             page.setSize(pageSize.intValue());
-        }else {
+        } else {
             // 不进行分页
             page.setCurrent(1);
             page.setSize(-1);
@@ -119,7 +127,7 @@ public class NoticeController {
         if (!StringUtils.hasText(title) && !StringUtils.hasText(type) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
             noticePageList = noticeService.selectPageAllNotice(page);
         } else {
-            noticePageList = noticeService.selectPageByCond(page,title, type, startTime, endTime);
+            noticePageList = noticeService.selectPageByCond(page, title, type, startTime, endTime);
         }
         int code = noticePageList.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticePageList.getRecords() != null ? String.valueOf(noticePageList.getTotal()) : "数据查询失败，请重试！";
