@@ -1,5 +1,5 @@
 <template>
-    <el-card shadow="hover">
+    <el-card shadow="hover" class="workCard">
         <template #header>
             <div class="card-header" style="height: 20px">
                 <h2>待办工作</h2>
@@ -82,7 +82,7 @@ export default {
     height: calc(((100vh - 56px - 40px - 20px) / 2 - 56px - 40px) / 5);
     min-height: 48px;
 }
-.el-card {
+.workCard {
     height: calc((100vh - 56px - 40px - 20px) / 2);
     min-height: calc((500px - 56px - 40px - 20px) / 2);
 }
