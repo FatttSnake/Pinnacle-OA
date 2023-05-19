@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { PRODUCTION_NAME } from '@/constants/Common.constants'
-import { getLoginStatus } from '@/utils/auth'
+import { getLoginStatus, getUser } from '@/utils/auth'
 import workRouter from '@/router/work'
 import attendanceRouter from '@/router/attendance'
 import affairRouter from '@/router/affair'
 import noticeRouter from '@/router/notice'
 import powerRouter from '@/router/power'
+import _ from 'lodash'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,7 +27,8 @@ const router = createRouter({
                         title: '首页',
                         icon: shallowRef(IconPinnacleHome),
                         requiresScrollbar: false,
-                        requiresPadding: true
+                        requiresPadding: true,
+                        requiresAuth: false
                     }
                 },
                 workRouter,
@@ -41,7 +43,8 @@ const router = createRouter({
             component: async () => await import('@/pages/Login.vue'),
             name: 'Login',
             meta: {
-                title: '登录'
+                title: '登录',
+                requiresAuth: false
             }
         }
     ]
@@ -60,7 +63,20 @@ router.beforeEach((to, from, next) => {
             if (to.name === 'Login') {
                 next('/')
             } else {
-                next()
+                if (to.meta.requiresAuth === true) {
+                    const user = getUser()
+                    const menus = user.menus
+                    for (const menu of menus) {
+                        if (menu.url === '/') continue
+                        if (_.startsWith(to.path, menu.url)) {
+                            next()
+                            return
+                        }
+                    }
+                    next('/')
+                } else {
+                    next()
+                }
             }
         } else {
             if (to.name === 'Login') {

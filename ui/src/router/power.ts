@@ -38,7 +38,8 @@ const powerRouter = {
         title: '权限管理',
         icon: shallowRef(IconPinnaclePower),
         requiresScrollbar: false,
-        requiresPadding: true
+        requiresPadding: true,
+        requiresAuth: true
     }
 }
 

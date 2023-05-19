@@ -155,14 +155,14 @@ import {
     SIZE_ICON_SM
 } from '@/constants/Common.constants.js'
 import _ from 'lodash'
-import { getUsername, logout } from '@/utils/auth'
+import { getUser, getUsername, logout } from '@/utils/auth'
 import { ElMessage } from 'element-plus'
 
 export default {
     name: 'MainFrame',
     data() {
         return {
-            routes: _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.title'),
+            routes: [],
             isCollapsed: false,
             username: ''
         }
@@ -199,6 +199,52 @@ export default {
     },
     mounted() {
         this.username = getUsername()
+        const allRoutes = _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.title')
+
+        const user = getUser()
+        const menus = user.menus
+        this.routes = allRoutes.filter((level1) => {
+            if (level1.meta.requiresAuth) {
+                for (const menu of menus) {
+                    if (_.startsWith(menu.url, level1.path)) {
+                        let hasChildren = false
+                        if (level1.children === undefined) {
+                            return true
+                        }
+                        level1.children = level1.children.filter((level2) => {
+                            for (const menu_ of menus) {
+                                if (_.startsWith(menu_.url, level1.path + '/' + level2.path)) {
+                                    hasChildren = true
+                                    return true
+                                }
+                            }
+                            return false
+                        })
+                        return hasChildren
+                    }
+                }
+                return false
+            } else {
+                let hasChildren = false
+                if (level1.children === undefined) {
+                    return true
+                }
+                level1.children = level1.children.filter((level2) => {
+                    if (!level2.meta.requiresAuth) {
+                        hasChildren = true
+                        return true
+                    }
+                    for (const menu_ of menus) {
+                        if (_.startsWith(menu_.url, level1.path + '/' + level2.path)) {
+                            hasChildren = true
+                            return true
+                        }
+                    }
+                    return false
+                })
+                return hasChildren
+            }
+        })
     }
 }
 </script>
