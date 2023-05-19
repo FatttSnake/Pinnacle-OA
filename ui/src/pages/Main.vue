@@ -220,7 +220,9 @@ export default {
     },
     mounted() {
         this.username = getUsername()
-        const allRoutes = _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.title')
+        const allRoutes = _.cloneDeep(
+            _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.title')
+        )
 
         const user = getUser()
         const menus = user.menus
