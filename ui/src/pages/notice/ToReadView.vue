@@ -1,5 +1,5 @@
 <template>
-    <notice-view-table />
+    <notice-view-card />
 </template>
 <script lang="ts">
 import { useNoticeStore } from '@/store/notice'
