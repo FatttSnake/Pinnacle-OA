@@ -61,13 +61,6 @@ begin;
 insert into t_power (type_id)
 values (3);
 insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('查询所有权限', 'system:power:all', last_insert_id(), 2, null);
-commit;
-
-begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
 VALUES ('查询所有角色', 'system:role:all', last_insert_id(), 2, null);
 commit;
 
@@ -75,25 +68,113 @@ begin;
 insert into t_power (type_id)
 values (3);
 insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('查询所有用户', 'system:user:all', last_insert_id(), 2, null);
+VALUES ('添加角色', 'system:role:add', last_insert_id(), 2, null);
 commit;
 
-insert into t_role (id, name)
-values (1655784840189972481, '员工'),
-       (1655784928056467457, '组长'),
-       (1655785102375940097, '主管'),
-       (1655785102375940098, '总管');
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('删除角色', 'system:role:delete', last_insert_id(), 2, null);
+commit;
 
-insert into t_power_role(id, power_id, role_id)
-VALUES (1656219345971326978, 1, 1655784840189972481),
-       (1656219345971326979, 2, 1655784840189972481),
-       (1656219345971326980, 3, 1655784840189972481),
-       (1656219345971326981, 4, 1655784840189972481),
-       (1656219345971326982, 5, 1655785102375940098),
-       (1656219345971326983, 6, 1655785102375940098),
-       (1656219345971326984, 7, 1655785102375940098),
-       (1656219345971326985, 8, 1655785102375940098),
-       (1656219345971326986, 9, 1655785102375940098);
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('修改角色', 'system:role:modify', last_insert_id(), 2, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (3, '用户组管理', '/power/group', last_insert_id(), null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (2);
+insert into t_element (id, name, power_id, menu_id)
+VALUES (3, '用户组列表', last_insert_id(), 3);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('查询所有用户组', 'system:group:all', last_insert_id(), 3, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('添加用户组', 'system:group:add', last_insert_id(), 3, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('删除用户组', 'system:group:delete', last_insert_id(), 3, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('修改用户组', 'system:group:modify', last_insert_id(), 3, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (4, '用户管理', '/power/user', last_insert_id(), null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (2);
+insert into t_element (id, name, power_id, menu_id)
+VALUES (4, '用户列表', last_insert_id(), 4);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('查看所有用户', 'system:user:all', last_insert_id(), 4, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('查看单个用户', 'system:user:one', last_insert_id(), 4, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('添加用户', 'system:user:add', last_insert_id(), 4, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('删除用户', 'system:user:delete', last_insert_id(), 4, null);
+commit;
+
+begin;
+insert into t_power (type_id)
+values (3);
+insert into t_operation (name, code, power_id, element_id, parent_id)
+VALUES ('修改用户', 'system:user:modify', last_insert_id(), 4, null);
+commit;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
