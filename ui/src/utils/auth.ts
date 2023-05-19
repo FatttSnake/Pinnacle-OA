@@ -21,7 +21,7 @@ function getLoginStatus(): boolean {
     return getLocalStorage(TOKEN_NAME) != null
 }
 
-function getUsername(): string {
+function getUser(): any {
     const token = getToken()
 
     if (token === null) {
@@ -30,7 +30,12 @@ function getUsername(): string {
     }
 
     const jwtPayload: JwtPayload = jwtDecode(token)
-    const user = JSON.parse(jwtPayload.sub ?? '')
+    return JSON.parse(jwtPayload.sub ?? '')
+}
+
+function getUsername(): string {
+    const user = getUser()
+
     return user.staff != null
         ? `${_.toString(user.staff.lastName)}${_.toString(user.staff.firstName)}`
         : user.username
@@ -45,4 +50,4 @@ function verifyCaptcha(value: string): boolean {
     return captcha.value === value.replace(/\s*/g, '').toUpperCase()
 }
 
-export { login, logout, getLoginStatus, getUsername, getCaptchaSrc, verifyCaptcha }
+export { login, logout, getLoginStatus, getUser, getUsername, getCaptchaSrc, verifyCaptcha }

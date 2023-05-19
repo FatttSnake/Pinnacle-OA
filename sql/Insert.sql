@@ -47,7 +47,7 @@ begin;
 insert into t_power (type_id)
 values (1);
 insert into t_menu (id, name, url, power_id, parent_id)
-VALUES (2, '角色管理', '/system/role', last_insert_id(), null);
+VALUES (2, '角色管理', '/power/role', last_insert_id(), null);
 commit;
 
 begin;
