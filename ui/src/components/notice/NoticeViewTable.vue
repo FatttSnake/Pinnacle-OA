@@ -233,8 +233,9 @@ export default {
     font-weight: 600;
 }
 
-.el-card {
+:deep(.el-card) {
     --el-card-padding: 10px;
+    height: 120px;
 }
 
 :deep(.el-card__header) {
