@@ -13,47 +13,46 @@
                 <el-card
                     @click="showNoticeDetail(notice)"
                     @contextmenu.prevent="openMenu($event, notice)"
+                    class="noticeCard"
                 >
                     <template #header>
-                        <el-tooltip content="鼠标右击进行更多操作" placement="top" effect="light">
-                            <div class="top">
-                                <el-icon :size="SIZE_ICON_MD()">
-                                    <icon-pinnacle-noticeItem />
-                                </el-icon>
-                                <el-tag
-                                    size="small"
-                                    :type="
-                                        notice.noticeType.name === '通知公告'
-                                            ? 'warning'
-                                            : notice.noticeType.name === '紧急公告'
-                                            ? 'danger'
-                                            : 'success'
-                                    "
-                                    disable-transitions
-                                    style="margin-right: 20px; margin-left: 10px"
-                                >
-                                    {{ notice.noticeType.name }}
-                                </el-tag>
-                                <h4>{{ notice.title }}</h4>
-                                <el-icon class="senderIcon">
-                                    <icon-pinnacle-user />
-                                </el-icon>
-                                发布者：
-                                <span class="sender">{{ notice.sender.username }}</span>
-                                <!--                            <div class="check">-->
-                                <!--                                <el-button-->
-                                <!--                                    type="info"-->
-                                <!--                                    v-if="notice.isRead === 1"-->
-                                <!--                                    @click.stop="changeIsRead"-->
-                                <!--                                >-->
-                                <!--                                    <template #icon>-->
-                                <!--                                        <input type="checkbox" :checked="isCheck" />-->
-                                <!--                                    </template>-->
-                                <!--                                    标为未读-->
-                                <!--                                </el-button>-->
-                                <!--                            </div>-->
-                            </div>
-                        </el-tooltip>
+                        <div class="top">
+                            <el-icon :size="SIZE_ICON_MD()">
+                                <icon-pinnacle-noticeItem />
+                            </el-icon>
+                            <el-tag
+                                size="small"
+                                :type="
+                                    notice.noticeType.name === '通知公告'
+                                        ? 'warning'
+                                        : notice.noticeType.name === '紧急公告'
+                                        ? 'danger'
+                                        : 'success'
+                                "
+                                disable-transitions
+                                style="margin-right: 20px; margin-left: 10px"
+                            >
+                                {{ notice.noticeType.name }}
+                            </el-tag>
+                            <h4>{{ notice.title }}</h4>
+                            <el-icon class="senderIcon">
+                                <icon-pinnacle-user />
+                            </el-icon>
+                            发布者：
+                            <span class="sender">{{ notice.sender.username }}</span>
+                            <!--                            <div class="check">-->
+                            <!--                                <el-button-->
+                            <!--                                    type="info"-->
+                            <!--                                    v-if="notice.isRead === 1"-->
+                            <!--                                    @click.stop="changeIsRead"-->
+                            <!--                                >-->
+                            <!--                                    <template #icon>-->
+                            <!--                                        <input type="checkbox" :checked="isCheck" />-->
+                            <!--                                    </template>-->
+                            <!--                                    标为未读-->
+                            <!--                                </el-button>-->
+                            <!--                            </div>-->
+                        </div>
                     </template>
                     <p class="content">{{ contentSubstr(notice.content) }}</p>
                 </el-card>
@@ -233,7 +232,7 @@ export default {
     font-weight: 600;
 }
 
-:deep(.el-card) {
+.noticeCard {
     --el-card-padding: 10px;
     height: 120px;
 }
@@ -315,7 +314,6 @@ h4 {
     padding: 7px 16px;
     cursor: pointer;
 }
-
 .contextmenu li:hover {
     background: #eee;
 }

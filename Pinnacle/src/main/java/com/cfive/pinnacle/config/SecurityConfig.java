@@ -89,6 +89,7 @@ public class SecurityConfig {
                 // Authentication required
                 .anyRequest()
                 .authenticated()
+//                .anonymous()
                 .and()
 
                 .logout()

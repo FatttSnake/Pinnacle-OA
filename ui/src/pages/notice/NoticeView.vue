@@ -4,13 +4,7 @@
             <notice-head></notice-head>
         </el-header>
         <el-main>
-            <el-menu
-                :default-active="$route.path"
-                class="el-menu-demo"
-                mode="horizontal"
-                @select="handleSelect"
-                router
-            >
+            <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" router>
                 <el-menu-item index="/notice/noticeView/all">所有公告</el-menu-item>
                 <el-menu-item index="/notice/noticeView/toRead">未读</el-menu-item>
                 <el-menu-item index="/notice/noticeView/alRead">已读</el-menu-item>
@@ -28,11 +22,7 @@ export default {
     data() {
         return {}
     },
-    methods: {
-        handleSelect(key, keyPath) {
-            console.log(key, keyPath)
-        }
-    },
+    methods: {},
     mounted() {
         noticeStore.selectEnableNoticeType()
     }
