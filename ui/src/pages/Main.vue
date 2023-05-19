@@ -35,7 +35,7 @@
                         :active-text-color="COLOR_PRODUCTION()"
                     >
                         <el-menu-item
-                            @mousedown.left="isCollapsed = !isCollapsed"
+                            @mousedown.left="changeCollapsed"
                             :disabled="true"
                             style="cursor: pointer; opacity: 1; border-bottom: 1px #ddd solid"
                         >
@@ -178,13 +178,14 @@ import {
 import _ from 'lodash'
 import { getUser, getUsername, logout } from '@/utils/auth'
 import { ElMessage } from 'element-plus'
+import { getLocalStorage, setLocalStorage } from '@/utils/common'
 
 export default {
     name: 'MainFrame',
     data() {
         return {
             routes: [],
-            isCollapsed: false,
+            isCollapsed: getLocalStorage('menuCollapsed') === 'true',
             username: ''
         }
     },
@@ -216,6 +217,10 @@ export default {
             setTimeout(() => {
                 this.$router.push({ name: 'Login' })
             }, 1500)
+        },
+        changeCollapsed() {
+            this.isCollapsed = !this.isCollapsed
+            setLocalStorage('menuCollapsed', this.isCollapsed.toString())
         }
     },
     mounted() {
