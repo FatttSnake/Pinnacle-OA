@@ -1,5 +1,5 @@
 <template>
-    <el-button size="large" @click="clearFilter" type="primary">清除筛选条件 </el-button>
+    <el-button size="large" @click="clearFilter" type="primary">清除筛选条件</el-button>
     <el-table
         v-loading="loading"
         element-loading-text="加载中..."
@@ -15,8 +15,15 @@
             color: '#fff',
             'font-size': '20px'
         }"
-        ><el-table-column type="selection" width="55" align="center" />
-        <el-table-column type="index" label="序号" width="70" align="center" />
+    >
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column
+            type="index"
+            label="序号"
+            width="70"
+            align="center"
+            :index="computeIndex"
+        />
         <el-table-column
             prop="title"
             label="公告标题"
@@ -139,6 +146,7 @@
 import _ from 'lodash'
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
+
 const noticeStore = useNoticeStore()
 
 export default {
@@ -153,6 +161,7 @@ export default {
             'hackReset'
         ])
     },
+    emits: ['clearFilter', 'handleDeleteById'],
     data() {
         return {
             filterSenderName: [],
@@ -163,6 +172,9 @@ export default {
     },
     props: [],
     methods: {
+        computeIndex(index) {
+            return (this.currentPage - 1) * this.pageSize + index + 1
+        },
         handleSelectionChange(val) {
             // val的值为所勾选行的数组对象
             this.multipleSelection = val
@@ -247,6 +259,7 @@ export default {
 .el-table {
     margin-top: 10px;
 }
+
 .pagination {
     margin: 30px 400px;
 }

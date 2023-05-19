@@ -105,14 +105,7 @@ export default {
                 noticeStore.selectNoticeType()
             }, 800)
         },
-        handleEdit(index, row) {
-            noticeStore.$patch((state) => {
-                state.hackReset = true
-                state.noticeShowData = row
-                state.editFlag = true
-                state.dialogEditVisible = true
-            })
-        },
+        handleEdit(index, row) {},
         handleDialogClose() {
             noticeStore.$patch((state) => {
                 state.dialogEditVisible = false

@@ -40,18 +40,6 @@
                             </el-icon>
                             发布者：
                             <span class="sender">{{ notice.sender.username }}</span>
-                            <!--                            <div class="check">-->
-                            <!--                                <el-button-->
-                            <!--                                    type="info"-->
-                            <!--                                    v-if="notice.isRead === 1"-->
-                            <!--                                    @click.stop="changeIsRead"-->
-                            <!--                                >-->
-                            <!--                                    <template #icon>-->
-                            <!--                                        <input type="checkbox" :checked="isCheck" />-->
-                            <!--                                    </template>-->
-                            <!--                                    标为未读-->
-                            <!--                                </el-button>-->
-                            <!--                            </div>-->
                         </div>
                     </template>
                     <p class="content">{{ contentSubstr(notice.content) }}</p>
@@ -62,19 +50,31 @@
                     :style="{ left: left + 'px', top: top + 'px' }"
                     class="contextmenu"
                 >
-                    <li>
+                    <li v-if="rightClickNotice.top === 0" @click.stop="modifyTop(rightClickNotice)">
                         <el-icon :size="SIZE_ICON_MD()">
                             <icon-pinnacle-top />
                         </el-icon>
                         置顶
                     </li>
-                    <li v-if="this.isRead" @click.stop="modifyStatus(this.rightClickNid, 1)">
+                    <li v-if="rightClickNotice.top === 1" @click.stop="modifyTop(rightClickNotice)">
+                        <el-icon :size="28">
+                            <icon-pinnacle-cancel-top />
+                        </el-icon>
+                        取消置顶
+                    </li>
+                    <li
+                        v-if="rightClickNotice.isRead === 0"
+                        @click.stop="modifyStatus(rightClickNotice)"
+                    >
                         <el-icon :size="SIZE_ICON_SM()">
                             <icon-pinnacle-flag />
                         </el-icon>
                         标为已读
                     </li>
-                    <li v-if="!this.isRead" @click.stop="modifyStatus(this.rightClickNid, 0)">
+                    <li
+                        v-if="rightClickNotice.isRead === 1"
+                        @click.stop="modifyStatus(rightClickNotice)"
+                    >
                         <el-icon :size="SIZE_ICON_SM()">
                             <icon-pinnacle-flag />
                         </el-icon>
@@ -109,22 +109,28 @@
 <script lang="ts">
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
-import { SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
+import { SIZE_ICON_LG, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
 
 const noticeStore = useNoticeStore()
 
 export default {
     data() {
         return {
-            isRead: true,
-            rightClickNid: '',
             rightClickVisible: false,
+            rightClickNotice: {
+                id: '',
+                top: 0,
+                isRead: 0
+            },
             top: 0,
             left: 0
         }
     },
     props: [],
     methods: {
+        SIZE_ICON_LG() {
+            return SIZE_ICON_LG
+        },
         SIZE_ICON_MD() {
             return SIZE_ICON_MD
         },
@@ -148,8 +154,8 @@ export default {
             if (date == null) return null
             return new Date(date).toLocaleString()
         },
-        async modifyStatus(nid, status) {
-            await noticeStore.modifyNoticeIsRead(nid, status)
+        async modifyStatus(notice) {
+            await noticeStore.modifyNoticeIsRead(notice)
             this.closeMenu()
             let flag = 0
             if (this.currentViewPage === 'All') {
@@ -174,13 +180,25 @@ export default {
         openMenu(e, notice) {
             this.left = e.pageX
             this.top = e.pageY
-            this.isRead = notice.isRead === 0
-            this.rightClickNid = notice.id
+            this.rightClickNotice = notice
             this.rightClickVisible = true
         },
         // 关闭菜单
         closeMenu() {
             this.rightClickVisible = false
+        },
+        async modifyTop(notice) {
+            await noticeStore.modifyTop(notice)
+            this.closeMenu()
+            let flag = 0
+            if (this.currentViewPage === 'All') {
+                flag = -1
+            } else if (this.currentViewPage === 'ToRead') {
+                flag = 0
+            } else if (this.currentViewPage === 'AlRead') {
+                flag = 1
+            }
+            await noticeStore.selectAllNoticeByUserId(flag)
         }
     },
     mounted() {},
@@ -310,10 +328,11 @@ h4 {
 .contextmenu li {
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: center;
     padding: 7px 16px;
     cursor: pointer;
 }
+
 .contextmenu li:hover {
     background: #eee;
 }

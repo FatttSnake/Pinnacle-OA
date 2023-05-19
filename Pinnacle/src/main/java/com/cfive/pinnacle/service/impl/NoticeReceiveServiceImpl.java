@@ -31,10 +31,14 @@ public class NoticeReceiveServiceImpl extends ServiceImpl<NoticeReceiveMapper, N
     }
 
     @Override
-    public Boolean modifyNoticeIsRead(Long noticeId,Integer readStatus) {
+    public Boolean modifyNoticeIsRead(Notice notice) {
+        Integer readStatus = null;
+        if (null!=notice.getIsRead()){
+            readStatus=notice.getIsRead()==0?1:0;
+        }
         LambdaUpdateWrapper<NoticeReceive> luw = new LambdaUpdateWrapper<>();
         Long userId = WebUtil.getLoginUser().getUser().getId();
-        luw.eq(NoticeReceive::getNoticeId, noticeId).eq(NoticeReceive::getUserId, userId).set(null!=readStatus,NoticeReceive::getAlreadyRead, readStatus);
+        luw.eq(NoticeReceive::getNoticeId, notice.getId()).eq(NoticeReceive::getUserId, userId).set(null!=readStatus,NoticeReceive::getAlreadyRead, readStatus);
         return noticeReceiveMapper.update(null,luw)>0;
     }
 }

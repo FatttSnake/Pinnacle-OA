@@ -5,7 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
-import com.cfive.pinnacle.entity.NoticeType;
+import com.cfive.pinnacle.entity.common.ResponseCode;
+import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.mapper.NoticeMapper;
 import com.cfive.pinnacle.mapper.NoticeReceiveMapper;
 import com.cfive.pinnacle.mapper.NoticeTypeMapper;
@@ -15,11 +16,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,6 +106,12 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
         notice.setModifyTime(null);
         notice.setOld(0);
         return this.addNotice(notice);
+    }
+
+    @Override
+    public Boolean updateNoticeTop(Notice notice) {
+        notice.setTop(notice.getTop() == 1 ? 0 : 1);
+        return noticeMapper.updateById(notice) > 0;
     }
 
     @Override
