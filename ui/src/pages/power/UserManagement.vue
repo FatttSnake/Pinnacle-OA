@@ -82,6 +82,16 @@
                         />
                     </el-select>
                 </el-form-item>
+                <el-form-item label="状态">
+                    <el-switch
+                        v-model="userForm.enable"
+                        inline-prompt
+                        active-text="启用"
+                        :active-value="1"
+                        inactive-text="禁用"
+                        :inactive-value="0"
+                    />
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>
@@ -124,7 +134,8 @@ export default {
                 inputUsername: '',
                 inputPassword: '',
                 selectedRoles: [],
-                selectedGroups: []
+                selectedGroups: [],
+                enable: 0
             },
             isAddNew: true,
             dialogTitle: '',
@@ -230,6 +241,7 @@ export default {
                     this.userForm.selectedGroups.push(group.id)
                 }
             }
+            this.userForm.enable = row.enable
             this.isAddNew = false
             this.dialogVisible = true
         },
@@ -270,6 +282,7 @@ export default {
                 this.userForm.inputPassword = ''
                 this.userForm.selectedRoles = []
                 this.userForm.selectedGroups = []
+                this.userForm.enable = 0
                 this.dialogTitle = '添加用户'
             } else {
                 this.dialogTitle = '编辑用户'
@@ -288,7 +301,8 @@ export default {
                         username: this.userForm.inputUsername,
                         passwd: this.userForm.inputPassword,
                         roles: [],
-                        groups: []
+                        groups: [],
+                        enable: this.userForm.enable
                     }
                     if (this.editUserId !== '1') {
                         for (const roleId of this.userForm.selectedRoles) {

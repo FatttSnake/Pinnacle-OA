@@ -49,6 +49,16 @@
                         />
                     </el-select>
                 </el-form-item>
+                <el-form-item label="状态">
+                    <el-switch
+                        v-model="groupForm.enable"
+                        inline-prompt
+                        active-text="启用"
+                        :active-value="1"
+                        inactive-text="禁用"
+                        :inactive-value="0"
+                    />
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>
@@ -81,7 +91,8 @@ export default {
             roles: [],
             groupForm: {
                 inputGroupName: '',
-                selectedRoles: []
+                selectedRoles: [],
+                enable: 0
             },
             isAddNew: true,
             dialogTitle: '',
@@ -130,6 +141,7 @@ export default {
             if (this.isAddNew) {
                 this.groupForm.inputGroupName = ''
                 this.groupForm.selectedRoles = []
+                this.groupForm.enable = 0
                 this.dialogTitle = '添加用户组'
             } else {
                 this.dialogTitle = '编辑用户组'
@@ -157,6 +169,7 @@ export default {
             for (const role of row.roles) {
                 this.groupForm.selectedRoles.push(role.id)
             }
+            this.groupForm.enable = row.enable
             this.isAddNew = false
             this.dialogVisible = true
         },
@@ -193,7 +206,8 @@ export default {
                     const groupObject = {
                         id: '',
                         name: this.groupForm.inputGroupName,
-                        roles: []
+                        roles: [],
+                        enable: this.groupForm.enable
                     }
                     for (const roleId of this.groupForm.selectedRoles) {
                         const role = {

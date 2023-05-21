@@ -15,11 +15,13 @@
                ts.deleted           as staff_deleted,
                ts.version           as staff_version,
                tr.id                as role_id,
+               tr.enable            as role_enable,
                tr.name              as role_name,
                tr.deleted           as role_deleted,
                tr.version           as role_version,
                tg.id                as group_id,
                tg.name              as group_name,
+               tg.enable            as group_enable,
                tg.deleted           as group_deleted,
                tg.version           as group_version
         from t_user
@@ -44,10 +46,12 @@
                ts.version           as staff_version,
                tr.id                as role_id,
                tr.name              as role_name,
+               tr.enable            as role_enable,
                tr.deleted           as role_deleted,
                tr.version           as role_version,
                tg.id                as group_id,
                tg.name              as group_name,
+               tg.enable            as group_enable,
                tg.deleted           as group_deleted,
                tg.version           as group_version
         from t_user
@@ -90,10 +94,10 @@
         from t_user
                  left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
                  left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
-                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+                 left join (select * from t_group where deleted = 0 and enable = 1) as tg on tg.id = tug.group_id
                  left join (select * from t_role_group where deleted = 0) as trg on tg.id = trg.group_id
                  left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
-                 left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id or tr.id = tur.role_id
+                 left join (select * from t_role where deleted = 0 and enable = 1) as tr on tr.id = trg.role_id or tr.id = tur.role_id
                  left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
                  left join t_power as tp on tp.id = tpr.power_id
                  left join t_menu tm on tp.id = tm.power_id
@@ -120,12 +124,14 @@
         <collection property="roles" ofType="role">
             <id property="id" column="role_id"/>
             <result property="name" column="role_name"/>
+            <result property="enable" column="role_enable"/>
             <result property="deleted" column="role_deleted"/>
             <result property="version" column="role_version"/>
         </collection>
         <collection property="groups" ofType="group">
             <id property="id" column="group_id"/>
             <result property="name" column="group_name"/>
+            <result property="enable" column="group_enable"/>
             <result property="deleted" column="group_deleted"/>
             <result property="version" column="group_version"/>
         </collection>
