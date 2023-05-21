@@ -51,6 +51,16 @@
                         @check-change="handleSelectedPowerChange"
                     />
                 </el-form-item>
+                <el-form-item label="状态">
+                    <el-switch
+                        v-model="roleForm.enable"
+                        inline-prompt
+                        active-text="启用"
+                        :active-value="1"
+                        inactive-text="禁用"
+                        :inactive-value="0"
+                    />
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>
@@ -88,7 +98,8 @@ export default {
             },
             roleForm: {
                 inputRoleName: '',
-                selectedPower: new Set()
+                selectedPower: new Set(),
+                enable: 0
             },
             isAddNew: true,
             defaultSelectedPower: [],
@@ -156,6 +167,7 @@ export default {
                 this.defaultSelectedPower = []
                 this.roleForm.inputRoleName = ''
                 this.roleForm.selectedPower.clear()
+                this.roleForm.enable = 0
                 this.dialogTitle = '添加角色'
             } else {
                 this.dialogTitle = '编辑角色'
@@ -209,6 +221,7 @@ export default {
             this.roleForm.inputRoleName = row.name
             this.editRoleId = row.id
             this.roleForm.selectedPower.clear()
+            this.roleForm.enable = row.enable
             this.defaultSelectedPower = []
             for (const operation of row.operations) {
                 this.defaultSelectedPower.push(operation.powerId)
@@ -256,7 +269,8 @@ export default {
                     const roleObject = {
                         id: '',
                         name: this.roleForm.inputRoleName,
-                        powers: []
+                        powers: [],
+                        enable: this.roleForm.enable
                     }
                     for (const powerId of this.roleForm.selectedPower) {
                         const power = {

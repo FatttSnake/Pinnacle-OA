@@ -25,6 +25,7 @@ public class ResponseCode {
 
     public static final int UNAUTHORIZED = 30010;
     public static final int ACCESS_DENIED = 30030;
+    public static final int USER_DISABLE = 30031;
 
     public static final int SYSTEM_ERROR = 50001;
     public static final int SYSTEM_TIMEOUT = 50002;

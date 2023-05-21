@@ -31,6 +31,12 @@
                 }}</el-tag>
             </template>
         </el-table-column>
+        <el-table-column label="状态" align="center">
+            <template #default="scope">
+                <el-tag type="success" v-if="scope.row.enable">启用</el-tag>
+                <el-tag type="info" v-else>禁用</el-tag>
+            </template>
+        </el-table-column>
         <el-table-column label="操作" width="150" align="center">
             <template #default="scope">
                 <el-button size="small" @click="$emit('onEdit', scope.$index, scope.row)"

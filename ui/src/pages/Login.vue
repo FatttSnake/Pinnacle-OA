@@ -84,7 +84,12 @@
 import { getCaptchaSrc, login, verifyCaptcha } from '@/utils/auth'
 import backShape from '@/assets/svg/back-shape.svg'
 import { ElMessage } from 'element-plus'
-import { LOGIN_SUCCESS, LOGOUT_FAILED, PRODUCTION_NAME } from '@/constants/Common.constants'
+import {
+    LOGIN_SUCCESS,
+    LOGOUT_FAILED,
+    PRODUCTION_NAME,
+    USER_DISABLE
+} from '@/constants/Common.constants'
 import { setToken } from '@/utils/common'
 
 export default {
@@ -166,6 +171,13 @@ export default {
                         ElMessage.error({
                             dangerouslyUseHTMLString: true,
                             message: '<strong>用户名</strong> 或 <strong>密码</strong> 错误'
+                        })
+                        this.resetLogin()
+                        break
+                    case USER_DISABLE:
+                        ElMessage.error({
+                            dangerouslyUseHTMLString: true,
+                            message: '<strong>该用户已被禁用</strong>，请联系管理员'
                         })
                         this.resetLogin()
                         break

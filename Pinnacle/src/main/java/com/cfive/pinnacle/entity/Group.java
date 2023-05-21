@@ -45,6 +45,12 @@ public class Group implements Serializable {
     @TableField("name")
     private String name;
 
+    /**
+     * 启用
+     */
+    @TableField("enable")
+    private Integer enable;
+
     @TableField("deleted")
     @TableLogic
     private Long deleted;

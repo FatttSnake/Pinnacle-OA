@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
-    public ResponseResult exceptionHandler(Exception e) {
+    public ResponseResult<?> exceptionHandler(Exception e) {
         if (e instanceof DuplicateKeyException) {
             return ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "无法添加重复数据", null);
         }
@@ -23,6 +24,9 @@ public class CustomExceptionHandler {
         }
         if (e instanceof AccessDeniedException) {
             return ResponseResult.build(ResponseCode.ACCESS_DENIED, e.getMessage(), null);
+        }
+        if (e instanceof DisabledException) {
+            return ResponseResult.build(ResponseCode.USER_DISABLE, e.getMessage(), null);
         }
 
         log.debug(e.getMessage(), e);

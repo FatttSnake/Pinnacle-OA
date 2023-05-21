@@ -49,6 +49,12 @@ public class Role implements Serializable {
     @TableField("name")
     private String name;
 
+    /**
+     * 启用
+     */
+    @TableField("enable")
+    private Integer enable;
+
     @TableField(exist = false)
     private List<Menu> menus;
 
