@@ -7,7 +7,7 @@
             </div>
         </template>
         <div v-for="item in tableData" :key="item" class="text item">
-            <el-row gutter="10">
+            <el-row :gutter="10">
                 <el-col :xs="0" :sm="4" :md="4" :lg="3" :xl="2" style="justify-content: center">
                     <el-avatar style="background-color: #409eff" size="default">
                         <el-icon
@@ -42,13 +42,10 @@ import { SIZE_ICON_LG, SIZE_ICON_MD } from '@/constants/Common.constants'
 
 export default {
     props: {
-        tableData: []
+        tableData: {
+            type: Array
+        }
     },
-    // data() {
-    //     return {
-    //         tableData: []
-    //     }
-    // },
     methods: {
         SIZE_ICON_LG() {
             return SIZE_ICON_LG
