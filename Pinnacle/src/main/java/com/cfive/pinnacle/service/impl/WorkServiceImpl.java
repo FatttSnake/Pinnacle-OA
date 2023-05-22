@@ -2,11 +2,10 @@ package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.cfive.pinnacle.entity.Notice;
-import com.cfive.pinnacle.entity.User;
+import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.entity.UserWork;
 import com.cfive.pinnacle.entity.Work;
-import com.cfive.pinnacle.mapper.UserMapper;
+import com.cfive.pinnacle.mapper.permission.UserMapper;
 import com.cfive.pinnacle.mapper.UserWorkMapper;
 import com.cfive.pinnacle.mapper.WorkMapper;
 import com.cfive.pinnacle.service.IWorkService;
@@ -17,8 +16,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DecimalFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -101,7 +98,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     public double getProgress(Long workId) {
         double workNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id",workId));
         double completeNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id",workId).eq("status",1));
-        double progress = 0;
+        double progress;
         progress = (completeNum / workNum) * 100;
         progress = (double) Math.round(progress * 100) / 100;
         return progress;
@@ -115,10 +112,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     public boolean addWork(Work work) {
-        boolean flag = true;
-        if (workMapper.insert(work) <= 0) {
-            flag = false;
-        }
+        boolean flag = workMapper.insert(work) > 0;
         long workId = work.getId();
         for (User user :
                 work.getWorker()) {
@@ -135,11 +129,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     public boolean deleteByWorkId(Long workId) {
-        boolean flag = false;
-        if (userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", workId)) > 0 && workMapper.deleteById(workId) > 0) {
-            flag = true;
-        }
-        return flag;
+        return userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", workId)) > 0 && workMapper.deleteById(workId) > 0;
     }
 
     @Override
@@ -151,10 +141,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     public boolean updateWork(Work work) {
-        boolean flag = true;
-        if (userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", work.getId())) <= 0) {
-            flag = false;
-        }
+        boolean flag = userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", work.getId())) > 0;
         if (workMapper.update(null, new UpdateWrapper<Work>().eq("id", work.getId()).set("old", 1)) <= 0) {
             flag = false;
         }

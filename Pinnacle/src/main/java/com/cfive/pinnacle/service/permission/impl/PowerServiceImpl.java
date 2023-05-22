@@ -1,7 +1,8 @@
 package com.cfive.pinnacle.service.permission.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.cfive.pinnacle.entity.permission.*;
-import com.cfive.pinnacle.mapper.permission.PowerMapper;
+import com.cfive.pinnacle.mapper.permission.*;
 import com.cfive.pinnacle.service.permission.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,38 +20,38 @@ import java.util.List;
  */
 @Service
 public class PowerServiceImpl extends ServiceImpl<PowerMapper, Power> implements IPowerService {
-    private IOperationService operationService;
-    private IMenuService menuService;
-    private IElementService elementService;
-    private IFileService fileService;
+    private MenuMapper menuMapper;
+    private ElementMapper elementMapper;
+    private OperationMapper operationMapper;
+    private FileMapper fileMapper;
 
     @Autowired
-    public void setOperationService(IOperationService operationService) {
-        this.operationService = operationService;
+    public void setMenuMapper(MenuMapper menuMapper) {
+        this.menuMapper = menuMapper;
     }
 
     @Autowired
-    public void setMenuService(IMenuService menuService) {
-        this.menuService = menuService;
+    public void setElementMapper(ElementMapper elementMapper) {
+        this.elementMapper = elementMapper;
     }
 
     @Autowired
-    public void setElementService(IElementService elementService) {
-        this.elementService = elementService;
+    public void setOperationMapper(OperationMapper operationMapper) {
+        this.operationMapper = operationMapper;
     }
 
     @Autowired
-    public void setFileService(IFileService fileService) {
-        this.fileService = fileService;
+    public void setFileMapper(FileMapper fileMapper) {
+        this.fileMapper = fileMapper;
     }
 
     @Override
     public PowerSet getAllPower() {
-        List<Operation> operationList = operationService.list();
-        List<Menu> menuList = menuService.list();
-        List<Element> elementList = elementService.list();
-        List<File> fileList = fileService.list();
+        List<Menu> menuList = menuMapper.selectList(Wrappers.emptyWrapper());
+        List<Element> elementList = elementMapper.selectList(Wrappers.emptyWrapper());
+        List<Operation> operationList = operationMapper.selectList(Wrappers.emptyWrapper());
+        List<File> fileList = fileMapper.selectList(Wrappers.emptyWrapper());
 
-        return new PowerSet(operationList, menuList, elementList, fileList);
+        return new PowerSet(menuList, elementList, operationList, fileList);
     }
 }

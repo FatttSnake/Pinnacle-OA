@@ -1,22 +1,16 @@
 package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cfive.pinnacle.entity.Attendance;
 import com.cfive.pinnacle.mapper.AttendanceMapper;
-import com.cfive.pinnacle.mapper.UserMapper;
+import com.cfive.pinnacle.mapper.permission.UserMapper;
 import com.cfive.pinnacle.service.IAttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,8 +35,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
     @Override
     public List<Attendance> getAttendanceAndUserByid(Long userId) {
-        List<Attendance> attendances = attendanceMapper.getAttendanceAndUserByid(userId);
-        return attendances;
+        return attendanceMapper.getAttendanceAndUserByid(userId);
     }
 
     @Override

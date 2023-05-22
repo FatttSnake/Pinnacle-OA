@@ -1,4 +1,4 @@
-package com.cfive.pinnacle.entity;
+package com.cfive.pinnacle.entity.permission;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -10,24 +10,27 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import com.cfive.pinnacle.entity.permission.User;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 部门
+ * 角色
  * </p>
  *
  * @author FatttSnake
  * @since 2023-04-30
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
-@TableName("t_department")
-public class Department implements Serializable {
+@TableName("t_role")
+public class Role implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -37,22 +40,28 @@ public class Department implements Serializable {
     private Long id;
 
     /**
-     * 部门名
+     * 角色名
      */
     @TableField("name")
     private String name;
 
     /**
-     * 部门电话
+     * 启用
      */
-    @TableField("tel")
-    private String tel;
+    @TableField("enable")
+    private Integer enable;
 
-    /**
-     * 部门地址
-     */
-    @TableField("address")
-    private String address;
+    @TableField(exist = false)
+    private List<Menu> menus;
+
+    @TableField(exist = false)
+    private List<Element> elements;
+
+    @TableField(exist = false)
+    private List<Operation> operations;
+
+    @TableField(exist = false)
+    private List<Power> powers;
 
     @TableField("deleted")
     @TableLogic
@@ -62,9 +71,8 @@ public class Department implements Serializable {
     @Version
     private Integer version;
 
-    /**
-     * 部门成员
-     */
-    @TableField(exist = false)
-    private List<User> userList;
+    public Role(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

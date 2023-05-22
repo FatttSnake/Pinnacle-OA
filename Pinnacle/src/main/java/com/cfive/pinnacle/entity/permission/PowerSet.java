@@ -18,11 +18,11 @@ public class PowerSet implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private List<Operation> operationList;
-
     private List<Menu> menuList;
 
     private List<Element> elementList;
+
+    private List<Operation> operationList;
 
     private List<File> fileList;
 }
