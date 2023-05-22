@@ -1,16 +1,12 @@
 package com.cfive.pinnacle.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cfive.pinnacle.entity.Department;
-import com.cfive.pinnacle.entity.User;
 import com.cfive.pinnacle.mapper.DepartmentMapper;
-import com.cfive.pinnacle.mapper.UserMapper;
 import com.cfive.pinnacle.service.IDepartmentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +21,7 @@ import java.util.List;
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements IDepartmentService {
     @Autowired
     private DepartmentMapper departmentMapper;
-    @Autowired
-    private UserMapper userMapper;
+
     @Override
     public List<Department> getDepartAndUser() {
         return departmentMapper.getDepartAndUser();

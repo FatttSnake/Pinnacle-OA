@@ -1,6 +1,6 @@
 package com.cfive.pinnacle.service.permission;
 
-import com.cfive.pinnacle.entity.User;
+import com.cfive.pinnacle.entity.permission.User;
 
 import java.util.HashMap;
 

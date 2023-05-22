@@ -1,8 +1,7 @@
-package com.cfive.pinnacle.entity;
+package com.cfive.pinnacle.entity.permission;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.Version;
 
@@ -10,7 +9,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import com.cfive.pinnacle.entity.permission.User;
+import com.cfive.pinnacle.entity.Staff;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
@@ -18,7 +17,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 部门
+ * 用户
  * </p>
  *
  * @author FatttSnake
@@ -26,8 +25,8 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@TableName("t_department")
-public class Department implements Serializable {
+@TableName("t_user")
+public class User implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -37,34 +36,52 @@ public class Department implements Serializable {
     private Long id;
 
     /**
-     * 部门名
+     * 用户名
      */
-    @TableField("name")
-    private String name;
+    @TableField("username")
+    private String username;
 
     /**
-     * 部门电话
+     * 密码
      */
-    @TableField("tel")
-    private String tel;
+    @TableField("passwd")
+    private String passwd;
 
     /**
-     * 部门地址
+     * 部门
      */
-    @TableField("address")
-    private String address;
+    @TableField("department_id")
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long departmentId;
+
+    /**
+     * 启用
+     */
+    @TableField("enable")
+    private Integer enable;
+
+    @TableField(exist = false)
+    private Staff staff;
+
+    @TableField(exist = false)
+    private List<Role> roles;
+
+    @TableField(exist = false)
+    private List<Group> groups;
+
+    @TableField(exist = false)
+    private List<Menu> menus;
+
+    @TableField(exist = false)
+    private List<Element> elements;
+
+    @TableField(exist = false)
+    private List<Operation> operations;
 
     @TableField("deleted")
-    @TableLogic
     private Long deleted;
 
     @TableField("version")
     @Version
     private Integer version;
-
-    /**
-     * 部门成员
-     */
-    @TableField(exist = false)
-    private List<User> userList;
 }

@@ -1,4 +1,4 @@
-package com.cfive.pinnacle.entity;
+package com.cfive.pinnacle.entity.permission;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -8,10 +8,7 @@ import com.baomidou.mybatisplus.annotation.Version;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-import com.cfive.pinnacle.entity.permission.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
@@ -19,16 +16,16 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 考勤
+ * 中间表-角色-用户组
  * </p>
  *
- * @author gzw
+ * @author FatttSnake
  * @since 2023-04-30
  */
 @Data
 @Accessors(chain = true)
-@TableName("t_attendance")
-public class Attendance implements Serializable {
+@TableName("t_role_group")
+public class RoleGroup implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -38,46 +35,24 @@ public class Attendance implements Serializable {
     private Long id;
 
     /**
-     * 用户
+     * 角色
      */
-    @TableField("user_id")
+    @TableField("role_id")
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long userId;
+    private Long roleId;
 
     /**
-     * 考勤时间
+     * 群组
      */
-    @TableField("att_time")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",timezone = "UTC")
-    private LocalDateTime attTime;
-
-    /**
-     * 考勤状态
-     */
-    @TableField("status")
-    private Integer status;
-
-    /**
-     * 修改人
-     */
-    @TableField("modify_id")
+    @TableField("group_id")
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long modifyId;
-
-    /**
-     * 修改时间
-     */
-    @TableField("modify_time")
-    private LocalDateTime modifyTime;
+    private Long groupId;
 
     @TableField("deleted")
-    @TableLogic(value = "0",delval = "1")
+    @TableLogic
     private Long deleted;
 
     @TableField("version")
     @Version
     private Integer version;
-
-    @TableField(exist = false)
-    private User user;
 }

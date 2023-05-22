@@ -1,6 +1,5 @@
 package com.cfive.pinnacle.entity.permission;
 
-import com.cfive.pinnacle.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,13 +1,12 @@
 package com.cfive.pinnacle.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.cfive.pinnacle.controller.permission.UserController;
 import com.cfive.pinnacle.entity.Affair;
-import com.cfive.pinnacle.entity.Attendance;
-import com.cfive.pinnacle.entity.User;
+import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IAffairService;
-import com.cfive.pinnacle.service.IUserService;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +30,7 @@ public class AffairController {
 //    IUserService userService;
 //    不用userService的方法了，userController中已经写好了直接拿来用
     @Autowired
-    UserController userController;
+UserController userController;
 
 
     @PostMapping("/add")
@@ -41,7 +40,7 @@ public class AffairController {
 
     @GetMapping("/add/getUser")
     public  ResponseResult getUser() {
-        List<User> userList = (List<User>)userController.getAllUser().getData();
+        List<User> userList = userController.getAllUser().getData();
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",userList);
     }//获取数据库中所有用户
 

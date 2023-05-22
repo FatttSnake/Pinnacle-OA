@@ -31,14 +31,14 @@ public class OperationLogController {
     }
 
     @GetMapping
-    public ResponseResult getAllOperationLog() {
+    public ResponseResult<List<OperationLog>> getAllOperationLog() {
         List<OperationLog> operationLogs = operationLogService.list();
 
         return ResponseResult.databaseSelectSuccess(operationLogs);
     }
 
     @GetMapping("/{id}")
-    public ResponseResult getOperationLog(@PathVariable int id) {
+    public ResponseResult<OperationLog> getOperationLog(@PathVariable int id) {
         LambdaQueryWrapper<OperationLog> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OperationLog::getId, id);
         OperationLog operationLog = operationLogService.getOne(wrapper);
