@@ -27,6 +27,7 @@ public class DepartmentController {
     @Autowired
     IDepartmentService departmentService;
 
+    //获取所有部门及其各部门所属成员
     @GetMapping
     public ResponseResult getDepartAndUser(){
         List<Department> getDepartAndUser = departmentService.getDepartAndUser();

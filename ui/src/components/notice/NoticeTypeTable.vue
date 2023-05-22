@@ -1,10 +1,10 @@
 <template>
     <el-table
-        v-loading="loading"
+        v-loading="dataLoading"
         element-loading-text="加载中..."
         ref="tableRef"
         :data="noticeTypeList.filter((data) => !search || data.name.includes(search))"
-        style="font-size: 20px"
+        style="font-size: 18px"
         stripe
         border
         highlight-current-row
@@ -17,7 +17,7 @@
         }"
         ><el-table-column type="selection" width="65" align="center" />
         <el-table-column type="index" label="序号" width="80" align="center" />
-        <el-table-column label="类型名" prop="name" width="500" align="center" />
+        <el-table-column label="类型名称" prop="name" width="500" align="center" />
         <el-table-column label="是否启用" prop="enable" width="350" align="center">
             <template #default="scope">
                 <el-switch
@@ -77,12 +77,14 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { useNoticeStore } from '@/store/notice'
+import { useNoticeStore, useNoticeTypeStore } from '@/store/notice'
 const noticeStore = useNoticeStore()
+const noticeTypeStore = useNoticeTypeStore()
 
 export default {
     computed: {
-        ...mapState(useNoticeStore, ['total', 'noticeTypeList', 'loading', 'dialogEditVisible'])
+        ...mapState(useNoticeStore, ['total', 'dialogEditVisible']),
+        ...mapState(useNoticeTypeStore, ['noticeTypeList', 'dataLoading'])
     },
     data() {
         return {
@@ -100,9 +102,9 @@ export default {
             this.multipleSelection = val
         },
         switchChang(id, value) {
-            noticeStore.updateNoticeTypeEnable(id, value)
+            noticeTypeStore.updateNoticeTypeEnable(id, value)
             setTimeout(() => {
-                noticeStore.selectNoticeType()
+                noticeTypeStore.selectNoticeType()
             }, 800)
         },
         handleEdit(index, row) {},
@@ -126,7 +128,8 @@ export default {
         }
     },
     mounted() {
-        noticeStore.selectNoticeType()
+        noticeTypeStore.dataLoading = true
+        noticeTypeStore.selectNoticeType()
     },
     updated() {}
 }

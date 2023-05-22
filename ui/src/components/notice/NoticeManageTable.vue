@@ -17,13 +17,14 @@
         }"
     >
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column
-            type="index"
-            label="序号"
-            width="70"
-            align="center"
-            :index="computeIndex"
-        />
+        <el-table-column type="index" label="序号" width="75" align="center">
+            <template #default="scope">
+                <el-icon :size="SIZE_ICON_SM()" :color="COLOR_TOP()" v-if="scope.row.top === 1">
+                    <icon-pinnacle-top />
+                </el-icon>
+                {{ (this.currentPage - 1) * this.pageSize + scope.$index + 1 }}
+            </template>
+        </el-table-column>
         <el-table-column
             prop="title"
             label="公告标题"
@@ -36,7 +37,13 @@
             <template #default="scope">
                 <el-tag
                     size="default"
-                    :type="scope.row.noticeType.name === '通知公告' ? 'warning' : 'success'"
+                    :type="
+                        scope.row.noticeType.name === '通知公告'
+                            ? 'warning'
+                            : scope.row.noticeType.name === '紧急公告'
+                            ? 'danger'
+                            : 'success'
+                    "
                     disable-transitions
                 >
                     {{ scope.row.noticeType.name }}
@@ -88,10 +95,10 @@
         </el-table-column>
         <el-table-column label="操作" min-width="200px" align="center">
             <template #default="scope">
-                <el-button size="small" color="#626aef" @click="handleShow(scope.$index, scope.row)"
+                <el-button size="small" color="#626aef" @click="handleShow(scope.row)"
                     >查看
                 </el-button>
-                <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)"
+                <el-button size="small" type="primary" @click="handleEdit(scope.row)"
                     >编辑
                 </el-button>
                 <el-button size="small" type="danger" @click="handleDeleteById(scope.row.id)"
@@ -126,7 +133,7 @@
         <template #header>
             <h2 style="color: red">编辑公告</h2>
         </template>
-        <commitForm />
+        <notice-commit-form />
     </el-dialog>
     <!--        查看会话框-->
     <el-dialog
@@ -146,6 +153,7 @@
 import _ from 'lodash'
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
+import { COLOR_TOP, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
 
 const noticeStore = useNoticeStore()
 
@@ -172,8 +180,14 @@ export default {
     },
     props: [],
     methods: {
-        computeIndex(index) {
-            return (this.currentPage - 1) * this.pageSize + index + 1
+        SIZE_ICON_SM() {
+            return SIZE_ICON_SM
+        },
+        COLOR_TOP() {
+            return COLOR_TOP
+        },
+        SIZE_ICON_MD() {
+            return SIZE_ICON_MD
         },
         handleSelectionChange(val) {
             // val的值为所勾选行的数组对象
@@ -195,7 +209,8 @@ export default {
             if (data == null) return '暂无数据'
             return new Date(data).toLocaleString()
         },
-        handleEdit(index, row) {
+        handleEdit(row) {
+            console.log(row)
             noticeStore.$patch((state) => {
                 state.hackReset = true
                 state.noticeShowData = row
@@ -212,7 +227,8 @@ export default {
                 state.hackReset = false
             })
         },
-        handleShow(index, row) {
+        handleShow(row) {
+            console.log(row)
             noticeStore.$patch((state) => {
                 state.dialogShowVisible = true
                 state.noticeShowData = row

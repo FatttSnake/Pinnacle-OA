@@ -10,7 +10,7 @@ export default {
     },
     methods: {},
     mounted() {
-        noticeStore.selectAllNoticeByUserId(1)
+        noticeStore.selectAllNoticeSelf(1)
         noticeStore.$patch((state) => {
             state.currentViewPage = 'AlRead'
         })

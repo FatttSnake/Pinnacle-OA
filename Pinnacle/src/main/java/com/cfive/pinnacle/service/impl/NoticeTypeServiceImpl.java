@@ -47,4 +47,9 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
         luw.eq(null!=typeId,NoticeType::getId, typeId).set(null!=enable,NoticeType::getEnable,enable);
         return noticeTypeMapper.update(null, luw)>0;
     }
+
+    @Override
+    public Boolean addNoticeType(NoticeType noticeType) {
+        return noticeTypeMapper.insert(noticeType)>0;
+    }
 }

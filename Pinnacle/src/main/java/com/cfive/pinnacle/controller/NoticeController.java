@@ -58,7 +58,7 @@ public class NoticeController {
     }
 
     //根据登录用户id查询所接收的公告
-    @GetMapping("/ByUserId")
+    @GetMapping("/self")
     public ResponseResult selectByUserId(Integer readStatus) {
         List<Notice> noticesByUserId = noticeReceiveService.selectByUserId(readStatus);
         Integer code = noticesByUserId != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
@@ -67,7 +67,7 @@ public class NoticeController {
     }
 
     //修改登录用户所接收公告的阅读状态
-    @PutMapping("/modifyNoticeIsRead")
+    @PutMapping("/modify_notice_read")
     public ResponseResult modifyNoticeIsRead(@RequestBody Notice notice) {
         boolean updateById = false;
         if (null != notice) {
@@ -86,8 +86,8 @@ public class NoticeController {
         return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateById);
     }
 
-    //更新公告置顶
-    @PutMapping("/updateNoticeTop")
+    //修改公告置顶状态
+    @PutMapping("/update_notice_top")
     public ResponseResult updateNoticeTop(@RequestBody Notice notice) {
         String operationMessage = notice.getTop() == 1 ? "取消置顶" : "置顶";
         boolean updateResult = noticeService.updateNoticeTop(notice);

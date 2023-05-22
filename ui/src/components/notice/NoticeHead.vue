@@ -17,7 +17,7 @@
                 <el-form-item label="公告类型：" prop="type">
                     <el-select v-model="search_info.type" placeholder="请选择公告类型">
                         <el-option
-                            v-for="item in EnableNoticeTypeList"
+                            v-for="item in enableNoticeTypeList"
                             :key="item.id"
                             :label="item.name"
                             :value="item.name"
@@ -59,10 +59,8 @@
 <script lang="ts">
 import { COLOR_PRODUCTION, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
 import _ from 'lodash'
-import { useNoticeStore } from '@/store/notice'
+import { useNoticeTypeStore } from '@/store/notice'
 import { mapState } from 'pinia'
-// const noticeStore = useNoticeStore()
-
 export default {
     name: 'NoticeHead',
     data() {
@@ -111,7 +109,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(useNoticeStore, ['EnableNoticeTypeList'])
+        ...mapState(useNoticeTypeStore, ['enableNoticeTypeList'])
     }
 }
 </script>
