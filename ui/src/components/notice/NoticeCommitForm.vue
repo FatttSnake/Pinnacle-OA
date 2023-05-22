@@ -6,7 +6,7 @@
         <el-form-item label="公告类型" prop="typeId">
             <el-select v-model="addData.typeId" filterable placeholder="请选择公告类型">
                 <el-option
-                    v-for="item in EnableNoticeTypeList"
+                    v-for="item in enableNoticeTypeList"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
@@ -44,7 +44,14 @@
             </el-form-item>
         </el-row>
         <el-form-item label="是否置顶" prop="top">
-            <el-switch v-model="addData.top" inline-prompt active-text="是" inactive-text="否" />
+            <el-switch
+                v-model="addData.top"
+                inline-prompt
+                active-text="是"
+                inactive-text="否"
+                :active-value="1"
+                :inactive-value="0"
+            />
         </el-form-item>
         <el-form-item label="公告优先级" prop="priority">
             <el-slider v-model="addData.priority" show-input show-stops :max="15" size="large" />
@@ -89,12 +96,13 @@
 </template>
 
 <script lang="js">
-import { useNoticeStore } from '@/store/notice'
+import { useNoticeStore, useNoticeTypeStore } from '@/store/notice'
 import { mapState } from 'pinia'
 const noticeStore = useNoticeStore()
 export default {
     computed:{
-        ...mapState(useNoticeStore,['EnableNoticeTypeList','departmentList','noticeShowData'])
+        ...mapState(useNoticeStore,['departmentList','noticeShowData']),
+        ...mapState(useNoticeTypeStore,['enableNoticeTypeList'])
     },
     data() {
         return {
@@ -105,7 +113,7 @@ export default {
                 typeId: '',
                 sendTime: '',
                 endTime: '',
-                top: false,
+                top: 0,
                 priority: 1,
                 content: '',
                 receivers:[]
@@ -136,7 +144,6 @@ export default {
     },
     methods: {
         submitForm() {
-            this.addData.top=this.addData.top?1:0;
             const receiveId=[]
             if (this.addData.receivers.length!=null){
                 for (let i = 0; i < this.addData.receivers.length; i++) {

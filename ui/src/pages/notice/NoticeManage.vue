@@ -23,7 +23,7 @@
                 <template #header>
                     <h2 style="color: red">发布公告</h2>
                 </template>
-                <commitForm />
+                <notice-commit-form />
             </el-dialog>
             <notice-manage-table
                 @handleDeleteById="handleDeleteById"
@@ -38,10 +38,11 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import 'element-plus/theme-chalk/el-message-box.css'
 import request from '@/services'
-import { useNoticeStore } from '@/store/notice'
+import { useNoticeStore, useNoticeTypeStore } from '@/store/notice'
 import { mapState } from 'pinia'
 import { SIZE_ICON_MD } from '@/constants/Common.constants'
 const noticeStore = useNoticeStore()
+const noticeTypeStore = useNoticeTypeStore()
 
 export default {
     name: 'NoticeHome',
@@ -124,7 +125,7 @@ export default {
         }
     },
     mounted() {
-        noticeStore.selectEnableNoticeType()
+        noticeTypeStore.selectEnableNoticeType()
     },
     computed: {
         ...mapState(useNoticeStore, ['dialogAddVisible'])

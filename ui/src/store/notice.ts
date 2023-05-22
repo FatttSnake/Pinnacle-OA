@@ -2,15 +2,19 @@ import { defineStore } from 'pinia'
 import request from '@/services'
 import { ElMessage } from 'element-plus'
 
-export interface IAddFormData {
+export interface IAddNoticeData {
     title: string
     typeId: string
     sendTime: string
     endTime: string
-    top: boolean
+    top: number
     priority: number
     content: string
     receivers: []
+}
+export interface IAddNoticeTypeData {
+    name: string
+    enable: number
 }
 export interface INotice {
     content: string
@@ -75,14 +79,6 @@ export const useNoticeStore = defineStore('notice', {
             editFlag: false,
             currentViewPage: 'All',
             hackReset: true,
-            EnableNoticeTypeList: [],
-            noticeTypeList: [
-                {
-                    id: '',
-                    name: '',
-                    enable: true
-                }
-            ],
             departmentList: [],
             noticeShowData: {
                 content: '',
@@ -113,54 +109,54 @@ export const useNoticeStore = defineStore('notice', {
     },
     getters: {},
     actions: {
-        selectAllNotice(currentPage: number, pageSize: number) {
+        async selectAllNotice(currentPage: number, pageSize: number) {
             void request
                 .get('/notice/page', {
                     currentPage,
                     pageSize
                 })
                 .then((response) => {
-                    this.selectData = response.data.data
-                    this.total = parseInt(response.data.msg)
-                    if (this.selectData.length !== 0) {
+                    if (response.data.code === 20021) {
+                        this.selectData = response.data.data
+                        this.total = parseInt(response.data.msg)
+                        if (this.selectData.length !== 0) {
+                            this.loading = false
+                        }
+                    } else {
                         this.loading = false
+                        ElMessage({
+                            message: response.data.msg,
+                            type: 'error'
+                        })
                     }
                 })
         },
-        async selectAllNoticeByUserId(readStatus: number) {
+        async selectAllNoticeSelf(readStatus: number) {
             await request
-                .get('/notice/ByUserId', {
+                .get('/notice/self', {
                     readStatus
                 })
                 .then((response) => {
-                    this.selectData = response.data.data
-                    if (this.selectData.length !== 0) {
+                    if (response.data.code === 20021) {
+                        this.selectData = response.data.data
+                        if (this.selectData.length !== 0) {
+                            this.loading = false
+                        }
+                    } else {
                         this.loading = false
+                        ElMessage({
+                            message: response.data.msg,
+                            type: 'error'
+                        })
                     }
                 })
-        },
-        async selectEnableNoticeType() {
-            await request.get('/noticeType/enable').then((response) => {
-                this.EnableNoticeTypeList = response.data.data
-            })
-        },
-        async selectNoticeType() {
-            await request.get('/noticeType').then((response) => {
-                this.noticeTypeList = response.data.data
-                if (response.data.data.length >= 0) {
-                    for (let i = 0; i < this.noticeTypeList.length; i++) {
-                        this.noticeTypeList[i].enable = response.data.data[i].enable === 1
-                    }
-                    this.loading = false
-                }
-            })
         },
         async selectDepartment() {
             await request.get('/department').then((response) => {
                 this.departmentList = response.data.data
             })
         },
-        async handleAddNotice(addFormData: IAddFormData) {
+        async handleAddNotice(addFormData: IAddNoticeData) {
             await request.post('/notice', addFormData).then((response) => {
                 if (response.data.code === 20022) {
                     this.dialogAddVisible = false
@@ -175,9 +171,9 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            this.selectAllNotice(1, 5)
+            await this.selectAllNotice(1, 5)
         },
-        async handleUpdateNotice(updateNotice: IAddFormData) {
+        async handleUpdateNotice(updateNotice: IAddNoticeData) {
             await request.put('/notice', updateNotice).then((response) => {
                 if (response.data.code === 20023) {
                     this.dialogEditVisible = false
@@ -192,12 +188,82 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            this.selectAllNotice(1, 5)
+            await this.selectAllNotice(1, 5)
             this.hackReset = false
+        },
+        async modifyNoticeIsRead(notice: INotice) {
+            await request.put('/notice/modify_notice_read', notice).then((response) => {
+                if (response.data.code === 20033) {
+                    ElMessage({
+                        message: response.data.msg,
+                        type: 'error'
+                    })
+                }
+            })
+        },
+        async modifyTop(notice: INotice) {
+            await request.put('/notice/update_notice_top', notice).then((response) => {
+                if (response.data.code === 20023) {
+                    ElMessage({
+                        message: response.data.msg,
+                        type: 'success'
+                    })
+                } else if (response.data.code === 20033) {
+                    ElMessage({
+                        message: response.data.msg,
+                        type: 'error'
+                    })
+                }
+            })
+        }
+    }
+})
+
+export const useNoticeTypeStore = defineStore('notice_type', {
+    state: () => {
+        return {
+            dataLoading: true,
+            dialogAddTypeVisible: false,
+            dialogEditTypeVisible: false,
+            editFlag: false,
+            enableNoticeTypeList: [],
+            noticeTypeList: [
+                {
+                    id: '',
+                    name: '',
+                    enable: true
+                }
+            ]
+        }
+    },
+    actions: {
+        async selectEnableNoticeType() {
+            await request.get('/notice_type/enable').then((response) => {
+                this.enableNoticeTypeList = response.data.data
+            })
+        },
+        async selectNoticeType() {
+            await request.get('/notice_type').then((response) => {
+                if (response.data.code === 20021) {
+                    this.noticeTypeList = response.data.data
+                    if (response.data.data.length >= 0) {
+                        for (let i = 0; i < this.noticeTypeList.length; i++) {
+                            this.noticeTypeList[i].enable = response.data.data[i].enable === 1
+                        }
+                        this.dataLoading = false
+                    }
+                } else {
+                    this.dataLoading = false
+                    ElMessage({
+                        message: response.data.msg,
+                        type: 'error'
+                    })
+                }
+            })
         },
         async updateNoticeTypeEnable(typeId: string, enable: boolean) {
             await request
-                .get('/noticeType/update', {
+                .get('/notice_type/update', {
                     typeId,
                     enable
                 })
@@ -215,21 +281,29 @@ export const useNoticeStore = defineStore('notice', {
                     }
                 })
         },
-        async modifyNoticeIsRead(notice: INotice) {
-            await request.put('/notice/modifyNoticeIsRead', notice).then((response) => {
-                if (response.data.code === 20033) {
+        async handleAddNoticeType(addFormData: IAddNoticeTypeData) {
+            await request.post('/notice_type', addFormData).then((response) => {
+                if (response.data.code === 20022) {
+                    this.dialogAddTypeVisible = false
+                    ElMessage({
+                        message: '添加成功.',
+                        type: 'success'
+                    })
+                } else if (response.data.code === 20032) {
                     ElMessage({
                         message: response.data.msg,
                         type: 'error'
                     })
                 }
             })
+            await this.selectNoticeType()
         },
-        async modifyTop(notice: INotice) {
-            await request.put('/notice/updateNoticeTop', notice).then((response) => {
+        async handleUpdateNoticeType(updateNotice: IAddNoticeTypeData) {
+            await request.put('/notice_type', updateNotice).then((response) => {
                 if (response.data.code === 20023) {
+                    this.dialogEditTypeVisible = false
                     ElMessage({
-                        message: response.data.msg,
+                        message: '修改成功.',
                         type: 'success'
                     })
                 } else if (response.data.code === 20033) {
@@ -239,6 +313,7 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
+            await this.selectNoticeType()
         }
     }
 })

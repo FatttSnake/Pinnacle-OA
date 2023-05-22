@@ -21,7 +21,7 @@ import java.util.List;
  * @since 2023-04-30
  */
 @RestController
-@RequestMapping("/noticeType")
+@RequestMapping("/notice_type")
 @CrossOrigin
 public class NoticeTypeController {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -29,6 +29,7 @@ public class NoticeTypeController {
     @Autowired
     INoticeTypeService noticeTypeService;
 
+    //查询已启用的公告类型
     @GetMapping("/enable")
     public ResponseResult selectEnableTypeList(){
         List<NoticeType> selectTypeName = noticeTypeService.selectEnableTypeList();
@@ -37,6 +38,7 @@ public class NoticeTypeController {
         return ResponseResult.build(code, msg, selectTypeName);
     }
 
+    //查询所有公告类型
     @GetMapping
     public ResponseResult selectTypeList(){
         List<NoticeType> selectTypeList = noticeTypeService.selectTypeList();
@@ -45,6 +47,7 @@ public class NoticeTypeController {
         return ResponseResult.build(code, msg, selectTypeList);
     }
 
+    //修改公告类型启用或禁用
     @GetMapping("/update")
     public ResponseResult updateTypeEnableById(String typeId,Boolean enable){
         Long tid=null;
@@ -56,5 +59,13 @@ public class NoticeTypeController {
         Boolean updateEnableById = noticeTypeService.updateTypeEnableById(tid, isEnable);
         String msg = updateEnableById ? "" : "修改失败，请重试！";
         return ResponseResult.build(updateEnableById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateEnableById);
+    }
+
+    //添加公告类型
+    @PostMapping
+    public ResponseResult addNoticeType(NoticeType noticeType){
+        Boolean insertNotice = noticeTypeService.addNoticeType(noticeType);
+        String msg = insertNotice ? "" : "数据添加失败，请重试！";
+        return ResponseResult.build(insertNotice ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, insertNotice);
     }
 }

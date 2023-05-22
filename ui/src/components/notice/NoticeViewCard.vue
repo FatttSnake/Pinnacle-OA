@@ -17,7 +17,14 @@
                 >
                     <template #header>
                         <div class="top">
-                            <el-icon :size="SIZE_ICON_MD()">
+                            <el-icon
+                                :size="SIZE_ICON_MD()"
+                                :color="COLOR_TOP()"
+                                v-if="notice.top === 1"
+                            >
+                                <icon-pinnacle-top />
+                            </el-icon>
+                            <el-icon :size="SIZE_ICON_MD()" v-if="notice.top === 0">
                                 <icon-pinnacle-noticeItem />
                             </el-icon>
                             <el-tag
@@ -109,7 +116,7 @@
 <script lang="ts">
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
-import { SIZE_ICON_LG, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
+import { COLOR_TOP, SIZE_ICON_LG, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
 
 const noticeStore = useNoticeStore()
 
@@ -128,6 +135,9 @@ export default {
     },
     props: [],
     methods: {
+        COLOR_TOP() {
+            return COLOR_TOP
+        },
         SIZE_ICON_LG() {
             return SIZE_ICON_LG
         },
@@ -165,7 +175,7 @@ export default {
             } else if (this.currentViewPage === 'AlRead') {
                 flag = 1
             }
-            await noticeStore.selectAllNoticeByUserId(flag)
+            await noticeStore.selectAllNoticeSelf(flag)
         },
         handleDialogClose() {
             noticeStore.$patch((state) => {
@@ -198,7 +208,7 @@ export default {
             } else if (this.currentViewPage === 'AlRead') {
                 flag = 1
             }
-            await noticeStore.selectAllNoticeByUserId(flag)
+            await noticeStore.selectAllNoticeSelf(flag)
         }
     },
     mounted() {},
@@ -251,7 +261,7 @@ export default {
 }
 
 .noticeCard {
-    --el-card-padding: 10px;
+    --el-card-padding: 15px;
     height: 120px;
 }
 
@@ -269,8 +279,7 @@ export default {
 }
 
 .content {
-    margin-top: 10px;
-    margin-left: 20px;
+    margin-left: 15px;
     height: fit-content;
 }
 

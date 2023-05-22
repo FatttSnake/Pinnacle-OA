@@ -19,4 +19,6 @@ public interface INoticeTypeService extends IService<NoticeType> {
 
     Boolean updateTypeEnableById(Long typeId, Integer enable);
 
+    Boolean addNoticeType(NoticeType noticeType);
+
 }
