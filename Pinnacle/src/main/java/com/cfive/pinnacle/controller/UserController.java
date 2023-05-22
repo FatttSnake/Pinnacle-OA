@@ -33,6 +33,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/info")
+    @Operation(summary = "获取当前用户信息")
+    public ResponseResult<User> getInfo() {
+        return ResponseResult.databaseSelectSuccess(userService.getInfo());
+    }
+
     @GetMapping
     @PreAuthorize("hasAnyAuthority('system:user:all', 'system:user:add', 'system:user:modify')")
     @Operation(summary = "获取所有用户（权限管理相关）")

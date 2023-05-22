@@ -1,8 +1,7 @@
 import type { Captcha } from './common'
-import { clearLocalStorage, getCaptcha, getLocalStorage, getToken } from './common'
-import { TOKEN_NAME } from '@/constants/Common.constants'
+import { clearLocalStorage, getCaptcha, getLocalStorage, setLocalStorage } from './common'
+import { DATABASE_SELECT_OK, TOKEN_NAME } from '@/constants/Common.constants'
 import request from '@/services'
-import jwtDecode, { type JwtPayload } from 'jwt-decode'
 import _ from 'lodash'
 
 let captcha: Captcha
@@ -21,20 +20,27 @@ function getLoginStatus(): boolean {
     return getLocalStorage(TOKEN_NAME) != null
 }
 
-function getUser(): any {
-    const token = getToken()
-
-    if (token === null) {
-        logout()
-        return ''
+async function getUser(): Promise<any> {
+    if (getLocalStorage('userInfo') !== null) {
+        return JSON.parse(getLocalStorage('userInfo') as string)
     }
-
-    const jwtPayload: JwtPayload = jwtDecode(token)
-    return JSON.parse(jwtPayload.sub ?? '')
+    return await requestUser()
 }
 
-function getUsername(): string {
-    const user = getUser()
+async function requestUser(): Promise<any> {
+    let user
+    await request.get('/user/info').then((res) => {
+        const response = res.data
+        if (response.code === DATABASE_SELECT_OK) {
+            user = response.data
+            setLocalStorage('userInfo', JSON.stringify(user))
+        }
+    })
+    return user
+}
+
+async function getUsername(): Promise<string> {
+    const user = await getUser()
 
     return user.staff != null
         ? `${_.toString(user.staff.lastName)}${_.toString(user.staff.firstName)}`

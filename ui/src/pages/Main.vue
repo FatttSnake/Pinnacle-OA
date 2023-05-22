@@ -223,13 +223,13 @@ export default {
             setLocalStorage('menuCollapsed', this.isCollapsed.toString())
         }
     },
-    mounted() {
-        this.username = getUsername()
+    async mounted() {
+        this.username = await getUsername()
         const allRoutes = _.cloneDeep(
             _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.title')
         )
 
-        const user = getUser()
+        const user = await getUser()
         const menus = user.menus
         this.routes = allRoutes.filter((level1) => {
             if (level1.meta.requiresAuth) {

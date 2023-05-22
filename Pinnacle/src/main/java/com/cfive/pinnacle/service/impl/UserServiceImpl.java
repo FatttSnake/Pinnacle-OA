@@ -11,6 +11,7 @@ import com.cfive.pinnacle.mapper.permission.MenuMapper;
 import com.cfive.pinnacle.mapper.permission.OperationMapper;
 import com.cfive.pinnacle.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public User getInfo() {
+        return WebUtil.getLoginUser().getUser();
     }
 
     @Override
