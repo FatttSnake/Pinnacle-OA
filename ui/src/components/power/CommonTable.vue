@@ -6,7 +6,7 @@
         style="margin-top: 10px"
     >
         <el-table-column type="selection" />
-        <el-table-column prop="name" label="名称" min-width="20" />
+        <el-table-column prop="name" label="名称" width="120" align="center" />
         <el-table-column v-if="customColumnLabel_1" :label="customColumnLabel_1">
             <template #default="scope">
                 <el-tag
