@@ -50,7 +50,7 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     if (to.matched.length === 0) {
         from.path !== '' ? next({ path: from.path }) : next('/')
     } else {
@@ -64,7 +64,7 @@ router.beforeEach((to, from, next) => {
                 next('/')
             } else {
                 if (to.meta.requiresAuth === true) {
-                    const user = getUser()
+                    const user = await getUser()
                     const menus = user.menus
                     for (const menu of menus) {
                         if (menu.url === '/') continue
