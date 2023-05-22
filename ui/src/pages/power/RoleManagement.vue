@@ -29,39 +29,41 @@
         @open="handleDialogOpen"
     >
         <template #default>
-            <el-form
-                label-width="80px"
-                v-loading="dialogLoading"
-                :rules="rules"
-                ref="formRef"
-                :model="roleForm"
-            >
-                <el-form-item label="角色名称" prop="inputRoleName">
-                    <el-input autocomplete="off" v-model="roleForm.inputRoleName" />
-                </el-form-item>
-                <el-form-item label="角色权限">
-                    <el-tree
-                        :data="powerTree"
-                        node-key="powerId"
-                        :props="powerProps"
-                        show-checkbox
-                        :render-after-expand="false"
-                        :default-checked-keys="defaultSelectedPower"
-                        style="min-width: 120px"
-                        @check-change="handleSelectedPowerChange"
-                    />
-                </el-form-item>
-                <el-form-item label="状态">
-                    <el-switch
-                        v-model="roleForm.enable"
-                        inline-prompt
-                        active-text="启用"
-                        :active-value="1"
-                        inactive-text="禁用"
-                        :inactive-value="0"
-                    />
-                </el-form-item>
-            </el-form>
+            <el-scrollbar max-height="60vh">
+                <el-form
+                    label-width="80px"
+                    v-loading="dialogLoading"
+                    :rules="rules"
+                    ref="formRef"
+                    :model="roleForm"
+                >
+                    <el-form-item label="角色名称" prop="inputRoleName">
+                        <el-input autocomplete="off" v-model="roleForm.inputRoleName" />
+                    </el-form-item>
+                    <el-form-item label="角色权限">
+                        <el-tree
+                            :data="powerTree"
+                            node-key="powerId"
+                            :props="powerProps"
+                            show-checkbox
+                            :render-after-expand="false"
+                            :default-checked-keys="defaultSelectedPower"
+                            style="min-width: 120px"
+                            @check-change="handleSelectedPowerChange"
+                        />
+                    </el-form-item>
+                    <el-form-item label="状态">
+                        <el-switch
+                            v-model="roleForm.enable"
+                            inline-prompt
+                            active-text="启用"
+                            :active-value="1"
+                            inactive-text="禁用"
+                            :inactive-value="0"
+                        />
+                    </el-form-item>
+                </el-form>
+            </el-scrollbar>
         </template>
         <template #footer>
             <el-button type="primary" @click="handleSubmit" :disabled="dialogLoading"
