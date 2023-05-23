@@ -17,7 +17,7 @@
             </div>
         </el-col>
 
-        <el-col :span="6">
+        <el-col :span="4">
             <el-button type="warning" round>待审批</el-button>
             <el-button type="success" round>已审批</el-button>
         </el-col>
@@ -57,26 +57,32 @@
                 }}
             </template>
         </el-table-column>
-
-        <el-table-column label="提交时间" prop="createTime">
+        <el-table-column label="提交日期" prop="createTime">
             <template #default="scope">
                 {{ format(scope.row.createTime) }}
             </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="240" prop="content">
+        <el-table-column label="审批日期" prop="inspectTime">
+            <template #default="scope">
+                {{ format(scope.row.inspectTime) }}
+            </template>
+        </el-table-column>
+
+        <el-table-column label="操作" key="slot" width="180" prop="content">
             <template #default="scope">
                 <el-button size="small" type="text" @click="dialogTure(scope.row)"
                     >具体内容
                 </el-button>
-
-                <el-button size="small" type="success" @click="handleYes(scope.row)"
-                    >同意
+                <el-button size="small" type="danger" @click="handleDelete(scope.row)">
+                    删除
                 </el-button>
+            </template>
+        </el-table-column>
 
-                <el-button size="small" type="danger" @click="handleNo(scope.row)">
-                    驳回
-                </el-button>
+        <el-table-column label="审批结果" width="90" prop="status">
+            <template #default="scope">
+                {{ scope.row.status === 1 ? '同意' : '驳回' }}
             </template>
         </el-table-column>
     </el-table>
@@ -123,7 +129,6 @@
 <script>
 import request from '@/services'
 import 'element-plus/theme-chalk/index.css'
-
 export default {
     data() {
         return {
@@ -167,7 +172,7 @@ export default {
                     applicantId: '',
                     inspectorId: '',
                     createTime: new Date(),
-                    inspectTime: '',
+                    inspectTime: new Date(),
                     priority: '',
                     modifyTime: '',
                     originId: '',
@@ -179,30 +184,17 @@ export default {
         }
     },
     methods: {
-        handleYes(row) {
-            console.log(row)
-            row.inspectTime = new Date()
+        handleDelete(row) {
+            console.log(row.id)
             request
-                .put('/affair/yes', row)
+                .delete('/affair/' + row.id)
                 .then((response) => {
                     console.log(response.data)
-                    this.getApproved()
+                    this.getApproed()
                 })
                 .catch((reportError) => {
                     console.log(reportError)
-                }) // 执行审批同意
-        },
-        handleNo(row) {
-            console.log(row)
-            request
-                .put('/affair/no', row)
-                .then((response) => {
-                    console.log(response.data)
-                    this.getApproved()
                 })
-                .catch((reportError) => {
-                    console.log(reportError)
-                }) // 审批驳回
         },
 
         handleSizeChange(val) {
@@ -210,48 +202,34 @@ export default {
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`)
-        }, // 标签页
-        getApproved() {
+        },
+        getApproed() {
             request
-                .get('/affair/not_approved')
+                .get('/affair/personal_affairs')
                 .then((response) => {
                     this.tableData = response.data.data
                     console.log(this.tableData)
                 })
                 .catch((reportError) => {
                     console.log(reportError)
-                }) // 获取事务信息或者重新刷新页面
+                })
         },
         format(time) {
             return new Date(time).toLocaleString()
         }, // 时间格式转换
-        /*
-        getDate() {
-            let newTime = ''
-            const date = new Date()
-            const yy = date.getUTCFullYear()
-            const mm = _.padStart((date.getUTCMonth() + 1).toString(), 2, '0')
-            const dd = _.padStart(date.getUTCDate().toString(), 2, '0')
-            const hh = _.padStart(date.getUTCHours().toString(), 2, '0')
-            const mf = _.padStart(date.getUTCMinutes().toString(), 2, '0')
-            const ss = _.padStart(date.getUTCSeconds().toString(), 2, '0')
-            newTime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
-            return newTime
-        }, // 获取当前时间与格式转换
-        */
         dialogTure(data) {
             this.dialogVisible = true
             this.dialogData = data
-        }, // 弹出框显示
+        },
         dialogFalse() {
             this.dialogVisible = false
-        } // 关闭弹出框
+        }
     },
     created() {
-        this.getApproved()
+        this.getApproed()
         this.dialogFalse()
         console.log(this.tableData)
-    } // 获取事务信息
+    }
 }
 </script>
 <style></style>

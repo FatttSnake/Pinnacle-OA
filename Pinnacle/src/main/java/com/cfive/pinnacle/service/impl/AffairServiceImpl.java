@@ -21,23 +21,15 @@ public class AffairServiceImpl extends ServiceImpl<AffairMapper, Affair> impleme
     @Autowired
     private AffairMapper affairMapper;
 
-    @Override
-    public int insertAffair(Affair affair) {
-        return affairMapper.insertAffair(affair);
+
+    public int updateAffairYes(Affair affair) {
+        return affairMapper.updateAffairsYes(affair);
     }
 
-    public int updateAffair_Yes(Affair affair) {
-        return affairMapper.updateAffairs_Yes(affair);
+    public int updateAffairNo(Affair affair) {
+        return affairMapper.updateAffairsNO(affair);
     }
 
-    public int updateAffair_No(Affair affair) {
-        return affairMapper.updateAffairs_NO(affair);
-    }
-
-    @Override
-    public int deleteAffair_ApprovedByID(Affair affair) {
-        return affairMapper.deleteAffairs(affair);
-    }
 
 
 }

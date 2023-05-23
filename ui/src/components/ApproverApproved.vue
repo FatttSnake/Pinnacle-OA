@@ -2,9 +2,9 @@
     <el-row :span="24">
         <el-col :span="18">
             <div class="mt-4">
-                <el-input v-model="input3" placeholder="查询事务" class="input-with-select">
+                <el-input placeholder="查询事务" class="input-with-select">
                     <template #prepend>
-                        <el-select v-model="select" placeholder="查询方式">
+                        <el-select placeholder="查询方式">
                             <el-option label="事务编号" value="1" />
                             <el-option label="事务名称" value="2" />
                             <el-option label="日期" value="3" />
@@ -43,19 +43,7 @@
         </el-table-column>
 
         <el-table-column label="申请者" prop="applicantId">
-            <template #default="scope">
-                {{
-                    scope.row.applicantId === 1
-                        ? 'ggb'
-                        : scope.row.applicantId === 1652714496280469506
-                        ? 'cyb'
-                        : scope.row.applicantId === 1654151146072145921
-                        ? 'syf'
-                        : scope.row.applicantId === 1654151877520973826
-                        ? 'gzw'
-                        : 'yrm'
-                }}
-            </template>
+            <el-text v-for="(user, index) in users" :key="index" :content="user.username" />
         </el-table-column>
         <el-table-column label="提交日期" prop="createTime">
             <template #default="scope">
@@ -117,7 +105,6 @@
                 style="color: #888888"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                v-model:current-page="currentPage3"
                 :page-size="100"
                 layout="prev, pager, next, jumper"
                 :total="1000"
@@ -181,6 +168,18 @@ export default {
                     deleted: '',
                     version: ''
                 }
+            ],
+            users: [
+                {
+                    id: '',
+                    username: ''
+                }
+            ],
+            currentUser: [
+                {
+                    id: '',
+                    username: ''
+                }
             ]
         }
     },
@@ -188,10 +187,10 @@ export default {
         handleYes(row) {
             console.log(row)
             request
-                .put('http://localhost:8621/affair/yes', row)
+                .put('/affair/yes', row)
                 .then((response) => {
                     console.log(response.data)
-                    this.getApproed()
+                    this.getApproved()
                 })
                 .catch((reportError) => {
                     console.log(reportError)
@@ -200,10 +199,10 @@ export default {
         handleNo(row) {
             console.log(row)
             request
-                .put('http://localhost:8621/affair/no', row)
+                .put('/affair/no', row)
                 .then((response) => {
                     console.log(response.data)
-                    this.getApproed()
+                    this.getApproved()
                 })
                 .catch((reportError) => {
                     console.log(reportError)
@@ -212,25 +211,34 @@ export default {
         handleDelete(row) {
             console.log(row.id)
             request
-                .delete('http://localhost:8621/affair/' + row.id)
+                .delete('/affair/' + row.id)
                 .then((response) => {
                     console.log(response.data)
-                    this.getApproed()
+                    this.getApproved()
                 })
                 .catch((reportError) => {
                     console.log(reportError)
                 })
         },
-
+        getUser() {
+            request
+                .get('/affair/add/get_user')
+                .then((response) => {
+                    this.users = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                }) // 数据库中获取用户
+        },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`)
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`)
         },
-        getApproed() {
+        getApproved() {
             request
-                .get('http://localhost:8621/affair/Approved')
+                .get('/affair/approved')
                 .then((response) => {
                     this.tableData = response.data.data
                     console.log(this.tableData)
@@ -251,8 +259,9 @@ export default {
         }
     },
     created() {
-        this.getApproed()
+        this.getApproved()
         this.dialogFalse()
+        this.getUser()
         console.log(this.tableData)
     }
 }
