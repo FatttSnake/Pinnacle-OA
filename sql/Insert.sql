@@ -16,245 +16,271 @@ values (1, 'menu'),
        (3, 'operation');
 
 begin;
-insert into t_power (type_id)
-values (1);
+insert into t_power (id, type_id)
+values (1010000, 1);
 insert into t_menu (id, name, url, power_id, parent_id)
-VALUES (1, '公用', '/', last_insert_id(), null);
+VALUES (1010000, '公用', '/', id, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (2);
+insert into t_power (id,type_id)
+values (1010100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (1, '公用', last_insert_id(), 1);
+VALUES (1010100, '公用', id, 1010000);
 commit;
 
 begin;
-insert into t_power(type_id)
-values (3);
-insert into t_operation(name, code, power_id, element_id, parent_id)
-VALUES ('查询当前用户权限', 'common:power:self', last_insert_id(), 1, null);
+insert into t_power(id,type_id)
+values (1010101, 3);
+insert into t_operation(id,name, code, power_id, element_id, parent_id)
+VALUES (1010101, '查询当前用户信息', 'common:user:self', id, 1010100, null);
 commit;
 
 begin;
-insert into t_power(type_id)
-values (3);
-insert into t_operation(name, code, power_id, element_id, parent_id)
-VALUES ('查询当前用户信息', 'common:info:self', last_insert_id(), 1, null);
-commit;
-
-begin;
-insert into t_power (type_id)
-values (1);
+insert into t_power (id, type_id)
+values (2010000, 1);
 insert into t_menu (id, name, url, power_id, parent_id)
-VALUES (2, '角色管理', '/power/role', last_insert_id(), null);
+VALUES (2010000, '工作事项', '/work/task', id, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (2);
-insert into t_element (id, name, power_id, menu_id)
-VALUES (2, '角色列表', last_insert_id(), 2);
+insert into t_power(id, type_id)
+VALUES (2010100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (2010100, '列表', id, 2010000);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('查询所有角色', 'system:role:all', last_insert_id(), 2, null);
+insert into t_power(id,type_id)
+values (2010101,3);
+insert into t_operation(id,name, code, power_id, element_id, parent_id)
+VALUES (2010101, '获取首页待办工作', 'work:self:home', id, 2010100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('添加角色', 'system:role:add', last_insert_id(), 2, null);
+insert into t_power(id,type_id)
+values (2010102,3);
+insert into t_operation(id,name, code, power_id, element_id, parent_id)
+VALUES (2010102, '获取个人工作', 'work:self:get', id, 2010100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('删除角色', 'system:role:delete', last_insert_id(), 2, null);
+insert into t_power(id,type_id)
+values (2010103,3);
+insert into t_operation(id,name, code, power_id, element_id, parent_id)
+VALUES (2010103, '获取工作详细内容', 'work:self:detail', id, 2010100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('修改角色', 'system:role:modify', last_insert_id(), 2, null);
+insert into t_power(id,type_id)
+values (2010104,3);
+insert into t_operation(id,name, code, power_id, element_id, parent_id)
+VALUES (2010104, '更新工作状态', 'work:self:status', id, 2010100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (1);
+insert into t_power (id, type_id)
+values (2020000, 1);
 insert into t_menu (id, name, url, power_id, parent_id)
-VALUES (3, '用户组管理', '/power/group', last_insert_id(), null);
+VALUES (2020000, '工作管理', '/work/manage', id, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (2);
-insert into t_element (id, name, power_id, menu_id)
-VALUES (3, '用户组列表', last_insert_id(), 3);
+insert into t_power(id, type_id)
+VALUES (2020100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (2020100, '列表', id, 2020000);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('查询所有用户组', 'system:group:all', last_insert_id(), 3, null);
+insert into t_power(id, type_id)
+values (2020101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (2020101, '获取发布的工作事项', 'work:manage:get', id, 2020100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('添加用户组', 'system:group:add', last_insert_id(), 3, null);
+insert into t_power(id, type_id)
+values (2020102, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (2020102, '发布工作事项', 'work:manage:add', id, 2020100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('删除用户组', 'system:group:delete', last_insert_id(), 3, null);
+insert into t_power(id, type_id)
+values (2020103, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (2020103, '删除发布的工作事项', 'work:manage:delete', id, 2020100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('修改用户组', 'system:group:modify', last_insert_id(), 3, null);
+insert into t_power(id, type_id)
+values (2020104, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (2020104, '修改发布的工作内容', 'work:manage:modify', id, 2020100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (1);
+insert into t_power(id, type_id)
+values (2020105, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (2020105, '获取所有工作事项（管理）', 'work:admin:get', id, 2020100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (2020106, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (2020106, '添加工作事项（管理）', 'work:admin:add', id, 2020100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (2020107, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (2020107, '删除工作事项（管理）', 'work:admin:delete', id, 2020100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (2020108, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (2020108, '修改工作事项（管理）', 'work:admin:modify', id, 2020100, null);
+commit;
+
+
+
+begin;
+insert into t_power (id, type_id)
+values (101010000, 1);
 insert into t_menu (id, name, url, power_id, parent_id)
-VALUES (4, '用户管理', '/power/user', last_insert_id(), null);
+VALUES (101010000, '角色管理（权限相关）', '/power/role', id, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (2);
+insert into t_power (id, type_id)
+values (101010100, 2);
 insert into t_element (id, name, power_id, menu_id)
-VALUES (4, '用户列表', last_insert_id(), 4);
+VALUES (101010100, '列表', id, 101010000);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('查看所有用户', 'system:user:all', last_insert_id(), 4, null);
+insert into t_power (id, type_id)
+values (101010101, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (101010101, '查询所有角色', 'system:role:all', id, 101010100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('查看单个用户', 'system:user:one', last_insert_id(), 4, null);
+insert into t_power (id, type_id)
+values (101010102, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (101010102, '添加角色', 'system:role:add', id, 101010100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('添加用户', 'system:user:add', last_insert_id(), 4, null);
+insert into t_power (id, type_id)
+values (101010103, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (101010103, '删除角色', 'system:role:delete', id, 101010100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('删除用户', 'system:user:delete', last_insert_id(), 4, null);
+insert into t_power (id, type_id)
+values (101010104, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (101010104, '修改角色', 'system:role:modify', id, 101010100, null);
 commit;
 
 begin;
-insert into t_power (type_id)
-values (3);
-insert into t_operation (name, code, power_id, element_id, parent_id)
-VALUES ('修改用户', 'system:user:modify', last_insert_id(), 4, null);
+insert into t_power (id, type_id)
+values (102010000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (102010000, '用户组管理（权限相关）', '/power/group', id, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (102010100, 2);
+insert into t_element (id, name, power_id, menu_id)
+VALUES (102010100, '列表', id, 102010000);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (102010101, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (102010101, '查询所有用户组', 'system:group:all', id, 102010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (102010102, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (102010102, '添加用户组', 'system:group:add', id, 102010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (102010103, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (102010103, '删除用户组', 'system:group:delete', id, 102010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (102010104, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (102010104, '修改用户组', 'system:group:modify', id, 102010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (103010000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (103010000, '用户管理（权限相关）', '/power/user', id, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (103010100, 2);
+insert into t_element (id, name, power_id, menu_id)
+VALUES (103010100, '列表', id, 103010000);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (103010101, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (103010101, '查看所有用户', 'system:user:all', id, 103010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (103010102, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (103010102, '查看单个用户', 'system:user:one', id, 103010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (103010103, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (103010103, '添加用户', 'system:user:add', id, 103010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (103010104, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (103010104, '删除用户', 'system:user:delete', id, 103010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (103010105, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (103010105, '修改用户', 'system:user:modify', id, 103010100, null);
 commit;
 
 SET FOREIGN_KEY_CHECKS = 1;
-
-select *
-from t_role
-         left join t_power_role tpr on t_role.id = tpr.role_id
-         left join t_power tp on tp.id = tpr.power_id
-         left join t_menu tm on tp.id = tm.power_id
-         left join t_element te on tp.id = te.power_id
-         left join t_operation t on tp.id = t.power_id;
-
-select *
-from t_group
-         left join t_role_group trg on t_group.id = trg.group_id
-         left join t_role tr on tr.id = trg.role_id;
-
-update t_user
-set deleted = id
-where id = 1658537970212278274;
-
-
-select *
-from t_user
-         inner join t_user_role tur on t_user.id = tur.user_id
-         inner join t_role tr on tr.id = tur.role_id
-         inner join t_user_group tug on t_user.id = tug.user_id
-         inner join t_group tg on tg.id = tug.group_id;
-
-select t_user.id            as user_id,
-       t_user.username      as user_username,
-       t_user.department_id as user_department,
-       t_user.enable        as user_enable,
-       t_user.deleted       as user_deleted,
-       t_user.version       as user_version,
-       tr.id                as role_id,
-       tr.name              as role_name,
-       tr.deleted           as role_deleted,
-       tr.version           as role_version,
-       tg.id                as group_id,
-       tg.name              as group_name,
-       tg.deleted           as group_deleted,
-       tg.version           as group_version
-from t_user
-         left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
-         left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
-         left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
-         left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
-where t_user.deleted = 0;
-
-select distinct t_user.id            as user_id,
-                t_user.username      as user_username,
-                t_user.passwd        as user_passwd,
-                t_user.department_id as user_department,
-                t_user.enable        as user_enable,
-                t_user.deleted       as user_deleted,
-                t_user.version       as user_version,
-                tm.id                as menu_id,
-                tm.name              as menu_name,
-                tm.url               as menu_url,
-                tm.power_id          as menu_powerId,
-                tm.parent_id         as menu_parentId,
-                te.id                as element_id,
-                te.name              as element_name,
-                te.power_id          as element_powerId,
-                te.menu_id           as element_menuId,
-                t.id                 as operation_id,
-                t.name               as operation_name,
-                t.code               as operation_code,
-                t.power_id           as operation_powerId,
-                t.element_id         as operation_elementId,
-                t.parent_id          as operation_parentId
-from t_user
-         left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
-         left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
-         left join (select * from t_role_group where deleted = 0) as trg on tg.id = trg.group_id
-         left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
-         left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id or tr.id = tur.role_id
-         left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
-         left join t_power as tp on tp.id = tpr.power_id
-         left join t_menu tm on tp.id = tm.power_id
-         left join t_element te on tp.id = te.power_id
-         left join t_operation t on tp.id = t.power_id
-where t_user.deleted = 0;
