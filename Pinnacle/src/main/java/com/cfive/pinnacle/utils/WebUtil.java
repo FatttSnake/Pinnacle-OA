@@ -16,7 +16,7 @@ public class WebUtil {
     }
 
     public static String objectResponse(int resultCode, String msg, Object object) throws JsonProcessingException {
-        ResponseResult result = ResponseResult.build(resultCode, msg, object);
+        ResponseResult<Object> result = ResponseResult.build(resultCode, msg, object);
         return convert2json(result);
     }
 
@@ -31,5 +31,18 @@ public class WebUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         return (LoginUser) principal;
+    }
+
+    public static boolean hasAuthority(String authority) {
+        return hasAnyAuthority(authority);
+    }
+
+    public static boolean hasAnyAuthority(String... authorities) {
+        for (String authority : authorities) {
+            if (getLoginUser().getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority))) {
+                return true;
+            }
+        }
+        return false;
     }
 }
