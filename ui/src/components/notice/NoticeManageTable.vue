@@ -210,7 +210,6 @@ export default {
             return new Date(data).toLocaleString()
         },
         handleEdit(row) {
-            console.log(row)
             noticeStore.$patch((state) => {
                 state.hackReset = true
                 state.noticeShowData = row
@@ -228,7 +227,6 @@ export default {
             })
         },
         handleShow(row) {
-            console.log(row)
             noticeStore.$patch((state) => {
                 state.dialogShowVisible = true
                 state.noticeShowData = row

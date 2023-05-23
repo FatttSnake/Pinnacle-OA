@@ -16,14 +16,24 @@
     </el-form>
 </template>
 <script lang="ts">
+import { mapState } from 'pinia'
+import { useNoticeTypeStore } from '@/store/notice'
+
+const noticeTypeStore = useNoticeTypeStore()
+
 export default {
     name: 'NoticeTypeCommitForm',
+    computed: {
+        ...mapState(useNoticeTypeStore, [
+            'noticeTypeList',
+            'dataLoading',
+            'addTypeData',
+            'editFlag',
+            'showTypeData'
+        ])
+    },
     data() {
         return {
-            addTypeData: {
-                name: '',
-                enable: 1
-            },
             typeRule: {
                 name: [
                     { required: true, message: '请输入类型名称', trigger: 'blur' },
@@ -32,7 +42,13 @@ export default {
             }
         }
     },
-    methods: {}
+    methods: {},
+    created() {
+        // 编辑操作
+        if (noticeTypeStore.editFlag === true) {
+            noticeTypeStore.addTypeData = this.showTypeData
+        }
+    }
 }
 </script>
 

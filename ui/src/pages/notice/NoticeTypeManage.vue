@@ -21,16 +21,20 @@
                 v-model="dialogAddTypeVisible"
                 center
                 :close-on-click-modal="false"
-                destroy-on-close
+                v-if="hackReset"
+                :before-close="closeForm"
             >
                 <template #header>
                     <h2 style="color: red">添加公告类型</h2>
                 </template>
-                <notice-type-commit-form />
+                <notice-type-commit-form ref="addForm" />
                 <template #footer>
                     <span class="dialog-footer">
-                        <el-button>取消</el-button>
-                        <el-button type="primary" @click="submitForm"> 确定 </el-button>
+                        <el-button @click="resetForm" style="margin-right: 20px">重置</el-button>
+                        <el-button type="primary" @click="submitForm" style="margin-right: 20px">
+                            确定
+                        </el-button>
+                        <el-button @click="closeForm">取消</el-button>
                     </span>
                 </template>
             </el-dialog>
@@ -50,7 +54,13 @@ const noticeTypeStore = useNoticeTypeStore()
 export default {
     name: 'NoticeTypeManage',
     computed: {
-        ...mapState(useNoticeTypeStore, ['dialogAddTypeVisible', 'editFlag'])
+        ...mapState(useNoticeTypeStore, [
+            'dialogAddTypeVisible',
+            'dialogEditTypeVisible',
+            'editFlag',
+            'hackReset',
+            'addTypeData'
+        ])
     },
     data() {
         return {}
@@ -64,22 +74,31 @@ export default {
             noticeTypeStore.selectNoticeType()
         },
         handleOpenAddDialog() {
-            noticeTypeStore.dialogAddTypeVisible = true
+            noticeTypeStore.$patch((state) => {
+                state.dialogAddTypeVisible = true
+                state.hackReset = true
+            })
         },
         submitForm() {
-            this.$refs.addTypeData.validate((valid) => {
+            this.$refs.addForm.$refs.addTypeData.validate((valid) => {
                 if (valid) {
-                    if (this.editFlag) {
-                        // 编辑操作
-                        // noticeTypeStore.handleUpdateNoticeType(this.addTypeData)
-                    } else {
-                        // 添加操作
-                        // noticeTypeStore.handleAddNoticeType(this.addTypeData)
-                    }
+                    noticeTypeStore.handleAddNoticeType(this.addTypeData)
                 } else {
                     return false
                 }
             })
+        },
+        closeForm() {
+            noticeTypeStore.$patch((state) => {
+                state.dialogAddTypeVisible = false
+                state.dialogEditTypeVisible = false
+                state.hackReset = false
+                state.editFlag = false
+                state.addTypeData = { name: '', enable: 1 }
+            })
+        },
+        resetForm() {
+            this.$refs.addForm.$refs.addTypeData.resetFields()
         }
     },
     mounted() {}

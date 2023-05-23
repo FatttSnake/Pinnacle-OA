@@ -4,6 +4,7 @@ import com.cfive.pinnacle.entity.NoticeType;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.INoticeTypeService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/notice_type")
 @CrossOrigin
+@Slf4j
 public class NoticeTypeController {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     @Autowired
     INoticeTypeService noticeTypeService;
@@ -49,21 +50,19 @@ public class NoticeTypeController {
 
     //修改公告类型启用或禁用
     @GetMapping("/update")
-    public ResponseResult updateTypeEnableById(String typeId,Boolean enable){
+    public ResponseResult updateTypeEnableById(String typeId,Integer enable){
         Long tid=null;
-        Integer isEnable = null;
-        if (StringUtils.hasText(typeId)&&null!=enable){
+        if (StringUtils.hasText(typeId)){
             tid = Long.parseLong(typeId);
-            isEnable = (enable == true ? 1 : 0);
         }
-        Boolean updateEnableById = noticeTypeService.updateTypeEnableById(tid, isEnable);
+        Boolean updateEnableById = noticeTypeService.updateTypeEnableById(tid, enable);
         String msg = updateEnableById ? "" : "修改失败，请重试！";
         return ResponseResult.build(updateEnableById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, updateEnableById);
     }
 
     //添加公告类型
     @PostMapping
-    public ResponseResult addNoticeType(NoticeType noticeType){
+    public ResponseResult addNoticeType(@RequestBody NoticeType noticeType){
         Boolean insertNotice = noticeTypeService.addNoticeType(noticeType);
         String msg = insertNotice ? "" : "数据添加失败，请重试！";
         return ResponseResult.build(insertNotice ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, insertNotice);

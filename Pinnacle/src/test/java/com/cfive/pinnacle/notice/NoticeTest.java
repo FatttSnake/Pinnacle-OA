@@ -41,11 +41,6 @@ public class NoticeTest {
     }
 
     @Test
-    void selectAllTest() {
-//        ResponseResult noticeList = noticeController.selectAllNotice(null, null,null,null);
-    }
-
-    @Test
     void updateTest() {
         ResponseResult notice = noticeController.selectByNoticeId(23L);
         ResponseResult updateNotice = noticeController.updateNotice((Notice) notice.getData());

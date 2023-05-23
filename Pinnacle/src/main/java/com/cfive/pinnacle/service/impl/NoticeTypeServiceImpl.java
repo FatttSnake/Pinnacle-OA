@@ -27,7 +27,9 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
     NoticeTypeMapper noticeTypeMapper;
     @Override
     public List<NoticeType> selectTypeList() {
-        return noticeTypeMapper.selectList(null);
+        LambdaQueryWrapper<NoticeType> lqw = new LambdaQueryWrapper<>();
+        lqw.orderByDesc(NoticeType::getId);
+        return noticeTypeMapper.selectList(lqw);
     }
 
     @Override
