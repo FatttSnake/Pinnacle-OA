@@ -13,10 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IAffairService extends IService<Affair> {
 
-    int insertAffair(Affair affair);
-    int updateAffair_Yes(Affair affair);
-    int updateAffair_No(Affair affair);
+//    int insertAffair(Affair affair);
+    int updateAffairYes(Affair affair);
+    int updateAffairNo(Affair affair);
 
 
-    int deleteAffair_ApprovedByID(Affair affair);
+//    int deleteAffair_ApprovedByID(Affair affair);
 }

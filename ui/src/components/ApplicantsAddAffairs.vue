@@ -7,10 +7,10 @@
         </el-form-item>
 
         <el-form-item label="申请者:">
-            <el-col :span="3">
+            <el-col :span="4">
                 <el-input
                     v-model="form.applicantId"
-                    class="shortInput"
+                    class="LongInput"
                     disabled
                     :placeholder="currentUser.username"
                 />
@@ -121,7 +121,7 @@ export default {
                 !_.isEmpty(form.inspectorId)
             ) {
                 request
-                    .post('http://localhost:8621/affair/add', form)
+                    .post('/affair/add', form)
                     .then((response) => {
                         console.log(response.data)
                         this.resetForm()
@@ -130,7 +130,8 @@ export default {
                         this.resetForm()
                         console.log(reportError)
                     })
-                this.$router.go()
+                this.resetForm()
+                // this.$router.go()
             } else {
                 if (_.isEmpty(form.title)) {
                     ElMessage({
@@ -182,7 +183,7 @@ export default {
         }, // 动态时钟
         getUser() {
             request
-                .get('http://localhost:8621/affair/add/getUser')
+                .get('/affair/add/get_user')
                 .then((response) => {
                     this.users = response.data.data
                 })
@@ -192,13 +193,13 @@ export default {
         },
         getCurrentUser() {
             request
-                .get('http://localhost:8621/affair/add/getCurrentUser')
+                .get('/affair/add/get_current_user')
                 .then((response) => {
                     this.currentUser = response.data.data
                 })
                 .catch((reportError) => {
                     console.log(reportError)
-                })
+                }) // 获取当前用户
         }
     },
     created() {
@@ -219,9 +220,9 @@ export default {
     width: 99%;
 }
 
-.shortInput {
-    width: 150px;
-}
+/*.shortInput {*/
+/*    width: 200px;*/
+/*}*/
 
 .textarea {
     height: 70%;

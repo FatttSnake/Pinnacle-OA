@@ -28,22 +28,21 @@ public interface AffairMapper extends BaseMapper<Affair> {
     // (是否撤回,当用户撤回新建的事务时，根据新建的事务的id，删除该条事务在数据库中的信息)
 
     @Update("update  t_affair set status=1,inspect_time=#{inspectTime} where id=#{id}")
-    int updateAffairs_Yes(Affair affair);
+    int updateAffairsYes(Affair affair);
     //管理员权限--->修改事务的状态(AffairsStatus)--->达到审批的效果
     //同意
 
     @Update("update t_affair set Status=2 where id=#{id}" )
-    int updateAffairs_NO(Affair affair);
+    int updateAffairsNO(Affair affair);
     //不同意
 
 
 
 
 
-
-
-    @Select("SELECT t_affair.applicant_id,t_affair.inspector_id,t_user.id,t_user.username from t_affair,t_user ")
-    @ResultType(Affair.class)
-    List<Affair> selectAffairs_NotApproved();
+//
+//    @Select("SELECT t_affair.applicant_id,t_affair.inspector_id,t_user.id,t_user.username from t_affair,t_user ")
+//    @ResultType(Affair.class)
+//    List<Affair> selectAffairs_NotApproved();
 
 }
