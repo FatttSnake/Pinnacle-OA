@@ -4,30 +4,17 @@ const noticeRouter = {
     meta: {
         title: '公告',
         icon: shallowRef(IconPinnacleNotice),
-        requiresMenu: true,
         requiresScrollbar: false,
         requiresPadding: true
     },
     children: [
         {
-            path: 'noticeManage',
-            component: async () => await import('@/pages/notice/NoticeManage.vue'),
-            name: 'noticeManage',
-            meta: {
-                title: '公告管理',
-                requiresMenu: true,
-                requiresScrollbar: false,
-                requiresPadding: true
-            }
-        },
-        {
-            path: 'noticeView',
+            path: 'view',
             component: async () => await import('@/pages/notice/NoticeView.vue'),
             name: 'noticeView',
-            redirect: '/notice/noticeView/all',
+            redirect: '/notice/view/all',
             meta: {
                 title: '公告查看',
-                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             },
@@ -50,12 +37,21 @@ const noticeRouter = {
             ]
         },
         {
-            path: 'noticeTypeManage',
+            path: 'manage',
+            component: async () => await import('@/pages/notice/NoticeManage.vue'),
+            name: 'noticeManage',
+            meta: {
+                title: '公告管理',
+                requiresScrollbar: false,
+                requiresPadding: true
+            }
+        },
+        {
+            path: 'typeManage',
             component: async () => await import('@/pages/notice/NoticeTypeManage.vue'),
             name: 'noticeTypeManage',
             meta: {
                 title: '公告类型管理',
-                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             }

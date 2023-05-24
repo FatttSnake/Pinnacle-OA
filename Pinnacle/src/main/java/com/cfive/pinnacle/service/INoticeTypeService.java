@@ -21,4 +21,9 @@ public interface INoticeTypeService extends IService<NoticeType> {
 
     Boolean addNoticeType(NoticeType noticeType);
 
+    Boolean updateNoticeType(NoticeType noticeType);
+
+    Boolean deleteNoticeTypeById(Long typeId);
+
+
 }

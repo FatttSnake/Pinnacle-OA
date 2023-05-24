@@ -38,7 +38,7 @@
                 <el-button size="default" type="primary" @click="handleOpenEditDialog(scope.row)"
                     >编辑</el-button
                 >
-                <el-button size="default" type="danger" @click="handleDeleteById(scope.row)"
+                <el-button size="default" type="danger" @click="deleteTypeById(scope.row.id)"
                     >删除</el-button
                 >
             </template>
@@ -89,6 +89,7 @@ const noticeStore = useNoticeStore()
 const noticeTypeStore = useNoticeTypeStore()
 
 export default {
+    emits: ['deleteTypeById'],
     computed: {
         ...mapState(useNoticeTypeStore, [
             'total',
@@ -124,14 +125,15 @@ export default {
         handleOpenEditDialog(row) {
             noticeTypeStore.$patch((state) => {
                 state.hackReset = true
+                state.showTypeData.id = row.id
                 state.showTypeData.name = row.name
                 state.showTypeData.enable = row.enable
                 state.editFlag = true
                 state.dialogEditTypeVisible = true
             })
         },
-        handleDeleteById(deleteId) {
-            this.$emit('handleDeleteById', deleteId)
+        deleteTypeById(deleteId) {
+            this.$emit('deleteTypeById', deleteId)
         },
         handleSizeChange(pageSize) {
             // pageSize：每页多少条数据
@@ -144,7 +146,7 @@ export default {
         submitEditForm() {
             this.$refs.editForm.$refs.addTypeData.validate((valid) => {
                 if (valid) {
-                    // noticeTypeStore.handleUpdateNoticeType(this.addTypeData)
+                    noticeTypeStore.handleUpdateNoticeType(this.addTypeData)
                 } else {
                     return false
                 }
