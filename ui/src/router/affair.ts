@@ -22,7 +22,8 @@ const affairRouter = {
                 title: '我的事务',
                 requiresMenu: true,
                 requiresScrollbar: true,
-                requiresPadding: true
+                requiresPadding: true,
+                requiresAuth: true
             }
         },
         {
@@ -33,7 +34,8 @@ const affairRouter = {
                 title: '事务审批',
                 requiresMenu: true,
                 requiresScrollbar: true,
-                requiresPadding: true
+                requiresPadding: true,
+                requiresAuth: true
             }
         },
         {

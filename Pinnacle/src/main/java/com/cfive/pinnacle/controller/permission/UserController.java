@@ -39,6 +39,13 @@ public class UserController {
         return ResponseResult.databaseSelectSuccess(userService.getInfo());
     }
 
+    @GetMapping("/affair")
+    @PreAuthorize("hasAuthority('affair:self:add')")
+    @Operation(summary = "获取拥有审批权限的用户")
+    public ResponseResult<List<User>> getAffairUser() {
+        return ResponseResult.databaseSelectSuccess(userService.getAffairUser());
+    }
+
     @GetMapping
     @PreAuthorize("hasAnyAuthority('system:user:all', 'system:user:add', 'system:user:modify')")
     @Operation(summary = "获取所有用户（权限管理相关）")

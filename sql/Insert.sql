@@ -152,6 +152,71 @@ commit;
 
 begin;
 insert into t_power (id, type_id)
+values (5010000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (5010000, '我的事务', '/affair/personalAffairs', id, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+VALUES (5010100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (5010100, '列表', id, 5010000);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (5010101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (5010101, '获取个人事务', 'affair:self:get', id, 5010100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (5010102, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (5010102, '创建事务', 'affair:self:add', id, 5010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (5020000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (5020000, '事务管理', '/affair/manage', id, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+VALUES (5020100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (5020100, '列表', id, 5020000);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (5020101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (5020101, '获取审批事务', 'affair:manage:get', id, 5020100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (5020102, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (5020102, '修改审批事务', 'affair:manage:modify', id, 5020100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (5020103, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (5020103, '删除审批事务', 'affair:manage:delete', id, 5020100, null);
+commit;
+
+
+
+begin;
+insert into t_power (id, type_id)
 values (101010000, 1);
 insert into t_menu (id, name, url, power_id, parent_id)
 VALUES (101010000, '角色管理（权限相关）', '/power/role', id, null);

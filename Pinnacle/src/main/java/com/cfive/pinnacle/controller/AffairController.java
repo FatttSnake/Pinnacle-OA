@@ -9,6 +9,7 @@ import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IAffairService;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class AffairController {
 
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('affair:self:add')")
     public ResponseResult<Boolean> addAffair(@RequestBody Affair affair) {
         return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", affairService.save(affair));
     }
@@ -50,6 +52,7 @@ public class AffairController {
     }//获取当前用户
 
     @GetMapping("/personal_affairs")
+    @PreAuthorize("hasAuthority('affair:self:get')")
     public ResponseResult<List<Affair>> getPersonalAffairs() {
         LambdaQueryWrapper<Affair> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Affair::getApplicantId, WebUtil.getLoginUser().getUser().getId());
@@ -59,6 +62,7 @@ public class AffairController {
 
 
     @GetMapping("/not_approved")
+    @PreAuthorize("hasAuthority('affair:manage:get')")
     public ResponseResult<List<Affair>> selectNotApproved() {
         LambdaQueryWrapper<Affair> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Affair::getStatus, 0).eq(Affair::getInspectorId, WebUtil.getLoginUser().getUser().getId());
@@ -68,6 +72,7 @@ public class AffairController {
 
 
     @GetMapping("/approved")
+    @PreAuthorize("hasAuthority('affair:manage:get')")
     public ResponseResult<List<Affair>> selectApproved() {
         LambdaQueryWrapper<Affair> wrapper2 = new LambdaQueryWrapper<>();
         wrapper2.ne(Affair::getStatus, 0).eq(Affair::getInspectorId, WebUtil.getLoginUser().getUser().getId());
@@ -76,6 +81,7 @@ public class AffairController {
     }
 
     @PutMapping("/yes")
+    @PreAuthorize("hasAuthority('affair:manage:modify')")
     public ResponseResult updateAffairYes(@RequestBody Affair affair) {
         System.out.println(affair);
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", affairService.updateAffairYes(affair));
@@ -83,6 +89,7 @@ public class AffairController {
     }
 
     @PutMapping("/no")
+    @PreAuthorize("hasAuthority('affair:manage:modify')")
     public ResponseResult updateAffairNo(@RequestBody Affair affair) {
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", affairService.updateAffairNo(affair));
         //审批驳回
@@ -90,6 +97,7 @@ public class AffairController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('affair:manage:delete')")
     public ResponseResult deleteAffairApproved(@PathVariable Long id) {
         System.out.println("affair");
         return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", affairService.removeById(id));
