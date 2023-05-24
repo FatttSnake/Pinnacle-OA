@@ -61,12 +61,12 @@ export const useNoticeStore = defineStore('notice', {
                     noticeType: {
                         id: '',
                         name: '',
-                        enable: 0
+                        enable: 1
                     },
                     sender: {
                         id: '',
                         username: '',
-                        enable: 0
+                        enable: 1
                     },
                     senderId: '',
                     typeId: ''
@@ -95,12 +95,12 @@ export const useNoticeStore = defineStore('notice', {
                 noticeType: {
                     id: '',
                     name: '',
-                    enable: 0
+                    enable: 1
                 },
                 sender: {
                     id: '',
                     username: '',
-                    enable: 0
+                    enable: 1
                 },
                 senderId: '',
                 typeId: ''
@@ -177,6 +177,7 @@ export const useNoticeStore = defineStore('notice', {
             await request.put('/notice', updateNotice).then((response) => {
                 if (response.data.code === 20023) {
                     this.dialogEditVisible = false
+                    this.editFlag = false
                     ElMessage({
                         message: '修改成功.',
                         type: 'success'
@@ -222,18 +223,28 @@ export const useNoticeStore = defineStore('notice', {
 export const useNoticeTypeStore = defineStore('notice_type', {
     state: () => {
         return {
+            total: 0,
             dataLoading: true,
             dialogAddTypeVisible: false,
             dialogEditTypeVisible: false,
+            hackReset: true,
             editFlag: false,
             enableNoticeTypeList: [],
             noticeTypeList: [
                 {
                     id: '',
                     name: '',
-                    enable: true
+                    enable: 1
                 }
-            ]
+            ],
+            addTypeData: {
+                name: '',
+                enable: 1
+            },
+            showTypeData: {
+                name: '',
+                enable: 1
+            }
         }
     },
     actions: {
@@ -246,12 +257,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
             await request.get('/notice_type').then((response) => {
                 if (response.data.code === 20021) {
                     this.noticeTypeList = response.data.data
-                    if (response.data.data.length >= 0) {
-                        for (let i = 0; i < this.noticeTypeList.length; i++) {
-                            this.noticeTypeList[i].enable = response.data.data[i].enable === 1
-                        }
-                        this.dataLoading = false
-                    }
+                    this.dataLoading = false
                 } else {
                     this.dataLoading = false
                     ElMessage({
@@ -261,7 +267,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                 }
             })
         },
-        async updateNoticeTypeEnable(typeId: string, enable: boolean) {
+        async updateNoticeTypeEnable(typeId: string, enable: number) {
             await request
                 .get('/notice_type/update', {
                     typeId,
@@ -302,6 +308,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
             await request.put('/notice_type', updateNotice).then((response) => {
                 if (response.data.code === 20023) {
                     this.dialogEditTypeVisible = false
+                    this.editFlag = false
                     ElMessage({
                         message: '修改成功.',
                         type: 'success'

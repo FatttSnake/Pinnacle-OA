@@ -12,8 +12,7 @@
         :header-cell-style="{
             background: 'darksalmon',
             'text-align': 'center',
-            color: '#fff',
-            'font-size': '20px'
+            color: '#fff'
         }"
         ><el-table-column type="selection" width="65" align="center" />
         <el-table-column type="index" label="序号" width="80" align="center" />
@@ -25,6 +24,8 @@
                     style="--el-switch-on-color: #13ce66; --el-switch-off-color: #afb2b8"
                     active-text="启用"
                     inactive-text="禁用"
+                    :active-value="1"
+                    :inactive-value="0"
                     @change="switchChang(scope.row.id, scope.row.enable)"
                 />
             </template>
@@ -34,10 +35,7 @@
                 <el-input v-model="search" size="default" placeholder="请输入关键字搜索" />
             </template>
             <template #default="scope">
-                <el-button
-                    size="default"
-                    type="primary"
-                    @click="handleEdit(scope.$index, scope.row)"
+                <el-button size="default" type="primary" @click="handleOpenEditDialog(scope.row)"
                     >编辑</el-button
                 >
                 <el-button size="default" type="danger" @click="handleDeleteById(scope.row)"
@@ -61,18 +59,27 @@
         >
         </el-pagination>
     </div>
-    <!--        编辑会话框-->
-    <!--    <el-dialog-->
-    <!--        v-model="dialogEditVisible"-->
-    <!--        center-->
-    <!--        v-if="hackReset"-->
-    <!--        :before-close="handleDialogClose"-->
-    <!--    >-->
-    <!--        <template #header>-->
-    <!--            <h2 style="color: red">编辑公告</h2>-->
-    <!--        </template>-->
-    <!--        <commitForm />-->
-    <!--    </el-dialog>-->
+    <!--    编辑公告类型会话框-->
+    <el-dialog
+        v-model="dialogEditTypeVisible"
+        center
+        v-if="hackReset"
+        :close-on-click-modal="false"
+        :before-close="closeEditForm"
+    >
+        <template #header>
+            <h2 style="color: red">编辑公告类型</h2>
+        </template>
+        <notice-type-commit-form ref="editForm" />
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button type="primary" @click="submitEditForm" style="margin-right: 20px">
+                    确定
+                </el-button>
+                <el-button @click="closeEditForm">取消</el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 
 <script lang="ts">
@@ -83,8 +90,15 @@ const noticeTypeStore = useNoticeTypeStore()
 
 export default {
     computed: {
-        ...mapState(useNoticeStore, ['total', 'dialogEditVisible']),
-        ...mapState(useNoticeTypeStore, ['noticeTypeList', 'dataLoading'])
+        ...mapState(useNoticeTypeStore, [
+            'total',
+            'dialogEditTypeVisible',
+            'noticeTypeList',
+            'dataLoading',
+            'hackReset',
+            'showTypeData',
+            'addTypeData'
+        ])
     },
     data() {
         return {
@@ -107,12 +121,13 @@ export default {
                 noticeTypeStore.selectNoticeType()
             }, 800)
         },
-        handleEdit(index, row) {},
-        handleDialogClose() {
-            noticeStore.$patch((state) => {
-                state.dialogEditVisible = false
-                state.editFlag = false
-                state.hackReset = false
+        handleOpenEditDialog(row) {
+            noticeTypeStore.$patch((state) => {
+                state.hackReset = true
+                state.showTypeData.name = row.name
+                state.showTypeData.enable = row.enable
+                state.editFlag = true
+                state.dialogEditTypeVisible = true
             })
         },
         handleDeleteById(deleteId) {
@@ -125,6 +140,23 @@ export default {
         handleCurrentChange(currentPage) {
             // currentPage：当前第几页
             noticeStore.selectAllNotice(parseInt(currentPage), this.pageSize)
+        },
+        submitEditForm() {
+            this.$refs.editForm.$refs.addTypeData.validate((valid) => {
+                if (valid) {
+                    // noticeTypeStore.handleUpdateNoticeType(this.addTypeData)
+                } else {
+                    return false
+                }
+            })
+        },
+        closeEditForm() {
+            noticeTypeStore.$patch((state) => {
+                state.dialogEditTypeVisible = false
+                state.editFlag = false
+                state.hackReset = false
+                state.addTypeData = { name: '', enable: 1 }
+            })
         }
     },
     mounted() {

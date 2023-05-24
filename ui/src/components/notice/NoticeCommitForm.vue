@@ -181,8 +181,6 @@ export default {
         // 编辑操作
         if (noticeStore.editFlag===true) {
             this.addData = noticeStore.noticeShowData
-            // 判断是否置顶
-            this.addData.top=(noticeStore.noticeShowData.top===1);
         }
     },
     mounted() {
