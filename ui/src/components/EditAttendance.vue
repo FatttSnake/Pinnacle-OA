@@ -88,13 +88,18 @@ export default {
         },
         cancel() {
             this.resetForm()
+            ElMessage({
+                message: '取消操作',
+                type: 'warning'
+            })
             this.$emit('setDialogVisible', false)
         },
         resetForm() {
-            this.$refs.ruleForm.resetFields()
+            this.$nextTick(() => {
+                this.$refs.ruleForm.resetFields()
+            })
         }
     },
-
     created() {
         if (this.formData) {
             this.form = this.formData
