@@ -37,7 +37,7 @@ public class AttendanceController {
     }
     //查询个人考勤
     @GetMapping("/selectAttendance")
-    @PreAuthorize("hasAuthority('attendance:self:get')")
+    @PreAuthorize("hasAuthority('attendance:self:check')")
     public ResponseResult<List<Attendance>> findAttendanceAndUser() {
         Long userId = WebUtil.getLoginUser().getUser().getId();
         List<Attendance> attendances = attendanceService.getAttendanceAndUserByid(userId);
@@ -52,7 +52,7 @@ public class AttendanceController {
     }
     //用户个人模糊时间查询
     @GetMapping("/findOneAttendanceByTime")
-    @PreAuthorize("hasAuthority('attendance:self:get')")
+    @PreAuthorize("hasAuthority('attendance:self:check')")
     public ResponseResult<List<Attendance>> findOneAttendanceAndUserByTime(String startTime,String endTime) {
         Long userId = WebUtil.getLoginUser().getUser().getId();
         List<Attendance> attendances = attendanceService.selectOneByTime(startTime, endTime,userId);
