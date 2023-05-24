@@ -27,10 +27,11 @@ const attendanceRouter = {
     ],
     meta: {
         title: '考勤',
-        requiresMenu: true,
         icon: shallowRef(IconPinnacleAttendance),
+        requiresMenu: true,
         requiresScrollbar: false,
-        requiresPadding: true
+        requiresPadding: true,
+        requiresAuth: true
     }
 }
 

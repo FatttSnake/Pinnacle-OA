@@ -53,7 +53,7 @@ function getCaptchaSrc(): string {
 }
 
 function verifyCaptcha(value: string): boolean {
-    return captcha.value === value.replace(/\s*/g, '').toUpperCase()
+    return captcha.value.toLowerCase() === value.replace(/\s*/g, '').toLowerCase()
 }
 
 export { login, logout, getLoginStatus, getUser, getUsername, getCaptchaSrc, verifyCaptcha }

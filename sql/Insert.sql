@@ -148,6 +148,70 @@ insert into t_operation(id, name, code, power_id, element_id, parent_id)
 VALUES (2020108, '修改工作事项（管理）', 'work:admin:modify', id, 2020100, null);
 commit;
 
+begin;
+insert into t_power (id, type_id)
+values (4010000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (4010000, '员工考勤', '/attendance/user', id, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+VALUES (4010100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (4010100, '列表', id, 4010000);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (4010101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (4010101, '获取个人考勤', 'attendance:self:get', id, 4010100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (4010102, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (4010102, '个人签到', 'attendance:self:check', id, 4010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (4020000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (4020000, '考勤管理', '/attendance/manage', id, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+VALUES (4020100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (4020100, '列表', id, 4020000);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (4020101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (4020101, '获取管理考勤', 'attendance:manage:get', id, 4020100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (4020102, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (4020102, '删除管理考勤', 'attendance:manage:delete', id, 4020100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (4020103, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (4020103, '修改管理考勤', 'attendance:manage:modify', id, 4020100, null);
+commit;
+
+
 
 
 begin;
@@ -203,14 +267,14 @@ begin;
 insert into t_power(id, type_id)
 values (5020102, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (5020102, '修改审批事务', 'affair:manage:modify', id, 5020100, null);
+VALUES (5020102, '删除审批事务', 'affair:manage:delete', id, 5020100, null);
 commit;
 
 begin;
 insert into t_power(id, type_id)
 values (5020103, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (5020103, '删除审批事务', 'affair:manage:delete', id, 5020100, null);
+VALUES (5020103, '修改审批事务', 'affair:manage:modify', id, 5020100, null);
 commit;
 
 
