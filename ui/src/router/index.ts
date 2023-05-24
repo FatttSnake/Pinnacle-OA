@@ -33,9 +33,9 @@ const router = createRouter({
                     }
                 },
                 workRouter,
+                noticeRouter,
                 attendanceRouter,
                 affairRouter,
-                noticeRouter,
                 powerRouter
             ]
         },
