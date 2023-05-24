@@ -324,7 +324,6 @@ export default {
             this.editDialogFormVisible = true
             this.isDisabled = true
             this.form = row
-            this.form.userId = row.user.username
             this.form.status = row.status + ''
         },
         addAttendance(formData) {
