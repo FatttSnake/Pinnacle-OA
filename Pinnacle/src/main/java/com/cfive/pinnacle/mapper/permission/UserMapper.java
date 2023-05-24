@@ -19,6 +19,8 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
     List<User> getAll();
 
+    List<User> getAllAffairUser();
+
     User getOneById(@Param("id") long id);
 
     User getOneWithPowerByUsername(@Param("username") String username);

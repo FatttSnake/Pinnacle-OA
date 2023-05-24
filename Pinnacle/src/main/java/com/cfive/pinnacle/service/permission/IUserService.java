@@ -17,6 +17,8 @@ public interface IUserService extends IService<User> {
 
     User getInfo();
 
+    List<User> getAffairUser();
+
     List<User> getAllUser();
 
     User getUser(long id);
