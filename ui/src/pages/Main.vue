@@ -226,7 +226,7 @@ export default {
     async mounted() {
         this.username = await getUsername()
         const allRoutes = _.cloneDeep(
-            _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.title')
+            _.filter(_.get(this.$router, 'options.routes[0].children'), 'meta.requiresMenu')
         )
 
         const user = await getUser()
@@ -240,6 +240,9 @@ export default {
                             return true
                         }
                         level1.children = level1.children.filter((level2) => {
+                            if (!level2.meta.requiresMenu) {
+                                return false
+                            }
                             for (const menu_ of menus) {
                                 if (_.startsWith(menu_.url, level1.path + '/' + level2.path)) {
                                     hasChildren = true
@@ -258,6 +261,9 @@ export default {
                     return true
                 }
                 level1.children = level1.children.filter((level2) => {
+                    if (!level2.meta.requiresMenu) {
+                        return false
+                    }
                     if (!level2.meta.requiresAuth) {
                         hasChildren = true
                         return true

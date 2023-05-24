@@ -4,6 +4,7 @@ const noticeRouter = {
     meta: {
         title: '公告',
         icon: shallowRef(IconPinnacleNotice),
+        requiresMenu: true,
         requiresScrollbar: false,
         requiresPadding: true
     },
@@ -14,6 +15,7 @@ const noticeRouter = {
             name: 'noticeManage',
             meta: {
                 title: '公告管理',
+                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             }
@@ -25,6 +27,7 @@ const noticeRouter = {
             redirect: '/notice/noticeView/all',
             meta: {
                 title: '公告查看',
+                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             },
@@ -52,6 +55,7 @@ const noticeRouter = {
             name: 'noticeTypeManage',
             meta: {
                 title: '公告类型管理',
+                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             }
