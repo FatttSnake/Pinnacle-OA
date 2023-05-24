@@ -128,7 +128,21 @@
 
         <div>
             <el-dialog
-                v-model="dialogFormVisible"
+                v-model="addDialogFormVisible"
+                title="考勤信息"
+                width="25% "
+                :close-on-click-modal="false"
+                :show-close="false"
+            >
+                <edit-attendance
+                    :users="users"
+                    :isDisabled="isDisabled"
+                    @addAttendance="addAttendance"
+                    @setDialogVisible="setDialogVisible"
+                ></edit-attendance>
+            </el-dialog>
+            <el-dialog
+                v-model="editDialogFormVisible"
                 title="考勤信息"
                 width="25% "
                 :close-on-click-modal="false"
@@ -170,7 +184,8 @@ export default {
             value1: '',
             users: [],
             tableData: [],
-            dialogFormVisible: false,
+            addDialogFormVisible: false,
+            editDialogFormVisible: false,
             form: {
                 userId: '',
                 userName: '',
@@ -281,13 +296,14 @@ export default {
             })
         },
         setDialogVisible(dialogVisible) {
-            this.dialogFormVisible = dialogVisible
+            this.addDialogFormVisible = dialogVisible
+            this.editDialogFormVisible = dialogVisible
             this.getAttendances()
         },
         // 打开添加弹窗
         handleAdd() {
             this.getFormData()
-            this.dialogFormVisible = true
+            this.addDialogFormVisible = true
             this.isDisabled = false
         },
         // 处理保存
@@ -305,14 +321,15 @@ export default {
         // 获取更改数据
         viewUpdate(row) {
             this.getFormData()
-            this.dialogFormVisible = true
+            this.editDialogFormVisible = true
             this.isDisabled = true
             this.form = row
+            this.form.userId = row.user.username
             this.form.status = row.status + ''
         },
         addAttendance(formData) {
             this.doSave(formData)
-            this.dialogFormVisible = false
+            this.addDialogFormVisible = false
         },
         // 点击取消
         cancel() {

@@ -33,16 +33,22 @@ public class AttendanceController {
         List<Attendance> attendances = attendanceService.getAllAttendanceAndUser();
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }
-
-    //模糊时间查询
+    //查询个人考勤
+    @GetMapping("/selectAttendance")
+    public ResponseResult findAttendanceAndUser() {
+        Long userId = WebUtil.getLoginUser().getUser().getId();
+        List<Attendance> attendances = attendanceService.getAttendanceAndUserByid(userId);
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
+    }
+    //模糊时间查询所有考勤信息
     @GetMapping("/findAttendanceByTime")
-    public ResponseResult findAttendanceAndUser(String startTime,String endTime) {
+    public ResponseResult findAttendanceAndUserByTime(String startTime,String endTime) {
         List<Attendance> attendances = attendanceService.selectByTime(startTime, endTime);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }
     //用户个人模糊时间查询
     @GetMapping("/findOneAttendanceByTime")
-    public ResponseResult findOneAttendanceAndUser(String startTime,String endTime) {
+    public ResponseResult findOneAttendanceAndUserByTime(String startTime,String endTime) {
         Long userId = WebUtil.getLoginUser().getUser().getId();
         List<Attendance> attendances = attendanceService.selectOneByTime(startTime, endTime,userId);
         System.out.println(attendances);
@@ -86,13 +92,7 @@ public class AttendanceController {
 
 
     }
-//查询个人考勤
-    @GetMapping("/selectAttendance")
-    public ResponseResult findAttendanceAndUser() {
-        Long userId = WebUtil.getLoginUser().getUser().getId();
-        List<Attendance> attendances = attendanceService.getAttendanceAndUserByid(userId);
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
-    }
+
 
 
     //删除考勤信息
