@@ -9,6 +9,7 @@ const affairRouter = {
             name: 'affairAdd',
             meta: {
                 title: '事务添加',
+                requiresMenu: true,
                 requiresScrollbar: true,
                 requiresPadding: true
             }
@@ -19,6 +20,7 @@ const affairRouter = {
             name: 'PersonalAffairs',
             meta: {
                 title: '我的事务',
+                requiresMenu: true,
                 requiresScrollbar: true,
                 requiresPadding: true
             }
@@ -29,6 +31,7 @@ const affairRouter = {
             component: async () => await import('@/pages/affair/Affair.vue'),
             meta: {
                 title: '事务审批',
+                requiresMenu: true,
                 requiresScrollbar: true,
                 requiresPadding: true
             }
@@ -39,6 +42,7 @@ const affairRouter = {
             name: 'affairApproved',
             meta: {
                 title: '审批记录',
+                requiresMenu: true,
                 requiresScrollbar: true,
                 requiresPadding: true
             }
@@ -47,6 +51,7 @@ const affairRouter = {
     meta: {
         title: '事务',
         icon: shallowRef(IconPinnacleAffairs),
+        requiresMenu: true,
         requiresScrollbar: false,
         requiresPadding: true
     }

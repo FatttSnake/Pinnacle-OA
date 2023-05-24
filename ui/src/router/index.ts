@@ -26,6 +26,7 @@ const router = createRouter({
                     meta: {
                         title: '首页',
                         icon: shallowRef(IconPinnacleHome),
+                        requiresMenu: true,
                         requiresScrollbar: false,
                         requiresPadding: true,
                         requiresAuth: false

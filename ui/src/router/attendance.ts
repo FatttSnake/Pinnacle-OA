@@ -8,6 +8,7 @@ const attendanceRouter = {
             name: 'attendanceManage',
             meta: {
                 title: '考勤管理',
+                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             }
@@ -18,6 +19,7 @@ const attendanceRouter = {
             name: 'user',
             meta: {
                 title: '员工考勤',
+                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             }
@@ -25,6 +27,7 @@ const attendanceRouter = {
     ],
     meta: {
         title: '考勤',
+        requiresMenu: true,
         icon: shallowRef(IconPinnacleAttendance),
         requiresScrollbar: false,
         requiresPadding: true

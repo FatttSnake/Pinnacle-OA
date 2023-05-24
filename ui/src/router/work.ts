@@ -8,6 +8,7 @@ const workRouter = {
             name: 'workManage',
             meta: {
                 title: '工作管理',
+                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             }
@@ -31,6 +32,7 @@ const workRouter = {
             ],
             meta: {
                 title: '工作事项',
+                requiresMenu: true,
                 requiresScrollbar: false,
                 requiresPadding: true
             }
@@ -39,6 +41,7 @@ const workRouter = {
     meta: {
         title: '工作事项',
         icon: shallowRef(IconPinnacleWork),
+        requiresMenu: true,
         requiresScrollbar: false,
         requiresPadding: true
     }
