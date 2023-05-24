@@ -61,7 +61,7 @@ public class AttendanceController {
     }
     //添加或更新考勤信息
     @PostMapping("/saveAttendance")
-    @PreAuthorize("hasAuthority('attendance:manage:modify')")
+    @PreAuthorize("hasAuthority('attendance:manage:modify') and hasAuthority('attendance:manage:get')")
     public ResponseResult<?> saveAttendance(@RequestBody Attendance attendance) {
         attendance.setModifyId(1652714496280469506L);
         return attendanceService.saveOrUpdate(attendance) ? ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", attendance) :
@@ -104,7 +104,7 @@ public class AttendanceController {
 
     //删除考勤信息
     @DeleteMapping("/delAttendance/{id}")
-    @PreAuthorize("hasAuthority('attendance:manage:delete')")
+    @PreAuthorize("hasAuthority('attendance:manage:delete') and hasAuthority('attendance:manage:get')")
     public ResponseResult<?> delAttendance(@PathVariable Long id) {
         return attendanceService.removeById(id) ? ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", null) :
                 ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "error", null);
@@ -112,7 +112,7 @@ public class AttendanceController {
 
     //批量删除考勤信息
     @PostMapping("/delBatchAttendance")
-    @PreAuthorize("hasAuthority('attendance:manage:delete')")
+    @PreAuthorize("hasAuthority('attendance:manage:delete') and hasAuthority('attendance:manage:get')")
     public ResponseResult<?> delBatchAttendance(@RequestBody List<Long> ids) {
         return attendanceService.removeByIds(ids) ? ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", null) :
                 ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "error", null);
