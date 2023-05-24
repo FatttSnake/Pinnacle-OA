@@ -101,7 +101,7 @@ function randomColor(start: number, end: number): string {
 }
 
 function getCaptcha(width: number, high: number, num: number): Captcha {
-    const CHARTS = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'.split('')
+    const CHARTS = '23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghijklmnpqrstuvwxyz'.split('')
 
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
