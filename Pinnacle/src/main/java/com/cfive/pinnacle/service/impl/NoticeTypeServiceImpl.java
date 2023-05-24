@@ -54,4 +54,14 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
     public Boolean addNoticeType(NoticeType noticeType) {
         return noticeTypeMapper.insert(noticeType)>0;
     }
+
+    @Override
+    public Boolean updateNoticeType(NoticeType noticeType) {
+        return noticeTypeMapper.updateById(noticeType)>0;
+    }
+
+    @Override
+    public Boolean deleteNoticeTypeById(Long typeId) {
+        return noticeTypeMapper.deleteById(typeId)>0;
+    }
 }

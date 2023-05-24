@@ -40,7 +40,7 @@
             </el-dialog>
         </el-header>
         <el-main>
-            <notice-type-table />
+            <notice-type-table @deleteTypeById="deleteTypeById" />
         </el-main>
     </el-container>
 </template>
@@ -48,6 +48,8 @@
 import { SIZE_ICON_MD } from '@/constants/Common.constants'
 import { useNoticeTypeStore } from '@/store/notice'
 import { mapState } from 'pinia'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import request from '@/services'
 
 const noticeTypeStore = useNoticeTypeStore()
 
@@ -99,6 +101,30 @@ export default {
         },
         resetForm() {
             this.$refs.addForm.$refs.addTypeData.resetFields()
+        },
+        deleteTypeById(typeId) {
+            ElMessageBox.confirm('确定是否要删除？该操作将无法回退', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '我再想想',
+                type: 'warning'
+            })
+                .then(() => {
+                    request.delete('/notice_type/' + typeId).then((response) => {
+                        if (response.data.code === 20024) {
+                            ElMessage({
+                                message: '删除成功.',
+                                type: 'success'
+                            })
+                            noticeTypeStore.selectNoticeType()
+                        } else if (response.data.code === 20034) {
+                            ElMessage({
+                                message: response.data.msg,
+                                type: 'error'
+                            })
+                        }
+                    })
+                })
+                .catch(() => {})
         }
     },
     mounted() {}

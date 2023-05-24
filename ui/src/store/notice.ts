@@ -13,6 +13,7 @@ export interface IAddNoticeData {
     receivers: []
 }
 export interface IAddNoticeTypeData {
+    id: string
     name: string
     enable: number
 }
@@ -238,10 +239,12 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                 }
             ],
             addTypeData: {
+                id: '',
                 name: '',
                 enable: 1
             },
             showTypeData: {
+                id: '',
                 name: '',
                 enable: 1
             }
@@ -309,6 +312,12 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                 if (response.data.code === 20023) {
                     this.dialogEditTypeVisible = false
                     this.editFlag = false
+                    this.hackReset = false
+                    this.addTypeData = {
+                        id: '',
+                        name: '',
+                        enable: 1
+                    }
                     ElMessage({
                         message: '修改成功.',
                         type: 'success'
