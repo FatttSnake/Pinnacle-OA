@@ -80,8 +80,10 @@ export default {
                         message: '操作成功',
                         type: 'success'
                     })
+                    this.$emit('setDialogVisible', false)
                 } else {
                     ElMessage.error('操作失败')
+                    this.$emit('setDialogVisible', false)
                     return false
                 }
             })
