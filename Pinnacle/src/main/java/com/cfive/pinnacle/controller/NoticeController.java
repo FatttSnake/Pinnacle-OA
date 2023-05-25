@@ -3,13 +3,12 @@ package com.cfive.pinnacle.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cfive.pinnacle.entity.Notice;
-import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.INoticeReceiveService;
 import com.cfive.pinnacle.service.INoticeService;
-import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +34,7 @@ public class NoticeController {
 
     //根据公告id查公告信息及发布人
     @GetMapping("/{nid}")
+    @PreAuthorize("hasAuthority('notice:manage:get')")
     public ResponseResult<Notice> selectByNoticeId(@PathVariable Long nid) {
         Notice noticeById = noticeService.selectByNoticeId(nid);
         Integer code = noticeById != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
@@ -44,6 +44,7 @@ public class NoticeController {
 
     //查询所有公告或模糊查询
     @GetMapping
+    @PreAuthorize("hasAuthority('notice:manage:get')")
     public ResponseResult<List<Notice>> selectAllNotice(String title, String type, String startTime, String endTime) {
         List<Notice> noticeList;
         if (!StringUtils.hasText(title) && !StringUtils.hasText(type) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
@@ -59,6 +60,7 @@ public class NoticeController {
 
     //根据登录用户id查询所接收的公告
     @GetMapping("/self")
+    @PreAuthorize("hasAuthority('notice:self:get')")
     public ResponseResult<List<Notice>> selectByUserId(Integer readStatus) {
         List<Notice> noticesByUserId = noticeReceiveService.selectByUserId(readStatus);
         Integer code = noticesByUserId != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
@@ -68,6 +70,7 @@ public class NoticeController {
 
     //修改登录用户所接收公告的阅读状态
     @PutMapping("/modify_notice_read")
+    @PreAuthorize("hasAuthority('notice:self:get')")
     public ResponseResult<?> modifyNoticeIsRead(@RequestBody Notice notice) {
         boolean updateById = false;
         if (null != notice) {
@@ -88,6 +91,7 @@ public class NoticeController {
 
     //修改公告置顶状态
     @PutMapping("/update_notice_top")
+    @PreAuthorize("hasAuthority('notice:self:get')")
     public ResponseResult<?> updateNoticeTop(@RequestBody Notice notice) {
         String operationMessage = notice.getTop() == 1 ? "取消置顶" : "置顶";
         boolean updateResult = noticeService.updateNoticeTop(notice);
@@ -97,6 +101,7 @@ public class NoticeController {
 
     //添加公告
     @PostMapping
+    @PreAuthorize("hasAuthority('notice:manage:add')")
     public ResponseResult<?> addNotice(@RequestBody Notice notice) {
         Boolean insertNotice = noticeService.addNotice(notice);
         String msg = insertNotice ? "" : "数据添加失败，请重试！";
@@ -105,6 +110,7 @@ public class NoticeController {
 
     //删除公告
     @DeleteMapping("/{nid}")
+    @PreAuthorize("hasAuthority('notice:manage:modify')")
     public ResponseResult<?> deleteByNoticeId(@PathVariable Long nid) {
         boolean removeById = noticeService.deleteById(nid);
         String msg = removeById ? "" : "数据删除失败，请重试！";
@@ -113,6 +119,7 @@ public class NoticeController {
 
     //分页查询所有公告或分页模糊查询
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('notice:manage:get')")
     public ResponseResult<List<Notice>> selectPageAllNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime) {
         IPage<Notice> noticePageList;
         Page<?> page = new Page();

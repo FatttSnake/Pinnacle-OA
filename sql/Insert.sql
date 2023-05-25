@@ -150,6 +150,118 @@ commit;
 
 begin;
 insert into t_power (id, type_id)
+values (3010000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (3010000, '公告查看', '/notice/view', id, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+VALUES (3010100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (3010100, '列表', id, 3010000);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3010101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3010101, '获取接收的公告', 'notice:self:get', id, 3010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (3020000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (3020000, '公告管理', '/notice/manage', id, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+VALUES (3020100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (3020100, '列表', id, 3020000);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3020101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3020101, '获取所有公告', 'notice:manage:get', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3020102, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3020102, '发布公告', 'notice:manage:add', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3020103, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3020103, '删除公告', 'notice:manage:delete', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3020104, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3020104, '修改公告', 'notice:manage:modify', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (3030000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (3030000, '公告类型管理', '/notice/typeManage', id, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+VALUES (3030100, 2);
+insert into t_element(id, name, power_id, menu_id)
+VALUES (3030100, '列表', id, 3030000);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3030101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3030101, '获取已启用的公告类型', 'notice:type:enable', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3030102, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3030102, '获取所有公告类型', 'notice:type:get', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3030103, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3030103, '添加公告类型', 'notice:type:add', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3030104, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3030104, '修改公告类型', 'notice:type:modify', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power(id, type_id)
+values (3030105, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
+VALUES (3030105, '删除公告类型', 'notice:type:delete', id, 3030100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
 values (4010000, 1);
 insert into t_menu (id, name, url, power_id, parent_id)
 VALUES (4010000, '员工考勤', '/attendance/user', id, null);
@@ -166,14 +278,7 @@ begin;
 insert into t_power(id, type_id)
 values (4010101, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (4010101, '获取个人考勤', 'attendance:self:get', id, 4010100, null);
-commit;
-
-begin;
-insert into t_power(id, type_id)
-values (4010102, 3);
-insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (4010102, '个人签到', 'attendance:self:check', id, 4010100, null);
+VALUES (4010101, '个人签到', 'attendance:self:check', id, 4010100, null);
 commit;
 
 begin;
@@ -210,9 +315,6 @@ values (4020103, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
 VALUES (4020103, '修改管理考勤', 'attendance:manage:modify', id, 4020100, null);
 commit;
-
-
-
 
 begin;
 insert into t_power (id, type_id)
