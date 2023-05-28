@@ -46,6 +46,8 @@ export const useNoticeStore = defineStore('notice', {
     state: () => {
         return {
             total: 0,
+            pageSize: 5,
+            currentPage: 1,
             selectData: [
                 {
                     content: '',
@@ -81,6 +83,7 @@ export const useNoticeStore = defineStore('notice', {
             currentViewPage: 'All',
             hackReset: true,
             departmentList: [],
+            multiDeleteSelection: [],
             noticeShowData: {
                 content: '',
                 createTime: '',
@@ -225,6 +228,8 @@ export const useNoticeTypeStore = defineStore('notice_type', {
     state: () => {
         return {
             total: 0,
+            pageSize: 5,
+            currentPage: 1,
             dataLoading: true,
             dialogAddTypeVisible: false,
             dialogEditTypeVisible: false,
@@ -256,11 +261,14 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                 this.enableNoticeTypeList = response.data.data
             })
         },
-        async selectNoticeType() {
-            await request.get('/notice_type').then((response) => {
+        async selectNoticeType(currentPage: number, pageSize: number) {
+            await request.get('/notice_type/page', { currentPage, pageSize }).then((response) => {
                 if (response.data.code === 20021) {
                     this.noticeTypeList = response.data.data
-                    this.dataLoading = false
+                    this.total = parseInt(response.data.msg)
+                    if (this.noticeTypeList.length !== 0) {
+                        this.dataLoading = false
+                    }
                 } else {
                     this.dataLoading = false
                     ElMessage({
@@ -305,7 +313,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                     })
                 }
             })
-            await this.selectNoticeType()
+            await this.selectNoticeType(1, 5)
         },
         async handleUpdateNoticeType(updateNotice: IAddNoticeTypeData) {
             await request.put('/notice_type', updateNotice).then((response) => {
@@ -329,7 +337,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                     })
                 }
             })
-            await this.selectNoticeType()
+            await this.selectNoticeType(this.currentPage, this.pageSize)
         }
     }
 })

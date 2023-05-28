@@ -1,5 +1,6 @@
 package com.cfive.pinnacle.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.NoticeType;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -15,6 +16,8 @@ import java.util.List;
  */
 public interface INoticeTypeService extends IService<NoticeType> {
     List<NoticeType> selectTypeList();
+
+    IPage<NoticeType> selectPageTypeList(IPage<NoticeType> page);
     List<NoticeType> selectEnableTypeList();
 
     Boolean updateTypeEnableById(Long typeId, Integer enable);

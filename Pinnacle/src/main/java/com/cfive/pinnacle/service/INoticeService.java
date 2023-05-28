@@ -23,13 +23,15 @@ public interface INoticeService extends IService<Notice> {
 
     Boolean deleteById(Long nid);
 
+    Boolean deleteBatchByIds(List<Long> noticeIds);
+
     Boolean updateNotice(Notice notice);
 
     Boolean updateNoticeTop(Notice notice);
 
     Boolean addNotice(Notice notice);
 
-    IPage<Notice> selectPageAllNotice(IPage<?> page);
+    IPage<Notice> selectPageAllNotice(IPage<Notice> page);
 
-    IPage<Notice> selectPageByCond(IPage<?> page, String title, String type, String startTime, String endTime);
+    IPage<Notice> selectPageByCond(IPage<Notice> page, String title, String type, String startTime, String endTime);
 }

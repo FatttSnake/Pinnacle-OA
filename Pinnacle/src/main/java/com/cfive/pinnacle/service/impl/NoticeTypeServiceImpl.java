@@ -1,8 +1,8 @@
 package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.NoticeType;
 import com.cfive.pinnacle.mapper.NoticeTypeMapper;
 import com.cfive.pinnacle.service.INoticeTypeService;
@@ -10,7 +10,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +29,13 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
         LambdaQueryWrapper<NoticeType> lqw = new LambdaQueryWrapper<>();
         lqw.orderByDesc(NoticeType::getId);
         return noticeTypeMapper.selectList(lqw);
+    }
+
+    @Override
+    public IPage<NoticeType> selectPageTypeList(IPage<NoticeType> page) {
+        LambdaQueryWrapper<NoticeType> lqw = new LambdaQueryWrapper<>();
+        lqw.orderByDesc(NoticeType::getId);
+        return noticeTypeMapper.selectPage(page, lqw);
     }
 
     @Override
