@@ -1,5 +1,4 @@
 <template>
-    <el-button size="large" @click="clearFilter" type="primary">清除筛选条件</el-button>
     <el-table
         v-loading="loading"
         element-loading-text="加载中..."
@@ -29,10 +28,11 @@
             prop="title"
             label="公告标题"
             width="200"
-            :formatter="formatter"
             show-overflow-tooltip
             align="center"
-        />
+        >
+            <template #default="scope"> {{ formatterTitle(scope.row.title) }} </template>
+        </el-table-column>
         <el-table-column prop="noticeType.name" label="公告类别" width="160" align="center">
             <template #default="scope">
                 <el-tag
@@ -166,16 +166,16 @@ export default {
             'dialogShowVisible',
             'noticeShowData',
             'dialogEditVisible',
-            'hackReset'
+            'hackReset',
+            'currentPage',
+            'pageSize',
+            'multiDeleteSelection'
         ])
     },
     emits: ['clearFilter', 'handleDeleteById'],
     data() {
         return {
-            filterSenderName: [],
-            multipleSelection: [],
-            currentPage: 1,
-            pageSize: 5
+            filterSenderName: []
         }
     },
     props: [],
@@ -191,14 +191,20 @@ export default {
         },
         handleSelectionChange(val) {
             // val的值为所勾选行的数组对象
-            this.multipleSelection = val
+            noticeStore.$patch((state) => {
+                state.multiDeleteSelection = val
+            })
         },
         clearFilter() {
             this.$refs.tableRef.clearFilter(['senderName'])
             this.$emit('clearFilter')
         },
-        formatter(row) {
-            return row.title
+        formatterTitle(title) {
+            if (title.length > 10) {
+                return title.substring(0, 10) + ' ...'
+            } else {
+                return title
+            }
         },
         filterTag(value, row) {
             return row.sender.username === value
@@ -237,10 +243,16 @@ export default {
         },
         handleSizeChange(pageSize) {
             // pageSize：每页多少条数据
+            noticeStore.$patch((state) => {
+                state.pageSize = pageSize
+            })
             noticeStore.selectAllNotice(this.currentPage, parseInt(pageSize))
         },
         handleCurrentChange(currentPage) {
             // currentPage：当前第几页
+            noticeStore.$patch((state) => {
+                state.currentPage = currentPage
+            })
             noticeStore.selectAllNotice(parseInt(currentPage), this.pageSize)
         }
     },

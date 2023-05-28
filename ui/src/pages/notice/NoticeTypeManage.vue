@@ -61,7 +61,9 @@ export default {
             'dialogEditTypeVisible',
             'editFlag',
             'hackReset',
-            'addTypeData'
+            'addTypeData',
+            'currentPage',
+            'pageSize'
         ])
     },
     data() {
@@ -73,7 +75,7 @@ export default {
         },
         getLoadData() {
             noticeTypeStore.dataLoading = true
-            noticeTypeStore.selectNoticeType()
+            noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
         },
         handleOpenAddDialog() {
             noticeTypeStore.$patch((state) => {
@@ -115,7 +117,7 @@ export default {
                                 message: '删除成功.',
                                 type: 'success'
                             })
-                            noticeTypeStore.selectNoticeType()
+                            noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
                         } else if (response.data.code === 20034) {
                             ElMessage({
                                 message: response.data.msg,

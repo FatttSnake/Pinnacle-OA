@@ -15,7 +15,7 @@
             color: '#fff'
         }"
         ><el-table-column type="selection" width="65" align="center" />
-        <el-table-column type="index" label="序号" width="80" align="center" />
+        <el-table-column type="index" label="序号" width="80" align="center" :index="indexFormat" />
         <el-table-column label="类型名称" prop="name" width="500" align="center" />
         <el-table-column label="是否启用" prop="enable" width="350" align="center">
             <template #default="scope">
@@ -84,8 +84,7 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { useNoticeStore, useNoticeTypeStore } from '@/store/notice'
-const noticeStore = useNoticeStore()
+import { useNoticeTypeStore } from '@/store/notice'
 const noticeTypeStore = useNoticeTypeStore()
 
 export default {
@@ -93,6 +92,8 @@ export default {
     computed: {
         ...mapState(useNoticeTypeStore, [
             'total',
+            'currentPage',
+            'pageSize',
             'dialogEditTypeVisible',
             'noticeTypeList',
             'dataLoading',
@@ -105,8 +106,6 @@ export default {
         return {
             filterSenderName: [],
             multipleSelection: [],
-            currentPage: 1,
-            pageSize: 5,
             search: ''
         }
     },
@@ -116,10 +115,13 @@ export default {
             // val的值为所勾选行的数组对象
             this.multipleSelection = val
         },
+        indexFormat(index) {
+            return (this.currentPage - 1) * this.pageSize + index + 1
+        },
         switchChang(id, value) {
             noticeTypeStore.updateNoticeTypeEnable(id, value)
             setTimeout(() => {
-                noticeTypeStore.selectNoticeType()
+                noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
             }, 800)
         },
         handleOpenEditDialog(row) {
@@ -137,11 +139,17 @@ export default {
         },
         handleSizeChange(pageSize) {
             // pageSize：每页多少条数据
-            noticeStore.selectAllNotice(this.currentPage, parseInt(pageSize))
+            noticeTypeStore.$patch((state) => {
+                state.pageSize = pageSize
+            })
+            noticeTypeStore.selectNoticeType(this.currentPage, parseInt(pageSize))
         },
         handleCurrentChange(currentPage) {
             // currentPage：当前第几页
-            noticeStore.selectAllNotice(parseInt(currentPage), this.pageSize)
+            noticeTypeStore.$patch((state) => {
+                state.currentPage = currentPage
+            })
+            noticeTypeStore.selectNoticeType(parseInt(currentPage), this.pageSize)
         },
         submitEditForm() {
             this.$refs.editForm.$refs.addTypeData.validate((valid) => {
@@ -163,7 +171,7 @@ export default {
     },
     mounted() {
         noticeTypeStore.dataLoading = true
-        noticeTypeStore.selectNoticeType()
+        noticeTypeStore.selectNoticeType(1, 5)
     },
     updated() {}
 }
