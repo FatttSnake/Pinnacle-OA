@@ -3,6 +3,7 @@ package com.cfive.pinnacle.handler;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +28,9 @@ public class CustomExceptionHandler {
         }
         if (e instanceof DisabledException) {
             return ResponseResult.build(ResponseCode.USER_DISABLE, e.getMessage(), null);
+        }
+        if (e instanceof DataIntegrityViolationException) {
+            return ResponseResult.build(ResponseCode.DATABASE_DATA_TO_LONG, e.getMessage(), null);
         }
 
         log.debug(e.getMessage(), e);

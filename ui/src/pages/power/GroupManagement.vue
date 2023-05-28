@@ -37,7 +37,12 @@
                 :model="groupForm"
             >
                 <el-form-item label="用户组名称" prop="inputGroupName">
-                    <el-input autocomplete="off" v-model="groupForm.inputGroupName" />
+                    <el-input
+                        autocomplete="off"
+                        v-model="groupForm.inputGroupName"
+                        maxlength="30"
+                        placeholder="请输入名称"
+                    />
                 </el-form-item>
                 <el-form-item label="用户组角色">
                     <el-select v-model="groupForm.selectedRoles" multiple style="width: 100%">
