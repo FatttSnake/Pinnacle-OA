@@ -22,6 +22,7 @@ public class ResponseCode {
     public static final int DATABASE_DELETE_ERROR = 20034;
     public static final int DATABASE_TIMEOUT_ERROR = 20035;
     public static final int DATABASE_CONNECT_ERROR = 20036;
+    public static final int DATABASE_DATA_TO_LONG = 20037;
 
     public static final int UNAUTHORIZED = 30010;
     public static final int ACCESS_DENIED = 30030;

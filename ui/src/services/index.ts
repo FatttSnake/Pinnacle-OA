@@ -3,6 +3,7 @@ import { clearLocalStorage, getToken } from '@/utils/common'
 import router from '@/router'
 import {
     ACCESS_DENIED,
+    DATABASE_DATA_TO_LONG,
     TOKEN_HAS_EXPIRED,
     TOKEN_IS_ILLEGAL,
     UNAUTHORIZED
@@ -47,6 +48,12 @@ service.interceptors.response.use(
                 ElMessage.error({
                     dangerouslyUseHTMLString: true,
                     message: '<strong>暂无权限操作</strong>'
+                })
+                return await Promise.reject(response?.data)
+            case DATABASE_DATA_TO_LONG:
+                ElMessage.error({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>数据过长</strong>'
                 })
                 return await Promise.reject(response?.data)
         }

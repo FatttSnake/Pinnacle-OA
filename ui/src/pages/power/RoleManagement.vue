@@ -38,7 +38,12 @@
                     :model="roleForm"
                 >
                     <el-form-item label="角色名称" prop="inputRoleName">
-                        <el-input autocomplete="off" v-model="roleForm.inputRoleName" />
+                        <el-input
+                            autocomplete="off"
+                            v-model="roleForm.inputRoleName"
+                            maxlength="20"
+                            placeholder="请输入名称"
+                        />
                     </el-form-item>
                     <el-form-item label="角色权限">
                         <el-tree
