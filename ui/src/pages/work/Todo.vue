@@ -42,7 +42,7 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import request from '@/services'
 export default {
     name: 'TodoPage',
@@ -116,7 +116,7 @@ export default {
             userWork.completeTime = new Date()
             console.log(userWork)
             request
-                .put('/work/setStatus', userWork)
+                .put('/work/set_status', userWork)
                 .then((response) => {
                     console.log(response.data.data)
                     this.getTableData()

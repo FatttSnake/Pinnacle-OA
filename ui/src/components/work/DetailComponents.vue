@@ -7,6 +7,9 @@
         :data="taskData"
         border
     >
+        <el-descriptions-item span="3" label="工作信息">{{
+            taskData.content
+        }}</el-descriptions-item>
         <el-descriptions-item label="创建者">{{ taskData.publisherName }}</el-descriptions-item>
         <el-descriptions-item label="创建时间">{{
             formatDate(taskData.createTime)
@@ -14,7 +17,7 @@
         <el-descriptions-item label="结束时间">{{
             formatDate(taskData.deadline)
         }}</el-descriptions-item>
-        <el-descriptions-item label="状态">
+        <el-descriptions-item span="2" label="状态">
             <el-progress :text-inside="true" :stroke-width="16" :percentage="taskData.progress" />
         </el-descriptions-item>
         <el-descriptions-item label="负责员工">
@@ -22,11 +25,10 @@
                 item.username
             }}</el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="工作信息">{{ taskData.content }}</el-descriptions-item>
     </el-descriptions>
 </template>
 
-<script>
+<script lang='ts'>
 export default {
     props: {
         taskData: {

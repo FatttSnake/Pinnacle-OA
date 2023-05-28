@@ -33,6 +33,11 @@ const router = createRouter({
                         requiresAuth: false
                     }
                 },
+                {
+                    path: '/profile',
+                    component: async () => await import('@/pages/profile/PersonalProfile.vue'),
+                    name: 'profile'
+                },
                 workRouter,
                 noticeRouter,
                 attendanceRouter,

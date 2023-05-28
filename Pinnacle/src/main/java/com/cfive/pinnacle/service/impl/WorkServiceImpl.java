@@ -36,42 +36,21 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     private UserMapper userMapper;
     @Override
     public List<Work> getAll() {
-//        List<Work> workList = workMapper.getAll();
-//        for (Work work:
-//             workList) {
-//            work.setProgress(getProgress(work.getId()));
-//            work.setPublisherName(getUserName(work.getPublisherId()));
-//        }
         return workMapper.getAll();
     }
 
     @Override
     public List<Work> getTodo(Long userId) {
-//        List<Work> workList = workMapper.getTodo(userId);
-//        for (Work work:
-//                workList) {
-//            work.setPublisherName(getUserName(work.getPublisherId()));
-//        }
         return workMapper.getTodo(userId);
     }
 
     @Override
     public List<Work> getCard(Long userId) {
-//        List<Work> workList = workMapper.getCard(userId);
-//        for (Work work:
-//                workList) {
-//            work.setPublisherName(getUserName(work.getPublisherId()));
-//        }
         return workMapper.getCard(userId);
     }
 
     @Override
     public List<Work> getComplete(Long userId) {
-//        List<Work> workList = workMapper.getComplete(userId);
-//        for (Work work:
-//                workList) {
-//            work.setPublisherName(getUserName(work.getPublisherId()));
-//        }
         return workMapper.getComplete(userId);
     }
 
@@ -85,12 +64,6 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
 
     @Override
     public List<Work> getWorkByContent(String content) {
-//        List<Work> workList = workMapper.getWorkByContent(content);
-//        for (Work work:
-//                workList) {
-//            work.setProgress(getProgress(work.getId()));
-//            work.setPublisherName(getUserName(work.getPublisherId()));
-//        }
         return workMapper.getWorkByContent(content);
     }
 
