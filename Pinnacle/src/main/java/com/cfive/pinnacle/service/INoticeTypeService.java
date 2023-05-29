@@ -28,5 +28,7 @@ public interface INoticeTypeService extends IService<NoticeType> {
 
     Boolean deleteNoticeTypeById(Long typeId);
 
+    Boolean deleteBatchByTypeIds(List<Long> typeIds);
+
 
 }

@@ -236,6 +236,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
             hackReset: true,
             editFlag: false,
             enableNoticeTypeList: [],
+            multiDeleteSelection: [],
             noticeTypeList: [
                 {
                     id: '',

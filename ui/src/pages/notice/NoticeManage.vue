@@ -160,6 +160,11 @@ export default {
                         })
                     })
                     .catch(() => {})
+            } else {
+                ElMessage({
+                    message: '请至少选择一项进行删除',
+                    type: 'warning'
+                })
             }
         }
     },

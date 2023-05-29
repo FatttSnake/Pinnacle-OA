@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -53,6 +54,7 @@ public class NoticeTypeController {
 
     //分页查询所有公告类型
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('notice:type:get')")
     public ResponseResult<List<NoticeType>> selectPageTypeList(Integer currentPage, Integer pageSize){
         Page<NoticeType> noticeTypePage=new Page<>();
         if (null != currentPage && null != pageSize) {
@@ -107,5 +109,16 @@ public class NoticeTypeController {
         boolean removeById = noticeTypeService.deleteNoticeTypeById(typeId);
         String msg = removeById ? "" : "数据删除失败，请重试！";
         return ResponseResult.build(removeById ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, null);
+    }
+
+    //批量删除公告
+    @PostMapping("/batch")
+    @PreAuthorize("hasAuthority('notice:manage:delete')")
+    public ResponseResult<?> deleteBatchByTypeIds(@RequestBody List<String> noticeTypeIds){
+        //	List<String>转List<Long>
+        List<Long> nTypeIds = noticeTypeIds.stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
+        Boolean deleteBatchByIds = noticeTypeService.deleteBatchByTypeIds(nTypeIds);
+        String msg = deleteBatchByIds ? "" : "数据删除失败，请重试！";
+        return ResponseResult.build(deleteBatchByIds ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, null);
     }
 }
