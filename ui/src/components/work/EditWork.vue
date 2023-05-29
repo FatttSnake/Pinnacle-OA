@@ -43,6 +43,7 @@
 
 <script lang="ts">
 import request from '@/services'
+import _ from 'lodash'
 export default {
     props: {
         editForm: {
@@ -94,7 +95,7 @@ export default {
     methods: {
         getFormData() {
             request
-                .get('/user')
+                .get('/user/department')
                 .then((response) => {
                     console.log(response.data.data)
                     this.workers = response.data.data
@@ -110,7 +111,7 @@ export default {
                 if (value) {
                     console.log(form.deadline)
                     console.log(typeof form.deadline)
-                    form.publisherId = String(1)
+                    form.publisherId = _.toString(1)
                     if (this.editForm) {
                         this.$emit('updateWork', form)
                         this.reset()

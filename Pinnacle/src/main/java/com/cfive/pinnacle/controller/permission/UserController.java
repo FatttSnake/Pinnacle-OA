@@ -46,6 +46,13 @@ public class UserController {
         return ResponseResult.databaseSelectSuccess(userService.getAffairUser());
     }
 
+    @GetMapping("/department")
+    @PreAuthorize("hasAuthority('attendance:manage:modify')")
+    @Operation(summary = "获取同部门下所有用户")
+    public ResponseResult<List<User>> getDepartmentUser() {
+        return ResponseResult.databaseSaveSuccess(userService.getDepartmentUser());
+    }
+
     @GetMapping
     @PreAuthorize("hasAnyAuthority('system:user:all', 'system:user:add', 'system:user:modify')")
     @Operation(summary = "获取所有用户（权限管理相关）")

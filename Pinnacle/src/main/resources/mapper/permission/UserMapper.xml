@@ -32,6 +32,7 @@
                  left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
         where t_user.deleted = 0;
     </select>
+
     <select id="getOneById" resultMap="userMap">
         select t_user.id            as user_id,
                t_user.username      as user_username,
@@ -63,6 +64,7 @@
         where t_user.deleted = 0
           and t_user.id = #{id};
     </select>
+
     <select id="getOneWithPowerByUsername" resultMap="userWithPowerMap">
         select distinct t_user.id            as user_id,
                         t_user.username      as user_username,
@@ -106,6 +108,7 @@
         where t_user.deleted = 0
           and t_user.username = #{username};
     </select>
+
     <select id="getAllAffairUser" resultMap="userMap">
         select t_user.id            as user_id,
                t_user.username      as user_username,
@@ -140,6 +143,42 @@
         where t_user.deleted = 0
           and t_user.id != 1
           and t.code = 'affair:manage:modify';
+    </select>
+
+    <select id="getAllDepartmentUser" resultMap="userMap">
+        select t_user.id            as user_id,
+               t_user.username      as user_username,
+               t_user.department_id as user_department_id,
+               t_user.enable        as user_enable,
+               t_user.deleted       as user_deleted,
+               t_user.version       as user_version,
+               ts.id                as staff_id,
+               ts.first_name        as staff_first_name,
+               ts.last_name         as staff_last_name,
+               ts.deleted           as staff_deleted,
+               ts.version           as staff_version,
+               tr.id                as role_id,
+               tr.enable            as role_enable,
+               tr.name              as role_name,
+               tr.deleted           as role_deleted,
+               tr.version           as role_version,
+               tg.id                as group_id,
+               tg.name              as group_name,
+               tg.enable            as group_enable,
+               tg.deleted           as group_deleted,
+               tg.version           as group_version
+        from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+                 left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
+                 left join t_power as tp on tp.id = tpr.power_id
+                 left join (select * from t_operation) as t on t.power_id = tp.id
+        where t_user.deleted = 0
+          and t_user.id != 1
+          and t_user.department_id = #{departmentId};
     </select>
 
     <resultMap id="userMap" type="user">

@@ -79,6 +79,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public List<User> getDepartmentUser() {
+        Long departmentId = WebUtil.getLoginUser().getUser().getDepartmentId();
+        if (departmentId == null) {
+            return List.of();
+        }
+        return userMapper.getAllDepartmentUser(departmentId);
+    }
+
+    @Override
     public List<User> getAllUser() {
         List<User> users = userMapper.getAll();
         users.forEach(user -> {

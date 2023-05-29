@@ -21,6 +21,8 @@ public interface UserMapper extends BaseMapper<User> {
 
     List<User> getAllAffairUser();
 
+    List<User> getAllDepartmentUser(@Param("departmentId")long departmentId);
+
     User getOneById(@Param("id") long id);
 
     User getOneWithPowerByUsername(@Param("username") String username);
