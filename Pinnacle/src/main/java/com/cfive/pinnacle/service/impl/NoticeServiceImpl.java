@@ -69,13 +69,13 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     public Boolean deleteById(Long nid) {
         LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
         lqw.eq(NoticeReceive::getNoticeId, nid);
-        Boolean flag = noticeReceiveMapper.delete(lqw) > 0;
+        boolean flag = noticeReceiveMapper.delete(lqw) > 0;
         return flag && noticeMapper.deleteById(nid) > 0;
     }
 
     @Override
     public Boolean deleteBatchByIds(List<Long> noticeIds) {
-        Boolean flag = false;
+        boolean flag = false;
         for (Long nid :
                 noticeIds) {
             LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
@@ -109,18 +109,12 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
 
     @Override
     public Boolean addNotice(Notice notice) {
-        Boolean noticeFlag, noticeRecFlag = false;
+        boolean noticeFlag, noticeRecFlag = false;
         notice.setSenderId(WebUtil.getLoginUser().getUser().getId());
 //        notice.setSenderId(1652714496280469506L);
         noticeFlag = noticeMapper.insert(notice) > 0;
         Long noticeId = notice.getId();
-        if (notice.getReceivers().size() == 0) {
-            //该公告仅发布者自己可见
-            NoticeReceive noticeReceive = new NoticeReceive();
-            noticeReceive.setNoticeId(noticeId);
-            noticeReceive.setUserId(WebUtil.getLoginUser().getUser().getId());
-            noticeRecFlag = noticeReceiveMapper.insert(noticeReceive) > 0;
-        } else {
+        if (notice.getReceivers().size() != 0) {
             for (Long receiveId :
                     notice.getReceivers()) {
                 NoticeReceive noticeReceive = new NoticeReceive();
@@ -131,6 +125,8 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
                     break;
                 }
             }
+        } else {
+            noticeFlag = false;
         }
         return noticeFlag && noticeRecFlag;
     }

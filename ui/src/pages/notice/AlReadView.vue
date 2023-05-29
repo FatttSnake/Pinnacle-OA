@@ -10,10 +10,11 @@ export default {
     },
     methods: {},
     mounted() {
-        noticeStore.selectAllNoticeSelf(1)
         noticeStore.$patch((state) => {
+            state.showLoading = true
             state.currentViewPage = 'AlRead'
         })
+        noticeStore.selectAllNoticeSelf(1)
     }
 }
 </script>

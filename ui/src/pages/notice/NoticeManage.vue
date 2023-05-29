@@ -111,7 +111,7 @@ export default {
                                 message: '删除成功.',
                                 type: 'success'
                             })
-                            noticeStore.selectAllNotice(1, 5)
+                            noticeStore.selectAllNotice(this.currentPage, this.pageSize)
                         } else if (response.data.code === 20034) {
                             ElMessage({
                                 message: response.data.msg,
