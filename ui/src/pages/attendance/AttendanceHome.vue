@@ -230,7 +230,7 @@ export default {
         // 获取所有user信息
         getFormData() {
             request
-                .get('/user')
+                .get('/user/department')
                 .then((response) => {
                     this.users = response.data.data
                 })

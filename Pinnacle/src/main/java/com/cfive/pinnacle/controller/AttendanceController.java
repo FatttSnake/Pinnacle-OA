@@ -66,7 +66,6 @@ public class AttendanceController {
         attendance.setModifyId(1652714496280469506L);
         return attendanceService.saveOrUpdate(attendance) ? ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", attendance) :
                 ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "error", null);
-
     }
 
     //个人签到
