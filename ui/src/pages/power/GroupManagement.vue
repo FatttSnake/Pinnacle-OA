@@ -107,6 +107,10 @@ export default {
                     {
                         required: true,
                         message: '用户组名称为必填项'
+                    },
+                    {
+                        max: 30,
+                        message: '用户组不能大于30个字符'
                     }
                 ]
             }
