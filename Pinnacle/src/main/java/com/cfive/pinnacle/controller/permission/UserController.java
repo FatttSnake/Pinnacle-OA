@@ -106,6 +106,9 @@ public class UserController {
     @PreAuthorize("hasAuthority('system:user:modify')")
     @Operation(summary = "修改用户（权限管理相关）")
     public ResponseResult<User> modifyUser(@RequestBody User user) {
+        if (user.getId() == 1L && user.getEnable() == 0) {
+            return ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "Unable to disable super admin", null);
+        }
         if (!StringUtils.hasText(user.getUsername())) {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "Username cannot be empty", null);
         }

@@ -117,6 +117,10 @@ export default {
                     {
                         required: true,
                         message: '角色名称为必填项'
+                    },
+                    {
+                        max: 20,
+                        message: '角色名称不能大于20个字符'
                     }
                 ]
             }

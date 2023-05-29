@@ -42,6 +42,7 @@
                         autocomplete="off"
                         v-model="userForm.inputUsername"
                         placeholder="请输入用户名"
+                        minlength="3"
                         maxlength="20"
                     />
                 </el-form-item>
@@ -51,6 +52,8 @@
                         autocomplete="off"
                         v-model="userForm.inputPassword"
                         :placeholder="isAddNew ? '请输入密码' : '留空则不修改密码'"
+                        minlength="8"
+                        maxlength="64"
                     />
                 </el-form-item>
                 <el-form-item label="角色">
@@ -146,12 +149,28 @@ export default {
                     {
                         required: true,
                         message: '用户名不能为空'
+                    },
+                    {
+                        min: 3,
+                        message: '用户名必须大于3个字符'
+                    },
+                    {
+                        max: 20,
+                        message: '用户名不能大于20个字符'
                     }
                 ],
                 inputPassword: [
                     {
                         validator: checkPassword,
                         message: '密码不能为空'
+                    },
+                    {
+                        min: 8,
+                        message: '密码必须大于8个字符'
+                    },
+                    {
+                        max: 64,
+                        message: '密码不能大于64个字符'
                     }
                 ]
             },
