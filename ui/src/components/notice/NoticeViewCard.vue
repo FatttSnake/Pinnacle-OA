@@ -1,5 +1,5 @@
 <template>
-    <div class="myTimeline">
+    <div class="myTimeline" v-loading="showLoading" element-loading-text="加载中...">
         <el-timeline>
             <el-timeline-item
                 v-for="notice in selectData"
@@ -219,7 +219,8 @@ export default {
             'loading',
             'dialogShowVisible',
             'noticeShowData',
-            'currentViewPage'
+            'currentViewPage',
+            'showLoading'
         ])
     },
     watch: {

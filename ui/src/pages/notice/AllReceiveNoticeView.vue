@@ -3,6 +3,7 @@
 </template>
 <script lang="ts">
 import { useNoticeStore } from '@/store/notice'
+import { mapState } from 'pinia'
 const noticeStore = useNoticeStore()
 export default {
     data() {
@@ -10,10 +11,14 @@ export default {
     },
     methods: {},
     mounted() {
-        noticeStore.selectAllNoticeSelf(-1)
         noticeStore.$patch((state) => {
+            state.showLoading = true
             state.currentViewPage = 'All'
         })
+        noticeStore.selectAllNoticeSelf(-1)
+    },
+    computed: {
+        ...mapState(useNoticeStore, ['showLoading'])
     }
 }
 </script>

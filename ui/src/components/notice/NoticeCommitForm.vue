@@ -63,10 +63,7 @@
                     size="large"
                 />
             </el-form-item>
-            <el-form-item label="是否仅自己可见：">
-                <el-switch v-model="visible" inline-prompt active-text="是" inactive-text="否" />
-            </el-form-item>
-            <el-form-item label="发送至：" prop="receivers" v-show="!visible">
+            <el-form-item label="发送至：" prop="receivers">
                 <el-cascader
                     v-model="addData.receivers"
                     collapse-tags
@@ -155,7 +152,7 @@ export default {
     methods: {
         submitForm() {
             const receiveId = []
-            if (this.addData.receivers.length != null) {
+            if (this.addData.receivers.length > 0) {
                 for (let i = 0; i < this.addData.receivers.length; i++) {
                     receiveId.push(this.addData.receivers[i][1])
                 }

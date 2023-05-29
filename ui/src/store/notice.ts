@@ -76,6 +76,7 @@ export const useNoticeStore = defineStore('notice', {
                 }
             ],
             loading: true,
+            showLoading: true,
             dialogShowVisible: false,
             dialogAddVisible: false,
             dialogEditVisible: false,
@@ -143,11 +144,9 @@ export const useNoticeStore = defineStore('notice', {
                 .then((response) => {
                     if (response.data.code === 20021) {
                         this.selectData = response.data.data
-                        if (this.selectData.length !== 0) {
-                            this.loading = false
-                        }
+                        this.showLoading = false
                     } else {
-                        this.loading = false
+                        this.showLoading = false
                         ElMessage({
                             message: response.data.msg,
                             type: 'error'
