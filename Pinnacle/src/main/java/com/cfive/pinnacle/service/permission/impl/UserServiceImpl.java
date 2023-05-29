@@ -112,6 +112,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public User getUserWithPower(String username) {
         User user = userMapper.getOneWithPowerByUsername(username);
+        if (user == null) {
+            return null;
+        }
         if (user.getId() == 1L) {
             List<Menu> menus = menuMapper.selectList(Wrappers.emptyWrapper());
             List<Element> elements = elementMapper.selectList(Wrappers.emptyWrapper());

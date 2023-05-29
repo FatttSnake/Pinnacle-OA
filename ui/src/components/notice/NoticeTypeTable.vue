@@ -99,13 +99,13 @@ export default {
             'dataLoading',
             'hackReset',
             'showTypeData',
-            'addTypeData'
+            'addTypeData',
+            'multiDeleteSelection'
         ])
     },
     data() {
         return {
             filterSenderName: [],
-            multipleSelection: [],
             search: ''
         }
     },
@@ -113,7 +113,9 @@ export default {
     methods: {
         handleSelectionChange(val) {
             // val的值为所勾选行的数组对象
-            this.multipleSelection = val
+            noticeTypeStore.$patch((state) => {
+                state.multiDeleteSelection = val
+            })
         },
         indexFormat(index) {
             return (this.currentPage - 1) * this.pageSize + index + 1

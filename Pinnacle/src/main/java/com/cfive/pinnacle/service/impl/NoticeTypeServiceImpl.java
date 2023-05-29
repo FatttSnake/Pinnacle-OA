@@ -70,4 +70,9 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
     public Boolean deleteNoticeTypeById(Long typeId) {
         return noticeTypeMapper.deleteById(typeId)>0;
     }
+
+    @Override
+    public Boolean deleteBatchByTypeIds(List<Long> typeIds) {
+        return noticeTypeMapper.deleteBatchIds(typeIds)>0;
+    }
 }

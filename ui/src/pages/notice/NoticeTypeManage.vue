@@ -6,7 +6,7 @@
                     <icon-pinnacle-add /> </el-icon
                 >添加类型</el-button
             >
-            <el-button type="primary" :size="'large'"
+            <el-button type="primary" :size="'large'" @click="deleteBatchByTypeIds"
                 ><el-icon :size="SIZE_ICON_MD()" style="color: white; margin-right: 3px">
                     <icon-pinnacle-delete /> </el-icon
                 >批量删除</el-button
@@ -63,7 +63,8 @@ export default {
             'hackReset',
             'addTypeData',
             'currentPage',
-            'pageSize'
+            'pageSize',
+            'multiDeleteSelection'
         ])
     },
     data() {
@@ -127,6 +128,41 @@ export default {
                     })
                 })
                 .catch(() => {})
+        },
+        deleteBatchByTypeIds() {
+            const multiDeleteTypeIds = []
+            if (this.multiDeleteSelection.length > 0) {
+                for (let i = 0; i < this.multiDeleteSelection.length; i++) {
+                    multiDeleteTypeIds.push(this.multiDeleteSelection[i].id)
+                }
+                ElMessageBox.confirm('确定是否要批量删除？该操作将无法回退', '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '我再想想',
+                    type: 'warning'
+                })
+                    .then(() => {
+                        request.post('/notice_type/batch', multiDeleteTypeIds).then((response) => {
+                            if (response.data.code === 20024) {
+                                ElMessage({
+                                    message: '删除成功.',
+                                    type: 'success'
+                                })
+                                noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
+                            } else if (response.data.code === 20034) {
+                                ElMessage({
+                                    message: response.data.msg,
+                                    type: 'error'
+                                })
+                            }
+                        })
+                    })
+                    .catch(() => {})
+            } else {
+                ElMessage({
+                    message: '请至少选择一项进行删除',
+                    type: 'warning'
+                })
+            }
         }
     },
     mounted() {}

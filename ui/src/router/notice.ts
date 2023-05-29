@@ -6,7 +6,8 @@ const noticeRouter = {
         icon: shallowRef(IconPinnacleNotice),
         requiresMenu: true,
         requiresScrollbar: false,
-        requiresPadding: true
+        requiresPadding: true,
+        requiresAuth: true
     },
     children: [
         {
