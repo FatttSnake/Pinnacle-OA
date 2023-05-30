@@ -31,6 +31,12 @@ public class NoticeReceiveServiceImpl extends ServiceImpl<NoticeReceiveMapper, N
     }
 
     @Override
+    public List<Notice> selectLimitByUserId() {
+        Long userId = WebUtil.getLoginUser().getUser().getId();
+        return noticeReceiveMapper.selectLimitByUserId(userId);
+    }
+
+    @Override
     public Boolean modifyNoticeIsRead(Notice notice) {
         Integer readStatus = null;
         if (null!=notice.getIsRead()){
