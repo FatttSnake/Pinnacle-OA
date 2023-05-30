@@ -1,10 +1,6 @@
 package com.cfive.pinnacle.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -63,7 +59,7 @@ public class Staff implements Serializable {
     /**
      * 生日
      */
-    @TableField("birth")
+    @TableField(value = "birth",updateStrategy = FieldStrategy.IGNORED)
     private LocalDate birth;
 
     /**
