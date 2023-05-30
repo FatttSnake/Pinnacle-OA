@@ -38,7 +38,7 @@ public class GroupController {
 
     @Operation(summary = "获取所有用户组")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:group:all', 'system:group:add', 'system:group:delete', 'system:group:modify', 'system:user:add', 'system:user:modify')")
+    @PreAuthorize("hasAnyAuthority('system:group:get', 'system:group:add', 'system:group:delete', 'system:group:modify', 'system:user:add', 'system:user:modify')")
     public ResponseResult<List<Group>> getAllGroup() {
         List<Group> groups = groupService.getAllGroup();
         return ResponseResult.databaseSelectSuccess(groups);

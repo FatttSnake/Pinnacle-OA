@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:user:all', 'system:user:add', 'system:user:modify')")
+    @PreAuthorize("hasAnyAuthority('system:user:get', 'system:user:add', 'system:user:modify')")
     @Operation(summary = "获取所有用户（权限管理相关）")
     public ResponseResult<List<User>> getAllUser() {
         List<User> users = userService.getAllUser();
