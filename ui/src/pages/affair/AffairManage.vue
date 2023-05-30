@@ -1,6 +1,6 @@
 <template>
     <el-row :span="24">
-        <el-col :span="16">
+        <el-col :span="18">
             <div class="mt-4">
                 <el-input placeholder="查询事务" class="input-with-select">
                     <template #prepend>
@@ -17,7 +17,7 @@
             </div>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="6">
             <el-menu
                 :default-active="$route.path"
                 class="el-menu-demo"
@@ -25,22 +25,34 @@
                 router
                 background-color="white"
             >
-                <el-menu-item index="/affair/personal/person">
-                    <el-button type="success" round>我的事务</el-button>
+                <el-menu-item index="/affair/manage/toApprove">
+                    <el-button type="warning" round>待审批</el-button>
                 </el-menu-item>
-                <el-menu-item index="/affair/personal/add">
-                    <el-button type="success" round>添加事务</el-button>
+                <el-menu-item index="/affair/manage/Approved">
+                    <el-button type="success" round>已审批</el-button>
                 </el-menu-item>
             </el-menu>
         </el-col>
+        <router-view></router-view>
     </el-row>
-    <router-view></router-view>
 </template>
 
 <script lang="ts">
+import { COLOR_BACKGROUND } from '@/constants/Common.constants'
+
 export default {
-    name: 'personalAffairsView'
+    name: 'AffairManage',
+    methods: {
+        COLOR_BACKGROUND() {
+            return COLOR_BACKGROUND
+        }
+    }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.el-menu--horizontal > .el-menu-item {
+    border-bottom: none;
+    text-decoration: none;
+}
+</style>

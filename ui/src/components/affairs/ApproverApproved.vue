@@ -1,28 +1,4 @@
 <template>
-    <el-row :span="24">
-        <el-col :span="18">
-            <div class="mt-4">
-                <el-input placeholder="查询事务" class="input-with-select">
-                    <template #prepend>
-                        <el-select placeholder="查询方式">
-                            <el-option label="事务编号" value="1" />
-                            <el-option label="事务名称" value="2" />
-                            <el-option label="日期" value="3" />
-                        </el-select>
-                    </template>
-                    <template #append>
-                        <el-button>查询</el-button>
-                    </template>
-                </el-input>
-            </div>
-        </el-col>
-
-        <el-col :span="4">
-            <el-button type="warning" round>待审批</el-button>
-            <el-button type="success" round>已审批</el-button>
-        </el-col>
-    </el-row>
-
     <el-table :data="tableData" style="width: 100%">
         <el-table-column label="事务编号" prop="id" />
 
@@ -43,19 +19,7 @@
         </el-table-column>
 
         <el-table-column label="申请者" prop="applicantId">
-            <template #default="scope">
-                {{
-                    scope.row.applicantId === 1
-                        ? 'ggb'
-                        : scope.row.applicantId === 1652714496280469506
-                        ? 'cyb'
-                        : scope.row.applicantId === 1654151146072145921
-                        ? 'syf'
-                        : scope.row.applicantId === 1654151877520973826
-                        ? 'gzw'
-                        : 'yrm'
-                }}
-            </template>
+            <el-text v-for="(user, index) in users" :key="index" :content="user.username" />
         </el-table-column>
         <el-table-column label="提交日期" prop="createTime">
             <template #default="scope">
@@ -111,7 +75,7 @@
         </el-row>
     </el-dialog>
 
-    <el-divider :data="labelData">
+    <el-divider>
         <div class="block">
             <el-pagination
                 style="color: #888888"
@@ -126,86 +90,90 @@
     </el-divider>
 </template>
 
-<script>
-import request from '@/services'
+<script lang="ts">
+import request from '@/services/index.js'
 import 'element-plus/theme-chalk/index.css'
 export default {
     data() {
         return {
-            tableData: [
-                {
-                    id: '',
-                    title: '',
-                    content: '',
-                    typeId: '',
-                    status: '',
-                    applicantId: '',
-                    inspectorId: '',
-                    createTime: new Date(),
-                    inspectTime: new Date(),
-                    priority: '',
-                    modifyTime: '',
-                    originId: '',
-                    old: '',
-                    deleted: '',
-                    version: ''
-                }
-            ],
-            //     }],
-
-            labelData: [
-                {
-                    currentPage1: 5,
-                    currentPage2: 5,
-                    currentPage3: 5,
-                    currentPage4: 4
-                }
-            ],
+            tableData: [],
             dialogVisible: false,
-            dialogData: [
-                {
-                    id: '',
-                    title: '',
-                    content: '',
-                    typeId: '',
-                    status: '',
-                    applicantId: '',
-                    inspectorId: '',
-                    createTime: new Date(),
-                    inspectTime: new Date(),
-                    priority: '',
-                    modifyTime: '',
-                    originId: '',
-                    old: '',
-                    deleted: '',
-                    version: ''
-                }
-            ]
+            dialogData: {
+                id: '',
+                title: '',
+                content: '',
+                typeId: '',
+                status: '',
+                applicantId: '',
+                inspectorId: '',
+                createTime: new Date(),
+                inspectTime: new Date(),
+                priority: '',
+                modifyTime: '',
+                originId: '',
+                old: '',
+                deleted: '',
+                version: ''
+            },
+            users: []
         }
     },
     methods: {
+        handleYes(row) {
+            console.log(row)
+            request
+                .put('/affair/yes', row)
+                .then((response) => {
+                    console.log(response.data)
+                    this.getApproved()
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
+        },
+        handleNo(row) {
+            console.log(row)
+            request
+                .put('/affair/no', row)
+                .then((response) => {
+                    console.log(response.data)
+                    this.getApproved()
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
+        },
         handleDelete(row) {
             console.log(row.id)
             request
                 .delete('/affair/' + row.id)
                 .then((response) => {
                     console.log(response.data)
-                    this.getApproed()
+                    this.getApproved()
                 })
                 .catch((reportError) => {
                     console.log(reportError)
                 })
         },
-
+        getUser() {
+            request
+                .get('/user/affair')
+                .then((response) => {
+                    this.users = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                }) // 数据库中获取用户
+        },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`)
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`)
         },
-        getApproed() {
+        getApproved() {
             request
-                .get('/affair/personal_affairs')
+                .get('/affair/approved')
                 .then((response) => {
                     this.tableData = response.data.data
                     console.log(this.tableData)
@@ -226,9 +194,10 @@ export default {
         }
     },
     created() {
-        this.getApproed()
+        console.log('approved created')
+        this.getApproved()
         this.dialogFalse()
-        console.log(this.tableData)
+        this.getUser()
     }
 }
 </script>

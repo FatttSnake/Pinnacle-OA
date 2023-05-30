@@ -1,7 +1,6 @@
 package com.cfive.pinnacle.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.cfive.pinnacle.controller.permission.UserController;
 import com.cfive.pinnacle.entity.Affair;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
@@ -27,17 +26,13 @@ import java.util.List;
 public class AffairController {
     @Autowired
     IAffairService affairService;
-    //    IUserService userService;
-    //    不用userService的方法了，userController中已经写好了直接拿来用
-    @Autowired
-    UserController userController;
-
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('affair:self:add')")
     public ResponseResult<Boolean> addAffair(@RequestBody Affair affair) {
         return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", affairService.save(affair));
     }
+
 
     @GetMapping("/personal_affairs")
     @PreAuthorize("hasAuthority('affair:self:get')")
@@ -47,7 +42,6 @@ public class AffairController {
         wrapper.orderByDesc(Affair::getCreateTime);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
     }
-
 
     @GetMapping("/not_approved")
     @PreAuthorize("hasAuthority('affair:manage:get')")
@@ -70,7 +64,7 @@ public class AffairController {
 
     @PutMapping("/yes")
     @PreAuthorize("hasAuthority('affair:manage:modify')")
-    public ResponseResult updateAffairYes(@RequestBody Affair affair) {
+    public ResponseResult<Integer> updateAffairYes(@RequestBody Affair affair) {
         System.out.println(affair);
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", affairService.updateAffairYes(affair));
         //审批同意
@@ -78,7 +72,7 @@ public class AffairController {
 
     @PutMapping("/no")
     @PreAuthorize("hasAuthority('affair:manage:modify')")
-    public ResponseResult updateAffairNo(@RequestBody Affair affair) {
+    public ResponseResult<Integer> updateAffairNo(@RequestBody Affair affair) {
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", affairService.updateAffairNo(affair));
         //审批驳回
     }
@@ -86,12 +80,10 @@ public class AffairController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('affair:manage:delete')")
-    public ResponseResult deleteAffairApproved(@PathVariable Long id) {
+    public ResponseResult<Boolean> deleteAffairApproved(@PathVariable Long id) {
         System.out.println("affair");
         return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", affairService.removeById(id));
         //删除已审批事务
 
     }
-
-
 }

@@ -1,12 +1,12 @@
 <template>
     <el-form :model="form" label-width="120px">
-        <el-form-item label="事务名称:">
+        <el-form-item label="事务标题:">
             <el-col :span="4">
-                <el-input v-model="form.title" placeholder="请输入事务名称" class="longInput" />
+                <el-input v-model="form.title" placeholder="请输入事务标题" class="longInput" />
             </el-col>
         </el-form-item>
 
-        <el-form-item label="申请者:">
+        <el-form-item label="申请者:" v-if="grant">
             <el-col :span="4">
                 <el-input
                     v-model="form.applicantId"
@@ -14,6 +14,25 @@
                     disabled
                     :placeholder="currentUser.username"
                 />
+            </el-col>
+        </el-form-item>
+
+        <el-form-item label="申请者:" v-if="!grant">
+            <el-col :span="4">
+                <el-select
+                    v-model="form.applicantId"
+                    :placeholder="currentUser.username"
+                    filterable
+                    ref="fieldSelect"
+                    popper-class="roleSelect"
+                >
+                    <el-option
+                        v-for="sameDepartmentUser in sameDepartmentUsers"
+                        :label="sameDepartmentUser.username"
+                        :value="sameDepartmentUser.id"
+                        :key="sameDepartmentUser.id"
+                    />
+                </el-select>
             </el-col>
         </el-form-item>
 
@@ -27,7 +46,7 @@
                     popper-class="roleSelect"
                 >
                     <el-option
-                        v-for="user in users"
+                        v-for="user in grantUsers"
                         :label="user.username"
                         :value="user.id"
                         :key="user.id"
@@ -70,11 +89,12 @@
     </el-form>
 </template>
 
-<script>
+<script lang="ts">
 import 'element-plus/theme-chalk/index.css'
-import request from '@/services'
+import request from '@/services/index.js'
 import _ from 'lodash'
 import { ElMessage } from 'element-plus'
+
 export default {
     data() {
         return {
@@ -95,18 +115,14 @@ export default {
                 deleted: '',
                 version: ''
             },
-            users: [
-                {
-                    id: '',
-                    username: ''
-                }
-            ],
-            currentUser: [
-                {
-                    id: '',
-                    username: ''
-                }
-            ]
+            grantUsers: [],
+            currentUser: {
+                id: '',
+                username: '',
+                department_id: ''
+            },
+            sameDepartmentUsers: [],
+            grant: true
         }
     },
     methods: {
@@ -124,14 +140,15 @@ export default {
                     .post('/affair/add', form)
                     .then((response) => {
                         console.log(response.data)
+                        this.getPersonalAffair()
                         this.resetForm()
                     })
                     .catch((reportError) => {
                         this.resetForm()
                         console.log(reportError)
                     })
-                this.resetForm()
-                // this.$router.go()
+                this.getPersonalAffair()
+                this.$router.go()
             } else {
                 if (_.isEmpty(form.title)) {
                     ElMessage({
@@ -163,12 +180,6 @@ export default {
                         type: 'error'
                     })
                 }
-                // if (_.isEmpty(form.createTime)) {
-                //     ElMessage({
-                //         message: '错误！发送时间不能为空！',
-                //         type: 'error'
-                //     })
-                // }
             }
         }, // 表单提交及验证
         resetForm() {
@@ -181,31 +192,60 @@ export default {
                 this.form.createTime = new Date()
             }, 500)
         }, // 动态时钟
-        getUser() {
+        getGrantUser() {
             request
-                .get('/affair/add/get_user')
+                .get('/user/affair')
                 .then((response) => {
-                    this.users = response.data.data
+                    this.grantUsers = response.data.data
                 })
                 .catch((reportError) => {
                     console.log(reportError)
-                }) // 数据库中获取用户
+                }) // 获取有权限用户
         },
         getCurrentUser() {
             request
-                .get('/affair/add/get_current_user')
+                .get('/user/info')
                 .then((response) => {
                     this.currentUser = response.data.data
                 })
                 .catch((reportError) => {
                     console.log(reportError)
                 }) // 获取当前用户
+        },
+        selectGrant() {
+            for (let i = 0; i < this.grantUsers.length; i++) {
+                if (this.currentUser.id === this.grantUsers[i].id) {
+                    this.grant = false
+                }
+            }
+        },
+        getSameDepartmentUser() {
+            request
+                .get('/user/department')
+                .then((response) => {
+                    this.sameDepartmentUsers = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
+        },
+        getPersonalAffair() {
+            request
+                .get('/affair/personal_affairs')
+                .then((response) => {
+                    this.grantUsers = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
         }
     },
     created() {
         this.alarm()
-        this.getUser()
+        this.getGrantUser()
         this.getCurrentUser()
+        this.selectGrant()
+        this.getSameDepartmentUser()
     },
     mounted() {
         this.$nextTick(function () {
@@ -219,10 +259,6 @@ export default {
 .longInput {
     width: 99%;
 }
-
-/*.shortInput {*/
-/*    width: 200px;*/
-/*}*/
 
 .textarea {
     height: 70%;

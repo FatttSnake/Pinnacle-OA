@@ -1,8 +1,8 @@
 <template><approver-not-approved></approver-not-approved></template>
 
-<script>
+<script lang="ts">
 export default {
-    name: 'AffairPage'
+    name: 'AffairNotApproved'
 }
 </script>
 
