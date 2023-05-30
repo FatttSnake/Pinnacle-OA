@@ -93,6 +93,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public IPage<User> getAllUser(Long currentPage, Long pageSize) {
         IPage<User> userPage = PageDTO.of(currentPage, pageSize);
         userPage = userMapper.getAll(userPage);
+        userPage.setRecords(userMapper.getAllWithRoleAndGroup(userPage.getRecords()));
         userPage.getRecords().forEach(user -> {
             if (user.getId() == 1L) {
                 user.setRoles(List.of(new Role(0L, "超级管理员")));
