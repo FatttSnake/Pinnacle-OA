@@ -1,0 +1,222 @@
+<template>
+    <el-button bg style="background-color: white" :loading="tableLoading" @click="loadStaffTable">
+        <template #icon>
+            <el-icon>
+                <icon-pinnacle-refresh />
+            </el-icon>
+        </template>
+    </el-button>
+
+    <el-table
+        :data="staffTable"
+        v-loading="tableLoading"
+        element-loading-text="Loading..."
+        style="margin-top: 10px"
+    >
+        <el-table-column prop="username" label="用户名" width="120" align="center" />
+        <el-table-column label="姓名" align="center" width="120">
+            <template #default="scope">
+                {{
+                    scope.row.staff !== null
+                        ? scope.row.staff.lastName + scope.row.staff.firstName
+                        : ''
+                }}
+            </template>
+        </el-table-column>
+        <el-table-column label="性别" align="center" :formatter="genderFormatter" width="60" />
+        <el-table-column prop="staff.birth" label="生日" align="center" width="110" />
+        <el-table-column prop="staff.email" label="邮箱" align="center" width="140" />
+        <el-table-column prop="staff.tel" label="手机" align="center" width="140" />
+        <el-table-column prop="staff.address" label="地址" />
+        <el-table-column label="操作" width="80" align="center">
+            <template #default="scope">
+                <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <el-dialog title="编辑员工信息" :close-on-click-modal="false" draggable v-model="dialogVisible">
+        <template #default>
+            <el-form
+                label-width="100px"
+                :rules="rules"
+                ref="formRef"
+                :model="userForm"
+                v-loading="dialogLoading"
+            >
+                <el-form-item label="用户名" prop="inputUsername">
+                    <el-input v-model="userForm.inputUsername" disabled />
+                </el-form-item>
+                <el-form-item label="姓氏" prop="inputLastName">
+                    <el-input v-model="userForm.inputLastName" maxlength="20" show-word-limit />
+                </el-form-item>
+                <el-form-item label="名字" prop="inputFirstName">
+                    <el-input v-model="userForm.inputFirstName" maxlength="20" show-word-limit />
+                </el-form-item>
+                <el-form-item label="性别" prop="selectedGender">
+                    <el-select v-model="userForm.selectedGender">
+                        <el-option label="未知" :value="0" />
+                        <el-option label="男" :value="1" />
+                        <el-option label="女" :value="2" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="生日" prop="inputBirth">
+                    <el-date-picker v-model="userForm.inputBirth" value-format="YYYY-MM-DD" />
+                </el-form-item>
+                <el-form-item label="邮箱" prop="inputEmail">
+                    <el-input v-model="userForm.inputEmail" maxlength="50" show-word-limit />
+                </el-form-item>
+                <el-form-item label="手机" prop="inputTel">
+                    <el-input v-model="userForm.inputTel" maxlength="20" show-word-limit />
+                </el-form-item>
+                <el-form-item label="地址" prop="inputAddress">
+                    <el-input
+                        v-model="userForm.inputAddress"
+                        type="textarea"
+                        resize="none"
+                        maxlength="100"
+                        show-word-limit
+                    />
+                </el-form-item>
+            </el-form>
+        </template>
+        <template #footer>
+            <el-button type="primary" @click="handleSubmit" :disabled="dialogLoading"
+                >提交
+            </el-button>
+            <el-button @click="handleCancel" :disabled="dialogLoading">取消</el-button>
+        </template>
+    </el-dialog>
+</template>
+
+<script lang="ts">
+import request from '@/services'
+import { DATABASE_SELECT_OK, DATABASE_UPDATE_OK } from '@/constants/Common.constants'
+import { ElMessage } from 'element-plus'
+
+export default {
+    name: 'StaffManagement',
+    data() {
+        return {
+            dialogVisible: false,
+            tableLoading: true,
+            dialogLoading: true,
+            staffTable: [],
+            editUserId: '',
+            rules: {
+                inputFirstName: [
+                    {
+                        required: true,
+                        message: '名称为必填项'
+                    }
+                ],
+                inputLastName: [
+                    {
+                        required: true,
+                        message: '姓氏为必填项'
+                    }
+                ]
+            },
+            userForm: {
+                inputUsername: '',
+                inputFirstName: '',
+                inputLastName: '',
+                selectedGender: 0,
+                inputBirth: '',
+                inputEmail: '',
+                inputTel: '',
+                inputAddress: ''
+            }
+        }
+    },
+    methods: {
+        loadStaffTable() {
+            this.tableLoading = true
+            request.get('/staff').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.staffTable = response.data
+                    this.tableLoading = false
+                } else {
+                    ElMessage.error({
+                        dangerouslyUseHTMLString: true,
+                        message: '<strong>查询出错</strong>: ' + response.msg
+                    })
+                }
+            })
+        },
+        genderFormatter(row) {
+            if (row.staff === null) {
+                return ''
+            }
+            switch (row.staff.gender) {
+                case 0:
+                    return '未知'
+                case 1:
+                    return '男'
+                case 2:
+                    return '女'
+                default:
+                    return ''
+            }
+        },
+        handleEdit(row) {
+            this.editUserId = row.id
+            this.userForm.inputUsername = row.username
+            this.userForm.inputFirstName = row.staff?.firstName
+            this.userForm.inputLastName = row.staff?.lastName
+            this.userForm.selectedGender = row.staff?.gender || 0
+            this.userForm.inputBirth = row.staff?.birth
+            this.userForm.inputEmail = row.staff?.email
+            this.userForm.inputTel = row.staff?.tel
+            this.userForm.inputAddress = row.staff?.address
+            this.dialogLoading = false
+            this.dialogVisible = true
+        },
+        async handleSubmit() {
+            await this.$refs.formRef.validate((valid) => {
+                if (valid) {
+                    this.dialogLoading = true
+                    const userObject = {
+                        id: this.editUserId,
+                        staff: {
+                            firstName: this.userForm.inputFirstName,
+                            lastName: this.userForm.inputLastName,
+                            gender: this.userForm.selectedGender,
+                            birth: this.userForm.inputBirth,
+                            email: this.userForm.inputEmail,
+                            tel: this.userForm.inputTel,
+                            address: this.userForm.inputAddress
+                        }
+                    }
+                    request.put('/staff', userObject).then((res) => {
+                        const response = res.data
+                        if (response.code === DATABASE_UPDATE_OK) {
+                            ElMessage.success({
+                                dangerouslyUseHTMLString: true,
+                                message: '<strong>修改成功</strong>'
+                            })
+                            this.dialogVisible = false
+                            this.loadStaffTable()
+                        } else {
+                            ElMessage.error({
+                                dangerouslyUseHTMLString: true,
+                                message: '<strong>修改失败</strong>: ' + response.msg
+                            })
+                            this.dialogLoading = false
+                        }
+                    })
+                }
+            })
+        },
+        handleCancel() {
+            this.dialogVisible = false
+        }
+    },
+    mounted() {
+        this.loadStaffTable()
+    }
+}
+</script>
+
+<style scoped></style>

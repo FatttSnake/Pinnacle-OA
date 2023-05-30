@@ -4,6 +4,7 @@ import router from '@/router'
 import {
     ACCESS_DENIED,
     DATABASE_DATA_TO_LONG,
+    DATABASE_DATA_VALIDATION_FAILED,
     TOKEN_HAS_EXPIRED,
     TOKEN_IS_ILLEGAL,
     UNAUTHORIZED
@@ -54,6 +55,12 @@ service.interceptors.response.use(
                 ElMessage.error({
                     dangerouslyUseHTMLString: true,
                     message: '<strong>数据过长</strong>'
+                })
+                return await Promise.reject(response?.data)
+            case DATABASE_DATA_VALIDATION_FAILED:
+                ElMessage.error({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>数据验证失败</strong>'
                 })
                 return await Promise.reject(response?.data)
         }

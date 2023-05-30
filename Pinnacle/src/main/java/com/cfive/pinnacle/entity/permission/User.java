@@ -9,6 +9,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+import com.cfive.pinnacle.entity.Department;
 import com.cfive.pinnacle.entity.Staff;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -53,6 +54,9 @@ public class User implements Serializable {
     @TableField("department_id")
     @JsonSerialize(using = ToStringSerializer.class)
     private Long departmentId;
+
+    @TableField(exist = false)
+    private Department department;
 
     /**
      * 启用

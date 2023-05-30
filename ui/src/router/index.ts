@@ -7,6 +7,7 @@ import affairRouter from '@/router/affair'
 import noticeRouter from '@/router/notice'
 import powerRouter from '@/router/power'
 import _ from 'lodash'
+import infoRouter from '@/router/info'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +37,7 @@ const router = createRouter({
                 noticeRouter,
                 attendanceRouter,
                 affairRouter,
+                infoRouter,
                 powerRouter
             ]
         },

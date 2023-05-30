@@ -188,7 +188,7 @@ create table `t_staff`
     `birth`      date        null comment '生日',
     `email`      varchar(50) null comment '邮箱',
     `tel`        varchar(20) null comment '电话',
-    `address`    varchar(50) null comment '地址',
+    `address`    varchar(100) null comment '地址',
     `deleted`    bigint      not null default 0,
     `version`    int         not null default 0,
     constraint t_staff_user_id_fk foreign key (user_id) references t_user (id)

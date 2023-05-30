@@ -2,4 +2,61 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.StaffMapper">
 
+    <select id="getAllStaff" resultMap="staffMap">
+        select t_user.id as user_id,
+               t_user.username as user_username,
+               t_user.department_id as user_department_id,
+               t_user.deleted as user_deleted,
+               t_user.version as user_version,
+               ts.id as staff_id,
+               ts.user_id as staff_user_id,
+               ts.first_name as staff_first_name,
+               ts.last_name as staff_last_name,
+               ts.gender as staff_gender,
+               ts.birth as staff_birth,
+               ts.email as staff_email,
+               ts.tel as staff_tel,
+               ts.address as staff_address,
+               ts.deleted as staff_deleted,
+               ts.version as staff_version,
+               td.id as department_id,
+               td.name as department_name,
+               td.deleted as department_deleted,
+               td.version as department_version
+        from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on t_user.id = ts.user_id
+                 left join (select * from t_department where deleted = 0) as td on td.id = t_user.department_id
+        where t_user.deleted = 0
+        <if test="departmentId != null">
+            and t_user.department_id = #{departmentId}
+        </if>
+
+    </select>
+
+    <resultMap id="staffMap" type="user">
+        <id property="id" column="user_id"/>
+        <result property="username" column="user_username"/>
+        <result property="departmentId" column="user_department_id"/>
+        <result property="deleted" column="user_deleted"/>
+        <result property="version" column="user_version"/>
+        <association property="staff" javaType="staff">
+            <id property="id" column="staff_id"/>
+            <result property="userId" column="staff_user_id"/>
+            <result property="firstName" column="staff_first_name"/>
+            <result property="lastName" column="staff_last_name"/>
+            <result property="gender" column="staff_gender"/>
+            <result property="birth" column="staff_birth"/>
+            <result property="email" column="staff_email"/>
+            <result property="tel" column="staff_tel"/>
+            <result property="address" column="staff_address"/>
+            <result property="deleted" column="staff_deleted"/>
+            <result property="version" column="staff_version"/>
+        </association>
+        <association property="department" javaType="department">
+            <id property="id" column="department_id"/>
+            <result property="name" column="department_name"/>
+            <result property="deleted" column="department_deleted"/>
+            <result property="version" column="department_version"/>
+        </association>
+    </resultMap>
 </mapper>

@@ -2,6 +2,7 @@ package com.cfive.pinnacle.handler;
 
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.exception.DataValidationFailedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -31,6 +32,9 @@ public class CustomExceptionHandler {
         }
         if (e instanceof DataIntegrityViolationException) {
             return ResponseResult.build(ResponseCode.DATABASE_DATA_TO_LONG, e.getMessage(), null);
+        }
+        if (e instanceof DataValidationFailedException) {
+            return ResponseResult.build(ResponseCode.DATABASE_DATA_VALIDATION_FAILED, e.getMessage(), null);
         }
 
         log.debug(e.getMessage(), e);
