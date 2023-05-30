@@ -22,6 +22,19 @@
         custom-column-label_1="角色"
         custom-column-label_2="用户组"
     />
+
+    <div class="pagination">
+        <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[50, 100, 200, 500, 1000]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
+    </div>
+
     <el-dialog
         :title="dialogTitle"
         :close-on-click-modal="false"
@@ -132,6 +145,9 @@ export default {
             dialogVisible: false,
             tableLoading: true,
             dialogLoading: true,
+            currentPage: 1,
+            pageSize: 50,
+            totalCount: 0,
             userTable: [],
             roles: [],
             groups: [],
@@ -174,32 +190,35 @@ export default {
     methods: {
         loadUserTable() {
             this.tableLoading = true
-            request.get('/user').then((res) => {
-                const response = res.data
-                if (response.code === DATABASE_SELECT_OK) {
-                    const users = response.data
-                    for (const user of users) {
-                        user.name = user.username
-                        user.customColumn_1 = []
-                        user.customColumn_2 = []
-                        const roles = user.roles
-                        for (const role of roles) {
-                            user.customColumn_1.push(role.name)
+            request
+                .get('/user', { currentPage: this.currentPage, pageSize: this.pageSize })
+                .then((res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_SELECT_OK) {
+                        const users = response.data.records
+                        this.totalCount = response.data.total
+                        for (const user of users) {
+                            user.name = user.username
+                            user.customColumn_1 = []
+                            user.customColumn_2 = []
+                            const roles = user.roles
+                            for (const role of roles) {
+                                user.customColumn_1.push(role.name)
+                            }
+                            const groups = user.groups
+                            for (const group of groups) {
+                                user.customColumn_2.push(group.name)
+                            }
                         }
-                        const groups = user.groups
-                        for (const group of groups) {
-                            user.customColumn_2.push(group.name)
-                        }
+                        this.userTable = users
+                        this.tableLoading = false
+                    } else {
+                        ElMessage.error({
+                            dangerouslyUseHTMLString: true,
+                            message: '<strong>查询出错</strong>: ' + response.msg
+                        })
                     }
-                    this.userTable = users
-                    this.tableLoading = false
-                } else {
-                    ElMessage.error({
-                        dangerouslyUseHTMLString: true,
-                        message: '<strong>查询出错</strong>: ' + response.msg
-                    })
-                }
-            })
+                })
         },
         handleAddBtn() {
             this.isAddNew = true
@@ -375,6 +394,14 @@ export default {
         },
         handleCancel() {
             this.dialogVisible = false
+        },
+        handleSizeChange(pageSize) {
+            this.pageSize = pageSize
+            this.loadUserTable()
+        },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage
+            this.loadUserTable()
         }
     },
     mounted() {
@@ -383,4 +410,10 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.pagination {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+}
+</style>

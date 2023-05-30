@@ -1,5 +1,6 @@
 package com.cfive.pinnacle.mapper.permission;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    List<User> getAll();
+    IPage<User> getAll(IPage<User> page);
 
     List<User> getAllAffairUser();
 

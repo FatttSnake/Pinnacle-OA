@@ -3,7 +3,6 @@ package com.cfive.pinnacle.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cfive.pinnacle.controller.permission.UserController;
 import com.cfive.pinnacle.entity.Affair;
-import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IAffairService;
@@ -39,17 +38,6 @@ public class AffairController {
     public ResponseResult<Boolean> addAffair(@RequestBody Affair affair) {
         return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", affairService.save(affair));
     }
-
-    @GetMapping("/add/get_user")
-    public ResponseResult<List<User>> getUser() {
-        List<User> userList = userController.getAllUser().getData();
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", userList);
-    }//获取数据库中所有用户
-
-    @GetMapping("/add/get_current_user")
-    public ResponseResult<User> getCurrentUser() {
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", WebUtil.getLoginUser().getUser());
-    }//获取当前用户
 
     @GetMapping("/personal_affairs")
     @PreAuthorize("hasAuthority('affair:self:get')")

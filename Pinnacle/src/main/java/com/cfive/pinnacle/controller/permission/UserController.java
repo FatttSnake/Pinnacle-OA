@@ -1,6 +1,7 @@
 package com.cfive.pinnacle.controller.permission;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
@@ -56,8 +57,8 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('system:user:get', 'system:user:add', 'system:user:modify')")
     @Operation(summary = "获取所有用户（权限管理相关）")
-    public ResponseResult<List<User>> getAllUser() {
-        List<User> users = userService.getAllUser();
+    public ResponseResult<IPage<User>> getAllUser(Long currentPage, Long pageSize) {
+        IPage<User> users = userService.getAllUser( currentPage,  pageSize);
         return ResponseResult.databaseSelectSuccess(users);
     }
 
