@@ -20,6 +20,8 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
     IPage<User> getAll(IPage<User> page);
 
+    List<User> getAllWithRoleAndGroup(@Param("userList") List<User> userList);
+
     List<User> getAllAffairUser();
 
     List<User> getAllDepartmentUser(@Param("departmentId")long departmentId);

@@ -2,34 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.permission.UserMapper">
 
-    <select id="getAll" resultMap="userMap">
-        select distinct  t_user.id            as user_id,
+    <select id="getAll" resultMap="userBase">
+        select t_user.id            as user_id,
                t_user.username      as user_username,
                t_user.department_id as user_department_id,
                t_user.enable        as user_enable,
                t_user.deleted       as user_deleted,
-               t_user.version       as user_version,
-               ts.id                as staff_id,
-               ts.first_name        as staff_first_name,
-               ts.last_name         as staff_last_name,
-               ts.deleted           as staff_deleted,
-               ts.version           as staff_version,
-               tr.id                as role_id,
-               tr.enable            as role_enable,
-               tr.name              as role_name,
-               tr.deleted           as role_deleted,
-               tr.version           as role_version,
-               tg.id                as group_id,
-               tg.name              as group_name,
-               tg.enable            as group_enable,
-               tg.deleted           as group_deleted,
-               tg.version           as group_version
+               t_user.version       as user_version
+        from t_user
+        where deleted = 0
+    </select>
+
+    <select id="getAllWithRoleAndGroup" resultMap="userMap">
+        select distinct t_user.id as user_id,
+        t_user.username as user_username,
+        t_user.department_id as user_department_id,
+        t_user.enable as user_enable,
+        t_user.deleted as user_deleted,
+        t_user.version as user_version,
+        ts.id as staff_id,
+        ts.first_name as staff_first_name,
+        ts.last_name as staff_last_name,
+        ts.deleted as staff_deleted,
+        ts.version as staff_version,
+        tr.id as role_id,
+        tr.enable as role_enable,
+        tr.name as role_name,
+        tr.deleted as role_deleted,
+        tr.version as role_version,
+        tg.id as group_id,
+        tg.name as group_name,
+        tg.enable as group_enable,
+        tg.deleted as group_deleted,
+        tg.version as group_version
         from (select * from t_user where deleted = 0) as t_user
-                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
-                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
-                 left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
-                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
-                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+        left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+        left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+        left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+        left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+        left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+        <where>
+            <foreach collection="userList" item="item" index="index" open="t_user.id in (" separator="," close=")"
+                     nullable="true">
+                #{item.id}
+            </foreach>
+        </where>
     </select>
 
     <select id="getOneById" resultMap="userMap">
@@ -66,39 +83,40 @@
 
     <select id="getOneWithPowerByUsername" resultMap="userWithPowerMap">
         select t_user.id            as user_id,
-                        t_user.username      as user_username,
-                        t_user.passwd        as user_passwd,
-                        t_user.department_id as user_department_id,
-                        t_user.enable        as user_enable,
-                        t_user.deleted       as user_deleted,
-                        t_user.version       as user_version,
-                        ts.id                as staff_id,
-                        ts.first_name        as staff_first_name,
-                        ts.last_name         as staff_last_name,
-                        ts.deleted           as staff_deleted,
-                        ts.version           as staff_version,
-                        tm.id                as menu_id,
-                        tm.name              as menu_name,
-                        tm.url               as menu_url,
-                        tm.power_id          as menu_power_id,
-                        tm.parent_id         as menu_parent_id,
-                        te.id                as element_id,
-                        te.name              as element_name,
-                        te.power_id          as element_power_id,
-                        te.menu_id           as element_menu_id,
-                        t.id                 as operation_id,
-                        t.name               as operation_name,
-                        t.code               as operation_code,
-                        t.power_id           as operation_power_id,
-                        t.element_id         as operation_element_id,
-                        t.parent_id          as operation_parent_id
+               t_user.username      as user_username,
+               t_user.passwd        as user_passwd,
+               t_user.department_id as user_department_id,
+               t_user.enable        as user_enable,
+               t_user.deleted       as user_deleted,
+               t_user.version       as user_version,
+               ts.id                as staff_id,
+               ts.first_name        as staff_first_name,
+               ts.last_name         as staff_last_name,
+               ts.deleted           as staff_deleted,
+               ts.version           as staff_version,
+               tm.id                as menu_id,
+               tm.name              as menu_name,
+               tm.url               as menu_url,
+               tm.power_id          as menu_power_id,
+               tm.parent_id         as menu_parent_id,
+               te.id                as element_id,
+               te.name              as element_name,
+               te.power_id          as element_power_id,
+               te.menu_id           as element_menu_id,
+               t.id                 as operation_id,
+               t.name               as operation_name,
+               t.code               as operation_code,
+               t.power_id           as operation_power_id,
+               t.element_id         as operation_element_id,
+               t.parent_id          as operation_parent_id
         from t_user
                  left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
                  left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
                  left join (select * from t_group where deleted = 0 and enable = 1) as tg on tg.id = tug.group_id
                  left join (select * from t_role_group where deleted = 0) as trg on tg.id = trg.group_id
                  left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
-                 left join (select * from t_role where deleted = 0 and enable = 1) as tr on tr.id = trg.role_id or tr.id = tur.role_id
+                 left join (select * from t_role where deleted = 0 and enable = 1) as tr
+                           on tr.id = trg.role_id or tr.id = tur.role_id
                  left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
                  left join t_power as tp on tp.id = tpr.power_id
                  left join t_menu tm on tp.id = tm.power_id
@@ -110,26 +128,26 @@
 
     <select id="getAllAffairUser" resultMap="userMap">
         select distinct t_user.id            as user_id,
-               t_user.username      as user_username,
-               t_user.department_id as user_department_id,
-               t_user.enable        as user_enable,
-               t_user.deleted       as user_deleted,
-               t_user.version       as user_version,
-               ts.id                as staff_id,
-               ts.first_name        as staff_first_name,
-               ts.last_name         as staff_last_name,
-               ts.deleted           as staff_deleted,
-               ts.version           as staff_version,
-               tr.id                as role_id,
-               tr.enable            as role_enable,
-               tr.name              as role_name,
-               tr.deleted           as role_deleted,
-               tr.version           as role_version,
-               tg.id                as group_id,
-               tg.name              as group_name,
-               tg.enable            as group_enable,
-               tg.deleted           as group_deleted,
-               tg.version           as group_version
+                        t_user.username      as user_username,
+                        t_user.department_id as user_department_id,
+                        t_user.enable        as user_enable,
+                        t_user.deleted       as user_deleted,
+                        t_user.version       as user_version,
+                        ts.id                as staff_id,
+                        ts.first_name        as staff_first_name,
+                        ts.last_name         as staff_last_name,
+                        ts.deleted           as staff_deleted,
+                        ts.version           as staff_version,
+                        tr.id                as role_id,
+                        tr.enable            as role_enable,
+                        tr.name              as role_name,
+                        tr.deleted           as role_deleted,
+                        tr.version           as role_version,
+                        tg.id                as group_id,
+                        tg.name              as group_name,
+                        tg.enable            as group_enable,
+                        tg.deleted           as group_deleted,
+                        tg.version           as group_version
         from t_user
                  left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
                  left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
@@ -180,13 +198,16 @@
           and t_user.department_id = #{departmentId}
     </select>
 
-    <resultMap id="userMap" type="user">
+    <resultMap id="userBase" type="user">
         <id property="id" column="user_id"/>
         <result property="username" column="user_username"/>
         <result property="departmentId" column="user_department_id"/>
         <result property="enable" column="user_enable"/>
         <result property="deleted" column="user_deleted"/>
         <result property="version" column="user_version"/>
+    </resultMap>
+
+    <resultMap id="userMap" type="user" extends="userBase">
         <association property="staff" javaType="staff">
             <id property="id" column="staff_id"/>
             <result property="firstName" column="staff_first_name"/>
@@ -210,14 +231,8 @@
         </collection>
     </resultMap>
 
-    <resultMap id="userWithPowerMap" type="user">
-        <id property="id" column="user_id"/>
-        <result property="username" column="user_username"/>
+    <resultMap id="userWithPowerMap" type="user" extends="userBase">
         <result property="passwd" column="user_passwd"/>
-        <result property="departmentId" column="user_department_id"/>
-        <result property="enable" column="user_enable"/>
-        <result property="deleted" column="user_deleted"/>
-        <result property="version" column="user_version"/>
         <association property="staff" javaType="staff">
             <id property="id" column="staff_id"/>
             <result property="firstName" column="staff_first_name"/>
