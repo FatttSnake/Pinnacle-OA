@@ -156,4 +156,11 @@ public class NoticeController {
         return ResponseResult.build(code, msg, noticePageList.getRecords());
     }
 
+    @GetMapping("/limit")
+    public  ResponseResult<List<Notice>> selectLimitByUserId(){
+        List<Notice> selectLimitByUserId = noticeReceiveService.selectLimitByUserId();
+        String msg = (null!=selectLimitByUserId) ? "" : "数据查询失败，请重试！";
+        return ResponseResult.build((null!=selectLimitByUserId) ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, selectLimitByUserId);
+    }
+
 }

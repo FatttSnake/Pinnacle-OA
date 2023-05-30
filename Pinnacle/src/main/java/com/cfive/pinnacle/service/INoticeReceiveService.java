@@ -17,5 +17,8 @@ import java.util.List;
 public interface INoticeReceiveService extends IService<NoticeReceive> {
     List<Notice> selectByUserId(Integer readStatus);
 
+    List<Notice> selectLimitByUserId();
+
     Boolean modifyNoticeIsRead(Notice notice);
+
 }
