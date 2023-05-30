@@ -2,6 +2,9 @@ package com.cfive.pinnacle.service;
 
 import com.cfive.pinnacle.entity.Affair;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cfive.pinnacle.entity.permission.User;
+
+import java.util.List;
 
 /**
  * <p>
@@ -19,4 +22,7 @@ public interface IAffairService extends IService<Affair> {
 
 
 //    int deleteAffair_ApprovedByID(Affair affair);
+    List<User> getSameDepartmentUser (long id);
+
+
 }

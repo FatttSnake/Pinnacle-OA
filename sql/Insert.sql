@@ -320,7 +320,7 @@ begin;
 insert into t_power (id, type_id)
 values (5010000, 1);
 insert into t_menu (id, name, url, power_id, parent_id)
-VALUES (5010000, '我的事务', '/affair/personalAffairs', id, null);
+VALUES (5010000, '我的事务', '/affair/personal', id, null);
 commit;
 
 begin;

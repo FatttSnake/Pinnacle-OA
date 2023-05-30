@@ -2,6 +2,7 @@ package com.cfive.pinnacle.mapper;
 
 import com.cfive.pinnacle.entity.Affair;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cfive.pinnacle.entity.permission.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -32,13 +33,11 @@ public interface AffairMapper extends BaseMapper<Affair> {
     //管理员权限--->修改事务的状态(AffairsStatus)--->达到审批的效果
     //同意
 
-    @Update("update t_affair set Status=2 where id=#{id}" )
+    @Update("update t_affair set Status=2 where id=#{id}")
     int updateAffairsNO(Affair affair);
     //不同意
 
-
-
-
+    List<User> getSameDepartmentUser(@Param("id") long id);
 
 //
 //    @Select("SELECT t_affair.applicant_id,t_affair.inspector_id,t_user.id,t_user.username from t_affair,t_user ")

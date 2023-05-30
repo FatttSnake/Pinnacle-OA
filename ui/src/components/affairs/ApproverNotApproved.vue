@@ -1,28 +1,4 @@
 <template>
-    <el-row :span="24">
-        <el-col :span="18">
-            <div class="mt-4">
-                <el-input placeholder="查询事务" class="input-with-select">
-                    <template #prepend>
-                        <el-select placeholder="查询方式">
-                            <el-option label="事务编号" value="1" />
-                            <el-option label="事务名称" value="2" />
-                            <el-option label="日期" value="3" />
-                        </el-select>
-                    </template>
-                    <template #append>
-                        <el-button>查询</el-button>
-                    </template>
-                </el-input>
-            </div>
-        </el-col>
-
-        <el-col :span="6">
-            <el-button type="warning" round>待审批</el-button>
-            <el-button type="success" round>已审批</el-button>
-        </el-col>
-    </el-row>
-
     <el-table :data="tableData" style="width: 100%">
         <el-table-column label="事务编号" prop="id" />
 
@@ -105,7 +81,7 @@
         </el-row>
     </el-dialog>
 
-    <el-divider :data="labelData">
+    <el-divider>
         <div class="block">
             <el-pagination
                 style="color: #888888"
@@ -120,62 +96,32 @@
     </el-divider>
 </template>
 
-<script>
-import request from '@/services'
+<script lang="ts">
+import request from '@/services/index.js'
 import 'element-plus/theme-chalk/index.css'
 
 export default {
     data() {
         return {
-            tableData: [
-                {
-                    id: '',
-                    title: '',
-                    content: '',
-                    typeId: '',
-                    status: '',
-                    applicantId: '',
-                    inspectorId: '',
-                    createTime: new Date(),
-                    inspectTime: new Date(),
-                    priority: '',
-                    modifyTime: '',
-                    originId: '',
-                    old: '',
-                    deleted: '',
-                    version: ''
-                }
-            ],
-            //     }],
-
-            labelData: [
-                {
-                    currentPage1: 5,
-                    currentPage2: 5,
-                    currentPage3: 5,
-                    currentPage4: 4
-                }
-            ],
+            tableData: [],
             dialogVisible: false,
-            dialogData: [
-                {
-                    id: '',
-                    title: '',
-                    content: '',
-                    typeId: '',
-                    status: '',
-                    applicantId: '',
-                    inspectorId: '',
-                    createTime: new Date(),
-                    inspectTime: '',
-                    priority: '',
-                    modifyTime: '',
-                    originId: '',
-                    old: '',
-                    deleted: '',
-                    version: ''
-                }
-            ]
+            dialogData: {
+                id: '',
+                title: '',
+                content: '',
+                typeId: '',
+                status: '',
+                applicantId: '',
+                inspectorId: '',
+                createTime: new Date(),
+                inspectTime: '',
+                priority: '',
+                modifyTime: '',
+                originId: '',
+                old: '',
+                deleted: '',
+                version: ''
+            }
         }
     },
     methods: {
@@ -225,20 +171,6 @@ export default {
         format(time) {
             return new Date(time).toLocaleString()
         }, // 时间格式转换
-        /*
-        getDate() {
-            let newTime = ''
-            const date = new Date()
-            const yy = date.getUTCFullYear()
-            const mm = _.padStart((date.getUTCMonth() + 1).toString(), 2, '0')
-            const dd = _.padStart(date.getUTCDate().toString(), 2, '0')
-            const hh = _.padStart(date.getUTCHours().toString(), 2, '0')
-            const mf = _.padStart(date.getUTCMinutes().toString(), 2, '0')
-            const ss = _.padStart(date.getUTCSeconds().toString(), 2, '0')
-            newTime = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
-            return newTime
-        }, // 获取当前时间与格式转换
-        */
         dialogTure(data) {
             this.dialogVisible = true
             this.dialogData = data
@@ -248,9 +180,9 @@ export default {
         } // 关闭弹出框
     },
     created() {
+        console.log('not approved created')
         this.getApproved()
         this.dialogFalse()
-        console.log(this.tableData)
     } // 获取事务信息
 }
 </script>
