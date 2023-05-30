@@ -39,7 +39,7 @@ public class RoleController {
 
     @Operation(summary = "获取所有角色")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:role:all', 'system:role:add', 'system:role:delete', 'system:role:modeify', 'system:group:add', 'system:group:modify', 'system:user:add', 'system:user:modify')")
+    @PreAuthorize("hasAnyAuthority('system:role:get', 'system:role:add', 'system:role:delete', 'system:role:modeify', 'system:group:add', 'system:group:modify', 'system:user:add', 'system:user:modify')")
     public ResponseResult<List<Role>> getAllRole() {
         List<Role> roles = roleService.getAllRole();
         return ResponseResult.databaseSelectSuccess(roles);

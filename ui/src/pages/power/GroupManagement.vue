@@ -42,6 +42,7 @@
                         v-model="groupForm.inputGroupName"
                         maxlength="30"
                         placeholder="请输入名称"
+                        show-word-limit
                     />
                 </el-form-item>
                 <el-form-item label="用户组角色">
@@ -70,7 +71,7 @@
             <el-button type="primary" @click="handleSubmit" :disabled="dialogLoading"
                 >提交</el-button
             >
-            <el-button @click="handleCancel">取消</el-button>
+            <el-button @click="handleCancel" :disabled="dialogLoading">取消</el-button>
         </template>
     </el-dialog>
 </template>
@@ -107,10 +108,6 @@ export default {
                     {
                         required: true,
                         message: '用户组名称为必填项'
-                    },
-                    {
-                        max: 30,
-                        message: '用户组不能大于30个字符'
                     }
                 ]
             }

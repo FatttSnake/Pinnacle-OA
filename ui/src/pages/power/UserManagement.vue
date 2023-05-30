@@ -44,6 +44,7 @@
                         placeholder="请输入用户名"
                         minlength="3"
                         maxlength="20"
+                        show-word-limit
                     />
                 </el-form-item>
                 <el-form-item label="密码" prop="inputPassword" :required="isAddNew">
@@ -102,7 +103,7 @@
             <el-button type="primary" @click="handleSubmit" :disabled="dialogLoading"
                 >提交</el-button
             >
-            <el-button @click="handleCancel">取消</el-button>
+            <el-button @click="handleCancel" :disabled="dialogLoading">取消</el-button>
         </template>
     </el-dialog>
 </template>
@@ -153,10 +154,6 @@ export default {
                     {
                         min: 3,
                         message: '用户名必须大于3个字符'
-                    },
-                    {
-                        max: 20,
-                        message: '用户名不能大于20个字符'
                     }
                 ],
                 inputPassword: [
@@ -167,10 +164,6 @@ export default {
                     {
                         min: 8,
                         message: '密码必须大于8个字符'
-                    },
-                    {
-                        max: 64,
-                        message: '密码不能大于64个字符'
                     }
                 ]
             },

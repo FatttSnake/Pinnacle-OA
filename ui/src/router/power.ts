@@ -1,6 +1,6 @@
 const powerRouter = {
     path: '/power',
-    name: 'systemManagement',
+    name: 'powerManagement',
     redirect: '/power/role',
     children: [
         {

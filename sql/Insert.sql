@@ -122,30 +122,30 @@ commit;
 
 begin;
 insert into t_power(id, type_id)
-values (2020105, 3);
+values (2020151, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (2020105, '获取所有工作事项（管理）', 'work:admin:get', id, 2020100, null);
+VALUES (2020151, '获取所有工作事项（管理）', 'work:admin:get', id, 2020100, null);
 commit;
 
 begin;
 insert into t_power(id, type_id)
-values (2020106, 3);
+values (2020152, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (2020106, '添加工作事项（管理）', 'work:admin:add', id, 2020100, null);
+VALUES (2020152, '添加工作事项（管理）', 'work:admin:add', id, 2020100, null);
 commit;
 
 begin;
 insert into t_power(id, type_id)
-values (2020107, 3);
+values (2020153, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (2020107, '删除工作事项（管理）', 'work:admin:delete', id, 2020100, null);
+VALUES (2020153, '删除工作事项（管理）', 'work:admin:delete', id, 2020100, null);
 commit;
 
 begin;
 insert into t_power(id, type_id)
-values (2020108, 3);
+values (2020154, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (2020108, '修改工作事项（管理）', 'work:admin:modify', id, 2020100, null);
+VALUES (2020154, '修改工作事项（管理）', 'work:admin:modify', id, 2020100, null);
 commit;
 
 begin;
@@ -383,6 +383,90 @@ commit;
 
 begin;
 insert into t_power (id, type_id)
+values (98010000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (98010000, '部门管理', '/info/department', id, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (98010100, 2);
+insert into t_element (id, name, power_id, menu_id)
+VALUES (98010100, '列表', id, 98010000);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (98010101, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (98010101, '查看所有部门', 'department:admin:get', id, 98010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (98010102, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (98010102, '增加部门', 'department:admin:add', id, 98010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (98010103, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (98010103, '删除部门', 'department:admin:delete', id, 98010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (98010104, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (98010104, '修改部门', 'department:admin:modify', id, 98010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (99010000, 1);
+insert into t_menu (id, name, url, power_id, parent_id)
+VALUES (99010000, '员工信息管理', '/info/staff', id, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (99010100, 2);
+insert into t_element (id, name, power_id, menu_id)
+VALUES (99010100, '列表', id, 99010000);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (99010101, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (99010101, '查看部门员工信息', 'staff:manege:get', id, 99010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (99010102, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (99010102, '修改部门员工信息', 'staff:manege:modify', id, 99010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (99010151, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (99010151, '修改员工信息（管理）', 'staff:admin:get', id, 99010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
+values (99010152, 3);
+insert into t_operation (id, name, code, power_id, element_id, parent_id)
+VALUES (99010152, '修改员工信息（管理）', 'staff:admin:modify', id, 99010100, null);
+commit;
+
+begin;
+insert into t_power (id, type_id)
 values (101010000, 1);
 insert into t_menu (id, name, url, power_id, parent_id)
 VALUES (101010000, '角色管理（权限相关）', '/power/role', id, null);
@@ -399,7 +483,7 @@ begin;
 insert into t_power (id, type_id)
 values (101010101, 3);
 insert into t_operation (id, name, code, power_id, element_id, parent_id)
-VALUES (101010101, '查询所有角色', 'system:role:all', id, 101010100, null);
+VALUES (101010101, '查询所有角色', 'system:role:get', id, 101010100, null);
 commit;
 
 begin;
@@ -441,7 +525,7 @@ begin;
 insert into t_power (id, type_id)
 values (102010101, 3);
 insert into t_operation (id, name, code, power_id, element_id, parent_id)
-VALUES (102010101, '查询所有用户组', 'system:group:all', id, 102010100, null);
+VALUES (102010101, '查询所有用户组', 'system:group:get', id, 102010100, null);
 commit;
 
 begin;
@@ -483,7 +567,7 @@ begin;
 insert into t_power (id, type_id)
 values (103010101, 3);
 insert into t_operation (id, name, code, power_id, element_id, parent_id)
-VALUES (103010101, '查看所有用户', 'system:user:all', id, 103010100, null);
+VALUES (103010101, '查看所有用户', 'system:user:get', id, 103010100, null);
 commit;
 
 begin;

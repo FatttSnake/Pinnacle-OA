@@ -43,6 +43,7 @@
                             v-model="roleForm.inputRoleName"
                             maxlength="20"
                             placeholder="请输入名称"
+                            show-word-limit
                         />
                     </el-form-item>
                     <el-form-item label="角色权限">
@@ -74,7 +75,7 @@
             <el-button type="primary" @click="handleSubmit" :disabled="dialogLoading"
                 >提交</el-button
             >
-            <el-button @click="handleCancel">取消</el-button>
+            <el-button @click="handleCancel" :disabled="dialogLoading">取消</el-button>
         </template>
     </el-dialog>
 </template>
@@ -117,10 +118,6 @@ export default {
                     {
                         required: true,
                         message: '角色名称为必填项'
-                    },
-                    {
-                        max: 20,
-                        message: '角色名称不能大于20个字符'
                     }
                 ]
             }
