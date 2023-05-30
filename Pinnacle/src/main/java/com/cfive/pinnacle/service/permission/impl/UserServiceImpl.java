@@ -1,7 +1,9 @@
 package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.permission.*;
 import com.cfive.pinnacle.mapper.permission.*;
 import com.cfive.pinnacle.service.permission.IUserService;
@@ -88,15 +90,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public List<User> getAllUser() {
-        List<User> users = userMapper.getAll();
-        users.forEach(user -> {
+    public IPage<User> getAllUser(Long currentPage, Long pageSize) {
+        IPage<User> userPage = PageDTO.of(currentPage, pageSize);
+        userPage = userMapper.getAll(userPage);
+        userPage.getRecords().forEach(user -> {
             if (user.getId() == 1L) {
                 user.setRoles(List.of(new Role(0L, "超级管理员")));
                 user.setGroups(List.of(new Group(0L, "超级管理员")));
             }
         });
-        return users;
+        return userPage;
     }
 
     @Override

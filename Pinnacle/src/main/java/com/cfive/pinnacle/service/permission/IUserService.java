@@ -1,5 +1,6 @@
 package com.cfive.pinnacle.service.permission;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -21,7 +22,7 @@ public interface IUserService extends IService<User> {
 
     List<User> getDepartmentUser();
 
-    List<User> getAllUser();
+    IPage<User> getAllUser(Long currentPage, Long pageSize);
 
     User getUser(long id);
 
