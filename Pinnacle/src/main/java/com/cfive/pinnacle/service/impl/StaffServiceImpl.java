@@ -1,5 +1,7 @@
 package com.cfive.pinnacle.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.Staff;
 import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.exception.DataValidationFailedException;
@@ -11,7 +13,6 @@ import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -38,8 +39,14 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     }
 
     @Override
-    public List<User> getAllStaff(Long departmentId) {
-        return staffMapper.getAllStaff(departmentId);
+    public IPage<User> getAllStaff(Long currentPage, Long pageSize, Long departmentId) {
+        IPage<User> userIPage;
+        if (currentPage == null || pageSize == null) {
+            userIPage = PageDTO.of(0, -1);
+        } else {
+            userIPage = PageDTO.of(currentPage, pageSize);
+        }
+        return staffMapper.getAllStaff(userIPage, departmentId);
     }
 
     @Override

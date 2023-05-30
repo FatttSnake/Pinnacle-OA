@@ -1,5 +1,6 @@
 package com.cfive.pinnacle.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.entity.permission.User;
@@ -9,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * <p>
@@ -33,8 +32,8 @@ public class StaffController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('staff:manege:get', 'staff:admin:get')")
-    public ResponseResult<List<User>> getAllStaff() {
-        return ResponseResult.databaseSelectSuccess(staffService.getAllStaff(WebUtil.hasAuthority("staff:admin:get") ? null : WebUtil.getLoginUser().getUser().getDepartmentId()));
+    public ResponseResult<IPage<User>> getAllStaff(Long currentPage, Long pageSize) {
+        return ResponseResult.databaseSelectSuccess(staffService.getAllStaff(currentPage, pageSize, WebUtil.hasAuthority("staff:admin:get") ? null : WebUtil.getLoginUser().getUser().getDepartmentId()));
     }
 
     @PutMapping

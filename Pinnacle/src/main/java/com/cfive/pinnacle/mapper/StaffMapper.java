@@ -1,12 +1,11 @@
 package com.cfive.pinnacle.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Staff;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cfive.pinnacle.entity.permission.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * <p>
@@ -18,5 +17,5 @@ import java.util.List;
  */
 @Mapper
 public interface StaffMapper extends BaseMapper<Staff> {
-    List<User> getAllStaff(@Param("departmentId")Long departmentId);
+    IPage<User> getAllStaff(IPage<User> page, @Param("departmentId")Long departmentId);
 }
