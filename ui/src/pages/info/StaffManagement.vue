@@ -34,6 +34,17 @@
             </template>
         </el-table-column>
     </el-table>
+    <div class="pagination">
+        <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[50, 100, 200, 500, 1000]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
+    </div>
 
     <el-dialog title="编辑员工信息" :close-on-click-modal="false" draggable v-model="dialogVisible">
         <template #default>
@@ -101,6 +112,9 @@ export default {
             dialogVisible: false,
             tableLoading: true,
             dialogLoading: true,
+            currentPage: 1,
+            pageSize: 50,
+            totalCount: 0,
             staffTable: [],
             editUserId: '',
             rules: {
@@ -132,18 +146,21 @@ export default {
     methods: {
         loadStaffTable() {
             this.tableLoading = true
-            request.get('/staff').then((res) => {
-                const response = res.data
-                if (response.code === DATABASE_SELECT_OK) {
-                    this.staffTable = response.data
-                    this.tableLoading = false
-                } else {
-                    ElMessage.error({
-                        dangerouslyUseHTMLString: true,
-                        message: '<strong>查询出错</strong>: ' + response.msg
-                    })
-                }
-            })
+            request
+                .get('/staff', { currentPage: this.currentPage, pageSize: this.pageSize })
+                .then((res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_SELECT_OK) {
+                        this.staffTable = response.data.records
+                        this.totalCount = response.data.total
+                        this.tableLoading = false
+                    } else {
+                        ElMessage.error({
+                            dangerouslyUseHTMLString: true,
+                            message: '<strong>查询出错</strong>: ' + response.msg
+                        })
+                    }
+                })
         },
         genderFormatter(row) {
             if (row.staff === null) {
@@ -211,6 +228,14 @@ export default {
         },
         handleCancel() {
             this.dialogVisible = false
+        },
+        handleSizeChange(pageSize) {
+            this.pageSize = pageSize
+            this.loadStaffTable()
+        },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage
+            this.loadStaffTable()
         }
     },
     mounted() {
@@ -219,4 +244,10 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.pagination {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+}
+</style>

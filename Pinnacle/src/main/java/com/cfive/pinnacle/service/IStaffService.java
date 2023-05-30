@@ -1,10 +1,9 @@
 package com.cfive.pinnacle.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Staff;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cfive.pinnacle.entity.permission.User;
-
-import java.util.List;
 
 /**
  * <p>
@@ -15,7 +14,7 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface IStaffService extends IService<Staff> {
-    List<User> getAllStaff(Long departmentId);
+    IPage<User> getAllStaff(Long currentPage, Long pageSize, Long departmentId);
 
     boolean modifyStaff(User user);
 }
