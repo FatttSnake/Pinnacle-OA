@@ -5,7 +5,6 @@ import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.service.IStaffService;
-import com.cfive.pinnacle.utils.WebUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,8 +31,8 @@ public class StaffController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('staff:manege:get', 'staff:admin:get')")
-    public ResponseResult<IPage<User>> getAllStaff(Long currentPage, Long pageSize) {
-        return ResponseResult.databaseSelectSuccess(staffService.getAllStaff(currentPage, pageSize, WebUtil.hasAuthority("staff:admin:get") ? null : WebUtil.getLoginUser().getUser().getDepartmentId()));
+    public ResponseResult<IPage<User>> getAllStaff(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchGender, String searchBirthFrom, String searchBirthTo) {
+        return ResponseResult.databaseSelectSuccess(staffService.getAllStaff(currentPage, pageSize, searchType, searchInput, searchGender, searchBirthFrom, searchBirthTo));
     }
 
     @PutMapping

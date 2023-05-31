@@ -1,11 +1,64 @@
 <template>
-    <el-button bg style="background-color: white" :loading="tableLoading" @click="loadStaffTable">
-        <template #icon>
-            <el-icon>
-                <icon-pinnacle-refresh />
-            </el-icon>
-        </template>
-    </el-button>
+    <el-row gutter="20">
+        <el-col :span="-1">
+            <el-button
+                bg
+                style="background-color: white"
+                :loading="tableLoading"
+                @click="loadStaffTable"
+            >
+                <template #icon>
+                    <el-icon>
+                        <icon-pinnacle-refresh />
+                    </el-icon>
+                </template>
+            </el-button>
+        </el-col>
+        <el-col :span="6">
+            <el-input
+                v-model="inputInput"
+                class="fill-with"
+                placeholder="请输入内容"
+                clearable
+                @keyup.enter="handleQuery"
+            >
+                <template #prepend>
+                    <el-select v-model="selectedType" style="width: 100px">
+                        <el-option label="综合搜索" :value="0" />
+                        <el-option label="用户名" :value="1" />
+                        <el-option label="姓名" :value="2" />
+                        <el-option label="邮箱" :value="3" />
+                        <el-option label="手机号码" :value="4" />
+                        <el-option label="联系地址" :value="5" />
+                    </el-select>
+                </template>
+            </el-input>
+        </el-col>
+        <el-col :span="4">
+            <el-form-item label="性别" class="fill-with">
+                <el-select v-model="selectedGender" class="fill-with">
+                    <el-option label="全部" :value="-1" />
+                    <el-option label="未知" :value="0" />
+                    <el-option label="男" :value="1" />
+                    <el-option label="女" :value="2" />
+                </el-select>
+            </el-form-item>
+        </el-col>
+        <el-col :span="8">
+            <el-form-item label="生日">
+                <el-date-picker
+                    type="daterange"
+                    v-model="selectedBirth"
+                    value-format="YYYY-MM-DD"
+                    class="fill-with"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                />
+            </el-form-item>
+        </el-col>
+        <el-button type="primary" @click="handleQuery">查询</el-button>
+        <el-button @click="handleClear">清空</el-button>
+    </el-row>
 
     <el-table
         :data="staffTable"
@@ -101,6 +154,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash'
 import request from '@/services'
 import { DATABASE_SELECT_OK, DATABASE_UPDATE_OK } from '@/constants/Common.constants'
 import { ElMessage } from 'element-plus'
@@ -112,6 +166,14 @@ export default {
             dialogVisible: false,
             tableLoading: true,
             dialogLoading: true,
+            searchType: 0,
+            selectedType: 0,
+            searchInput: '',
+            inputInput: '',
+            searchGender: -1,
+            selectedGender: -1,
+            searchBirth: [],
+            selectedBirth: [],
             currentPage: 1,
             pageSize: 50,
             totalCount: 0,
@@ -147,7 +209,15 @@ export default {
         loadStaffTable() {
             this.tableLoading = true
             request
-                .get('/staff', { currentPage: this.currentPage, pageSize: this.pageSize })
+                .get('/staff', {
+                    currentPage: this.currentPage,
+                    pageSize: this.pageSize,
+                    searchType: this.searchType,
+                    searchInput: this.searchInput,
+                    searchGender: this.searchGender,
+                    searchBirthFrom: this.searchBirth ? this.searchBirth[0] : null,
+                    searchBirthTo: this.searchBirth ? this.searchBirth[1] : null
+                })
                 .then((res) => {
                     const response = res.data
                     if (response.code === DATABASE_SELECT_OK) {
@@ -236,6 +306,20 @@ export default {
         handleCurrentChange(currentPage) {
             this.currentPage = currentPage
             this.loadStaffTable()
+        },
+        handleQuery() {
+            this.searchType = _.cloneDeep(this.selectedType)
+            this.searchInput = _.cloneDeep(this.inputInput)
+            this.searchGender = _.cloneDeep(this.selectedGender)
+            this.searchBirth = _.cloneDeep(this.selectedBirth)
+            this.loadStaffTable()
+        },
+        handleClear() {
+            this.selectedType = 0
+            this.inputInput = ''
+            this.selectedGender = -1
+            this.selectedBirth = []
+            this.handleQuery()
         }
     },
     mounted() {
