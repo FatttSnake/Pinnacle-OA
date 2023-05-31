@@ -17,5 +17,5 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface StaffMapper extends BaseMapper<Staff> {
-    IPage<User> getAllStaff(IPage<User> page, @Param("departmentId")Long departmentId);
+    IPage<User> getAllStaff(IPage<User> page, @Param("departmentId") Long departmentId, @Param("searchType") Integer searchType, @Param("searchInput") String searchInput, @Param("searchGender") Integer searchGender, @Param("searchBirthFrom") String searchBirthFrom, @Param("searchBirthTo") String searchBirthTo);
 }

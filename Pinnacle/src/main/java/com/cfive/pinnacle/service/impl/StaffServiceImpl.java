@@ -39,14 +39,16 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     }
 
     @Override
-    public IPage<User> getAllStaff(Long currentPage, Long pageSize, Long departmentId) {
+    public IPage<User> getAllStaff(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchGender, String searchBirthFrom, String searchBirthTo) {
+        Long departmentId = WebUtil.hasAuthority("staff:admin:get") ? null : WebUtil.getLoginUser().getUser().getDepartmentId();
         IPage<User> userIPage;
         if (currentPage == null || pageSize == null) {
             userIPage = PageDTO.of(0, -1);
         } else {
             userIPage = PageDTO.of(currentPage, pageSize);
         }
-        return staffMapper.getAllStaff(userIPage, departmentId);
+        searchInput =  searchInput.trim();
+        return staffMapper.getAllStaff(userIPage, departmentId, searchType, searchInput, searchGender, searchBirthFrom, searchBirthTo);
     }
 
     @Override

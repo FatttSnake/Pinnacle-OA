@@ -14,7 +14,7 @@ import com.cfive.pinnacle.entity.permission.User;
  * @since 2023-04-30
  */
 public interface IStaffService extends IService<Staff> {
-    IPage<User> getAllStaff(Long currentPage, Long pageSize, Long departmentId);
+    IPage<User> getAllStaff(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchGender, String searchBirthFrom, String searchBirthTo);
 
     boolean modifyStaff(User user);
 }
