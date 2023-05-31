@@ -10,7 +10,7 @@ const infoRouter = {
             meta: {
                 title: '员工信息管理',
                 requiresMenu: true,
-                requiresScrollbar: false,
+                requiresScrollbar: true,
                 requiresPadding: true
             }
         }
@@ -19,8 +19,6 @@ const infoRouter = {
         title: '信息管理',
         icon: shallowRef(IconPinnacleInfo),
         requiresMenu: true,
-        requiresScrollbar: false,
-        requiresPadding: true,
         requiresAuth: true
     }
 }
