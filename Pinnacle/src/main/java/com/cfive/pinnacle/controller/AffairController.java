@@ -43,6 +43,16 @@ public class AffairController {
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
     }
 
+    @GetMapping("/personal_affairs_limit")
+    @PreAuthorize("hasAuthority('affair:self:get')")
+    public ResponseResult<List<Affair>> getPersonalAffairsLimit() {
+        LambdaQueryWrapper<Affair> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Affair::getApplicantId, WebUtil.getLoginUser().getUser().getId());
+        wrapper.orderByDesc(Affair::getCreateTime);
+        wrapper.last("limit 5");
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
+    }
+
     @GetMapping("/not_approved")
     @PreAuthorize("hasAuthority('affair:manage:get')")
     public ResponseResult<List<Affair>> selectNotApproved() {
