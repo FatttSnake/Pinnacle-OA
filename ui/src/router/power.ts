@@ -10,7 +10,7 @@ const powerRouter = {
             meta: {
                 title: '角色管理',
                 requiresMenu: true,
-                requiresScrollbar: false,
+                requiresScrollbar: true,
                 requiresPadding: true
             }
         },
@@ -21,7 +21,7 @@ const powerRouter = {
             meta: {
                 title: '用户组管理',
                 requiresMenu: true,
-                requiresScrollbar: false,
+                requiresScrollbar: true,
                 requiresPadding: true
             }
         },
@@ -32,7 +32,7 @@ const powerRouter = {
             meta: {
                 title: '用户管理',
                 requiresMenu: true,
-                requiresScrollbar: false,
+                requiresScrollbar: true,
                 requiresPadding: true
             }
         }
@@ -41,8 +41,6 @@ const powerRouter = {
         title: '权限管理',
         icon: shallowRef(IconPinnaclePower),
         requiresMenu: true,
-        requiresScrollbar: false,
-        requiresPadding: true,
         requiresAuth: true
     }
 }
