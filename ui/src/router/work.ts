@@ -43,7 +43,8 @@ const workRouter = {
         icon: shallowRef(IconPinnacleWork),
         requiresMenu: true,
         requiresScrollbar: false,
-        requiresPadding: true
+        requiresPadding: true,
+        requiresAuth: true
     }
 }
 
