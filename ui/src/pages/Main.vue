@@ -138,7 +138,9 @@
                         <template #default>
                             <div style="display: flex; gap: 10px; flex-direction: column">
                                 <div>
-                                    <el-button style="width: 100%">个人档案</el-button>
+                                    <el-button @click="profile" style="width: 100%"
+                                        >个人档案</el-button
+                                    >
                                 </div>
                                 <div>
                                     <el-button @click="logout" style="width: 100%">退出</el-button>
@@ -221,6 +223,9 @@ export default {
         changeCollapsed() {
             this.isCollapsed = !this.isCollapsed
             setLocalStorage('menuCollapsed', this.isCollapsed.toString())
+        },
+        profile() {
+            this.$router.push('/profile')
         }
     },
     async mounted() {

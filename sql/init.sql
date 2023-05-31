@@ -253,12 +253,13 @@ create table `t_work`
 
 create table `t_user_work`
 (
-    `id`      bigint not null primary key,
-    `user_id` bigint not null comment '用户',
-    `work_id` bigint not null comment '工作事项',
-    `status`  int    not null default 0 comment '工作状态',
-    `deleted` bigint not null default 0,
-    `version` int    not null default 0,
+    `id`            bigint   not null primary key,
+    `user_id`       bigint   not null comment '用户',
+    `work_id`       bigint   not null comment '工作事项',
+    `status`        int      not null default 0 comment '工作状态',
+    `complete_time` datetime null comment '完成时间',
+    `deleted`       bigint   not null default 0,
+    `version`       int      not null default 0,
     constraint t_user_work_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_user_work_work_id_fk foreign key (work_id) references t_work (id)
 ) comment '中间表-用户-工作事项';

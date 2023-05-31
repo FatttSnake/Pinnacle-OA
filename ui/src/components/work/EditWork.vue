@@ -129,6 +129,7 @@ export default {
             this.$refs.ruleForm.resetFields()
         },
         cancel() {
+            this.reset()
             this.$emit('setDialogVisible', false)
         }
     },

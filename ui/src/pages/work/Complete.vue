@@ -54,7 +54,7 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import request from '@/services'
 
 export default {
@@ -126,7 +126,7 @@ export default {
         setTaskStatus(userWork) {
             console.log(userWork)
             request
-                .put('/work/setStatus', userWork)
+                .put('/work/set_status', userWork)
                 .then((response) => {
                     console.log(response.data.data)
                     this.getTableData()

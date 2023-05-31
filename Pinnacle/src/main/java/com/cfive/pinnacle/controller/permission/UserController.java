@@ -41,14 +41,14 @@ public class UserController {
     }
 
     @GetMapping("/affair")
-    @PreAuthorize("hasAuthority('affair:self:add')")
+    @PreAuthorize("hasAnyAuthority('affair:self:add')")
     @Operation(summary = "获取拥有审批权限的用户")
     public ResponseResult<List<User>> getAffairUser() {
         return ResponseResult.databaseSelectSuccess(userService.getAffairUser());
     }
 
     @GetMapping("/department")
-    @PreAuthorize("hasAuthority('attendance:manage:modify')")
+    @PreAuthorize("hasAnyAuthority('work:manage:add', 'work:admin:add', 'attendance:manage:modify')")
     @Operation(summary = "获取同部门下所有用户")
     public ResponseResult<List<User>> getDepartmentUser() {
         return ResponseResult.databaseSaveSuccess(userService.getDepartmentUser());
