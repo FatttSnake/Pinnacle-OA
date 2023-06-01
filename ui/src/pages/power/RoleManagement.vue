@@ -12,7 +12,7 @@
                 <icon-pinnacle-plus />
             </el-icon>
         </template>
-        <template #default> 添加 </template>
+        <template #default> 添加</template>
     </el-button>
     <common-table
         :table-date="roleTable"
@@ -46,6 +46,16 @@
                             show-word-limit
                         />
                     </el-form-item>
+                    <el-form-item label="状态">
+                        <el-switch
+                            v-model="roleForm.enable"
+                            inline-prompt
+                            active-text="启用"
+                            :active-value="1"
+                            inactive-text="禁用"
+                            :inactive-value="0"
+                        />
+                    </el-form-item>
                     <el-form-item label="角色权限">
                         <el-tree
                             :data="powerTree"
@@ -58,23 +68,13 @@
                             @check-change="handleSelectedPowerChange"
                         />
                     </el-form-item>
-                    <el-form-item label="状态">
-                        <el-switch
-                            v-model="roleForm.enable"
-                            inline-prompt
-                            active-text="启用"
-                            :active-value="1"
-                            inactive-text="禁用"
-                            :inactive-value="0"
-                        />
-                    </el-form-item>
                 </el-form>
             </el-scrollbar>
         </template>
         <template #footer>
             <el-button type="primary" @click="handleSubmit" :disabled="dialogLoading"
-                >提交</el-button
-            >
+                >提交
+            </el-button>
             <el-button @click="handleCancel" :disabled="dialogLoading">取消</el-button>
         </template>
     </el-dialog>
@@ -204,6 +204,11 @@ export default {
                         }
                         menu.children.push(element)
                     }
+                    for (const menu of menuList) {
+                        if (menu.children.length === 1) {
+                            menu.children = menu.children[0].children
+                        }
+                    }
                     this.powerTree = data.menuList
                     this.dialogLoading = false
                 } else {
@@ -215,10 +220,12 @@ export default {
             })
         },
         handleSelectedPowerChange(data, checked, indeterminate) {
-            if (checked || indeterminate) {
-                this.roleForm.selectedPower.add(data.powerId)
-            } else {
-                this.roleForm.selectedPower.delete(data.powerId)
+            if (data.children === undefined) {
+                if (checked || indeterminate) {
+                    this.roleForm.selectedPower.add(data.powerId)
+                } else {
+                    this.roleForm.selectedPower.delete(data.powerId)
+                }
             }
         },
         handleAddBtn() {
@@ -234,12 +241,6 @@ export default {
             for (const operation of row.operations) {
                 this.defaultSelectedPower.push(operation.powerId)
                 this.roleForm.selectedPower.add(operation.powerId)
-            }
-            for (const element of row.elements) {
-                this.roleForm.selectedPower.add(element.powerId)
-            }
-            for (const menu of row.menus) {
-                this.roleForm.selectedPower.add(menu.powerId)
             }
             this.isAddNew = false
             this.dialogVisible = true
