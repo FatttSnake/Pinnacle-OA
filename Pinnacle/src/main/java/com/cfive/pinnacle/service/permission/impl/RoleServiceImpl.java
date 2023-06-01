@@ -1,8 +1,10 @@
 package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.cfive.pinnacle.entity.permission.Power;
 import com.cfive.pinnacle.entity.permission.Role;
 import com.cfive.pinnacle.entity.permission.PowerRole;
+import com.cfive.pinnacle.exception.DataValidationFailedException;
 import com.cfive.pinnacle.mapper.permission.RoleMapper;
 import com.cfive.pinnacle.mapper.permission.PowerRoleMapper;
 import com.cfive.pinnacle.service.permission.IRoleService;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -51,6 +54,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Override
     @Transactional
     public boolean addRole(Role role) {
+        handlePower(role);
+
         if (roleMapper.insert(role) == 1) {
             role.getPowers().forEach(power -> {
                 PowerRole powerRole = new PowerRole();
@@ -69,6 +74,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Override
     @Transactional
     public boolean modifyRole(Role role) {
+        handlePower(role);
         roleMapper.updateById(role);
         Role originalRole = getRole(role.getId());
         HashSet<Long> newPowerIds = new HashSet<>();
@@ -96,5 +102,21 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             powerRoleMapper.insert(powerRole);
         });
         return true;
+    }
+
+    private void handlePower(Role role) {
+        List<Power> powers = role.getPowers();
+        Set<Long> elementIds = new HashSet<>();
+        Set<Long> menuIds = new HashSet<>();
+        powers.forEach(power -> {
+            Long powerId = power.getId();
+            if (powerId % 100 == 0) {
+                throw new DataValidationFailedException("Illegal data");
+            }
+            elementIds.add(powerId - powerId % 100);
+            menuIds.add(powerId - powerId % 10000);
+        });
+        elementIds.forEach(elementId -> powers.add(new Power(elementId, 2L)));
+        menuIds.forEach(menuId -> powers.add(new Power(menuId, 1L)));
     }
 }

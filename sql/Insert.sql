@@ -187,28 +187,28 @@ begin;
 insert into t_power(id, type_id)
 values (3020101, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (3020101, '获取所有公告', 'notice:manage:get', id, 3030100, null);
+VALUES (3020101, '获取所有公告', 'notice:manage:get', id, 3020100, null);
 commit;
 
 begin;
 insert into t_power(id, type_id)
 values (3020102, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (3020102, '发布公告', 'notice:manage:add', id, 3030100, null);
+VALUES (3020102, '发布公告', 'notice:manage:add', id, 3020100, null);
 commit;
 
 begin;
 insert into t_power(id, type_id)
 values (3020103, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (3020103, '删除公告', 'notice:manage:delete', id, 3030100, null);
+VALUES (3020103, '删除公告', 'notice:manage:delete', id, 3020100, null);
 commit;
 
 begin;
 insert into t_power(id, type_id)
 values (3020104, 3);
 insert into t_operation(id, name, code, power_id, element_id, parent_id)
-VALUES (3020104, '修改公告', 'notice:manage:modify', id, 3030100, null);
+VALUES (3020104, '修改公告', 'notice:manage:modify', id, 3020100, null);
 commit;
 
 begin;
