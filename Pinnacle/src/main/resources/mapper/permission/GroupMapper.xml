@@ -3,25 +3,30 @@
 <mapper namespace="com.cfive.pinnacle.mapper.permission.GroupMapper">
 
     <select id="getAll" resultMap="groupMap">
-        select t_group.id      as group_id,
-               t_group.name    as group_name,
-               t_group.enable  as group_enable,
-               t_group.deleted as group_deleted,
-               t_group.version as group_version,
-               tr.id           as role_id,
-               tr.name         as role_name,
-               tr.deleted      as role_deleted,
-               tr.version      as role_version
-        from t_group
-                 left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
-                 left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
-        where t_group.deleted = 0
+        select distinct t_group.id as group_id,
+        t_group.name as group_name,
+        t_group.enable as group_enable,
+        t_group.deleted as group_deleted,
+        t_group.version as group_version,
+        tr.id as role_id,
+        tr.name as role_name,
+        tr.deleted as role_deleted,
+        tr.version as role_version
+        from (select * from t_group where deleted = 0) as t_group
+        left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
+        left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
+        <where>
+            <foreach collection="groupList" item="item" index="index" open="t_group.id in (" separator="," close=")"
+                     nullable="true">
+                #{item.id}
+            </foreach>
+        </where>
     </select>
 
     <select id="getOneById" resultMap="groupMap">
         select t_group.id      as group_id,
                t_group.name    as group_name,
-               t_group.enable as group_enable,
+               t_group.enable  as group_enable,
                t_group.deleted as group_deleted,
                t_group.version as group_version,
                tr.id           as role_id,

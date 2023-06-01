@@ -2,6 +2,7 @@ package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.permission.Group;
@@ -42,7 +43,10 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     @Override
     public IPage<Group> getAllGroup(Long currentPage, Long pageSize) {
         Page<Group> groupIPage = PageDTO.of(currentPage, pageSize);
-        return groupMapper.getAll(groupIPage);
+        groupIPage = groupMapper.selectPage(groupIPage, Wrappers.emptyWrapper());
+        groupIPage.setRecords(groupMapper.getAll(groupIPage.getRecords()));
+
+        return groupIPage;
     }
 
     @Override
