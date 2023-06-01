@@ -5,6 +5,7 @@ import com.cfive.pinnacle.entity.permission.LoginUser;
 import com.cfive.pinnacle.service.permission.ILoginService;
 import com.cfive.pinnacle.utils.JwtUtil;
 import com.cfive.pinnacle.utils.RedisCache;
+import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,7 +47,7 @@ public class LoginServiceImpl implements ILoginService {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("token", jwt);
 
-        redisCache.setCacheObject("login:" + jwt, loginUser, 30, TimeUnit.MINUTES);
+        redisCache.setCacheObject("login:" + jwt, loginUser, 20, TimeUnit.MINUTES);
 
         return hashMap;
     }
@@ -54,5 +55,16 @@ public class LoginServiceImpl implements ILoginService {
     @Override
     public boolean logout(String token) {
         return redisCache.deleteObject("login:" + token);
+    }
+
+    @Override
+    public HashMap<String, String> renewToken(String token) {
+        String oldRedisKey = "login:" + token;
+        redisCache.deleteObject(oldRedisKey);
+        String jwt = JwtUtil.createJWT(WebUtil.getLoginUser().getUser().getId().toString());
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("token", jwt);
+        redisCache.setCacheObject("login:" + jwt, WebUtil.getLoginUser(), 20, TimeUnit.MINUTES);
+        return hashMap;
     }
 }

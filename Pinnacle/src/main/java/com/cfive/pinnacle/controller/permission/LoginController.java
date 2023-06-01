@@ -28,7 +28,7 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseResult<HashMap<String, String>> login(@RequestBody User user) {
         HashMap<String, String> hashMap = loginService.login(user);
-        return ResponseResult.build(ResponseCode.LOGIN_SUCCESS, "Login Success", hashMap);
+        return ResponseResult.build(ResponseCode.LOGIN_SUCCESS, "Login success", hashMap);
     }
 
     @Operation(summary = "登出")
@@ -36,9 +36,17 @@ public class LoginController {
     public ResponseResult<?> logout(HttpServletRequest request) {
         boolean result = loginService.logout(request.getHeader("token"));
         if (result) {
-            return ResponseResult.build(ResponseCode.LOGOUT_SUCCESS, "Logout Success", null);
+            return ResponseResult.build(ResponseCode.LOGOUT_SUCCESS, "Logout success", null);
         } else {
-            return ResponseResult.build(ResponseCode.LOGOUT_FAILED, "Logout Failed", null);
+            return ResponseResult.build(ResponseCode.LOGOUT_FAILED, "Logout failed", null);
         }
+    }
+
+    @Operation(summary = "更新 Token")
+    @GetMapping("/token")
+    public ResponseResult<HashMap<String, String >> renewToken(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        HashMap<String, String> hashMap = loginService.renewToken(token);
+        return ResponseResult.build(ResponseCode.TOKEN_RENEW_SUCCESS, "Token renew success", hashMap);
     }
 }

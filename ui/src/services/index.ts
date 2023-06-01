@@ -1,5 +1,6 @@
 import axios, { type AxiosError } from 'axios'
-import { clearLocalStorage, getToken } from '@/utils/common'
+import jwtDecode from 'jwt-decode'
+import { clearLocalStorage, getToken, setToken } from '@/utils/common'
 import router from '@/router'
 import {
     ACCESS_DENIED,
@@ -7,6 +8,7 @@ import {
     DATABASE_DATA_VALIDATION_FAILED,
     TOKEN_HAS_EXPIRED,
     TOKEN_IS_ILLEGAL,
+    TOKEN_RENEW_SUCCESS,
     UNAUTHORIZED
 } from '@/constants/Common.constants'
 import { ElMessage } from 'element-plus'
@@ -18,9 +20,27 @@ const service = axios.create({
 })
 
 service.interceptors.request.use(
-    (config) => {
-        const token = getToken()
+    async (config) => {
+        let token = getToken()
         if (token != null) {
+            const jwt = jwtDecode(token)
+            if (
+                (jwt as any).exp * 1000 - new Date().getTime() < 1200000 &&
+                (jwt as any).exp * 1000 - new Date().getTime() > 0
+            ) {
+                await axios
+                    .get('http://localhost:8621/token', {
+                        headers: { token }
+                    })
+                    .then((res) => {
+                        const response = res.data
+                        if (response.code === TOKEN_RENEW_SUCCESS) {
+                            setToken(response.data.token)
+                        }
+                    })
+            }
+
+            token = getToken()
             config.headers.set('token', token)
         }
         return config

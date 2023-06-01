@@ -8,4 +8,6 @@ public interface ILoginService {
     HashMap<String, String> login(User user);
 
     boolean logout(String token);
+
+    HashMap<String, String> renewToken(String token);
 }
