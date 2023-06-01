@@ -83,7 +83,7 @@ public class SecurityConfig {
 
                 // Allow anonymous access
                 .authorizeHttpRequests()
-                .requestMatchers("/login", "/doc.html", "/swagger-ui/**", "/webjars/**", "/v3/**", "/swagger-ui.html")
+                .requestMatchers("/login", "/error/thrown", "/doc.html", "/swagger-ui/**", "/webjars/**", "/v3/**", "/swagger-ui.html")
                 .anonymous()
 
                 // Authentication required
