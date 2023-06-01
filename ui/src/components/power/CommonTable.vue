@@ -31,7 +31,7 @@
                 }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="状态" align="center">
+        <el-table-column label="状态" align="center" width="80px">
             <template #default="scope">
                 <el-tag type="success" v-if="scope.row.enable">启用</el-tag>
                 <el-tag type="info" v-else>禁用</el-tag>
