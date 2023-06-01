@@ -21,6 +21,19 @@
         @onDelete="handleDelete"
         custom-column-label_1="角色"
     />
+
+    <div class="pagination">
+        <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[50, 100, 200, 500, 1000]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
+    </div>
+
     <el-dialog
         :title="dialogTitle"
         :close-on-click-modal="false"
@@ -30,13 +43,13 @@
     >
         <template #default>
             <el-form
-                label-width="100px"
+                label-width="60px"
                 v-loading="dialogLoading"
                 :rules="rules"
                 ref="formRef"
                 :model="groupForm"
             >
-                <el-form-item label="用户组名称" prop="inputGroupName">
+                <el-form-item label="名称" prop="inputGroupName">
                     <el-input
                         autocomplete="off"
                         v-model="groupForm.inputGroupName"
@@ -44,16 +57,6 @@
                         placeholder="请输入名称"
                         show-word-limit
                     />
-                </el-form-item>
-                <el-form-item label="用户组角色">
-                    <el-select v-model="groupForm.selectedRoles" multiple style="width: 100%">
-                        <el-option
-                            v-for="role in roles"
-                            :key="role.id"
-                            :label="role.name"
-                            :value="role.id"
-                        />
-                    </el-select>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-switch
@@ -64,6 +67,16 @@
                         inactive-text="禁用"
                         :inactive-value="0"
                     />
+                </el-form-item>
+                <el-form-item label="角色">
+                    <el-select v-model="groupForm.selectedRoles" multiple style="width: 100%">
+                        <el-option
+                            v-for="role in roles"
+                            :key="role.id"
+                            :label="role.name"
+                            :value="role.id"
+                        />
+                    </el-select>
                 </el-form-item>
             </el-form>
         </template>
@@ -93,6 +106,9 @@ export default {
             dialogVisible: false,
             tableLoading: true,
             dialogLoading: true,
+            currentPage: 1,
+            pageSize: 50,
+            totalCount: 0,
             groupTable: [],
             roles: [],
             groupForm: {
@@ -116,26 +132,29 @@ export default {
     methods: {
         loadGroupTable() {
             this.tableLoading = true
-            request.get('/group').then((res) => {
-                const response = res.data
-                if (response.code === DATABASE_SELECT_OK) {
-                    const groups = response.data
-                    for (const group of groups) {
-                        group.customColumn_1 = []
-                        const roles = group.roles
-                        for (const role of roles) {
-                            group.customColumn_1.push(role.name)
+            request
+                .get('/group', { currentPage: this.currentPage, pageSize: this.pageSize })
+                .then((res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_SELECT_OK) {
+                        const groups = response.data.records
+                        this.totalCount = response.data.total
+                        for (const group of groups) {
+                            group.customColumn_1 = []
+                            const roles = group.roles
+                            for (const role of roles) {
+                                group.customColumn_1.push(role.name)
+                            }
                         }
+                        this.groupTable = groups
+                        this.tableLoading = false
+                    } else {
+                        ElMessage.error({
+                            dangerouslyUseHTMLString: true,
+                            message: '<strong>查询出错</strong>: ' + response.msg
+                        })
                     }
-                    this.groupTable = groups
-                    this.tableLoading = false
-                } else {
-                    ElMessage.error({
-                        dangerouslyUseHTMLString: true,
-                        message: '<strong>查询出错</strong>: ' + response.msg
-                    })
-                }
-            })
+                })
         },
         handleAddBtn() {
             this.isAddNew = true
@@ -155,7 +174,7 @@ export default {
         },
         getRoles() {
             this.dialogLoading = true
-            request.get('/role').then((res) => {
+            request.get('/role/list').then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
                     this.roles = response.data
@@ -264,6 +283,14 @@ export default {
         },
         handleCancel() {
             this.dialogVisible = false
+        },
+        handleSizeChange(pageSize) {
+            this.pageSize = pageSize
+            this.loadGroupTable()
+        },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage
+            this.loadGroupTable()
         }
     },
     mounted() {
@@ -272,4 +299,10 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.pagination {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+}
+</style>

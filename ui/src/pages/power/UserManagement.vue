@@ -226,7 +226,7 @@ export default {
         },
         getRoles() {
             this.dialogLoading = true
-            request.get('/role').then((res) => {
+            request.get('/role/list').then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
                     this.roles = response.data
@@ -240,7 +240,7 @@ export default {
             })
         },
         getGroups() {
-            request.get('/group').then((res) => {
+            request.get('/group/list').then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
                     this.groups = response.data

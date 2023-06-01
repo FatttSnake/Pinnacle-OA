@@ -21,6 +21,19 @@
         @onDelete="handleDelete"
         custom-column-label_1="权限"
     />
+
+    <div class="pagination">
+        <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[50, 100, 200, 500, 1000]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
+    </div>
+
     <el-dialog
         :title="dialogTitle"
         :close-on-click-modal="false"
@@ -31,13 +44,13 @@
         <template #default>
             <el-scrollbar max-height="60vh">
                 <el-form
-                    label-width="80px"
+                    label-width="60px"
                     v-loading="dialogLoading"
                     :rules="rules"
                     ref="formRef"
                     :model="roleForm"
                 >
-                    <el-form-item label="角色名称" prop="inputRoleName">
+                    <el-form-item label="名称" prop="inputRoleName">
                         <el-input
                             autocomplete="off"
                             v-model="roleForm.inputRoleName"
@@ -56,7 +69,7 @@
                             :inactive-value="0"
                         />
                     </el-form-item>
-                    <el-form-item label="角色权限">
+                    <el-form-item label="权限">
                         <el-tree
                             :data="powerTree"
                             node-key="powerId"
@@ -98,6 +111,9 @@ export default {
             dialogVisible: false,
             tableLoading: true,
             dialogLoading: true,
+            currentPage: 1,
+            pageSize: 50,
+            totalCount: 0,
             roleTable: [],
             powerTree: [],
             powerProps: {
@@ -126,47 +142,50 @@ export default {
     methods: {
         loadRoleTable() {
             this.tableLoading = true
-            request.get('/role').then((res) => {
-                const response = res.data
-                if (response.code === DATABASE_SELECT_OK) {
-                    const roles = response.data
-                    for (const role of roles) {
-                        role.customColumn_1 = []
-                        const menus = role.menus
-                        const elements = role.elements
-                        const operations = role.operations
-                        for (const operation of operations) {
-                            const element = _.find(elements, { id: operation.elementId })
-                            if (element.operations === undefined) {
-                                element.operations = []
+            request
+                .get('/role', { currentPage: this.currentPage, pageSize: this.pageSize })
+                .then((res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_SELECT_OK) {
+                        const roles = response.data.records
+                        this.totalCount = response.data.total
+                        for (const role of roles) {
+                            role.customColumn_1 = []
+                            const menus = role.menus
+                            const elements = role.elements
+                            const operations = role.operations
+                            for (const operation of operations) {
+                                const element = _.find(elements, { id: operation.elementId })
+                                if (element.operations === undefined) {
+                                    element.operations = []
+                                }
+                                element.operations.push(operation)
                             }
-                            element.operations.push(operation)
-                        }
-                        for (const element of elements) {
-                            const menu = _.find(menus, { id: element.menuId })
-                            if (menu.elements === undefined) {
-                                menu.elements = []
-                            }
-                            menu.elements.push(element)
+                            for (const element of elements) {
+                                const menu = _.find(menus, { id: element.menuId })
+                                if (menu.elements === undefined) {
+                                    menu.elements = []
+                                }
+                                menu.elements.push(element)
 
-                            const operas = []
-                            _.forEach(element.operations, (value) => {
-                                operas.push(value.name)
-                            })
-                            role.customColumn_1.push(
-                                `${menu.name}/${element.name}/${_.join(operas, ';')}`
-                            )
+                                const operas = []
+                                _.forEach(element.operations, (value) => {
+                                    operas.push(value.name)
+                                })
+                                role.customColumn_1.push(
+                                    `${menu.name}/${element.name}/${_.join(operas, ';')}`
+                                )
+                            }
                         }
+                        this.roleTable = roles
+                        this.tableLoading = false
+                    } else {
+                        ElMessage.error({
+                            dangerouslyUseHTMLString: true,
+                            message: '<strong>查询出错</strong>: ' + response.msg
+                        })
                     }
-                    this.roleTable = roles
-                    this.tableLoading = false
-                } else {
-                    ElMessage.error({
-                        dangerouslyUseHTMLString: true,
-                        message: '<strong>查询出错</strong>: ' + response.msg
-                    })
-                }
-            })
+                })
         },
         handleDialogOpen() {
             this.getPowerTree()
@@ -330,6 +349,14 @@ export default {
         },
         handleCancel() {
             this.dialogVisible = false
+        },
+        handleSizeChange(pageSize) {
+            this.pageSize = pageSize
+            this.loadRoleTable()
+        },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage
+            this.loadRoleTable()
         }
     },
     mounted() {
@@ -338,4 +365,10 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.pagination {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+}
+</style>

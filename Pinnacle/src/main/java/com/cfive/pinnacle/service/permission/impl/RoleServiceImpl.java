@@ -1,9 +1,10 @@
 package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.cfive.pinnacle.entity.permission.Power;
-import com.cfive.pinnacle.entity.permission.Role;
-import com.cfive.pinnacle.entity.permission.PowerRole;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.cfive.pinnacle.entity.permission.*;
 import com.cfive.pinnacle.exception.DataValidationFailedException;
 import com.cfive.pinnacle.mapper.permission.RoleMapper;
 import com.cfive.pinnacle.mapper.permission.PowerRoleMapper;
@@ -42,8 +43,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public List<Role> getAllRole() {
-        return roleMapper.getAll();
+    public IPage<Role> getAllRole(Long currentPage, Long pageSize) {
+        IPage<Role> roleIPage = PageDTO.of(currentPage, pageSize);
+        roleIPage = roleMapper.selectPage(roleIPage, Wrappers.emptyWrapper());
+        roleIPage.setRecords(roleMapper.getAll(roleIPage.getRecords()));
+
+        return roleIPage;
     }
 
     @Override

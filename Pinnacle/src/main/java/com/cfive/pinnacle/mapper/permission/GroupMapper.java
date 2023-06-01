@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Mapper
 public interface GroupMapper extends BaseMapper<Group> {
-    List<Group> getAll();
+    List<Group> getAll(@Param("groupList") List<Group> groupList);
 
     Group getOneById(@Param("id") long id);
 }
