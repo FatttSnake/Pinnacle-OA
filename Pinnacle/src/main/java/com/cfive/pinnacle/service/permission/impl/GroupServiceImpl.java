@@ -1,6 +1,9 @@
 package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.permission.Group;
 import com.cfive.pinnacle.entity.permission.RoleGroup;
 import com.cfive.pinnacle.mapper.permission.GroupMapper;
@@ -12,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * <p>
@@ -38,8 +40,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     }
 
     @Override
-    public List<Group> getAllGroup() {
-        return groupMapper.getAll();
+    public IPage<Group> getAllGroup(Long currentPage, Long pageSize) {
+        Page<Group> groupIPage = PageDTO.of(currentPage, pageSize);
+        return groupMapper.getAll(groupIPage);
     }
 
     @Override

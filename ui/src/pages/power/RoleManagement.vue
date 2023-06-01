@@ -44,13 +44,13 @@
         <template #default>
             <el-scrollbar max-height="60vh">
                 <el-form
-                    label-width="80px"
+                    label-width="60px"
                     v-loading="dialogLoading"
                     :rules="rules"
                     ref="formRef"
                     :model="roleForm"
                 >
-                    <el-form-item label="角色名称" prop="inputRoleName">
+                    <el-form-item label="名称" prop="inputRoleName">
                         <el-input
                             autocomplete="off"
                             v-model="roleForm.inputRoleName"
@@ -69,7 +69,7 @@
                             :inactive-value="0"
                         />
                     </el-form-item>
-                    <el-form-item label="角色权限">
+                    <el-form-item label="权限">
                         <el-tree
                             :data="powerTree"
                             node-key="powerId"

@@ -1,6 +1,7 @@
 package com.cfive.pinnacle.controller.permission;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Group;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
@@ -38,9 +39,17 @@ public class GroupController {
 
     @Operation(summary = "获取所有用户组")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:group:get', 'system:group:add', 'system:group:delete', 'system:group:modify', 'system:user:add', 'system:user:modify')")
-    public ResponseResult<List<Group>> getAllGroup() {
-        List<Group> groups = groupService.getAllGroup();
+    @PreAuthorize("hasAuthority('system:group:get' )")
+    public ResponseResult<IPage<Group>> getAllGroup(Long currentPage, Long pageSize) {
+        IPage<Group> groups = groupService.getAllGroup(currentPage, pageSize);
+        return ResponseResult.databaseSelectSuccess(groups);
+    }
+
+    @Operation(summary = "获取用户组列表")
+    @GetMapping("list")
+    @PreAuthorize("hasAnyAuthority('system:user:add', 'system:user:modify')")
+    public ResponseResult<List<Group>> getGroupList() {
+        List<Group> groups = groupService.list();
         return ResponseResult.databaseSelectSuccess(groups);
     }
 

@@ -1,11 +1,10 @@
 package com.cfive.pinnacle.mapper.permission;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Group;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * <p>
@@ -17,7 +16,7 @@ import java.util.List;
  */
 @Mapper
 public interface GroupMapper extends BaseMapper<Group> {
-    List<Group> getAll();
+    IPage<Group> getAll(IPage<Group> groupIPage);
 
     Group getOneById(@Param("id") long id);
 }

@@ -59,7 +59,7 @@
                  left join t_element te on tp.id = te.power_id
                  left join t_operation t on tp.id = t.power_id
         where t_role.deleted = 0
-          and t_role.id = #{id};
+          and t_role.id = #{id}
     </select>
 
     <resultMap id="roleMap" type="role">

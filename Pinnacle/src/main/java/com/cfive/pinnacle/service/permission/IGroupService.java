@@ -1,9 +1,8 @@
 package com.cfive.pinnacle.service.permission;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Group;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
 
 /**
  * <p>
@@ -14,7 +13,7 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface IGroupService extends IService<Group> {
-    List<Group> getAllGroup();
+    IPage<Group> getAllGroup(Long currentPage, Long pageSize);
 
     Group getGroup(Long id);
 
