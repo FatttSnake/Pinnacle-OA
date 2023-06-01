@@ -155,10 +155,10 @@ export default {
                 return
             }
             login(this.userName, this.password).then((res) => {
-                const data = res.data
-                switch (data.code) {
+                const response = res.data
+                switch (response.code) {
                     case LOGIN_SUCCESS:
-                        setToken(data.data.token)
+                        setToken(response.data.token)
                         ElMessage.success({
                             dangerouslyUseHTMLString: true,
                             message: '<strong>登录成功</strong>'
