@@ -1,6 +1,7 @@
 package com.cfive.pinnacle.controller.permission;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Role;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
@@ -39,9 +40,17 @@ public class RoleController {
 
     @Operation(summary = "获取所有角色")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:role:get', 'system:role:add', 'system:role:delete', 'system:role:modeify', 'system:group:add', 'system:group:modify', 'system:user:add', 'system:user:modify')")
-    public ResponseResult<List<Role>> getAllRole() {
-        List<Role> roles = roleService.getAllRole();
+    @PreAuthorize("hasAuthority('system:role:get')")
+    public ResponseResult<IPage<Role>> getAllRole(Long currentPage, Long pageSize) {
+        IPage<Role> roles = roleService.getAllRole(currentPage, pageSize);
+        return ResponseResult.databaseSelectSuccess(roles);
+    }
+
+    @Operation(summary = "获取角色列表")
+    @GetMapping("list")
+    @PreAuthorize("hasAnyAuthority('system:group:add', 'system:group:modify', 'system:user:add', 'system:user:modify')")
+    public ResponseResult<List<Role>> getRoleList() {
+        List<Role> roles = roleService.list();
         return ResponseResult.databaseSelectSuccess(roles);
     }
 

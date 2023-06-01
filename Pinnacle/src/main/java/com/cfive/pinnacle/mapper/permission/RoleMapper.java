@@ -1,6 +1,6 @@
 package com.cfive.pinnacle.mapper.permission;
-import java.util.List;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
-    List<Role> getAll();
+    IPage<Role> getAll(IPage<Role> roleIPage);
 
     Role getOneById(@Param("id") long id);
 }

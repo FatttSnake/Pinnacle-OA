@@ -1,9 +1,8 @@
 package com.cfive.pinnacle.service.permission;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
 
 /**
  * <p>
@@ -14,7 +13,7 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface IRoleService extends IService<Role> {
-    List<Role> getAllRole();
+    IPage<Role> getAllRole(Long currentPage, Long pageSize);
 
     Role getRole(long id);
 
