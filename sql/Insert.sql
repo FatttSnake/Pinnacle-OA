@@ -47,7 +47,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (2010100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (2010100, '列表', id, 2010000);
+VALUES (2010100, '基础', id, 2010000);
 commit;
 
 begin;
@@ -89,7 +89,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (2020100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (2020100, '列表', id, 2020000);
+VALUES (2020100, '基础', id, 2020000);
 commit;
 
 begin;
@@ -159,7 +159,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (3010100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (3010100, '列表', id, 3010000);
+VALUES (3010100, '基础', id, 3010000);
 commit;
 
 begin;
@@ -180,7 +180,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (3020100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (3020100, '列表', id, 3020000);
+VALUES (3020100, '基础', id, 3020000);
 commit;
 
 begin;
@@ -222,7 +222,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (3030100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (3030100, '列表', id, 3030000);
+VALUES (3030100, '基础', id, 3030000);
 commit;
 
 begin;
@@ -271,7 +271,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (4010100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (4010100, '列表', id, 4010000);
+VALUES (4010100, '基础', id, 4010000);
 commit;
 
 begin;
@@ -292,7 +292,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (4020100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (4020100, '列表', id, 4020000);
+VALUES (4020100, '基础', id, 4020000);
 commit;
 
 begin;
@@ -327,7 +327,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (5010100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (5010100, '列表', id, 5010000);
+VALUES (5010100, '基础', id, 5010000);
 commit;
 
 begin;
@@ -355,7 +355,7 @@ begin;
 insert into t_power(id, type_id)
 VALUES (5020100, 2);
 insert into t_element(id, name, power_id, menu_id)
-VALUES (5020100, '列表', id, 5020000);
+VALUES (5020100, '基础', id, 5020000);
 commit;
 
 begin;
@@ -392,7 +392,7 @@ begin;
 insert into t_power (id, type_id)
 values (98010100, 2);
 insert into t_element (id, name, power_id, menu_id)
-VALUES (98010100, '列表', id, 98010000);
+VALUES (98010100, '基础', id, 98010000);
 commit;
 
 begin;
@@ -434,7 +434,7 @@ begin;
 insert into t_power (id, type_id)
 values (99010100, 2);
 insert into t_element (id, name, power_id, menu_id)
-VALUES (99010100, '列表', id, 99010000);
+VALUES (99010100, '基础', id, 99010000);
 commit;
 
 begin;
@@ -476,7 +476,7 @@ begin;
 insert into t_power (id, type_id)
 values (101010100, 2);
 insert into t_element (id, name, power_id, menu_id)
-VALUES (101010100, '列表', id, 101010000);
+VALUES (101010100, '基础', id, 101010000);
 commit;
 
 begin;
@@ -518,7 +518,7 @@ begin;
 insert into t_power (id, type_id)
 values (102010100, 2);
 insert into t_element (id, name, power_id, menu_id)
-VALUES (102010100, '列表', id, 102010000);
+VALUES (102010100, '基础', id, 102010000);
 commit;
 
 begin;
@@ -560,7 +560,7 @@ begin;
 insert into t_power (id, type_id)
 values (103010100, 2);
 insert into t_element (id, name, power_id, menu_id)
-VALUES (103010100, '列表', id, 103010000);
+VALUES (103010100, '基础', id, 103010000);
 commit;
 
 begin;
