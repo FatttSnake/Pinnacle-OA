@@ -92,7 +92,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public IPage<User> getAllUser(Long currentPage, Long pageSize) {
         IPage<User> userPage = PageDTO.of(currentPage, pageSize);
-        userPage = userMapper.getAll(userPage);
+        userPage = userMapper.selectPage(userPage, Wrappers.emptyWrapper());
         userPage.setRecords(userMapper.getAllWithRoleAndGroup(userPage.getRecords()));
         userPage.getRecords().forEach(user -> {
             if (user.getId() == 1L) {
