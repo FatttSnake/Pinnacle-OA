@@ -5,7 +5,6 @@ import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.service.IStaffService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
  * @author FatttSnake
  * @since 2023-04-30
  */
-@Slf4j
 @RestController
 @RequestMapping("/staff")
 public class StaffController {
@@ -38,7 +36,6 @@ public class StaffController {
     @PutMapping
     @PreAuthorize("hasAnyAuthority('staff:manege:modify', 'staff:admin:modify')")
     public ResponseResult<?> modifyStaff(@RequestBody User user) {
-        log.info(user.toString());
         if (staffService.modifyStaff(user)) {
             return ResponseResult.databaseUpdateSuccess(null);
         } else {
