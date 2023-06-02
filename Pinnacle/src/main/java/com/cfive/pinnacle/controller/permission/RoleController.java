@@ -50,12 +50,8 @@ public class RoleController {
         try {
             if (searchPower != null && !searchPower.isBlank()) {
                 String[] searchPowerStr = searchPower.split(",");
-                if (searchPowerStr.length == 1) {
-                    searchPowerList.add(Long.parseLong(searchPowerStr[0]));
-                } else {
-                    for (String s : searchPowerStr) {
-                        searchPowerList.add(Long.parseLong(s));
-                    }
+                for (String s : searchPowerStr) {
+                    searchPowerList.add(Long.parseLong(s));
                 }
             }
         } catch (Exception e) {
@@ -68,7 +64,7 @@ public class RoleController {
 
     @Operation(summary = "获取角色列表")
     @GetMapping("list")
-    @PreAuthorize("hasAnyAuthority('system:group:add', 'system:group:modify', 'system:user:add', 'system:user:modify')")
+    @PreAuthorize("hasAnyAuthority('system:group:get', 'system:group:add', 'system:group:modify', 'system:user:add', 'system:user:modify')")
     public ResponseResult<List<Role>> getRoleList() {
         List<Role> roles = roleService.list();
         return ResponseResult.databaseSelectSuccess(roles);

@@ -1,19 +1,71 @@
 <template>
-    <el-button bg style="background-color: white" :loading="tableLoading" @click="loadGroupTable">
-        <template #icon>
-            <el-icon>
-                <icon-pinnacle-refresh />
-            </el-icon>
-        </template>
-    </el-button>
-    <el-button type="primary" @click="handleAddBtn">
-        <template #icon>
-            <el-icon>
-                <icon-pinnacle-plus />
-            </el-icon>
-        </template>
-        <template #default> 添加 </template>
-    </el-button>
+    <el-row :gutter="5">
+        <el-col :span="-1">
+            <el-button
+                bg
+                style="background-color: white"
+                :loading="tableLoading"
+                @click="loadGroupTable"
+            >
+                <template #icon>
+                    <el-icon>
+                        <icon-pinnacle-refresh />
+                    </el-icon>
+                </template>
+            </el-button>
+        </el-col>
+        <el-col :span="-1">
+            <el-button type="primary" @click="handleAddBtn">
+                <template #icon>
+                    <el-icon>
+                        <icon-pinnacle-plus />
+                    </el-icon>
+                </template>
+            </el-button>
+        </el-col>
+        <el-col :span="5">
+            <el-form-item label="名称" class="fill-with">
+                <el-input
+                    v-model="inputName"
+                    maxlength="30"
+                    show-word-limit
+                    placeholder="请输入内容"
+                    @keyup.enter="handleQuery"
+                />
+            </el-form-item>
+        </el-col>
+        <el-col :span="9">
+            <el-select
+                v-model="selectedRole"
+                class="fill-with"
+                clearable
+                collapse-tags
+                collapse-tags-tooltip
+                multiple
+                filterable
+            >
+                <el-option
+                    v-for="item in roleOptions"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.name"
+                />
+            </el-select>
+        </el-col>
+        <el-col :span="3">
+            <el-form-item label="状态" class="fill-with">
+                <el-select v-model="selectedEnable" class="fill-with">
+                    <el-option label="全部" :value="-1" />
+                    <el-option label="启用" :value="1" />
+                    <el-option label="禁用" :value="0" />
+                </el-select>
+            </el-form-item>
+        </el-col>
+        <el-col :span="-1">
+            <el-button type="primary" @click="handleQuery">查询</el-button>
+            <el-button @click="handleClear">清空</el-button>
+        </el-col>
+    </el-row>
     <common-table
         :table-date="groupTable"
         :table-loading="tableLoading"
@@ -106,6 +158,13 @@ export default {
             dialogVisible: false,
             tableLoading: true,
             dialogLoading: true,
+            roleOptions: [],
+            searchName: '',
+            searchRole: [],
+            searchEnable: -1,
+            inputName: '',
+            selectedRole: [],
+            selectedEnable: -1,
             currentPage: 1,
             pageSize: 50,
             totalCount: 0,
@@ -133,7 +192,13 @@ export default {
         loadGroupTable() {
             this.tableLoading = true
             request
-                .get('/group', { currentPage: this.currentPage, pageSize: this.pageSize })
+                .get('/group', {
+                    currentPage: this.currentPage,
+                    pageSize: this.pageSize,
+                    searchName: this.searchName,
+                    searchRole: this.searchRole + '',
+                    searchEnable: this.searchEnable
+                })
                 .then((res) => {
                     const response = res.data
                     if (response.code === DATABASE_SELECT_OK) {
@@ -177,6 +242,7 @@ export default {
             request.get('/role/list').then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
+                    this.roleOptions = response.data
                     this.roles = response.data
                     this.dialogLoading = false
                 } else {
@@ -291,10 +357,23 @@ export default {
         handleCurrentChange(currentPage) {
             this.currentPage = currentPage
             this.loadGroupTable()
+        },
+        handleQuery() {
+            this.searchName = this.inputName
+            this.searchRole = this.selectedRole
+            this.searchEnable = this.selectedEnable
+            this.loadGroupTable()
+        },
+        handleClear() {
+            this.inputName = ''
+            this.selectedRole = []
+            this.selectedEnable = -1
+            this.handleQuery()
         }
     },
     mounted() {
         this.loadGroupTable()
+        this.getRoles()
     }
 }
 </script>

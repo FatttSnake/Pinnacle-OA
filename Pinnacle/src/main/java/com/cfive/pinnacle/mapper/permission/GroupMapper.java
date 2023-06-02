@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Mapper
 public interface GroupMapper extends BaseMapper<Group> {
+    List<Long> filterGroupByRoleId(@Param("groupList") List<Long> groupList, @Param("roleId") Long roleId, String searchName, Integer searchEnable);
     List<Group> getAll(@Param("groupList") List<Group> groupList);
 
     Group getOneById(@Param("id") long id);
