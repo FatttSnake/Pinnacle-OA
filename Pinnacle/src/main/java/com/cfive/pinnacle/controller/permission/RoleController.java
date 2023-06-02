@@ -5,17 +5,20 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Role;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.exception.DataValidationFailedException;
 import com.cfive.pinnacle.service.permission.IRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +29,7 @@ import java.util.List;
  * @author FatttSnake
  * @since 2023-04-30
  */
+@Slf4j
 @RestController
 @RequestMapping("/role")
 @Tag(name = "角色", description = "角色相关接口")
@@ -41,8 +45,24 @@ public class RoleController {
     @Operation(summary = "获取所有角色")
     @GetMapping
     @PreAuthorize("hasAuthority('system:role:get')")
-    public ResponseResult<IPage<Role>> getAllRole(Long currentPage, Long pageSize) {
-        IPage<Role> roles = roleService.getAllRole(currentPage, pageSize);
+    public ResponseResult<IPage<Role>> getAllRole(Long currentPage, Long pageSize, String searchName, String searchPower, Integer searchEnable) {
+        List<Long> searchPowerList = new ArrayList<>();
+        try {
+            if (searchPower != null && !searchPower.isBlank()) {
+                String[] searchPowerStr = searchPower.split(",");
+                if (searchPowerStr.length == 1) {
+                    searchPowerList.add(Long.parseLong(searchPowerStr[0]));
+                } else {
+                    for (String s : searchPowerStr) {
+                        searchPowerList.add(Long.parseLong(s));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataValidationFailedException();
+        }
+
+        IPage<Role> roles = roleService.getAllRole(currentPage, pageSize, searchName, searchPowerList, searchEnable);
         return ResponseResult.databaseSelectSuccess(roles);
     }
 
