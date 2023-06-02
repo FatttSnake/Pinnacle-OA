@@ -13,6 +13,17 @@ const infoRouter = {
                 requiresScrollbar: true,
                 requiresPadding: true
             }
+        },
+        {
+            path: 'department',
+            name: 'departmentManagement',
+            component: async () => await import('@/pages/info/DepartmentManagement.vue'),
+            meta: {
+                title: '部门信息管理',
+                requiresMenu: true,
+                requiresScrollbar: true,
+                requiresPadding: true
+            }
         }
     ],
     meta: {

@@ -83,9 +83,10 @@ create table `t_department`
     `id`      bigint      not null primary key,
     `name`    varchar(50) not null comment '部门名',
     `tel`     varchar(20) null comment '部门电话',
-    `address` varchar(20) null comment '部门地址',
+    `address` varchar(100) null comment '部门地址',
     `deleted` bigint      not null default 0,
-    `version` int         not null default 0
+    `version` int         not null default 0,
+    constraint t_user_unique unique (name, deleted)
 ) comment '部门';
 
 create table `t_user`

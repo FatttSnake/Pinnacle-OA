@@ -155,7 +155,7 @@ export const useNoticeStore = defineStore('notice', {
                 })
         },
         async selectDepartment() {
-            await request.get('/department').then((response) => {
+            await request.get('/department/user').then((response) => {
                 this.departmentList = response.data.data
             })
         },

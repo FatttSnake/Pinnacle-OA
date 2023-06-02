@@ -1,5 +1,7 @@
 package com.cfive.pinnacle.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.Department;
 import com.cfive.pinnacle.mapper.DepartmentMapper;
 import com.cfive.pinnacle.service.IDepartmentService;
@@ -19,11 +21,28 @@ import java.util.List;
  */
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements IDepartmentService {
-    @Autowired
     private DepartmentMapper departmentMapper;
 
+    @Autowired
+    public void setDepartmentMapper(DepartmentMapper departmentMapper) {
+        this.departmentMapper = departmentMapper;
+    }
+
     @Override
+    @Deprecated
     public List<Department> getDepartAndUser() {
         return departmentMapper.getDepartAndUser();
+    }
+
+    @Override
+    public IPage<Department> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput) {
+        IPage<Department> departmentIPage;
+        if (currentPage == null || pageSize == null) {
+            departmentIPage = PageDTO.of(0, -1);
+        } else {
+            departmentIPage = PageDTO.of(currentPage, pageSize);
+        }
+        searchInput = searchInput.trim();
+        return departmentMapper.getAllDepartment(departmentIPage, searchType, searchInput);
     }
 }

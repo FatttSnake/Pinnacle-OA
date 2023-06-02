@@ -47,7 +47,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
         } else {
             userIPage = PageDTO.of(currentPage, pageSize);
         }
-        searchInput =  searchInput.trim();
+        searchInput = searchInput.trim();
         return staffMapper.getAllStaff(userIPage, departmentId, searchType, searchInput, searchGender, searchBirthFrom, searchBirthTo);
     }
 

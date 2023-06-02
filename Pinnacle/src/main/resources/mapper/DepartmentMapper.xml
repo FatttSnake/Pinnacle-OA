@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.DepartmentMapper">
+
+    <select id="getAllDepartment" resultType="department">
+        select id, name, tel, address, deleted, version
+            from t_department where deleted = 0
+        <if test="searchInput != null and searchInput != ''">
+            <choose>
+                <when test="searchType == 0">
+                    and (
+                    instr(name, #{searchInput}) > 0
+                    or instr(tel, #{searchInput}) > 0
+                    or instr(address, #{searchInput}) > 0
+                    )
+                </when>
+                <when test="searchType == 1">
+                    and instr(name, #{searchInput}) > 0
+                </when>
+                <when test="searchType == 2">
+                    and instr(tel, #{searchInput}) > 0
+                </when>
+                <when test="searchType == 3">
+                    and instr(address, #{searchInput}) > 0
+                </when>
+            </choose>
+        </if>
+    </select>
+
     <select id="getDepartAndUser" resultMap="department">
         select d.id did,name,u.id uid,username from t_department d,t_user u where d.id=u.department_id and d.deleted=0 and u.deleted=0
     </select>

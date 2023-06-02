@@ -1,5 +1,6 @@
 package com.cfive.pinnacle.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Department;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,6 +15,8 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface IDepartmentService extends IService<Department> {
+    @Deprecated
     List<Department> getDepartAndUser();
 
+    IPage<Department> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput);
 }
