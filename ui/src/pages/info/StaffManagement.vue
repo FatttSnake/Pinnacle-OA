@@ -56,8 +56,10 @@
                 />
             </el-form-item>
         </el-col>
-        <el-button type="primary" @click="handleQuery">查询</el-button>
-        <el-button @click="handleClear">清空</el-button>
+        <el-col span="-1">
+            <el-button type="primary" @click="handleQuery">查询</el-button>
+            <el-button @click="handleClear">清空</el-button>
+        </el-col>
     </el-row>
 
     <el-table
@@ -319,6 +321,7 @@ export default {
             this.inputInput = ''
             this.selectedGender = -1
             this.selectedBirth = []
+            this.currentPage = 1
             this.handleQuery()
         }
     },

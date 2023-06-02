@@ -2,6 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.permission.RoleMapper">
 
+    <select id="filterRoleByPowerId" resultType="long">
+        select distinct t_role.id as role_id
+        from (select * from t_role where deleted = 0) as t_role
+        left join (select * from t_power_role where deleted = 0) as tpr on t_role.id = tpr.role_id
+        left join t_power tp on tp.id = tpr.power_id
+        <where>
+            <if test="powerId != null">
+                tp.id = #{powerId}
+            </if>
+            <foreach collection="roleList" item="item" index="index" open="and t_role.id in (" separator="," close=")"
+                     nullable="true">
+                #{item}
+            </foreach>
+            <if test="searchName != null and searchName != ''">
+                and instr(t_role.name, #{searchName}) > 0
+            </if>
+            <if test="searchEnable != null and searchEnable != -1">
+                and t_role.enable = #{searchEnable}
+            </if>
+        </where>
+    </select>
+
     <select id="getAll" resultMap="roleMap">
         select distinct t_role.id as role_id,
         t_role.name as role_name,

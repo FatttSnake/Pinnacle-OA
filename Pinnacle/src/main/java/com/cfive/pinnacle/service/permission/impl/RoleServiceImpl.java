@@ -2,7 +2,6 @@ package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.permission.*;
 import com.cfive.pinnacle.exception.DataValidationFailedException;
@@ -10,6 +9,7 @@ import com.cfive.pinnacle.mapper.permission.RoleMapper;
 import com.cfive.pinnacle.mapper.permission.PowerRoleMapper;
 import com.cfive.pinnacle.service.permission.IRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +26,7 @@ import java.util.Set;
  * @author FatttSnake
  * @since 2023-04-30
  */
+@Slf4j
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
@@ -43,10 +44,24 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public IPage<Role> getAllRole(Long currentPage, Long pageSize) {
+    public IPage<Role> getAllRole(Long currentPage, Long pageSize, String searchName, List<Long> searchPower, Integer searchEnable) {
         IPage<Role> roleIPage = PageDTO.of(currentPage, pageSize);
-        roleIPage = roleMapper.selectPage(roleIPage, Wrappers.emptyWrapper());
-        roleIPage.setRecords(roleMapper.getAll(roleIPage.getRecords()));
+        searchName = searchName.trim();
+        List<Long> roleList = roleMapper.filterRoleByPowerId(null, null, searchName, searchEnable);
+        if (searchPower.size() > 0) {
+            for (Long powerId : searchPower) {
+                roleList = roleMapper.filterRoleByPowerId(roleList, powerId, null, null);
+                if (roleList.size() == 0) {
+                    break;
+                }
+            }
+        }
+
+        if (roleList.size() > 0) {
+            LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<Role>().in(Role::getId, roleList);
+            roleIPage = roleMapper.selectPage(roleIPage, wrapper);
+            roleIPage.setRecords(roleMapper.getAll(roleIPage.getRecords()));
+        }
 
         return roleIPage;
     }

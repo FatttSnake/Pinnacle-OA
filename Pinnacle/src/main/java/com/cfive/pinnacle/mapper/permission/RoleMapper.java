@@ -17,6 +17,8 @@ import java.util.List;
  */
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
+    List<Long> filterRoleByPowerId(@Param("roleList") List<Long> roleList, @Param("powerId") Long powerId, String searchName, Integer searchEnable);
+
     List<Role> getAll(@Param("roleList") List<Role> roleList);
 
     Role getOneById(@Param("id") long id);

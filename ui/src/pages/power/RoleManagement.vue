@@ -1,19 +1,68 @@
 <template>
-    <el-button bg style="background-color: white" :loading="tableLoading" @click="loadRoleTable">
-        <template #icon>
-            <el-icon>
-                <icon-pinnacle-refresh />
-            </el-icon>
-        </template>
-    </el-button>
-    <el-button type="primary" @click="handleAddBtn">
-        <template #icon>
-            <el-icon>
-                <icon-pinnacle-plus />
-            </el-icon>
-        </template>
-        <template #default> 添加</template>
-    </el-button>
+    <el-row :gutter="10">
+        <el-col :span="-1">
+            <el-button
+                bg
+                style="background-color: white"
+                :loading="tableLoading"
+                @click="loadRoleTable"
+            >
+                <template #icon>
+                    <el-icon>
+                        <icon-pinnacle-refresh />
+                    </el-icon>
+                </template>
+            </el-button>
+        </el-col>
+        <el-col :span="-1">
+            <el-button type="primary" @click="handleAddBtn">
+                <template #icon>
+                    <el-icon>
+                        <icon-pinnacle-plus />
+                    </el-icon>
+                </template>
+                <template #default> 添加</template>
+            </el-button>
+        </el-col>
+        <el-col :span="5">
+            <el-form-item label="名称" class="fill-with">
+                <el-input
+                    v-model="inputName"
+                    maxlength="20"
+                    show-word-limit
+                    placeholder="请输入内容"
+                    @keyup.enter="handleQuery"
+                />
+            </el-form-item>
+        </el-col>
+        <el-col :span="9">
+            <el-form-item label="权限" class="fill-with">
+                <el-cascader
+                    :options="powerOptions"
+                    v-model="selectedPower"
+                    :props="powerOptionProps"
+                    class="fill-with"
+                    clearable
+                    collapse-tags
+                    collapse-tags-tooltip
+                    filterable
+                />
+            </el-form-item>
+        </el-col>
+        <el-col :span="3">
+            <el-form-item label="状态" class="fill-with">
+                <el-select v-model="selectedEnable" class="fill-with">
+                    <el-option label="全部" :value="-1" />
+                    <el-option label="启用" :value="1" />
+                    <el-option label="禁用" :value="0" />
+                </el-select>
+            </el-form-item>
+        </el-col>
+        <el-col :span="-1">
+            <el-button type="primary" @click="handleQuery">查询</el-button>
+            <el-button @click="handleClear">清空</el-button>
+        </el-col>
+    </el-row>
     <common-table
         :table-date="roleTable"
         :table-loading="tableLoading"
@@ -73,12 +122,12 @@
                         <el-tree
                             :data="powerTree"
                             node-key="powerId"
-                            :props="powerProps"
+                            :props="powerTreeProps"
                             show-checkbox
                             :render-after-expand="false"
                             :default-checked-keys="defaultSelectedPower"
                             style="min-width: 120px"
-                            @check-change="handleSelectedPowerChange"
+                            @check-change="handleTreeSelectedPowerChange"
                         />
                     </el-form-item>
                 </el-form>
@@ -111,12 +160,27 @@ export default {
             dialogVisible: false,
             tableLoading: true,
             dialogLoading: true,
+            powerOptions: [],
+            searchName: '',
+            searchPower: [],
+            searchEnable: -1,
+            inputName: '',
+            selectedPower: [],
+            selectedEnable: -1,
             currentPage: 1,
             pageSize: 50,
             totalCount: 0,
             roleTable: [],
             powerTree: [],
-            powerProps: {
+            powerOptionProps: {
+                expandTrigger: 'hover',
+                multiple: true,
+                label: 'name',
+                value: 'powerId',
+                children: 'children',
+                emitPath: false
+            },
+            powerTreeProps: {
                 label: 'name',
                 children: 'children'
             },
@@ -143,7 +207,13 @@ export default {
         loadRoleTable() {
             this.tableLoading = true
             request
-                .get('/role', { currentPage: this.currentPage, pageSize: this.pageSize })
+                .get('/role', {
+                    currentPage: this.currentPage,
+                    pageSize: this.pageSize,
+                    searchName: this.searchName,
+                    searchPower: this.searchPower + '',
+                    searchEnable: this.searchEnable
+                })
                 .then((res) => {
                     const response = res.data
                     if (response.code === DATABASE_SELECT_OK) {
@@ -238,7 +308,43 @@ export default {
                 }
             })
         },
-        handleSelectedPowerChange(data, checked, indeterminate) {
+        getPowerOptions() {
+            request.get('/power').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    const data = response.data
+                    const menuList = data.menuList
+                    const elementList = data.elementList
+                    const operationList = data.operationList
+                    for (const operation of operationList) {
+                        const element = _.find(elementList, { id: operation.elementId })
+                        if (element.children === undefined) {
+                            element.children = []
+                        }
+                        element.children.push(operation)
+                    }
+                    for (const element of elementList) {
+                        const menu = _.find(menuList, { id: element.menuId })
+                        if (menu.children === undefined) {
+                            menu.children = []
+                        }
+                        menu.children.push(element)
+                    }
+                    for (const menu of menuList) {
+                        if (menu.children.length === 1) {
+                            menu.children = menu.children[0].children
+                        }
+                    }
+                    this.powerOptions = data.menuList
+                } else {
+                    ElMessage.error({
+                        dangerouslyUseHTMLString: true,
+                        message: '<strong>查询出错</strong>: ' + response.msg
+                    })
+                }
+            })
+        },
+        handleTreeSelectedPowerChange(data, checked, indeterminate) {
             if (data.children === undefined) {
                 if (checked || indeterminate) {
                     this.roleForm.selectedPower.add(data.powerId)
@@ -357,10 +463,24 @@ export default {
         handleCurrentChange(currentPage) {
             this.currentPage = currentPage
             this.loadRoleTable()
+        },
+        handleQuery() {
+            this.searchName = _.cloneDeep(this.inputName)
+            this.searchPower = _.cloneDeep(this.selectedPower)
+            this.searchEnable = _.cloneDeep(this.selectedEnable)
+            this.loadRoleTable()
+        },
+        handleClear() {
+            this.inputName = ''
+            this.selectedPower = []
+            this.selectedEnable = -1
+            this.currentPage = 1
+            this.handleQuery()
         }
     },
     mounted() {
         this.loadRoleTable()
+        this.getPowerOptions()
     }
 }
 </script>

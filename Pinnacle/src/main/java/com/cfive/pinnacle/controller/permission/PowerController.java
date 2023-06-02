@@ -32,7 +32,7 @@ public class PowerController {
 
     @Operation(summary = "获取所有权限")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:role:add', 'system:role:modify')")
+    @PreAuthorize("hasAnyAuthority('system:role:get','system:role:add', 'system:role:modify')")
     public ResponseResult<PowerSet> getAllPower() {
         PowerSet powerSet = powerService.getAllPower();
 
