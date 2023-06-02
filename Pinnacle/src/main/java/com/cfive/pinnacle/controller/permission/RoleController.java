@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Role;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
-import com.cfive.pinnacle.exception.DataValidationFailedException;
 import com.cfive.pinnacle.service.permission.IRoleService;
+import com.cfive.pinnacle.utils.WebUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -18,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,21 +45,7 @@ public class RoleController {
     @GetMapping
     @PreAuthorize("hasAuthority('system:role:get')")
     public ResponseResult<IPage<Role>> getAllRole(Long currentPage, Long pageSize, String searchName, String searchPower, Integer searchEnable) {
-        List<Long> searchPowerList = new ArrayList<>();
-        try {
-            if (searchPower != null && !searchPower.isBlank()) {
-                String[] searchPowerStr = searchPower.split(",");
-                if (searchPowerStr.length == 1) {
-                    searchPowerList.add(Long.parseLong(searchPowerStr[0]));
-                } else {
-                    for (String s : searchPowerStr) {
-                        searchPowerList.add(Long.parseLong(s));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new DataValidationFailedException();
-        }
+        List<Long> searchPowerList = WebUtil.convertStringToList(searchPower, Long.class);
 
         IPage<Role> roles = roleService.getAllRole(currentPage, pageSize, searchName, searchPowerList, searchEnable);
         return ResponseResult.databaseSelectSuccess(roles);
@@ -68,7 +53,7 @@ public class RoleController {
 
     @Operation(summary = "获取角色列表")
     @GetMapping("list")
-    @PreAuthorize("hasAnyAuthority('system:group:add', 'system:group:modify', 'system:user:add', 'system:user:modify')")
+    @PreAuthorize("hasAnyAuthority('system:group:get', 'system:group:add', 'system:group:modify', 'system:user:get', 'system:user:add', 'system:user:modify')")
     public ResponseResult<List<Role>> getRoleList() {
         List<Role> roles = roleService.list();
         return ResponseResult.databaseSelectSuccess(roles);

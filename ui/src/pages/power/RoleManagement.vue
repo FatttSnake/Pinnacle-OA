@@ -257,7 +257,7 @@ export default {
                 })
         },
         handleDialogOpen() {
-            this.getPowerTree()
+            this.getPowers()
 
             if (this.isAddNew) {
                 this.defaultSelectedPower = []
@@ -269,7 +269,7 @@ export default {
                 this.dialogTitle = '编辑角色'
             }
         },
-        getPowerTree() {
+        getPowers() {
             this.dialogLoading = true
             request.get('/power').then((res) => {
                 const response = res.data
@@ -297,44 +297,9 @@ export default {
                             menu.children = menu.children[0].children
                         }
                     }
+                    this.powerOptions = data.menuList
                     this.powerTree = data.menuList
                     this.dialogLoading = false
-                } else {
-                    ElMessage.error({
-                        dangerouslyUseHTMLString: true,
-                        message: '<strong>查询出错</strong>: ' + response.msg
-                    })
-                }
-            })
-        },
-        getPowerOptions() {
-            request.get('/power').then((res) => {
-                const response = res.data
-                if (response.code === DATABASE_SELECT_OK) {
-                    const data = response.data
-                    const menuList = data.menuList
-                    const elementList = data.elementList
-                    const operationList = data.operationList
-                    for (const operation of operationList) {
-                        const element = _.find(elementList, { id: operation.elementId })
-                        if (element.children === undefined) {
-                            element.children = []
-                        }
-                        element.children.push(operation)
-                    }
-                    for (const element of elementList) {
-                        const menu = _.find(menuList, { id: element.menuId })
-                        if (menu.children === undefined) {
-                            menu.children = []
-                        }
-                        menu.children.push(element)
-                    }
-                    for (const menu of menuList) {
-                        if (menu.children.length === 1) {
-                            menu.children = menu.children[0].children
-                        }
-                    }
-                    this.powerOptions = data.menuList
                 } else {
                     ElMessage.error({
                         dangerouslyUseHTMLString: true,
@@ -467,19 +432,19 @@ export default {
             this.searchName = _.cloneDeep(this.inputName)
             this.searchPower = _.cloneDeep(this.selectedPower)
             this.searchEnable = _.cloneDeep(this.selectedEnable)
+            this.currentPage = 1
             this.loadRoleTable()
         },
         handleClear() {
             this.inputName = ''
             this.selectedPower = []
             this.selectedEnable = -1
-            this.currentPage = 1
             this.handleQuery()
         }
     },
     mounted() {
         this.loadRoleTable()
-        this.getPowerOptions()
+        this.getPowers()
     }
 }
 </script>

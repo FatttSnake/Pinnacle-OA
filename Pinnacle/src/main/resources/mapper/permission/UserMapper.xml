@@ -2,6 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.permission.UserMapper">
 
+    <select id="filterUserByRoleIdAndGroupId" resultType="long">
+        select distinct t_user.id as user_id
+        from (select * from t_user where deleted = 0) as t_user
+        left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+        left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+        left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+        left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+        left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+        <where>
+            <if test="roleId != null">
+                tr.id = #{roleId}
+            </if>
+            <if test="groupId != null">
+                and tg.id = #{groupId}
+            </if>
+            <foreach collection="userList" item="item" index="index" open="and t_user.id in (" separator="," close=")"
+                     nullable="true">
+                #{item}
+            </foreach>
+            <if test="searchName != null and searchName != ''">
+                and instr(t_user.username, #{searchName}) > 0
+            </if>
+            <if test="searchEnable != null and searchEnable != -1">
+                and t_user.enable = #{searchEnable}
+            </if>
+        </where>
+    </select>
+
     <select id="getAllWithRoleAndGroup" resultMap="userMap">
         select distinct t_user.id as user_id,
         t_user.username as user_username,

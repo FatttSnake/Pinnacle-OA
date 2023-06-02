@@ -90,17 +90,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public IPage<User> getAllUser(Long currentPage, Long pageSize) {
-        IPage<User> userPage = PageDTO.of(currentPage, pageSize);
-        userPage = userMapper.selectPage(userPage, Wrappers.emptyWrapper());
-        userPage.setRecords(userMapper.getAllWithRoleAndGroup(userPage.getRecords()));
-        userPage.getRecords().forEach(user -> {
-            if (user.getId() == 1L) {
-                user.setRoles(List.of(new Role(0L, "超级管理员")));
-                user.setGroups(List.of(new Group(0L, "超级管理员")));
+    public IPage<User> getAllUser(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, List<Long> searchGroup, Integer searchEnable) {
+        IPage<User> userIPage = PageDTO.of(currentPage, pageSize);
+        searchName = searchName.trim();
+        List<Long> userList = userMapper.filterUserByRoleIdAndGroupId(null, null, null, searchName, searchEnable);
+        if (userList.size() > 0) {
+            for (Long roleId : searchRole) {
+                userList = userMapper.filterUserByRoleIdAndGroupId(userList, roleId, null, null, null);
+                if (userList.size() == 0) {
+                    break;
+                }
             }
-        });
-        return userPage;
+        }
+        if (userList.size() > 0) {
+            for (Long groupId : searchGroup) {
+                userList = userMapper.filterUserByRoleIdAndGroupId(userList, null, groupId, null, null);
+                if (userList.size() == 0) {
+                    break;
+                }
+            }
+        }
+
+        if (userList.size() > 0) {
+            LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().in(User::getId, userList);
+            userIPage = userMapper.selectPage(userIPage, wrapper);
+            userIPage.setRecords(userMapper.getAllWithRoleAndGroup(userIPage.getRecords()));
+            userIPage.getRecords().forEach(user -> {
+                if (user.getId() == 1L) {
+                    user.setRoles(List.of(new Role(0L, "超级管理员")));
+                    user.setGroups(List.of(new Group(0L, "超级管理员")));
+                }
+            });
+        }
+
+        return userIPage;
     }
 
     @Override

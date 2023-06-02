@@ -2,7 +2,6 @@ package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.permission.Group;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * <p>
@@ -41,10 +41,25 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     }
 
     @Override
-    public IPage<Group> getAllGroup(Long currentPage, Long pageSize) {
+    public IPage<Group> getAllGroup(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, Integer searchEnable) {
         Page<Group> groupIPage = PageDTO.of(currentPage, pageSize);
-        groupIPage = groupMapper.selectPage(groupIPage, Wrappers.emptyWrapper());
-        groupIPage.setRecords(groupMapper.getAll(groupIPage.getRecords()));
+        searchName = searchName.trim();
+        List<Long> groupList = groupMapper.filterGroupByRoleId(null, null, searchName, searchEnable);
+        if (groupList.size() > 0) {
+            for (Long roleId : searchRole) {
+                groupList = groupMapper.filterGroupByRoleId(groupList, roleId, null, null);
+                if (groupList.size() == 0) {
+                    break;
+                }
+            }
+        }
+
+        if (groupList.size() > 0) {
+            LambdaQueryWrapper<Group> wrapper = new LambdaQueryWrapper<Group>().in(Group::getId, groupList);
+            groupIPage = groupMapper.selectPage(groupIPage, wrapper);
+            groupIPage.setRecords(groupMapper.getAll(groupIPage.getRecords()));
+        }
+
 
         return groupIPage;
     }
