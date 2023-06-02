@@ -121,7 +121,13 @@
                     />
                 </el-form-item>
                 <el-form-item label="角色">
-                    <el-select v-model="groupForm.selectedRoles" multiple style="width: 100%">
+                    <el-select
+                        v-model="groupForm.selectedRoles"
+                        multiple
+                        style="width: 100%"
+                        filterable
+                        clearable
+                    >
                         <el-option
                             v-for="role in roles"
                             :key="role.id"
