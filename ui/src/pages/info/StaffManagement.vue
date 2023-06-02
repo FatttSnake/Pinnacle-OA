@@ -1,5 +1,5 @@
 <template>
-    <el-row gutter="20">
+    <el-row gutter="15">
         <el-col :span="-1">
             <el-button
                 bg

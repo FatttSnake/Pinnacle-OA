@@ -1,5 +1,5 @@
 <template>
-    <el-row :gutter="10">
+    <el-row :gutter="5">
         <el-col :span="-1">
             <el-button
                 bg
@@ -21,7 +21,6 @@
                         <icon-pinnacle-plus />
                     </el-icon>
                 </template>
-                <template #default> 添加</template>
             </el-button>
         </el-col>
         <el-col :span="5">
