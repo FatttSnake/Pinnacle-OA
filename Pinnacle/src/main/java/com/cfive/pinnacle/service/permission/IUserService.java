@@ -22,7 +22,7 @@ public interface IUserService extends IService<User> {
 
     List<User> getDepartmentUser();
 
-    IPage<User> getAllUser(Long currentPage, Long pageSize);
+    IPage<User> getAllUser(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, List<Long> searchGroup, Integer searchEnable);
 
     User getUser(long id);
 

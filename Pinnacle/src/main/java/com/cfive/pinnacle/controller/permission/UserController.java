@@ -6,6 +6,7 @@ import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.permission.IUserService;
+import com.cfive.pinnacle.utils.WebUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +56,13 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:user:get', 'system:user:add', 'system:user:modify')")
+    @PreAuthorize("hasAuthority('system:user:get')")
     @Operation(summary = "获取所有用户（权限管理相关）")
-    public ResponseResult<IPage<User>> getAllUser(Long currentPage, Long pageSize) {
-        IPage<User> users = userService.getAllUser( currentPage,  pageSize);
+    public ResponseResult<IPage<User>> getAllUser(Long currentPage, Long pageSize, String searchName, String searchRole, String searchGroup, Integer searchEnable) {
+        List<Long> searchRoleList = WebUtil.convertStringToList(searchRole, Long.class);
+        List<Long> searchGroupList = WebUtil.convertStringToList(searchGroup, Long.class);
+
+        IPage<User> users = userService.getAllUser(currentPage, pageSize, searchName, searchRoleList, searchGroupList, searchEnable);
         return ResponseResult.databaseSelectSuccess(users);
     }
 

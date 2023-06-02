@@ -314,6 +314,7 @@ export default {
             this.searchInput = _.cloneDeep(this.inputInput)
             this.searchGender = _.cloneDeep(this.selectedGender)
             this.searchBirth = _.cloneDeep(this.selectedBirth)
+            this.currentPage = 1
             this.loadStaffTable()
         },
         handleClear() {
@@ -321,7 +322,6 @@ export default {
             this.inputInput = ''
             this.selectedGender = -1
             this.selectedBirth = []
-            this.currentPage = 1
             this.handleQuery()
         }
     },

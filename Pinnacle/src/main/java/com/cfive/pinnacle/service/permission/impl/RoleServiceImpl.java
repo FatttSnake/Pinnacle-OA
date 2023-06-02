@@ -48,7 +48,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         IPage<Role> roleIPage = PageDTO.of(currentPage, pageSize);
         searchName = searchName.trim();
         List<Long> roleList = roleMapper.filterRoleByPowerId(null, null, searchName, searchEnable);
-        if (searchPower.size() > 0) {
+        if (roleList.size() > 0) {
             for (Long powerId : searchPower) {
                 roleList = roleMapper.filterRoleByPowerId(roleList, powerId, null, null);
                 if (roleList.size() == 0) {

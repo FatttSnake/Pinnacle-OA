@@ -17,6 +17,8 @@ import java.util.List;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
+    List<Long> filterUserByRoleIdAndGroupId(@Param("userList") List<Long> userList, @Param("roleId") Long roleId, @Param("groupId") Long groupId, String searchName, Integer searchEnable);
+
     List<User> getAllWithRoleAndGroup(@Param("userList") List<User> userList);
 
     List<User> getAllAffairUser();

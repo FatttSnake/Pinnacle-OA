@@ -368,6 +368,7 @@ export default {
             this.searchName = this.inputName
             this.searchRole = this.selectedRole
             this.searchEnable = this.selectedEnable
+            this.currentPage = 1
             this.loadGroupTable()
         },
         handleClear() {

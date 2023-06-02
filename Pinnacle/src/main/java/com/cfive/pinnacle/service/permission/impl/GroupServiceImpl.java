@@ -45,7 +45,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         Page<Group> groupIPage = PageDTO.of(currentPage, pageSize);
         searchName = searchName.trim();
         List<Long> groupList = groupMapper.filterGroupByRoleId(null, null, searchName, searchEnable);
-        if (searchRole.size() > 0) {
+        if (groupList.size() > 0) {
             for (Long roleId : searchRole) {
                 groupList = groupMapper.filterGroupByRoleId(groupList, roleId, null, null);
                 if (groupList.size() == 0) {

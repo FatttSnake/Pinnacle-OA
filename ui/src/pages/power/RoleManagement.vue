@@ -432,13 +432,13 @@ export default {
             this.searchName = _.cloneDeep(this.inputName)
             this.searchPower = _.cloneDeep(this.selectedPower)
             this.searchEnable = _.cloneDeep(this.selectedEnable)
+            this.currentPage = 1
             this.loadRoleTable()
         },
         handleClear() {
             this.inputName = ''
             this.selectedPower = []
             this.selectedEnable = -1
-            this.currentPage = 1
             this.handleQuery()
         }
     },

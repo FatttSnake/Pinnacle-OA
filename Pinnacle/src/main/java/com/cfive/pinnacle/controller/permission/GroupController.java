@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.Group;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
-import com.cfive.pinnacle.exception.DataValidationFailedException;
 import com.cfive.pinnacle.service.permission.IGroupService;
+import com.cfive.pinnacle.utils.WebUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -17,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,24 +42,15 @@ public class GroupController {
     @GetMapping
     @PreAuthorize("hasAuthority('system:group:get')")
     public ResponseResult<IPage<Group>> getAllGroup(Long currentPage, Long pageSize, String searchName, String searchRole, Integer searchEnable) {
-        List<Long> searchRoleList = new ArrayList<>();
-        try {
-            if (searchRole != null && !searchRole.isBlank()) {
-                String[] searchRoleStr = searchRole.split(",");
-                for (String s : searchRoleStr) {
-                    searchRoleList.add(Long.parseLong(s));
-                }
-            }
-        } catch (Exception e) {
-            throw new DataValidationFailedException();
-        }
+        List<Long> searchRoleList = WebUtil.convertStringToList(searchRole, Long.class);
+
         IPage<Group> groups = groupService.getAllGroup(currentPage, pageSize, searchName, searchRoleList, searchEnable);
         return ResponseResult.databaseSelectSuccess(groups);
     }
 
     @Operation(summary = "获取用户组列表")
     @GetMapping("list")
-    @PreAuthorize("hasAnyAuthority('system:user:add', 'system:user:modify')")
+    @PreAuthorize("hasAnyAuthority('system:user:get', 'system:user:add', 'system:user:modify')")
     public ResponseResult<List<Group>> getGroupList() {
         List<Group> groups = groupService.list();
         return ResponseResult.databaseSelectSuccess(groups);
