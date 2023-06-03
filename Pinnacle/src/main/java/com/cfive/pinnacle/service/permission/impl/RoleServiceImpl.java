@@ -9,7 +9,6 @@ import com.cfive.pinnacle.mapper.permission.RoleMapper;
 import com.cfive.pinnacle.mapper.permission.PowerRoleMapper;
 import com.cfive.pinnacle.service.permission.IRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,6 @@ import java.util.Set;
  * @author FatttSnake
  * @since 2023-04-30
  */
-@Slf4j
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
@@ -44,13 +42,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public IPage<Role> getAllRole(Long currentPage, Long pageSize, String searchName, List<Long> searchPower, Integer searchEnable) {
+    public IPage<Role> getAllRole(Long currentPage, Long pageSize, String searchName, List<Long> searchPower, Integer searchEnable, Integer searchRegex) {
         IPage<Role> roleIPage = PageDTO.of(currentPage, pageSize);
         searchName = searchName.trim();
-        List<Long> roleList = roleMapper.filterRoleByPowerId(null, null, searchName, searchEnable);
+        List<Long> roleList = roleMapper.filterRoleByPowerId(null, null, searchName, searchEnable, searchRegex);
         if (roleList.size() > 0) {
             for (Long powerId : searchPower) {
-                roleList = roleMapper.filterRoleByPowerId(roleList, powerId, null, null);
+                roleList = roleMapper.filterRoleByPowerId(roleList, powerId, null, null, null);
                 if (roleList.size() == 0) {
                     break;
                 }

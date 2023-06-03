@@ -24,14 +24,29 @@
             </el-button>
         </el-col>
         <el-col :span="5">
-            <el-form-item label="名称" class="fill-with">
+            <el-form-item
+                label="名称"
+                class="fill-with"
+                :error="isRegexLegal ? '' : '非法正则表达式'"
+            >
                 <el-input
                     v-model="inputName"
-                    maxlength="30"
                     show-word-limit
                     placeholder="请输入内容"
                     @keyup.enter="handleQuery"
-                />
+                    @change="handleInputChange"
+                >
+                    <template #suffix>
+                        <el-tooltip content="正则表达式">
+                            <el-checkbox
+                                v-model="checkedRegex"
+                                label=".*"
+                                :true-label="1"
+                                @change="handleInputChange"
+                            />
+                        </el-tooltip>
+                    </template>
+                </el-input>
             </el-form-item>
         </el-col>
         <el-col :span="9">
@@ -156,6 +171,7 @@ import {
     DATABASE_UPDATE_OK
 } from '@/constants/Common.constants.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import _ from 'lodash'
 
 export default {
     name: 'GroupManagement',
@@ -166,10 +182,13 @@ export default {
             dialogLoading: true,
             roleOptions: [],
             searchName: '',
-            searchRole: [],
-            searchEnable: -1,
             inputName: '',
+            searchRegex: 0,
+            checkedRegex: 0,
+            isRegexLegal: true,
+            searchRole: [],
             selectedRole: [],
+            searchEnable: -1,
             selectedEnable: -1,
             currentPage: 1,
             pageSize: 50,
@@ -196,6 +215,13 @@ export default {
     },
     methods: {
         loadGroupTable() {
+            if (!this.isRegexLegal) {
+                ElMessage.error({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>非法正则表达式</strong>，请重新输入'
+                })
+                return
+            }
             this.tableLoading = true
             request
                 .get('/group', {
@@ -203,7 +229,8 @@ export default {
                     pageSize: this.pageSize,
                     searchName: this.searchName,
                     searchRole: this.searchRole + '',
-                    searchEnable: this.searchEnable
+                    searchEnable: this.searchEnable,
+                    searchRegex: this.searchRegex ?? 0
                 })
                 .then((res) => {
                     const response = res.data
@@ -366,16 +393,33 @@ export default {
         },
         handleQuery() {
             this.searchName = this.inputName
+            this.searchRegex = _.cloneDeep(this.checkedRegex)
             this.searchRole = this.selectedRole
             this.searchEnable = this.selectedEnable
             this.currentPage = 1
+            this.handleInputChange()
             this.loadGroupTable()
         },
         handleClear() {
             this.inputName = ''
+            this.checkedRegex = 0
             this.selectedRole = []
             this.selectedEnable = -1
             this.handleQuery()
+        },
+        handleInputChange() {
+            if (this.checkedRegex) {
+                try {
+                    RegExp(this.inputName)
+                    this.isRegexLegal = !(
+                        this.inputName.includes('{}') || this.inputName.includes('[]')
+                    )
+                } catch (e) {
+                    this.isRegexLegal = false
+                }
+            } else {
+                this.isRegexLegal = true
+            }
         }
     },
     mounted() {

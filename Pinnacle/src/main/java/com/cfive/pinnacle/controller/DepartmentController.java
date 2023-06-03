@@ -45,8 +45,8 @@ public class DepartmentController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('department:admin:get')")
-    public ResponseResult<IPage<Department>> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput) {
-        return ResponseResult.databaseSelectSuccess(departmentService.getAllDepartment(currentPage, pageSize, searchType, searchInput));
+    public ResponseResult<IPage<Department>> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchRegex) {
+        return ResponseResult.databaseSelectSuccess(departmentService.getAllDepartment(currentPage, pageSize, searchType, searchInput, searchRegex));
     }
 
     @GetMapping("list")

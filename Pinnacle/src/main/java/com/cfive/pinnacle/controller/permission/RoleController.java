@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -28,7 +27,6 @@ import java.util.List;
  * @author FatttSnake
  * @since 2023-04-30
  */
-@Slf4j
 @RestController
 @RequestMapping("/role")
 @Tag(name = "角色", description = "角色相关接口")
@@ -44,10 +42,10 @@ public class RoleController {
     @Operation(summary = "获取所有角色")
     @GetMapping
     @PreAuthorize("hasAuthority('system:role:get')")
-    public ResponseResult<IPage<Role>> getAllRole(Long currentPage, Long pageSize, String searchName, String searchPower, Integer searchEnable) {
+    public ResponseResult<IPage<Role>> getAllRole(Long currentPage, Long pageSize, String searchName, String searchPower, Integer searchEnable, Integer searchRegex) {
         List<Long> searchPowerList = WebUtil.convertStringToList(searchPower, Long.class);
 
-        IPage<Role> roles = roleService.getAllRole(currentPage, pageSize, searchName, searchPowerList, searchEnable);
+        IPage<Role> roles = roleService.getAllRole(currentPage, pageSize, searchName, searchPowerList, searchEnable, searchRegex);
         return ResponseResult.databaseSelectSuccess(roles);
     }
 

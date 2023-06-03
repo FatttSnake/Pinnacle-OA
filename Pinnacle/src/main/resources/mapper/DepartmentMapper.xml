@@ -4,31 +4,60 @@
 
     <select id="getAllDepartment" resultType="department">
         select id, name, tel, address, deleted, version
-            from t_department where deleted = 0
+        from t_department where deleted = 0
         <if test="searchInput != null and searchInput != ''">
             <choose>
                 <when test="searchType == 0">
-                    and (
-                    instr(name, #{searchInput}) > 0
-                    or instr(tel, #{searchInput}) > 0
-                    or instr(address, #{searchInput}) > 0
-                    )
+                    <if test="searchRegex == 1">
+                        and (
+                        name regexp #{searchInput}
+                        or tel regexp #{searchInput}
+                        or address regexp #{searchInput}
+                        )
+                    </if>
+                    <if test="searchRegex != 1">
+                        and (
+                        instr(name, #{searchInput}) > 0
+                        or instr(tel, #{searchInput}) > 0
+                        or instr(address, #{searchInput}) > 0
+                        )
+                    </if>
                 </when>
                 <when test="searchType == 1">
-                    and instr(name, #{searchInput}) > 0
+                    <if test="searchRegex == 1">
+                        and name regexp #{searchInput}
+                    </if>
+                    <if test="searchRegex != 1">
+                        and instr(name, #{searchInput}) > 0
+                    </if>
                 </when>
                 <when test="searchType == 2">
-                    and instr(tel, #{searchInput}) > 0
+                    <if test="searchRegex == 1">
+                        and tel regexp #{searchInput}
+                    </if>
+                    <if test="searchRegex != 1">
+                        and instr(tel, #{searchInput}) > 0
+                    </if>
                 </when>
                 <when test="searchType == 3">
-                    and instr(address, #{searchInput}) > 0
+                    <if test="searchRegex == 1">
+                        and address regexp #{searchInput}
+                    </if>
+                    <if test="searchRegex != 1">
+                        and instr(address, #{searchInput}) > 0
+                    </if>
                 </when>
             </choose>
         </if>
     </select>
 
     <select id="getDepartAndUser" resultMap="department">
-        select d.id did,name,u.id uid,username from t_department d,t_user u where d.id=u.department_id and d.deleted=0 and u.deleted=0
+        select d.id did, name, u.id uid, username
+        from t_department d,
+             t_user u
+        where d.id = u.department_id
+          and d.deleted = 0
+          and u.deleted = 0
     </select>
     <resultMap id="department" type="department" autoMapping="true">
         <id column="did" property="id"/>
