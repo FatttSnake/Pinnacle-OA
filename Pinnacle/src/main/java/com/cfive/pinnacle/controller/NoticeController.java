@@ -2,6 +2,7 @@ package com.cfive.pinnacle.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
@@ -35,30 +36,31 @@ public class NoticeController {
     @Autowired
     private INoticeReceiveService noticeReceiveService;
 
+    //分页查询所有公告或分页模糊查询
+    @GetMapping("/page")
+    @PreAuthorize("hasAuthority('notice:manage:get')")
+    public ResponseResult<List<Notice>> selectPageNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime) {
+        Page<Notice> noticePage = null;
+        if (null != currentPage && null != pageSize) {
+            noticePage = PageDTO.of(currentPage, pageSize);
+        } else {
+            // 不进行分页
+            noticePage = PageDTO.of(1, -1);
+        }
+        IPage<Notice> noticeIPage = noticeService.selectPageNotice(noticePage, title.trim(), type.trim(), startTime.trim(), endTime.trim());
+        int code = noticeIPage.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
+        String msg = noticeIPage.getRecords() != null ? String.valueOf(noticeIPage.getTotal()) : "数据查询失败，请重试！";
+        return ResponseResult.build(code, msg, noticeIPage.getRecords());
+    }
+
     //根据公告id查公告信息及发布人
     @GetMapping("/{nid}")
     @PreAuthorize("hasAuthority('notice:manage:get')")
     public ResponseResult<Notice> selectByNoticeId(@PathVariable Long nid) {
         Notice noticeById = noticeService.selectByNoticeId(nid);
-        Integer code = noticeById != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
+        int code = noticeById != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticeById != null ? "" : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticeById);
-    }
-
-    //查询所有公告或模糊查询
-    @GetMapping
-    @PreAuthorize("hasAuthority('notice:manage:get')")
-    public ResponseResult<List<Notice>> selectAllNotice(String title, String type, String startTime, String endTime) {
-        List<Notice> noticeList;
-        if (!StringUtils.hasText(title) && !StringUtils.hasText(type) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
-            noticeList = noticeService.selectAllNotice();
-        } else {
-            noticeList = noticeService.selectByCond(title, type, startTime, endTime);
-        }
-
-        int code = noticeList != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
-        String msg = noticeList != null ? "" : "数据查询失败，请重试！";
-        return ResponseResult.build(code, msg, noticeList);
     }
 
     //根据登录用户id查询所接收的公告
@@ -83,16 +85,6 @@ public class NoticeController {
         return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, null);
 
     }
-
-    //更新公告
-    @PutMapping
-    @PreAuthorize("hasAuthority('notice:manage:modify')")
-    public ResponseResult<?> updateNotice(@RequestBody Notice notice) {
-        Boolean updateById = noticeService.updateNotice(notice);
-        String msg = updateById ? "" : "数据修改失败，请重试！";
-        return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, null);
-    }
-
     //修改公告置顶状态
     @PutMapping("/update_notice_top")
     @PreAuthorize("hasAuthority('notice:self:get')")
@@ -103,13 +95,22 @@ public class NoticeController {
         return ResponseResult.build(updateResult ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, null);
     }
 
+    //更新公告
+    @PutMapping
+    @PreAuthorize("hasAuthority('notice:manage:modify')")
+    public ResponseResult<?> updateNotice(@RequestBody Notice notice) {
+        Boolean updateById = noticeService.updateNotice(notice);
+        String msg = updateById ? "" : "数据修改失败，请重试！";
+        return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, null);
+    }
+
     //添加公告
     @PostMapping
     @PreAuthorize("hasAuthority('notice:manage:add')")
     public ResponseResult<?> addNotice(@RequestBody Notice notice) {
         Boolean insertNotice = noticeService.addNotice(notice);
         String msg = insertNotice ? "" : "数据添加失败，请重试！";
-        return ResponseResult.build(insertNotice ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg,null);
+        return ResponseResult.build(insertNotice ? ResponseCode.DATABASE_SAVE_OK : ResponseCode.DATABASE_SAVE_ERROR, msg, null);
     }
 
     //删除公告
@@ -124,7 +125,7 @@ public class NoticeController {
     //批量删除公告
     @PostMapping("/batch")
     @PreAuthorize("hasAuthority('notice:manage:delete')")
-    public ResponseResult<?> deleteBatchByIds(@RequestBody List<String> noticeIds){
+    public ResponseResult<?> deleteBatchByIds(@RequestBody List<String> noticeIds) {
         //	List<String>转List<Long>
         List<Long> nIds = noticeIds.stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
         Boolean deleteBatchByIds = noticeService.deleteBatchByIds(nIds);
@@ -132,35 +133,12 @@ public class NoticeController {
         return ResponseResult.build(deleteBatchByIds ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, null);
     }
 
-    //分页查询所有公告或分页模糊查询
-    @GetMapping("/page")
-    @PreAuthorize("hasAuthority('notice:manage:get')")
-    public ResponseResult<List<Notice>> selectPageAllNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime) {
-        IPage<Notice> noticePageList;
-        Page<Notice> page = new Page();
-        if (null != currentPage && null != pageSize) {
-            page.setCurrent(currentPage.intValue());
-            page.setSize(pageSize.intValue());
-        } else {
-            // 不进行分页
-            page.setCurrent(1);
-            page.setSize(-1);
-        }
-        if (!StringUtils.hasText(title) && !StringUtils.hasText(type) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
-            noticePageList = noticeService.selectPageAllNotice(page);
-        } else {
-            noticePageList = noticeService.selectPageByCond(page, title, type, startTime, endTime);
-        }
-        int code = noticePageList.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
-        String msg = noticePageList.getRecords() != null ? String.valueOf(noticePageList.getTotal()) : "数据查询失败，请重试！";
-        return ResponseResult.build(code, msg, noticePageList.getRecords());
-    }
-
+    //首页展示最近接收的公告
     @GetMapping("/limit")
-    public  ResponseResult<List<Notice>> selectLimitByUserId(){
+    public ResponseResult<List<Notice>> selectLimitByUserId() {
         List<Notice> selectLimitByUserId = noticeReceiveService.selectLimitByUserId();
-        String msg = (null!=selectLimitByUserId) ? "" : "数据查询失败，请重试！";
-        return ResponseResult.build((null!=selectLimitByUserId) ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, selectLimitByUserId);
+        String msg = (null != selectLimitByUserId) ? "" : "数据查询失败，请重试！";
+        return ResponseResult.build((null != selectLimitByUserId) ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, selectLimitByUserId);
     }
 
 }

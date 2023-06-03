@@ -63,31 +63,15 @@ export default {
         SIZE_ICON_MD() {
             return SIZE_ICON_MD
         },
-        selectByCond(currentPage, pageSize, search) {
-            request
-                .get('/notice/page', {
-                    currentPage,
-                    pageSize,
-                    title: search.title,
-                    type: search.type,
-                    startTime: search.startTime,
-                    endTime: search.endTime
-                })
-                .then((response) => {
-                    if (response.data.code === 20021) {
-                        noticeStore.selectData = response.data.data
-                        noticeStore.total = parseInt(response.data.msg)
-                        ElMessage({
-                            message: '查询成功.',
-                            type: 'success'
-                        })
-                    } else if (response.data.code === 20031) {
-                        ElMessage({
-                            message: response.data.msg,
-                            type: 'error'
-                        })
-                    }
-                })
+        selectByCond() {
+            noticeStore.selectAllNotice(
+                this.currentPage,
+                this.pageSize,
+                this.search.title,
+                this.search.type,
+                this.search.startTime,
+                this.search.endTime
+            )
         },
         handleDialogClose() {
             noticeStore.$patch((state) => {
@@ -111,7 +95,14 @@ export default {
                                 message: '删除成功.',
                                 type: 'success'
                             })
-                            noticeStore.selectAllNotice(this.currentPage, this.pageSize)
+                            noticeStore.selectAllNotice(
+                                this.currentPage,
+                                this.pageSize,
+                                '',
+                                '',
+                                '',
+                                ''
+                            )
                         } else if (response.data.code === 20034) {
                             ElMessage({
                                 message: response.data.msg,
@@ -130,7 +121,14 @@ export default {
         },
         getLoading() {
             noticeStore.loading = true
-            noticeStore.selectAllNotice(this.currentPage, this.pageSize)
+            noticeStore.selectAllNotice(
+                this.currentPage,
+                this.pageSize,
+                this.search.title,
+                this.search.type,
+                this.search.startTime,
+                this.search.endTime
+            )
         },
         deleteBatchByIds() {
             const multiDeleteIds = []
@@ -150,7 +148,14 @@ export default {
                                     message: '删除成功.',
                                     type: 'success'
                                 })
-                                noticeStore.selectAllNotice(this.currentPage, this.pageSize)
+                                noticeStore.selectAllNotice(
+                                    this.currentPage,
+                                    this.pageSize,
+                                    '',
+                                    '',
+                                    '',
+                                    ''
+                                )
                             } else if (response.data.code === 20034) {
                                 ElMessage({
                                     message: response.data.msg,
@@ -176,7 +181,8 @@ export default {
             'dialogAddVisible',
             'currentPage',
             'pageSize',
-            'multiDeleteSelection'
+            'multiDeleteSelection',
+            'search'
         ])
     }
 }

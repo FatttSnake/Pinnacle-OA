@@ -48,6 +48,12 @@ export const useNoticeStore = defineStore('notice', {
             total: 0,
             pageSize: 5,
             currentPage: 1,
+            search: {
+                title: '',
+                type: '',
+                startTime: '',
+                endTime: ''
+            },
             selectData: [
                 {
                     content: '',
@@ -114,11 +120,22 @@ export const useNoticeStore = defineStore('notice', {
     },
     getters: {},
     actions: {
-        async selectAllNotice(currentPage: number, pageSize: number) {
+        async selectAllNotice(
+            currentPage: number,
+            pageSize: number,
+            title: string,
+            type: string,
+            startTime: string,
+            endTime: string
+        ) {
             void request
                 .get('/notice/page', {
                     currentPage,
-                    pageSize
+                    pageSize,
+                    title,
+                    type,
+                    startTime,
+                    endTime
                 })
                 .then((response) => {
                     if (response.data.code === 20021) {
@@ -174,7 +191,7 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            await this.selectAllNotice(1, 5)
+            await this.selectAllNotice(1, 5, '', '', '', '')
         },
         async handleUpdateNotice(updateNotice: IAddNoticeData) {
             await request.put('/notice', updateNotice).then((response) => {
@@ -192,7 +209,7 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            await this.selectAllNotice(1, 5)
+            await this.selectAllNotice(1, 5, '', '', '', '')
             this.hackReset = false
         },
         async modifyNoticeIsRead(notice: INotice) {

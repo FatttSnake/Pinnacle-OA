@@ -1,7 +1,7 @@
 <template>
     <el-form
         :inline="true"
-        :model="search_info"
+        :model="search"
         class="demo-form-inline"
         label-width="auto"
         ref="searchForm"
@@ -10,12 +10,12 @@
         <el-row :span="24">
             <el-col :span="5">
                 <el-form-item label="公告标题：" prop="title">
-                    <el-input v-model="search_info.title" placeholder="请输入公告标题"></el-input>
+                    <el-input v-model="search.title" placeholder="请输入公告标题"></el-input>
                 </el-form-item>
             </el-col>
             <el-col :span="5">
                 <el-form-item label="公告类型：" prop="type">
-                    <el-select v-model="search_info.type" placeholder="请选择公告类型">
+                    <el-select v-model="search.type" placeholder="请选择公告类型">
                         <el-option
                             v-for="item in enableNoticeTypeList"
                             :key="item.id"
@@ -59,19 +59,15 @@
 <script lang="ts">
 import { COLOR_PRODUCTION, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
 import _ from 'lodash'
-import { useNoticeTypeStore } from '@/store/notice'
+import { useNoticeStore, useNoticeTypeStore } from '@/store/notice'
 import { mapState } from 'pinia'
+
+const noticeStore = useNoticeStore()
 export default {
     name: 'NoticeHead',
     data() {
         return {
-            timeRang: [],
-            search_info: {
-                title: '',
-                type: '',
-                startTime: '',
-                endTime: ''
-            }
+            timeRang: []
         }
     },
     methods: {
@@ -86,10 +82,12 @@ export default {
         },
         selectByCondition() {
             if (!_.isEmpty(this.timeRang)) {
-                this.search_info.startTime = this.handleDateFormatUTC(this.timeRang[0])
-                this.search_info.endTime = this.handleDateFormatUTC(this.timeRang[1])
+                noticeStore.$patch((state) => {
+                    state.search.startTime = this.handleDateFormatUTC(this.timeRang[0])
+                    this.search.endTime = this.handleDateFormatUTC(this.timeRang[1])
+                })
             }
-            this.$emit('selectByCond', 1, 5, this.search_info)
+            this.$emit('selectByCond')
         },
         handleDateFormatUTC(date) {
             let newFormat = ''
@@ -105,10 +103,18 @@ export default {
         },
         resetForm() {
             this.timeRang = []
-            this.$refs.searchForm.resetFields()
+            noticeStore.$patch((state) => {
+                state.search = {
+                    title: '',
+                    type: '',
+                    startTime: '',
+                    endTime: ''
+                }
+            })
         }
     },
     computed: {
+        ...mapState(useNoticeStore, ['currentPage', 'pageSize', 'search']),
         ...mapState(useNoticeTypeStore, ['enableNoticeTypeList'])
     }
 }
