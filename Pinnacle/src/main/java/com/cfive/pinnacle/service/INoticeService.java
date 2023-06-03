@@ -17,10 +17,6 @@ import java.util.List;
 public interface INoticeService extends IService<Notice> {
     Notice selectByNoticeId(Long nid);
 
-    List<Notice> selectAllNotice();
-
-    List<Notice> selectByCond(String title, String type, String startTime, String endTime);
-
     Boolean deleteById(Long nid);
 
     Boolean deleteBatchByIds(List<Long> noticeIds);
@@ -31,7 +27,5 @@ public interface INoticeService extends IService<Notice> {
 
     Boolean addNotice(Notice notice);
 
-    IPage<Notice> selectPageAllNotice(IPage<Notice> page);
-
-    IPage<Notice> selectPageByCond(IPage<Notice> page, String title, String type, String startTime, String endTime);
+    IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime);
 }

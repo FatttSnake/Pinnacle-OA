@@ -44,26 +44,14 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     }
 
     @Override
-    public List<Notice> selectAllNotice() {
-        List<Notice> notices = noticeMapper.selectAllNotice();
-        return notices;
-    }
-
-    @Override
-    public List<Notice> selectByCond(String title, String type, String startTime, String endTime) {
-        LocalDateTime start;
-        LocalDateTime end;
-        try {
-            start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime) {
+        LocalDateTime start=null,end=null;
+        if (startTime!=""&&endTime!=""){
+            start= LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        } catch (Exception e) {
-            start = null;
-            end = null;
         }
-        List<Notice> notices = noticeMapper.selectByCond(title, type, start, end);
-        return notices;
+        return noticeMapper.selectPageNotice(page, title, type, start, end);
     }
-
 
     @Override
     public Boolean deleteById(Long nid) {
@@ -81,7 +69,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
             LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
             lqw.eq(NoticeReceive::getNoticeId, nid);
             flag = noticeReceiveMapper.delete(lqw) > 0;
-            if (!flag){
+            if (!flag) {
                 break;
             }
         }
@@ -131,23 +119,5 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
         return noticeFlag && noticeRecFlag;
     }
 
-    @Override
-    public IPage<Notice> selectPageAllNotice(IPage<Notice> page) {
-        return noticeMapper.selectPageAllNotice(page);
-    }
-
-    @Override
-    public IPage<Notice> selectPageByCond(IPage<Notice> page, String title, String type, String startTime, String endTime) {
-        LocalDateTime start;
-        LocalDateTime end;
-        try {
-            start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        } catch (Exception e) {
-            start = null;
-            end = null;
-        }
-        return noticeMapper.selectPageByCond(page, title, type, start, end);
-    }
 
 }

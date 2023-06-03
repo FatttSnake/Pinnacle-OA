@@ -18,57 +18,44 @@
         <association property="noticeType" javaType="noticeType" autoMapping="true"/>
     </resultMap>
 
-    <!--  查询所有公告  -->
-    <select id="selectAllNotice" resultMap="NoticeAllResultMap">
-        select u.id    uid,
-               u.username,
-               n.id    nid,
-               n.title,
-               n.content,
-               n.type_id,
-               n.sender_id,
-               n.create_time,
-               n.send_time,
-               n.end_time,
-               n.priority,
-               n.top,
-               n.modify_time,
-               n.origin_id,
-               type.id typeId,
-               type.name,
-               type.enable
+    <!--   分页查询所有公告及模糊查询-->
+    <select id="selectPageNotice" resultMap="NoticeAllResultMap" resultType="notice">
+        select u.id uid,
+        u.username,
+        n.id nid,
+        n.title,
+        n.content,
+        n.type_id,
+        n.sender_id,
+        n.create_time,
+        n.send_time,
+        n.end_time,
+        n.priority,
+        n.top,
+        n.modify_time,
+        n.origin_id,
+        type.id typeId,
+        type.name,
+        type.enable
         from t_notice n
-                 left join t_notice_type type on n.type_id = type.id
-                 left join t_user u on n.sender_id = u.id
-        where n.deleted = 0
-          and n.old = 0
-        order by n.top desc, n.create_time desc
-    </select>
-
-    <!--  分页查询所有公告  -->
-    <select id="selectPageAllNotice" resultMap="NoticeAllResultMap" resultType="notice">
-        select u.id    uid,
-               u.username,
-               n.id    nid,
-               n.title,
-               n.content,
-               n.type_id,
-               n.sender_id,
-               n.create_time,
-               n.send_time,
-               n.end_time,
-               n.priority,
-               n.top,
-               n.modify_time,
-               n.origin_id,
-               type.id typeId,
-               type.name,
-               type.enable
-        from t_notice n
-                 left join t_notice_type type on n.type_id = type.id
-                 left join t_user u on n.sender_id = u.id
-        where n.deleted = 0
-          and n.old = 0
+        left join t_notice_type type on n.type_id = type.id
+        left join t_user u on n.sender_id = u.id
+        <where>
+            <if test="null!=title and title!=''">
+                and instr(title,#{title})&gt;0
+            </if>
+            <if test="null!=type and type!=''">
+                and instr(type.name,#{type})&gt;0
+            </if>
+            <if test="null!=startTime">
+                and send_time &gt;= #{startTime}
+            </if>
+            <if test="null !=endTime">
+                and end_time &lt; #{endTime}
+            </if>
+            and n.deleted = 0
+            and n.old = 0
+        </where>
         order by n.top desc, n.create_time desc
     </select>
     <resultMap id="NoticeAllResultMap" type="notice" autoMapping="true">
@@ -80,85 +67,4 @@
             <id property="id" column="typeId"/>
         </association>
     </resultMap>
-    <!--   模糊查询公告-->
-    <select id="selectByCond" resultMap="NoticeAllResultMap">
-        select u.id uid,
-        u.username,
-        n.id nid,
-        n.title,
-        n.content,
-        n.type_id,
-        n.sender_id,
-        n.create_time,
-        n.send_time,
-        n.end_time,
-        n.priority,
-        n.top,
-        n.modify_time,
-        n.origin_id,
-        type.id typeId,
-        type.name,
-        type.enable
-        from t_notice n
-        left join t_notice_type type on n.type_id = type.id
-        left join t_user u on n.sender_id = u.id
-        <where>
-            <if test="null!=title and title!=''">
-                and instr(title,#{title})&gt;0
-            </if>
-            <if test="null!=type and type!=''">
-                and instr(type.name,#{type})&gt;0
-            </if>
-            <if test="null!=startTime">
-                and send_time &gt;= #{startTime}
-            </if>
-            <if test="null !=endTime">
-                and end_time &lt; #{endTime}
-            </if>
-            and n.deleted = 0
-            and n.old = 0
-        </where>
-        order by n.top desc, n.create_time desc
-    </select>
-
-    <!--   分页模糊查询公告-->
-    <select id="selectPageByCond" resultMap="NoticeAllResultMap" resultType="notice">
-        select u.id uid,
-        u.username,
-        n.id nid,
-        n.title,
-        n.content,
-        n.type_id,
-        n.sender_id,
-        n.create_time,
-        n.send_time,
-        n.end_time,
-        n.priority,
-        n.top,
-        n.modify_time,
-        n.origin_id,
-        type.id typeId,
-        type.name,
-        type.enable
-        from t_notice n
-        left join t_notice_type type on n.type_id = type.id
-        left join t_user u on n.sender_id = u.id
-        <where>
-            <if test="null!=title and title!=''">
-                and instr(title,#{title})&gt;0
-            </if>
-            <if test="null!=type and type!=''">
-                and instr(type.name,#{type})&gt;0
-            </if>
-            <if test="null!=startTime">
-                and send_time &gt;= #{startTime}
-            </if>
-            <if test="null !=endTime">
-                and end_time &lt; #{endTime}
-            </if>
-            and n.deleted = 0
-            and n.old = 0
-        </where>
-        order by n.top desc, n.create_time desc
-    </select>
 </mapper>

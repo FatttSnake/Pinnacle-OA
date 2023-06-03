@@ -169,7 +169,8 @@ export default {
             'hackReset',
             'currentPage',
             'pageSize',
-            'multiDeleteSelection'
+            'multiDeleteSelection',
+            'search'
         ])
     },
     emits: ['clearFilter', 'handleDeleteById'],
@@ -246,18 +247,32 @@ export default {
             noticeStore.$patch((state) => {
                 state.pageSize = pageSize
             })
-            noticeStore.selectAllNotice(this.currentPage, parseInt(pageSize))
+            noticeStore.selectAllNotice(
+                this.currentPage,
+                parseInt(pageSize),
+                this.search.title,
+                this.search.type,
+                this.search.startTime,
+                this.search.endTime
+            )
         },
         handleCurrentChange(currentPage) {
             // currentPage：当前第几页
             noticeStore.$patch((state) => {
                 state.currentPage = currentPage
             })
-            noticeStore.selectAllNotice(parseInt(currentPage), this.pageSize)
+            noticeStore.selectAllNotice(
+                parseInt(currentPage),
+                this.pageSize,
+                this.search.title,
+                this.search.type,
+                this.search.startTime,
+                this.search.endTime
+            )
         }
     },
     mounted() {
-        noticeStore.selectAllNotice(this.currentPage, this.pageSize)
+        noticeStore.selectAllNotice(this.currentPage, this.pageSize, '', '', '', '')
     },
     updated() {
         this.$refs.tableRef.clearFilter(['sender.username'])
