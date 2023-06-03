@@ -90,7 +90,7 @@
         @open="handleDialogOpen"
     >
         <template #default>
-            <el-scrollbar max-height="60vh">
+            <el-scrollbar max-height="60vh" style="padding: 0 20px">
                 <el-form
                     label-width="60px"
                     v-loading="dialogLoading"

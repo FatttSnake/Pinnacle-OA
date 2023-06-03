@@ -110,58 +110,64 @@
 
     <el-dialog title="编辑员工信息" :close-on-click-modal="false" draggable v-model="dialogVisible">
         <template #default>
-            <el-form
-                label-width="100px"
-                :rules="rules"
-                ref="formRef"
-                :model="userForm"
-                v-loading="dialogLoading"
-            >
-                <el-form-item label="用户名" prop="inputUsername">
-                    <el-input v-model="userForm.inputUsername" disabled />
-                </el-form-item>
-                <el-form-item label="部门" prop="selectedDepartment">
-                    <el-select v-model="userForm.selectedDepartment">
-                        <el-option
-                            v-for="item in departments"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id"
+            <el-scrollbar height="45vh" style="padding: 0 20px">
+                <el-form
+                    label-width="60px"
+                    :rules="rules"
+                    ref="formRef"
+                    :model="userForm"
+                    v-loading="dialogLoading"
+                >
+                    <el-form-item label="用户名" prop="inputUsername">
+                        <el-input v-model="userForm.inputUsername" disabled />
+                    </el-form-item>
+                    <el-form-item label="部门" prop="selectedDepartment">
+                        <el-select v-model="userForm.selectedDepartment">
+                            <el-option
+                                v-for="item in departments"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id"
+                            />
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="姓氏" prop="inputLastName">
+                        <el-input v-model="userForm.inputLastName" maxlength="20" show-word-limit />
+                    </el-form-item>
+                    <el-form-item label="名字" prop="inputFirstName">
+                        <el-input
+                            v-model="userForm.inputFirstName"
+                            maxlength="20"
+                            show-word-limit
                         />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="姓氏" prop="inputLastName">
-                    <el-input v-model="userForm.inputLastName" maxlength="20" show-word-limit />
-                </el-form-item>
-                <el-form-item label="名字" prop="inputFirstName">
-                    <el-input v-model="userForm.inputFirstName" maxlength="20" show-word-limit />
-                </el-form-item>
-                <el-form-item label="性别" prop="selectedGender">
-                    <el-select v-model="userForm.selectedGender">
-                        <el-option label="未知" :value="0" />
-                        <el-option label="男" :value="1" />
-                        <el-option label="女" :value="2" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="生日" prop="inputBirth">
-                    <el-date-picker v-model="userForm.inputBirth" value-format="YYYY-MM-DD" />
-                </el-form-item>
-                <el-form-item label="邮箱" prop="inputEmail">
-                    <el-input v-model="userForm.inputEmail" maxlength="50" show-word-limit />
-                </el-form-item>
-                <el-form-item label="手机" prop="inputTel">
-                    <el-input v-model="userForm.inputTel" maxlength="20" show-word-limit />
-                </el-form-item>
-                <el-form-item label="地址" prop="inputAddress">
-                    <el-input
-                        v-model="userForm.inputAddress"
-                        type="textarea"
-                        resize="none"
-                        maxlength="100"
-                        show-word-limit
-                    />
-                </el-form-item>
-            </el-form>
+                    </el-form-item>
+                    <el-form-item label="性别" prop="selectedGender">
+                        <el-select v-model="userForm.selectedGender">
+                            <el-option label="未知" :value="0" />
+                            <el-option label="男" :value="1" />
+                            <el-option label="女" :value="2" />
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="生日" prop="inputBirth">
+                        <el-date-picker v-model="userForm.inputBirth" value-format="YYYY-MM-DD" />
+                    </el-form-item>
+                    <el-form-item label="邮箱" prop="inputEmail">
+                        <el-input v-model="userForm.inputEmail" maxlength="50" show-word-limit />
+                    </el-form-item>
+                    <el-form-item label="手机" prop="inputTel">
+                        <el-input v-model="userForm.inputTel" maxlength="20" show-word-limit />
+                    </el-form-item>
+                    <el-form-item label="地址" prop="inputAddress">
+                        <el-input
+                            v-model="userForm.inputAddress"
+                            type="textarea"
+                            resize="none"
+                            maxlength="100"
+                            show-word-limit
+                        />
+                    </el-form-item>
+                </el-form>
+            </el-scrollbar>
         </template>
         <template #footer>
             <el-button type="primary" @click="handleSubmit" :disabled="dialogLoading"
