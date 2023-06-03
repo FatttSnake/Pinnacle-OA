@@ -9,6 +9,7 @@ import com.cfive.pinnacle.exception.TokenHasExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -48,6 +49,9 @@ public class CustomExceptionHandler {
         }
         if (e instanceof DataValidationFailedException) {
             return ResponseResult.build(ResponseCode.DATABASE_DATA_VALIDATION_FAILED, e.getMessage(), null);
+        }
+        if (e instanceof UncategorizedSQLException) {
+            return ResponseResult.build(ResponseCode.DATABASE_EXECUTE_ERROR, "error", null);
         }
 
         log.debug(e.getMessage(), e);

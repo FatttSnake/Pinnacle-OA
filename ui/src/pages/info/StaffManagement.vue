@@ -242,8 +242,8 @@ export default {
                     searchType: this.searchType,
                     searchInput: this.searchInput,
                     searchGender: this.searchGender,
-                    searchBirthFrom: this.searchBirth ? this.searchBirth[0] : null,
-                    searchBirthTo: this.searchBirth ? this.searchBirth[1] : null
+                    searchBirthFrom: this.searchBirth ? this.searchBirth[0] ?? null : null,
+                    searchBirthTo: this.searchBirth ? this.searchBirth[1] ?? null : null
                 })
                 .then((res) => {
                     const response = res.data
