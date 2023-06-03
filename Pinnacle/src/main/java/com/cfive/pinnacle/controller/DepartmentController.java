@@ -1,10 +1,12 @@
 package com.cfive.pinnacle.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Department;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IDepartmentService;
+import com.cfive.pinnacle.utils.WebUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,6 +47,20 @@ public class DepartmentController {
     @PreAuthorize("hasAuthority('department:admin:get')")
     public ResponseResult<IPage<Department>> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput) {
         return ResponseResult.databaseSelectSuccess(departmentService.getAllDepartment(currentPage, pageSize, searchType, searchInput));
+    }
+
+    @GetMapping("list")
+    @PreAuthorize("hasAnyAuthority('staff:manege:modify', 'staff:admin:modify')")
+    public ResponseResult<List<Department>> getDepartmentList() {
+        List<Department> departmentList;
+        if (WebUtil.hasAuthority("staff:admin:modify")) {
+            departmentList = departmentService.list();
+        } else {
+            LambdaQueryWrapper<Department> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Department::getId, WebUtil.getLoginUser().getUser().getDepartmentId());
+            departmentList = departmentService.list(wrapper);
+        }
+        return ResponseResult.databaseSelectSuccess(departmentList);
     }
 
     @PostMapping
