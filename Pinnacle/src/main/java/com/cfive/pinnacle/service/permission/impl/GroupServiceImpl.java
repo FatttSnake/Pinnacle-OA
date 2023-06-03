@@ -41,13 +41,13 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     }
 
     @Override
-    public IPage<Group> getAllGroup(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, Integer searchEnable) {
+    public IPage<Group> getAllGroup(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, Integer searchEnable, Integer searchRegex) {
         Page<Group> groupIPage = PageDTO.of(currentPage, pageSize);
         searchName = searchName.trim();
-        List<Long> groupList = groupMapper.filterGroupByRoleId(null, null, searchName, searchEnable);
+        List<Long> groupList = groupMapper.filterGroupByRoleId(null, null, searchName, searchEnable, searchRegex);
         if (groupList.size() > 0) {
             for (Long roleId : searchRole) {
-                groupList = groupMapper.filterGroupByRoleId(groupList, roleId, null, null);
+                groupList = groupMapper.filterGroupByRoleId(groupList, roleId, null, null, null);
                 if (groupList.size() == 0) {
                     break;
                 }

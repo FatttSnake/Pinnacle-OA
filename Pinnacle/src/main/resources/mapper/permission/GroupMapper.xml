@@ -16,7 +16,12 @@
                 #{item}
             </foreach>
             <if test="searchName != null and searchName != ''">
-                and instr(t_group.name, #{searchName}) > 0
+                <if test="searchRegex == 1">
+                    and t_group.name regexp #{searchName}
+                </if>
+                <if test="searchRegex != 1">
+                    and instr(t_group.name, #{searchName}) > 0
+                </if>
             </if>
             <if test="searchEnable != null and searchEnable != -1">
                 and t_group.enable = #{searchEnable}

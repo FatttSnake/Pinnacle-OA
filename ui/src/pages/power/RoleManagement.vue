@@ -35,6 +35,7 @@
                     show-word-limit
                     placeholder="请输入内容"
                     @keyup.enter="handleQuery"
+                    @change="handleInputChange"
                 >
                     <template #suffix>
                         <el-tooltip content="正则表达式">

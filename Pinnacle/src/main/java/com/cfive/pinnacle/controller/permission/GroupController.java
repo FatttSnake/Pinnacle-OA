@@ -41,10 +41,10 @@ public class GroupController {
     @Operation(summary = "获取所有用户组")
     @GetMapping
     @PreAuthorize("hasAuthority('system:group:get')")
-    public ResponseResult<IPage<Group>> getAllGroup(Long currentPage, Long pageSize, String searchName, String searchRole, Integer searchEnable) {
+    public ResponseResult<IPage<Group>> getAllGroup(Long currentPage, Long pageSize, String searchName, String searchRole, Integer searchEnable, Integer searchRegex) {
         List<Long> searchRoleList = WebUtil.convertStringToList(searchRole, Long.class);
 
-        IPage<Group> groups = groupService.getAllGroup(currentPage, pageSize, searchName, searchRoleList, searchEnable);
+        IPage<Group> groups = groupService.getAllGroup(currentPage, pageSize, searchName, searchRoleList, searchEnable, searchRegex);
         return ResponseResult.databaseSelectSuccess(groups);
     }
 

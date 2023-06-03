@@ -15,7 +15,7 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface IGroupService extends IService<Group> {
-    IPage<Group> getAllGroup(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, Integer searchEnable);
+    IPage<Group> getAllGroup(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, Integer searchEnable, Integer searchRegex);
 
     Group getGroup(Long id);
 
