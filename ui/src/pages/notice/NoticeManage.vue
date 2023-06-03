@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header>
-            <notice-head @selectByCond="selectByCond"></notice-head>
+            <notice-head @selectByCond="getLoading"></notice-head>
         </el-header>
         <el-main>
             <el-button
@@ -63,16 +63,6 @@ export default {
         SIZE_ICON_MD() {
             return SIZE_ICON_MD
         },
-        selectByCond() {
-            noticeStore.selectAllNotice(
-                this.currentPage,
-                this.pageSize,
-                this.search.title,
-                this.search.type,
-                this.search.startTime,
-                this.search.endTime
-            )
-        },
         handleDialogClose() {
             noticeStore.$patch((state) => {
                 state.dialogEditVisible = false
@@ -98,6 +88,7 @@ export default {
                             noticeStore.selectAllNotice(
                                 this.currentPage,
                                 this.pageSize,
+                                '',
                                 '',
                                 '',
                                 '',
@@ -127,7 +118,8 @@ export default {
                 this.search.title,
                 this.search.type,
                 this.search.startTime,
-                this.search.endTime
+                this.search.endTime,
+                this.search.userName
             )
         },
         deleteBatchByIds() {
@@ -151,6 +143,7 @@ export default {
                                 noticeStore.selectAllNotice(
                                     this.currentPage,
                                     this.pageSize,
+                                    '',
                                     '',
                                     '',
                                     '',

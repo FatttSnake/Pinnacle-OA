@@ -77,7 +77,7 @@
         />
         <el-table-column
             prop="sender.username"
-            label="发布人"
+            label="发布者"
             width="100"
             column-key="sender.username"
             :filters="filterSenderName"
@@ -196,10 +196,6 @@ export default {
                 state.multiDeleteSelection = val
             })
         },
-        clearFilter() {
-            this.$refs.tableRef.clearFilter(['senderName'])
-            this.$emit('clearFilter')
-        },
         formatterTitle(title) {
             if (title.length > 10) {
                 return title.substring(0, 10) + ' ...'
@@ -207,8 +203,19 @@ export default {
                 return title
             }
         },
-        filterTag(value, row) {
-            return row.sender.username === value
+        filterTag(value) {
+            noticeStore.$patch((state) => {
+                state.search.userName = value
+            })
+            noticeStore.selectAllNotice(
+                this.currentPage,
+                this.pageSize,
+                this.search.title,
+                this.search.type,
+                this.search.startTime,
+                this.search.endTime,
+                this.search.userName
+            )
         },
         formatDate(row, column) {
             // 获取单元格数据
@@ -253,7 +260,8 @@ export default {
                 this.search.title,
                 this.search.type,
                 this.search.startTime,
-                this.search.endTime
+                this.search.endTime,
+                this.search.userName
             )
         },
         handleCurrentChange(currentPage) {
@@ -267,12 +275,13 @@ export default {
                 this.search.title,
                 this.search.type,
                 this.search.startTime,
-                this.search.endTime
+                this.search.endTime,
+                this.search.userName
             )
         }
     },
     mounted() {
-        noticeStore.selectAllNotice(this.currentPage, this.pageSize, '', '', '', '')
+        noticeStore.selectAllNotice(this.currentPage, this.pageSize, '', '', '', '', '')
     },
     updated() {
         this.$refs.tableRef.clearFilter(['sender.username'])

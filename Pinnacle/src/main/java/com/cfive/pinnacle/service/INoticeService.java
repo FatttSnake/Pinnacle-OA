@@ -27,5 +27,5 @@ public interface INoticeService extends IService<Notice> {
 
     Boolean addNotice(Notice notice);
 
-    IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime);
+    IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime,String userName);
 }
