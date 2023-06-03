@@ -18,5 +18,5 @@ public interface IDepartmentService extends IService<Department> {
     @Deprecated
     List<Department> getDepartAndUser();
 
-    IPage<Department> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput);
+    IPage<Department> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchRegex);
 }

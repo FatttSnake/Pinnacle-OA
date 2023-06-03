@@ -25,6 +25,7 @@ public class ResponseCode {
     public static final int DATABASE_CONNECT_ERROR = 20036;
     public static final int DATABASE_DATA_TO_LONG = 20037;
     public static final int DATABASE_DATA_VALIDATION_FAILED = 20038;
+    public static final int DATABASE_EXECUTE_ERROR = 20039;
 
     public static final int UNAUTHORIZED = 30010;
     public static final int ACCESS_DENIED = 30030;
