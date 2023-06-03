@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -28,7 +27,6 @@ import java.util.List;
  * @author FatttSnake
  * @since 2023-04-30
  */
-@Slf4j
 @RestController
 @RequestMapping("/role")
 @Tag(name = "角色", description = "角色相关接口")

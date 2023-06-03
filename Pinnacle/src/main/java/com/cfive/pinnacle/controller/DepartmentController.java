@@ -8,7 +8,6 @@ import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.IDepartmentService;
 import com.cfive.pinnacle.utils.WebUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,6 @@ import java.util.List;
  * @author FatttSnake
  * @since 2023-04-30
  */
-@Slf4j
 @RestController
 @RequestMapping("/department")
 @Tag(name = "部门", description = "部门相关接口")
@@ -48,7 +46,6 @@ public class DepartmentController {
     @GetMapping
     @PreAuthorize("hasAuthority('department:admin:get')")
     public ResponseResult<IPage<Department>> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchRegex) {
-        log.info(searchInput);
         return ResponseResult.databaseSelectSuccess(departmentService.getAllDepartment(currentPage, pageSize, searchType, searchInput, searchRegex));
     }
 
