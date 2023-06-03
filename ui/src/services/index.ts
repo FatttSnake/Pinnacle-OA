@@ -6,6 +6,7 @@ import {
     ACCESS_DENIED,
     DATABASE_DATA_TO_LONG,
     DATABASE_DATA_VALIDATION_FAILED,
+    DATABASE_EXECUTE_ERROR,
     TOKEN_HAS_EXPIRED,
     TOKEN_IS_ILLEGAL,
     TOKEN_RENEW_SUCCESS,
@@ -18,6 +19,19 @@ const service = axios.create({
     timeout: 10000,
     withCredentials: false
 })
+
+service.defaults.paramsSerializer = (params) => {
+    return Object.keys(params)
+        .filter((it) => {
+            // eslint-disable-next-line no-prototype-builtins
+            return params.hasOwnProperty(it)
+        })
+        .reduce((pre, curr) => {
+            return params[curr] !== null
+                ? (pre !== '' ? pre + '&' : '') + curr + '=' + encodeURIComponent(params[curr])
+                : pre
+        }, '')
+}
 
 service.interceptors.request.use(
     async (config) => {
@@ -81,6 +95,12 @@ service.interceptors.response.use(
                 ElMessage.error({
                     dangerouslyUseHTMLString: true,
                     message: '<strong>数据验证失败</strong>'
+                })
+                return await Promise.reject(response?.data)
+            case DATABASE_EXECUTE_ERROR:
+                ElMessage.error({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>数据库执行出错</strong>'
                 })
                 return await Promise.reject(response?.data)
         }
