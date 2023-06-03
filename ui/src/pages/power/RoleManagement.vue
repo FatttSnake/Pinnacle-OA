@@ -24,14 +24,29 @@
             </el-button>
         </el-col>
         <el-col :span="5">
-            <el-form-item label="名称" class="fill-with">
+            <el-form-item
+                label="名称"
+                class="fill-with"
+                :error="isRegexLegal ? '' : '非法正则表达式'"
+            >
                 <el-input
                     v-model="inputName"
                     maxlength="20"
                     show-word-limit
                     placeholder="请输入内容"
                     @keyup.enter="handleQuery"
-                />
+                >
+                    <template #suffix>
+                        <el-tooltip content="正则表达式">
+                            <el-checkbox
+                                v-model="checkedRegex"
+                                label=".*"
+                                :true-label="1"
+                                @change="handleInputChange"
+                            />
+                        </el-tooltip>
+                    </template>
+                </el-input>
             </el-form-item>
         </el-col>
         <el-col :span="9">
@@ -161,10 +176,13 @@ export default {
             dialogLoading: true,
             powerOptions: [],
             searchName: '',
-            searchPower: [],
-            searchEnable: -1,
             inputName: '',
+            searchRegex: 0,
+            checkedRegex: 0,
+            isRegexLegal: true,
+            searchPower: [],
             selectedPower: [],
+            searchEnable: -1,
             selectedEnable: -1,
             currentPage: 1,
             pageSize: 50,
@@ -204,6 +222,13 @@ export default {
     },
     methods: {
         loadRoleTable() {
+            if (!this.isRegexLegal) {
+                ElMessage.error({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>非法正则表达式</strong>，请重新输入'
+                })
+                return
+            }
             this.tableLoading = true
             request
                 .get('/role', {
@@ -211,7 +236,8 @@ export default {
                     pageSize: this.pageSize,
                     searchName: this.searchName,
                     searchPower: this.searchPower + '',
-                    searchEnable: this.searchEnable
+                    searchEnable: this.searchEnable,
+                    searchRegex: this.searchRegex ?? 0
                 })
                 .then((res) => {
                     const response = res.data
@@ -430,16 +456,33 @@ export default {
         },
         handleQuery() {
             this.searchName = _.cloneDeep(this.inputName)
+            this.searchRegex = _.cloneDeep(this.checkedRegex)
             this.searchPower = _.cloneDeep(this.selectedPower)
             this.searchEnable = _.cloneDeep(this.selectedEnable)
             this.currentPage = 1
+            this.handleInputChange()
             this.loadRoleTable()
         },
         handleClear() {
             this.inputName = ''
+            this.checkedRegex = 0
             this.selectedPower = []
             this.selectedEnable = -1
             this.handleQuery()
+        },
+        handleInputChange() {
+            if (this.checkedRegex) {
+                try {
+                    RegExp(this.inputName)
+                    this.isRegexLegal = !(
+                        this.inputName.includes('{}') || this.inputName.includes('[]')
+                    )
+                } catch (e) {
+                    this.isRegexLegal = false
+                }
+            } else {
+                this.isRegexLegal = true
+            }
         }
     },
     mounted() {

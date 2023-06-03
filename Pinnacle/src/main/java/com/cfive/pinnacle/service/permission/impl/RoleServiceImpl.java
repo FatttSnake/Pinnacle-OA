@@ -44,13 +44,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public IPage<Role> getAllRole(Long currentPage, Long pageSize, String searchName, List<Long> searchPower, Integer searchEnable) {
+    public IPage<Role> getAllRole(Long currentPage, Long pageSize, String searchName, List<Long> searchPower, Integer searchEnable, Integer searchRegex) {
         IPage<Role> roleIPage = PageDTO.of(currentPage, pageSize);
         searchName = searchName.trim();
-        List<Long> roleList = roleMapper.filterRoleByPowerId(null, null, searchName, searchEnable);
+        List<Long> roleList = roleMapper.filterRoleByPowerId(null, null, searchName, searchEnable, searchRegex);
         if (roleList.size() > 0) {
             for (Long powerId : searchPower) {
-                roleList = roleMapper.filterRoleByPowerId(roleList, powerId, null, null);
+                roleList = roleMapper.filterRoleByPowerId(roleList, powerId, null, null, null);
                 if (roleList.size() == 0) {
                     break;
                 }

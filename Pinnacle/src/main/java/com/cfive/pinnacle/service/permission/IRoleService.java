@@ -15,7 +15,7 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface IRoleService extends IService<Role> {
-    IPage<Role> getAllRole(Long currentPage, Long pageSize, String searchName, List<Long> searchPower, Integer searchEnable);
+    IPage<Role> getAllRole(Long currentPage, Long pageSize, String searchName, List<Long> searchPower, Integer searchEnable, Integer searchRegex);
 
     Role getRole(long id);
 
