@@ -52,7 +52,8 @@ export const useNoticeStore = defineStore('notice', {
                 title: '',
                 type: '',
                 startTime: '',
-                endTime: ''
+                endTime: '',
+                userName: ''
             },
             selectData: [
                 {
@@ -126,7 +127,8 @@ export const useNoticeStore = defineStore('notice', {
             title: string,
             type: string,
             startTime: string,
-            endTime: string
+            endTime: string,
+            userName: string
         ) {
             void request
                 .get('/notice/page', {
@@ -135,15 +137,14 @@ export const useNoticeStore = defineStore('notice', {
                     title,
                     type,
                     startTime,
-                    endTime
+                    endTime,
+                    userName
                 })
                 .then((response) => {
                     if (response.data.code === 20021) {
                         this.selectData = response.data.data
                         this.total = parseInt(response.data.msg)
-                        if (this.selectData.length !== 0) {
-                            this.loading = false
-                        }
+                        this.loading = false
                     } else {
                         this.loading = false
                         ElMessage({
@@ -191,7 +192,7 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            await this.selectAllNotice(1, 5, '', '', '', '')
+            await this.selectAllNotice(1, 5, '', '', '', '', '')
         },
         async handleUpdateNotice(updateNotice: IAddNoticeData) {
             await request.put('/notice', updateNotice).then((response) => {
@@ -209,7 +210,7 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            await this.selectAllNotice(1, 5, '', '', '', '')
+            await this.selectAllNotice(1, 5, '', '', '', '', '')
             this.hackReset = false
         },
         async modifyNoticeIsRead(notice: INotice) {

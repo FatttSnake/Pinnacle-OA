@@ -108,9 +108,11 @@ export default {
                     title: '',
                     type: '',
                     startTime: '',
-                    endTime: ''
+                    endTime: '',
+                    userName: ''
                 }
             })
+            this.$emit('selectByCond')
         }
     },
     computed: {

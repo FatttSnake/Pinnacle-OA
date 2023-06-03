@@ -39,15 +39,15 @@ public class NoticeController {
     //分页查询所有公告或分页模糊查询
     @GetMapping("/page")
     @PreAuthorize("hasAuthority('notice:manage:get')")
-    public ResponseResult<List<Notice>> selectPageNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime) {
-        Page<Notice> noticePage = null;
+    public ResponseResult<List<Notice>> selectPageNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime,String userName) {
+        Page<Notice> noticePage;
         if (null != currentPage && null != pageSize) {
             noticePage = PageDTO.of(currentPage, pageSize);
         } else {
             // 不进行分页
             noticePage = PageDTO.of(1, -1);
         }
-        IPage<Notice> noticeIPage = noticeService.selectPageNotice(noticePage, title.trim(), type.trim(), startTime.trim(), endTime.trim());
+        IPage<Notice> noticeIPage = noticeService.selectPageNotice(noticePage, title.trim(), type.trim(), startTime.trim(), endTime.trim(),userName.trim());
         int code = noticeIPage.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticeIPage.getRecords() != null ? String.valueOf(noticeIPage.getTotal()) : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticeIPage.getRecords());
