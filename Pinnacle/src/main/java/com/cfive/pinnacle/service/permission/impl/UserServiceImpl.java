@@ -90,6 +90,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public List<User> getNoticeUser() {
+        return userMapper.getAllNoticeUser();
+    }
+
+
+    @Override
     public IPage<User> getAllUser(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, List<Long> searchGroup, Integer searchEnable) {
         IPage<User> userIPage = PageDTO.of(currentPage, pageSize);
         searchName = searchName.trim();
