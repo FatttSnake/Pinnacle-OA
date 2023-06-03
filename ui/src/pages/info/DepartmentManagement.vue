@@ -1,5 +1,5 @@
 <template>
-    <el-row gutter="15">
+    <el-row :gutter="15">
         <el-col :span="-1">
             <el-button
                 bg
@@ -41,7 +41,7 @@
                 </template>
             </el-input>
         </el-col>
-        <el-col span="-1">
+        <el-col :span="-1">
             <el-button type="primary" @click="handleQuery">查询</el-button>
             <el-button @click="handleClear">清空</el-button>
         </el-col>

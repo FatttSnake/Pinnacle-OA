@@ -1,5 +1,5 @@
 <template>
-    <el-row gutter="15">
+    <el-row :gutter="15">
         <el-col :span="-1">
             <el-button
                 bg
@@ -56,7 +56,7 @@
                 />
             </el-form-item>
         </el-col>
-        <el-col span="-1">
+        <el-col :span="-1">
             <el-button type="primary" @click="handleQuery">查询</el-button>
             <el-button @click="handleClear">清空</el-button>
         </el-col>
@@ -68,8 +68,8 @@
         element-loading-text="Loading..."
         style="margin-top: 10px"
     >
-        <el-table-column prop="username" label="用户名" width="120" align="center" />
-        <el-table-column label="姓名" align="center" width="120">
+        <el-table-column prop="username" label="用户名" width="120" align="center" fixed="left" />
+        <el-table-column label="姓名" align="center" width="120" fixed="left">
             <template #default="scope">
                 {{
                     scope.row.staff !== null
@@ -80,10 +80,17 @@
         </el-table-column>
         <el-table-column label="性别" align="center" :formatter="genderFormatter" width="60" />
         <el-table-column prop="staff.birth" label="生日" align="center" width="110" />
-        <el-table-column prop="staff.email" label="邮箱" align="center" width="140" />
-        <el-table-column prop="staff.tel" label="手机" align="center" width="140" />
-        <el-table-column prop="staff.address" label="地址" />
-        <el-table-column label="操作" width="80" align="center">
+        <el-table-column prop="staff.email" label="邮箱" align="center" width="160" />
+        <el-table-column prop="staff.tel" label="手机" align="center" width="160" />
+        <el-table-column prop="staff.address" label="地址" min-width="200" />
+        <el-table-column
+            prop="department.name"
+            label="部门"
+            align="center"
+            fixed="right"
+            width="100"
+        />
+        <el-table-column label="操作" width="80" align="center" fixed="right">
             <template #default="scope">
                 <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
             </template>
