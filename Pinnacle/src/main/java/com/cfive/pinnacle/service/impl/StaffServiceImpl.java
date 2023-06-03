@@ -53,6 +53,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
 
     @Override
     public boolean modifyStaff(User user) {
+        Long departmentId = user.getDepartmentId();
         Staff newStaff = user.getStaff();
         user = userMapper.getOneById(user.getId());
         Staff oldStaff = user.getStaff();
@@ -68,6 +69,8 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
             newStaff.setId(oldStaff.getId());
             staffMapper.updateById(newStaff);
         }
+        user.setDepartmentId(departmentId);
+        userMapper.updateById(user);
         return true;
     }
 }

@@ -120,6 +120,16 @@
                 <el-form-item label="用户名" prop="inputUsername">
                     <el-input v-model="userForm.inputUsername" disabled />
                 </el-form-item>
+                <el-form-item label="部门" prop="selectedDepartment">
+                    <el-select v-model="userForm.selectedDepartment">
+                        <el-option
+                            v-for="item in departments"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id"
+                        />
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="姓氏" prop="inputLastName">
                     <el-input v-model="userForm.inputLastName" maxlength="20" show-word-limit />
                 </el-form-item>
@@ -202,8 +212,10 @@ export default {
                     }
                 ]
             },
+            departments: [],
             userForm: {
                 inputUsername: '',
+                selectedDepartment: null,
                 inputFirstName: '',
                 inputLastName: '',
                 selectedGender: 0,
@@ -259,6 +271,7 @@ export default {
         handleEdit(row) {
             this.editUserId = row.id
             this.userForm.inputUsername = row.username
+            this.userForm.selectedDepartment = row.departmentId
             this.userForm.inputFirstName = row.staff?.firstName
             this.userForm.inputLastName = row.staff?.lastName
             this.userForm.selectedGender = row.staff?.gender || 0
@@ -266,8 +279,9 @@ export default {
             this.userForm.inputEmail = row.staff?.email
             this.userForm.inputTel = row.staff?.tel
             this.userForm.inputAddress = row.staff?.address
-            this.dialogLoading = false
+            this.dialogLoading = true
             this.dialogVisible = true
+            this.getDepartments()
         },
         async handleSubmit() {
             await this.$refs.formRef.validate((valid) => {
@@ -275,6 +289,7 @@ export default {
                     this.dialogLoading = true
                     const userObject = {
                         id: this.editUserId,
+                        departmentId: this.userForm.selectedDepartment,
                         staff: {
                             firstName: this.userForm.inputFirstName,
                             lastName: this.userForm.inputLastName,
@@ -301,6 +316,23 @@ export default {
                             })
                             this.dialogLoading = false
                         }
+                    })
+                }
+            })
+        },
+        getDepartments() {
+            request.get('/department/list').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.departments = response.data
+                    this.dialogLoading = false
+                    if (!_.find(this.departments, { id: this.userForm.selectedDepartment })) {
+                        this.userForm.selectedDepartment = null
+                    }
+                } else {
+                    ElMessage.error({
+                        dangerouslyUseHTMLString: true,
+                        message: '<strong>查询出错</strong>: ' + response.msg
                     })
                 }
             })
