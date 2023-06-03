@@ -30,7 +30,7 @@
         </where>
     </select>
 
-    <select id="getAllWithRoleAndGroup" resultMap="userMap">
+    <select id="getAllWithRoleAndGroup" resultMap="userWithRoleMap">
         select distinct t_user.id as user_id,
         t_user.username as user_username,
         t_user.department_id as user_department_id,
@@ -66,7 +66,7 @@
         </where>
     </select>
 
-    <select id="getOneById" resultMap="userMap">
+    <select id="getOneById" resultMap="userWithRoleMap">
         select t_user.id            as user_id,
                t_user.username      as user_username,
                t_user.department_id as user_department_id,
@@ -109,6 +109,11 @@
                ts.id                as staff_id,
                ts.first_name        as staff_first_name,
                ts.last_name         as staff_last_name,
+               ts.gender            as staff_gender,
+               ts.birth             as staff_birth,
+               ts.email             as staff_email,
+               ts.tel               as staff_tel,
+               ts.address           as staff_address,
                ts.deleted           as staff_deleted,
                ts.version           as staff_version,
                tm.id                as menu_id,
@@ -143,7 +148,7 @@
           and t_user.username = #{username}
     </select>
 
-    <select id="getAllAffairUser" resultMap="userMap">
+    <select id="getAllAffairUser" resultMap="userWithRoleMap">
         select distinct t_user.id            as user_id,
                         t_user.username      as user_username,
                         t_user.department_id as user_department_id,
@@ -179,7 +184,7 @@
           and t.code = 'affair:manage:modify'
     </select>
 
-    <select id="getAllDepartmentUser" resultMap="userMap">
+    <select id="getAllDepartmentUser" resultMap="userWithRoleMap">
         select distinct t_user.id            as user_id,
                         t_user.username      as user_username,
                         t_user.department_id as user_department_id,
@@ -224,7 +229,30 @@
         <result property="version" column="user_version"/>
     </resultMap>
 
-    <resultMap id="userMap" type="user" extends="userBase">
+    <resultMap id="userWithIfoMap" type="user" extends="userBase">
+        <association property="staff" javaType="staff">
+            <id property="id" column="staff_id"/>
+            <result property="firstName" column="staff_first_name"/>
+            <result property="lastName" column="staff_last_name"/>
+            <result property="gender" column="staff_gender"/>
+            <result property="birth" column="staff_birth"/>
+            <result property="email" column="staff_email"/>
+            <result property="tel" column="staff_tel"/>
+            <result property="address" column="staff_address"/>
+            <result property="deleted" column="staff_deleted"/>
+            <result property="version" column="staff_version"/>
+        </association>
+        <association property="department" javaType="department">
+            <id property="id" column="department_id"/>
+            <result property="name" column="department_name"/>
+            <result property="tel" column="department_tel"/>
+            <result property="address" column="department_address"/>
+            <result property="deleted" column="department_deleted"/>
+            <result property="version" column="department_version"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="userWithRoleMap" type="user" extends="userBase">
         <association property="staff" javaType="staff">
             <id property="id" column="staff_id"/>
             <result property="firstName" column="staff_first_name"/>
@@ -248,15 +276,8 @@
         </collection>
     </resultMap>
 
-    <resultMap id="userWithPowerMap" type="user" extends="userBase">
+    <resultMap id="userWithPowerMap" type="user" extends="userWithIfoMap">
         <result property="passwd" column="user_passwd"/>
-        <association property="staff" javaType="staff">
-            <id property="id" column="staff_id"/>
-            <result property="firstName" column="staff_first_name"/>
-            <result property="lastName" column="staff_last_name"/>
-            <result property="deleted" column="staff_deleted"/>
-            <result property="version" column="staff_version"/>
-        </association>
         <collection property="menus" ofType="menu">
             <id property="id" column="menu_id"/>
             <result property="name" column="menu_name"/>

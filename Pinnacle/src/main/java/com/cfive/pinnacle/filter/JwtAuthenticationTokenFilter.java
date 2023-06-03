@@ -5,6 +5,7 @@ import com.cfive.pinnacle.exception.TokenHasExpiredException;
 import com.cfive.pinnacle.utils.JwtUtil;
 import com.cfive.pinnacle.utils.RedisCache;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -42,7 +43,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         JwtUtil.parseJWT(token);
 
         String redisKey = "login:" + token;
-        LoginUser loginUser = new ObjectMapper().convertValue(redisCache.getCacheObject(redisKey), LoginUser.class);
+        LoginUser loginUser = new ObjectMapper().registerModule(new JavaTimeModule()).convertValue(redisCache.getCacheObject(redisKey), LoginUser.class);
         if (Objects.isNull(loginUser)) {
             throw new TokenHasExpiredException();
         }
