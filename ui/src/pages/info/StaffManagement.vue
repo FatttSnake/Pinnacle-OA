@@ -15,24 +15,37 @@
             </el-button>
         </el-col>
         <el-col :span="6">
-            <el-input
-                v-model="inputInput"
-                class="fill-with"
-                placeholder="请输入内容"
-                clearable
-                @keyup.enter="handleQuery"
-            >
-                <template #prepend>
-                    <el-select v-model="selectedType" style="width: 100px">
-                        <el-option label="综合搜索" :value="0" />
-                        <el-option label="用户名" :value="1" />
-                        <el-option label="姓名" :value="2" />
-                        <el-option label="邮箱" :value="3" />
-                        <el-option label="手机号码" :value="4" />
-                        <el-option label="联系地址" :value="5" />
-                    </el-select>
-                </template>
-            </el-input>
+            <el-form-item :error="isRegexLegal ? '' : '非法正则表达式'">
+                <el-input
+                    v-model="inputInput"
+                    class="fill-with"
+                    placeholder="请输入内容"
+                    clearable
+                    @keyup.enter="handleQuery"
+                    @change="handleInputChange"
+                >
+                    <template #prepend>
+                        <el-select v-model="selectedType" style="width: 100px">
+                            <el-option label="综合搜索" :value="0" />
+                            <el-option label="用户名" :value="1" />
+                            <el-option label="姓名" :value="2" />
+                            <el-option label="邮箱" :value="3" />
+                            <el-option label="手机号码" :value="4" />
+                            <el-option label="联系地址" :value="5" />
+                        </el-select>
+                    </template>
+                    <template #suffix>
+                        <el-tooltip content="正则表达式">
+                            <el-checkbox
+                                v-model="checkedRegex"
+                                label=".*"
+                                :true-label="1"
+                                @change="handleInputChange"
+                            />
+                        </el-tooltip>
+                    </template>
+                </el-input>
+            </el-form-item>
         </el-col>
         <el-col :span="4">
             <el-form-item label="性别" class="fill-with">
@@ -195,6 +208,9 @@ export default {
             selectedType: 0,
             searchInput: '',
             inputInput: '',
+            searchRegex: 0,
+            checkedRegex: 0,
+            isRegexLegal: true,
             searchGender: -1,
             selectedGender: -1,
             searchBirth: [],
@@ -234,6 +250,13 @@ export default {
     },
     methods: {
         loadStaffTable() {
+            if (!this.isRegexLegal) {
+                ElMessage.error({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>非法正则表达式</strong>，请重新输入'
+                })
+                return
+            }
             this.tableLoading = true
             request
                 .get('/staff', {
@@ -243,7 +266,8 @@ export default {
                     searchInput: this.searchInput,
                     searchGender: this.searchGender,
                     searchBirthFrom: this.searchBirth ? this.searchBirth[0] ?? null : null,
-                    searchBirthTo: this.searchBirth ? this.searchBirth[1] ?? null : null
+                    searchBirthTo: this.searchBirth ? this.searchBirth[1] ?? null : null,
+                    searchRegex: this.searchRegex ?? 0
                 })
                 .then((res) => {
                     const response = res.data
@@ -357,17 +381,34 @@ export default {
         handleQuery() {
             this.searchType = _.cloneDeep(this.selectedType)
             this.searchInput = _.cloneDeep(this.inputInput)
+            this.searchRegex = _.cloneDeep(this.checkedRegex)
             this.searchGender = _.cloneDeep(this.selectedGender)
             this.searchBirth = _.cloneDeep(this.selectedBirth)
             this.currentPage = 1
+            this.handleInputChange()
             this.loadStaffTable()
         },
         handleClear() {
             this.selectedType = 0
             this.inputInput = ''
+            this.checkedRegex = 0
             this.selectedGender = -1
             this.selectedBirth = []
             this.handleQuery()
+        },
+        handleInputChange() {
+            if (this.checkedRegex) {
+                try {
+                    RegExp(this.inputInput)
+                    this.isRegexLegal = !(
+                        this.inputInput.includes('{}') || this.inputInput.includes('[]')
+                    )
+                } catch (e) {
+                    this.isRegexLegal = false
+                }
+            } else {
+                this.isRegexLegal = true
+            }
         }
     },
     mounted() {

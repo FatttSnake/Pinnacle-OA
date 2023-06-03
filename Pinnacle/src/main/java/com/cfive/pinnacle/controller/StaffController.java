@@ -29,8 +29,8 @@ public class StaffController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('staff:manege:get', 'staff:admin:get')")
-    public ResponseResult<IPage<User>> getAllStaff(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchGender, String searchBirthFrom, String searchBirthTo) {
-        return ResponseResult.databaseSelectSuccess(staffService.getAllStaff(currentPage, pageSize, searchType, searchInput, searchGender, searchBirthFrom, searchBirthTo));
+    public ResponseResult<IPage<User>> getAllStaff(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchGender, String searchBirthFrom, String searchBirthTo, Integer searchRegex) {
+        return ResponseResult.databaseSelectSuccess(staffService.getAllStaff(currentPage, pageSize, searchType, searchInput, searchGender, searchBirthFrom, searchBirthTo, searchRegex));
     }
 
     @PutMapping

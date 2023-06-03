@@ -39,7 +39,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     }
 
     @Override
-    public IPage<User> getAllStaff(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchGender, String searchBirthFrom, String searchBirthTo) {
+    public IPage<User> getAllStaff(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchGender, String searchBirthFrom, String searchBirthTo, Integer searchRegex) {
         Long departmentId = WebUtil.hasAuthority("staff:admin:get") ? null : WebUtil.getLoginUser().getUser().getDepartmentId();
         IPage<User> userIPage;
         if (currentPage == null || pageSize == null) {
@@ -48,7 +48,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
             userIPage = PageDTO.of(currentPage, pageSize);
         }
         searchInput = searchInput.trim();
-        return staffMapper.getAllStaff(userIPage, departmentId, searchType, searchInput, searchGender, searchBirthFrom, searchBirthTo);
+        return staffMapper.getAllStaff(userIPage, departmentId, searchType, searchInput, searchGender, searchBirthFrom, searchBirthTo, searchRegex);
     }
 
     @Override

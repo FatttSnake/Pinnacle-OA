@@ -33,32 +33,72 @@
         <if test="searchInput != null and searchInput != ''">
             <choose>
                 <when test="searchType == 0">
-                    and (
-                    instr(t_user.username, #{searchInput}) > 0
-                    or instr(concat(ts.first_name, ts.last_name), #{searchInput}) > 0
-                    or instr(concat(ts.last_name, ts.first_name), #{searchInput}) > 0
-                    or instr(ts.email, #{searchInput}) > 0
-                    or instr(ts.tel, #{searchInput}) > 0
-                    or instr(ts.address, #{searchInput}) > 0
-                    )
+                    <if test="searchRegex == 1">
+                        and (
+                        t_user.username regexp #{searchInput}
+                        or concat(ts.first_name, ts.last_name) regexp #{searchInput}
+                        or concat(ts.last_name, ts.first_name) regexp #{searchInput}
+                        or ts.email regexp #{searchInput}
+                        or ts.tel regexp #{searchInput}
+                        or ts.address regexp #{searchInput}
+                        )
+                    </if>
+                    <if test="searchRegex != 1">
+                        and (
+                        instr(t_user.username, #{searchInput}) > 0
+                        or instr(concat(ts.first_name, ts.last_name), #{searchInput}) > 0
+                        or instr(concat(ts.last_name, ts.first_name), #{searchInput}) > 0
+                        or instr(ts.email, #{searchInput}) > 0
+                        or instr(ts.tel, #{searchInput}) > 0
+                        or instr(ts.address, #{searchInput}) > 0
+                        )
+                    </if>
                 </when>
                 <when test="searchType == 1">
-                    and instr(t_user.username, #{searchInput}) > 0
+                    <if test="searchRegex == 1">
+                        and t_user.username regexp #{searchInput}
+                    </if>
+                    <if test="searchRegex != 1">
+                        and instr(t_user.username, #{searchInput}) > 0
+                    </if>
                 </when>
                 <when test="searchType == 2">
-                    and (
-                    instr(concat(ts.first_name, ts.last_name), #{searchInput}) > 0
-                    or instr(concat(ts.last_name, ts.first_name), #{searchInput}) > 0
-                    )
+                    <if test="searchRegex == 1">
+                        and (
+                        concat(ts.first_name, ts.last_name) regexp #{searchInput}
+                        or concat(ts.last_name, ts.first_name) regexp #{searchInput}
+                        )
+                    </if>
+                    <if test="searchRegex != 1">
+                        and (
+                        instr(concat(ts.first_name, ts.last_name), #{searchInput}) > 0
+                        or instr(concat(ts.last_name, ts.first_name), #{searchInput}) > 0
+                        )
+                    </if>
                 </when>
                 <when test="searchType == 3">
-                    and instr(ts.email, #{searchInput}) > 0
+                    <if test="searchRegex == 1">
+                        and ts.email regexp #{searchInput}
+                    </if>
+                    <if test="searchRegex != 1">
+                        and instr(ts.email, #{searchInput}) > 0
+                    </if>
                 </when>
                 <when test="searchType == 4">
-                    and instr(ts.tel, #{searchInput}) > 0
+                    <if test="searchRegex == 1">
+                        and ts.tel regexp #{searchInput}
+                    </if>
+                    <if test="searchRegex != 1">
+                        and instr(ts.tel, #{searchInput}) > 0
+                    </if>
                 </when>
                 <when test="searchType == 5">
-                    and instr(ts.address, #{searchInput}) > 0
+                    <if test="searchRegex == 1">
+                        and ts.address regexp #{searchInput}
+                    </if>
+                    <if test="searchRegex != 1">
+                        and instr(ts.address, #{searchInput}) > 0
+                    </if>
                 </when>
             </choose>
         </if>
