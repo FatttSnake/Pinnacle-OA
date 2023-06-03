@@ -22,6 +22,8 @@ public interface IUserService extends IService<User> {
 
     List<User> getDepartmentUser();
 
+    List<User> getNoticeUser();
+
     IPage<User> getAllUser(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, List<Long> searchGroup, Integer searchEnable);
 
     User getUser(long id);

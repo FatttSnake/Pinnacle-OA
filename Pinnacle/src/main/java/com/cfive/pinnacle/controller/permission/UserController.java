@@ -55,6 +55,13 @@ public class UserController {
         return ResponseResult.databaseSaveSuccess(userService.getDepartmentUser());
     }
 
+    @GetMapping("/notice")
+    @PreAuthorize("hasAuthority('notice:manage:get')")
+    @Operation(summary = "获取拥有发布公告权限的用户")
+    public ResponseResult<List<User>> getNoticeUser() {
+        return ResponseResult.databaseSaveSuccess(userService.getNoticeUser());
+    }
+
     @GetMapping
     @PreAuthorize("hasAuthority('system:user:get')")
     @Operation(summary = "获取所有用户（权限管理相关）")
