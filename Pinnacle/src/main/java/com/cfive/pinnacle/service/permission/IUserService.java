@@ -24,7 +24,7 @@ public interface IUserService extends IService<User> {
 
     List<User> getNoticeUser();
 
-    IPage<User> getAllUser(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, List<Long> searchGroup, Integer searchEnable);
+    IPage<User> getAllUser(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, List<Long> searchGroup, Integer searchEnable, Integer searchRegex);
 
     User getUser(long id);
 

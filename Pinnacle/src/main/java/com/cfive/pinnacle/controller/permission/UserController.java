@@ -65,11 +65,11 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAuthority('system:user:get')")
     @Operation(summary = "获取所有用户（权限管理相关）")
-    public ResponseResult<IPage<User>> getAllUser(Long currentPage, Long pageSize, String searchName, String searchRole, String searchGroup, Integer searchEnable) {
+    public ResponseResult<IPage<User>> getAllUser(Long currentPage, Long pageSize, String searchName, String searchRole, String searchGroup, Integer searchEnable, Integer searchRegex) {
         List<Long> searchRoleList = WebUtil.convertStringToList(searchRole, Long.class);
         List<Long> searchGroupList = WebUtil.convertStringToList(searchGroup, Long.class);
 
-        IPage<User> users = userService.getAllUser(currentPage, pageSize, searchName, searchRoleList, searchGroupList, searchEnable);
+        IPage<User> users = userService.getAllUser(currentPage, pageSize, searchName, searchRoleList, searchGroupList, searchEnable, searchRegex);
         return ResponseResult.databaseSelectSuccess(users);
     }
 

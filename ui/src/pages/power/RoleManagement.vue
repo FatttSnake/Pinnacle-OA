@@ -31,7 +31,6 @@
             >
                 <el-input
                     v-model="inputName"
-                    maxlength="20"
                     show-word-limit
                     placeholder="请输入内容"
                     @keyup.enter="handleQuery"

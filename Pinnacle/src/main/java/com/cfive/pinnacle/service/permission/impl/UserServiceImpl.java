@@ -96,13 +96,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
 
     @Override
-    public IPage<User> getAllUser(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, List<Long> searchGroup, Integer searchEnable) {
+    public IPage<User> getAllUser(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, List<Long> searchGroup, Integer searchEnable, Integer searchRegex) {
         IPage<User> userIPage = PageDTO.of(currentPage, pageSize);
         searchName = searchName.trim();
-        List<Long> userList = userMapper.filterUserByRoleIdAndGroupId(null, null, null, searchName, searchEnable);
+        List<Long> userList = userMapper.filterUserByRoleIdAndGroupId(null, null, null, searchName, searchEnable, searchRegex);
         if (userList.size() > 0) {
             for (Long roleId : searchRole) {
-                userList = userMapper.filterUserByRoleIdAndGroupId(userList, roleId, null, null, null);
+                userList = userMapper.filterUserByRoleIdAndGroupId(userList, roleId, null, null, null, null);
                 if (userList.size() == 0) {
                     break;
                 }
@@ -110,7 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         if (userList.size() > 0) {
             for (Long groupId : searchGroup) {
-                userList = userMapper.filterUserByRoleIdAndGroupId(userList, null, groupId, null, null);
+                userList = userMapper.filterUserByRoleIdAndGroupId(userList, null, groupId, null, null, null);
                 if (userList.size() == 0) {
                     break;
                 }
