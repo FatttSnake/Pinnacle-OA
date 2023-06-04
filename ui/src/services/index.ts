@@ -107,9 +107,10 @@ service.interceptors.response.use(
         return response
     },
     async (error) => {
-        if (error.response != null) {
-            /* empty */
-        }
+        ElMessage.error({
+            dangerouslyUseHTMLString: true,
+            message: '<strong>服务器出错</strong>，请稍后重试'
+        })
         return await Promise.reject(error?.response?.data)
     }
 )

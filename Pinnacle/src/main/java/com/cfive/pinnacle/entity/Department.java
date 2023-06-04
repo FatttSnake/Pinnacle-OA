@@ -66,6 +66,5 @@ public class Department implements Serializable {
      * 部门成员
      */
     @TableField(exist = false)
-    @Deprecated
     private List<User> userList;
 }

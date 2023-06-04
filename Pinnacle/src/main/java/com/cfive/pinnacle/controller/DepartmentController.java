@@ -35,12 +35,8 @@ public class DepartmentController {
 
     //获取所有部门及其各部门所属成员
     @GetMapping("/user")
-    @Deprecated
-    public ResponseResult getDepartAndUser() {
-        List<Department> getDepartAndUser = departmentService.getDepartAndUser();
-        Integer code = getDepartAndUser != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
-        String msg = getDepartAndUser != null ? "" : "数据查询失败，请尝试！";
-        return ResponseResult.build(code, msg, getDepartAndUser);
+    public ResponseResult<List<Department>> getDepartAndUser() {
+        return ResponseResult.databaseSelectSuccess(departmentService.getDepartmentWithUser());
     }
 
     @GetMapping

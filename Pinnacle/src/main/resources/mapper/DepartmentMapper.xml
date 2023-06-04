@@ -51,19 +51,35 @@
         </if>
     </select>
 
-    <select id="getDepartAndUser" resultMap="department">
-        select d.id did, name, u.id uid, username
-        from t_department d,
-             t_user u
-        where d.id = u.department_id
-          and d.deleted = 0
-          and u.deleted = 0
+    <select id="getDepartmentWithUser" resultMap="departmentWithUserMap">
+        select td.id as department_id, td.name as department_name
+        from (select * from t_department where deleted = 0) as td
     </select>
-    <resultMap id="department" type="department" autoMapping="true">
-        <id column="did" property="id"/>
-        <collection property="userList" ofType="user" autoMapping="true">
-            <id column="uid" property="id"/>
-            <result column="uid" property="id"/>
-        </collection>
+
+    <select id="getUserInDepartment" resultMap="userInDepartmentMap">
+        select tu.id         as user_id,
+               tu.username   as user_username,
+               ts.id         as staff_id,
+               ts.first_name as staff_first_name,
+               ts.last_name  as staff_last_name
+        from (select * from t_user where deleted = 0) as tu
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = tu.id
+        where tu.department_id = #{department_id}
+    </select>
+
+    <resultMap id="departmentWithUserMap" type="department">
+        <id property="id" column="department_id"/>
+        <result property="name" column="department_name"/>
+        <collection property="userList" ofType="user" column="department_id" select="getUserInDepartment"/>
+    </resultMap>
+
+    <resultMap id="userInDepartmentMap" type="user">
+        <id property="id" column="user_id"/>
+        <result property="username" column="user_username"/>
+        <association property="staff" javaType="staff">
+            <id property="id" column="staff_id"/>
+            <result property="firstName" column="staff_first_name"/>
+            <result property="lastName" column="staff_last_name"/>
+        </association>
     </resultMap>
 </mapper>
