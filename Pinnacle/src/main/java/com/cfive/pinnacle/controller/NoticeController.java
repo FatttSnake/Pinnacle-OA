@@ -139,7 +139,7 @@ public class NoticeController {
     public ResponseResult<List<Notice>> selectLimitByUserId() {
         List<Notice> selectLimitByUserId = noticeReceiveService.selectLimitByUserId();
         String msg = (null != selectLimitByUserId) ? "" : "数据查询失败，请重试！";
-        return ResponseResult.build((null != selectLimitByUserId) ? ResponseCode.DATABASE_DELETE_OK : ResponseCode.DATABASE_DELETE_ERROR, msg, selectLimitByUserId);
+        return ResponseResult.build((null != selectLimitByUserId) ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR, msg, selectLimitByUserId);
     }
 
 }
