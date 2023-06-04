@@ -89,7 +89,7 @@ public class WorkController {
         }
     }
 
-    @PutMapping("/setStatus")
+    @PutMapping("/set_status")
     @PreAuthorize("hasAuthority('work:self:status') and hasAuthority('work:self:get')")
     public ResponseResult<UserWork> updateStatus(@RequestBody UserWork userWork) {
         userWork.setUserId(WebUtil.getLoginUser().getUser().getId());
