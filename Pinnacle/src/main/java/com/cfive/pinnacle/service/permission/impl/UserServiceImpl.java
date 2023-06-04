@@ -76,6 +76,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public boolean modifyPasswd(String passwd) {
+        String encryptedPassword = passwordEncoder.encode(passwd);
+        User user = new User().setId(WebUtil.getLoginUser().getUser().getId()).setPasswd(encryptedPassword);
+        return userMapper.updateById(user) == 1;
+    }
+
+    @Override
     public List<User> getAffairUser() {
         return userMapper.getAllAffairUser();
     }

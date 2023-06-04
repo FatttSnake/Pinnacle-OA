@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.exception.DataValidationFailedException;
 import com.cfive.pinnacle.service.permission.IUserService;
 import com.cfive.pinnacle.utils.WebUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,6 +40,23 @@ public class UserController {
     @Operation(summary = "获取当前用户信息")
     public ResponseResult<User> getInfo() {
         return ResponseResult.databaseSelectSuccess(userService.getInfo());
+    }
+
+    @PutMapping("/passwd")
+    @Operation(summary = "修改密码")
+    public ResponseResult<?> modifyPasswd(String password) {
+        if (password == null) {
+            throw new DataValidationFailedException();
+        }
+        password = password.trim();
+        if (password.isBlank() || password.length() < 8 || password.length() > 64) {
+            throw new DataValidationFailedException();
+        }
+        if (userService.modifyPasswd(password)) {
+            return ResponseResult.databaseUpdateSuccess(null);
+        } else {
+            return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "error", null);
+        }
     }
 
     @GetMapping("/affair")

@@ -18,6 +18,8 @@ public interface IUserService extends IService<User> {
 
     User getInfo();
 
+    boolean modifyPasswd(String passwd);
+
     List<User> getAffairUser();
 
     List<User> getDepartmentUser();
