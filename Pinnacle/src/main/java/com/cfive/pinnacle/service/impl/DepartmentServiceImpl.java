@@ -29,9 +29,8 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     @Override
-    @Deprecated
-    public List<Department> getDepartAndUser() {
-        return departmentMapper.getDepartAndUser();
+    public List<Department> getDepartmentWithUser() {
+        return departmentMapper.getDepartmentWithUser();
     }
 
     @Override

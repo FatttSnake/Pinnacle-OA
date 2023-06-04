@@ -15,8 +15,8 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface IDepartmentService extends IService<Department> {
-    @Deprecated
-    List<Department> getDepartAndUser();
+
+    List<Department> getDepartmentWithUser();
 
     IPage<Department> getAllDepartment(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchRegex);
 }

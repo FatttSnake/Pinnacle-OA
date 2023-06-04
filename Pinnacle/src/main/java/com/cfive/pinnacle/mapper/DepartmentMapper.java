@@ -18,8 +18,7 @@ import java.util.List;
  */
 @Mapper
 public interface DepartmentMapper extends BaseMapper<Department> {
-    @Deprecated
-    List<Department> getDepartAndUser();
+    List<Department> getDepartmentWithUser();
 
     IPage<Department> getAllDepartment(IPage<Department> page, @Param("searchType") Integer searchType, @Param("searchInput") String searchInput, @Param("searchRegex") Integer searchRegex);
 }
