@@ -4,6 +4,7 @@ import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
  * @since 2023-04-30
  */
 public interface INoticeReceiveService extends IService<NoticeReceive> {
-    List<Notice> selectByUserId(Integer readStatus);
+    List<Notice> selectByUserId(Integer readStatus, String title, String type, String startTime, String endTime);
 
     List<Notice> selectLimitByUserId();
 

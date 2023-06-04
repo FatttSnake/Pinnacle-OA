@@ -175,7 +175,7 @@ export default {
             } else if (this.currentViewPage === 'AlRead') {
                 flag = 1
             }
-            await noticeStore.selectAllNoticeSelf(flag)
+            await noticeStore.selectAllNoticeSelf(flag, '', '', '', '')
         },
         handleDialogClose() {
             noticeStore.$patch((state) => {
@@ -208,7 +208,7 @@ export default {
             } else if (this.currentViewPage === 'AlRead') {
                 flag = 1
             }
-            await noticeStore.selectAllNoticeSelf(flag)
+            await noticeStore.selectAllNoticeSelf(flag, '', '', '', '')
         }
     },
     mounted() {},

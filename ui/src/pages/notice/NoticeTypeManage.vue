@@ -45,7 +45,11 @@
     </el-container>
 </template>
 <script lang="ts">
-import { SIZE_ICON_MD } from '@/constants/Common.constants'
+import {
+    DATABASE_DELETE_ERROR,
+    DATABASE_DELETE_OK,
+    SIZE_ICON_MD
+} from '@/constants/Common.constants'
 import { useNoticeTypeStore } from '@/store/notice'
 import { mapState } from 'pinia'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -113,13 +117,13 @@ export default {
             })
                 .then(() => {
                     request.delete('/notice_type/' + typeId).then((response) => {
-                        if (response.data.code === 20024) {
+                        if (response.data.code === DATABASE_DELETE_OK) {
                             ElMessage({
                                 message: '删除成功.',
                                 type: 'success'
                             })
                             noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
-                        } else if (response.data.code === 20034) {
+                        } else if (response.data.code === DATABASE_DELETE_ERROR) {
                             ElMessage({
                                 message: response.data.msg,
                                 type: 'error'
@@ -142,13 +146,13 @@ export default {
                 })
                     .then(() => {
                         request.post('/notice_type/batch', multiDeleteTypeIds).then((response) => {
-                            if (response.data.code === 20024) {
+                            if (response.data.code === DATABASE_DELETE_OK) {
                                 ElMessage({
                                     message: '删除成功.',
                                     type: 'success'
                                 })
                                 noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
-                            } else if (response.data.code === 20034) {
+                            } else if (response.data.code === DATABASE_DELETE_ERROR) {
                                 ElMessage({
                                     message: response.data.msg,
                                     type: 'error'

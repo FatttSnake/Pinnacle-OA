@@ -1,6 +1,13 @@
 import { defineStore } from 'pinia'
 import request from '@/services'
 import { ElMessage } from 'element-plus'
+import {
+    DATABASE_SAVE_ERROR,
+    DATABASE_SAVE_OK,
+    DATABASE_SELECT_OK,
+    DATABASE_UPDATE_ERROR,
+    DATABASE_UPDATE_OK
+} from '@/constants/Common.constants'
 
 export interface IAddNoticeData {
     title: string
@@ -54,6 +61,12 @@ export const useNoticeStore = defineStore('notice', {
                 startTime: '',
                 endTime: '',
                 userIdList: []
+            },
+            searchBySelf: {
+                title: '',
+                type: '',
+                startTime: '',
+                endTime: ''
             },
             selectData: [
                 {
@@ -142,7 +155,7 @@ export const useNoticeStore = defineStore('notice', {
                     userIdList: userIdList.toString() + ''
                 })
                 .then((response) => {
-                    if (response.data.code === 20021) {
+                    if (response.data.code === DATABASE_SELECT_OK) {
                         this.selectData = response.data.data
                         this.total = parseInt(response.data.msg)
                         this.loading = false
@@ -155,13 +168,23 @@ export const useNoticeStore = defineStore('notice', {
                     }
                 })
         },
-        async selectAllNoticeSelf(readStatus: number) {
+        async selectAllNoticeSelf(
+            readStatus: number,
+            title: string,
+            type: string,
+            startTime: string,
+            endTime: string
+        ) {
             await request
                 .get('/notice/self', {
-                    readStatus
+                    readStatus,
+                    title,
+                    type,
+                    startTime,
+                    endTime
                 })
                 .then((response) => {
-                    if (response.data.code === 20021) {
+                    if (response.data.code === DATABASE_SELECT_OK) {
                         this.selectData = response.data.data
                         this.showLoading = false
                     } else {
@@ -180,13 +203,13 @@ export const useNoticeStore = defineStore('notice', {
         },
         handleAddNotice(addFormData: IAddNoticeData) {
             void request.post('/notice', addFormData).then((response) => {
-                if (response.data.code === 20022) {
+                if (response.data.code === DATABASE_SAVE_OK) {
                     this.dialogAddVisible = false
                     ElMessage({
                         message: '发布成功.',
                         type: 'success'
                     })
-                } else if (response.data.code === 20032) {
+                } else if (response.data.code === DATABASE_SAVE_ERROR) {
                     ElMessage({
                         message: response.data.msg,
                         type: 'error'
@@ -197,14 +220,14 @@ export const useNoticeStore = defineStore('notice', {
         },
         handleUpdateNotice(updateNotice: IAddNoticeData) {
             void request.put('/notice', updateNotice).then((response) => {
-                if (response.data.code === 20023) {
+                if (response.data.code === DATABASE_UPDATE_OK) {
                     this.dialogEditVisible = false
                     this.editFlag = false
                     ElMessage({
                         message: '修改成功.',
                         type: 'success'
                     })
-                } else if (response.data.code === 20033) {
+                } else if (response.data.code === DATABASE_UPDATE_ERROR) {
                     ElMessage({
                         message: response.data.msg,
                         type: 'error'
@@ -216,7 +239,7 @@ export const useNoticeStore = defineStore('notice', {
         },
         async modifyNoticeIsRead(notice: INotice) {
             await request.put('/notice/modify_notice_read', notice).then((response) => {
-                if (response.data.code === 20033) {
+                if (response.data.code === DATABASE_UPDATE_ERROR) {
                     ElMessage({
                         message: response.data.msg,
                         type: 'error'
@@ -226,12 +249,12 @@ export const useNoticeStore = defineStore('notice', {
         },
         async modifyTop(notice: INotice) {
             await request.put('/notice/update_notice_top', notice).then((response) => {
-                if (response.data.code === 20023) {
+                if (response.data.code === DATABASE_UPDATE_OK) {
                     ElMessage({
                         message: response.data.msg,
                         type: 'success'
                     })
-                } else if (response.data.code === 20033) {
+                } else if (response.data.code === DATABASE_UPDATE_ERROR) {
                     ElMessage({
                         message: response.data.msg,
                         type: 'error'
@@ -282,7 +305,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
         },
         async selectNoticeType(currentPage: number, pageSize: number) {
             await request.get('/notice_type/page', { currentPage, pageSize }).then((response) => {
-                if (response.data.code === 20021) {
+                if (response.data.code === DATABASE_SELECT_OK) {
                     this.noticeTypeList = response.data.data
                     this.total = parseInt(response.data.msg)
                     if (this.noticeTypeList.length !== 0) {
@@ -304,12 +327,12 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                     enable
                 })
                 .then((response) => {
-                    if (response.data.code === 20023) {
+                    if (response.data.code === DATABASE_UPDATE_OK) {
                         ElMessage({
                             message: '修改成功.',
                             type: 'success'
                         })
-                    } else if (response.data.code === 20033) {
+                    } else if (response.data.code === DATABASE_UPDATE_ERROR) {
                         ElMessage({
                             message: response.data.msg,
                             type: 'error'
@@ -319,13 +342,13 @@ export const useNoticeTypeStore = defineStore('notice_type', {
         },
         async handleAddNoticeType(addFormData: IAddNoticeTypeData) {
             await request.post('/notice_type', addFormData).then((response) => {
-                if (response.data.code === 20022) {
+                if (response.data.code === DATABASE_SAVE_OK) {
                     this.dialogAddTypeVisible = false
                     ElMessage({
                         message: '添加成功.',
                         type: 'success'
                     })
-                } else if (response.data.code === 20032) {
+                } else if (response.data.code === DATABASE_SAVE_ERROR) {
                     ElMessage({
                         message: response.data.msg,
                         type: 'error'
@@ -336,7 +359,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
         },
         async handleUpdateNoticeType(updateNotice: IAddNoticeTypeData) {
             await request.put('/notice_type', updateNotice).then((response) => {
-                if (response.data.code === 20023) {
+                if (response.data.code === DATABASE_UPDATE_OK) {
                     this.dialogEditTypeVisible = false
                     this.editFlag = false
                     this.hackReset = false
@@ -349,7 +372,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                         message: '修改成功.',
                         type: 'success'
                     })
-                } else if (response.data.code === 20033) {
+                } else if (response.data.code === DATABASE_UPDATE_ERROR) {
                     ElMessage({
                         message: response.data.msg,
                         type: 'error'

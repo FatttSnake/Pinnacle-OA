@@ -15,7 +15,15 @@ export default {
             state.showLoading = true
             state.currentViewPage = 'All'
         })
-        noticeStore.selectAllNoticeSelf(-1)
+        noticeStore.selectAllNoticeSelf(-1, '', '', '', '')
+        noticeStore.$patch((state) => {
+            state.searchBySelf = {
+                title: '',
+                type: '',
+                startTime: '',
+                endTime: ''
+            }
+        })
     },
     computed: {
         ...mapState(useNoticeStore, ['showLoading'])

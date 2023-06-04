@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header>
-            <notice-head @selectByCond="getLoading"></notice-head>
+            <notice-manage-head @selectByCond="getLoading"></notice-manage-head>
         </el-header>
         <el-main>
             <el-button
@@ -52,7 +52,11 @@ import 'element-plus/theme-chalk/el-message-box.css'
 import request from '@/services'
 import { useNoticeStore, useNoticeTypeStore } from '@/store/notice'
 import { mapState } from 'pinia'
-import { SIZE_ICON_MD } from '@/constants/Common.constants'
+import {
+    DATABASE_DELETE_ERROR,
+    DATABASE_DELETE_OK,
+    SIZE_ICON_MD
+} from '@/constants/Common.constants'
 const noticeStore = useNoticeStore()
 const noticeTypeStore = useNoticeTypeStore()
 
@@ -82,7 +86,7 @@ export default {
             })
                 .then(() => {
                     request.delete('/notice/' + deleteID).then((response) => {
-                        if (response.data.code === 20024) {
+                        if (response.data.code === DATABASE_DELETE_OK) {
                             ElMessage({
                                 message: '删除成功.',
                                 type: 'success'
@@ -96,7 +100,7 @@ export default {
                                 '',
                                 []
                             )
-                        } else if (response.data.code === 20034) {
+                        } else if (response.data.code === DATABASE_DELETE_ERROR) {
                             ElMessage({
                                 message: response.data.msg,
                                 type: 'error'
@@ -123,7 +127,6 @@ export default {
                 this.search.endTime,
                 this.search.userIdList
             )
-            // noticeStore.search.userIdList = []
         },
         deleteBatchByIds() {
             const multiDeleteIds = []
@@ -138,7 +141,7 @@ export default {
                 })
                     .then(() => {
                         request.post('/notice/batch', multiDeleteIds).then((response) => {
-                            if (response.data.code === 20024) {
+                            if (response.data.code === DATABASE_DELETE_OK) {
                                 ElMessage({
                                     message: '删除成功.',
                                     type: 'success'
@@ -152,7 +155,7 @@ export default {
                                     '',
                                     []
                                 )
-                            } else if (response.data.code === 20034) {
+                            } else if (response.data.code === DATABASE_DELETE_ERROR) {
                                 ElMessage({
                                     message: response.data.msg,
                                     type: 'error'
