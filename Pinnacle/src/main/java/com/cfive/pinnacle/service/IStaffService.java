@@ -17,4 +17,6 @@ public interface IStaffService extends IService<Staff> {
     IPage<User> getAllStaff(Long currentPage, Long pageSize, Integer searchType, String searchInput, Integer searchGender, String searchBirthFrom, String searchBirthTo, Integer searchRegex);
 
     boolean modifyStaff(User user);
+
+    boolean modifySelf(Staff staff);
 }
