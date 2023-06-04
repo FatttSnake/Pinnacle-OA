@@ -13,9 +13,15 @@
                     type="info"
                     >无</el-tag
                 >
-                <el-tag v-for="(column, index) in scope.row.customColumn_1" :key="index">{{
-                    column
-                }}</el-tag>
+                <el-tooltip
+                    v-for="(column, index) in scope.row.customColumn_1"
+                    :key="index"
+                    :content="column"
+                >
+                    <el-tag>{{
+                        column.length > 20 ? column.substring(0, 19) + '...' : column
+                    }}</el-tag>
+                </el-tooltip>
             </template>
         </el-table-column>
         <el-table-column v-if="customColumnLabel_2" :label="customColumnLabel_2">
@@ -25,9 +31,15 @@
                     type="info"
                     >无</el-tag
                 >
-                <el-tag v-for="(column, index) in scope.row.customColumn_2" :key="index">{{
-                    column
-                }}</el-tag>
+                <el-tooltip
+                    v-for="(column, index) in scope.row.customColumn_2"
+                    :key="index"
+                    :content="column"
+                >
+                    <el-tag>{{
+                        column.length > 20 ? column.substring(0, 19) + '...' : column
+                    }}</el-tag>
+                </el-tooltip>
             </template>
         </el-table-column>
         <el-table-column label="状态" align="center" width="80px">
