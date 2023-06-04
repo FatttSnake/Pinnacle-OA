@@ -64,7 +64,6 @@ export default {
                 if (value) {
                     this.$emit('updatePasswd', passwdForm)
                     this.$refs.passwdForm.resetFields()
-                    console.log('submit!')
                 } else {
                     console.log('fault!')
                 }

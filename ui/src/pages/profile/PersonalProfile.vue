@@ -203,7 +203,6 @@ export default {
             this.form = _.cloneDeep(this.staff)
         },
         updatePasswd(passwdForm) {
-            console.log(passwdForm)
             this.visible = false
         },
         cancelPasswd() {

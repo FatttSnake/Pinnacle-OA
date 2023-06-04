@@ -72,7 +72,6 @@ export default {
     },
     methods: {
         formatDate(time) {
-            console.log(new Date(time).toLocaleString())
             return new Date(time).toLocaleString()
         },
         statusTag(row) {
@@ -93,16 +92,13 @@ export default {
             userWork.status = 0
             this.setTaskStatus(userWork)
         },
-        todoCancelEvent() {
-            console.log('complete cancel!')
-        },
+        todoCancelEvent() {},
         getTableData() {
             request.get('/work/complete').then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
                     this.tableData = response.data
                     if (this.tableData) {
-                        console.log(this.tableData)
                         this.loading = false
                     }
                 } else {
@@ -114,7 +110,6 @@ export default {
             })
         },
         getTaskData(workId) {
-            console.log(workId)
             request.get('/work/' + workId).then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
@@ -126,7 +121,6 @@ export default {
             })
         },
         setTaskStatus(userWork) {
-            console.log(userWork)
             request.put('/work/set_status', userWork).then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_UPDATE_OK) {

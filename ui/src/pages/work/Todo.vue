@@ -63,7 +63,6 @@ export default {
             const beforeTime = new Date(deadDate)
             const beforeDate = new Date(beforeTime.setDate(deadDate.getDate() - 3))
             const nowTime = new Date()
-            console.log(scope)
             if (nowTime <= beforeDate) {
                 scope.row.color1 = '#909399'
             } else if (nowTime > beforeDate && nowTime < deadDate) {
@@ -81,70 +80,48 @@ export default {
             userWork.workId = row.id
             userWork.status = 1
             this.setTaskStatus(userWork)
-            console.log('complete confirm!')
         },
-        completeCancelEvent() {
-            console.log('complete cancel!')
-        },
+        completeCancelEvent() {},
         getTableData() {
-            request
-                .get('/work/todo')
-                .then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_SELECT_OK) {
-                        this.tableData = response.data
-                        if (this.taskData) {
-                            this.loading = false
-                        }
-                    } else {
-                        ElMessage({
-                            message: '数据查询出错',
-                            type: 'error'
-                        })
+            request.get('/work/todo').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.tableData = response.data
+                    if (this.taskData) {
+                        this.loading = false
                     }
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                } else {
+                    ElMessage({
+                        message: '数据查询出错',
+                        type: 'error'
+                    })
+                }
+            })
         },
         getTaskData(workId) {
-            console.log(workId)
-            request
-                .get('/work/' + workId)
-                .then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_SELECT_OK) {
-                        this.taskData = response.data
-                        console.log(this.tableData)
-                        return true
-                    } else {
-                        return false
-                    }
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
+            request.get('/work/' + workId).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.taskData = response.data
+                    return true
+                } else {
                     return false
-                })
+                }
+            })
         },
         setTaskStatus(userWork) {
             userWork.completeTime = new Date()
-            console.log(userWork)
-            request
-                .put('/work/set_status', userWork)
-                .then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_UPDATE_OK) {
-                        this.getTableData()
-                    } else {
-                        ElMessage({
-                            message: '状态修改失败',
-                            type: 'error'
-                        })
-                    }
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.put('/work/set_status', userWork).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_UPDATE_OK) {
+                    this.getTableData()
+                } else {
+                    ElMessage({
+                        message: '状态修改失败',
+                        type: 'error'
+                    })
+                }
+            })
         },
         viewClick(workId) {
             this.getTaskData(workId)

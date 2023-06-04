@@ -94,23 +94,14 @@ export default {
     },
     methods: {
         getFormData() {
-            request
-                .get('/user/department')
-                .then((response) => {
-                    console.log(response.data.data)
-                    this.workers = response.data.data
-                    console.log(this.workers)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.get('/user/department').then((response) => {
+                this.workers = response.data.data
+            })
         },
         onSubmit(form) {
             // 表单校验
             this.$refs.ruleForm.validate((value) => {
                 if (value) {
-                    console.log(form.deadline)
-                    console.log(typeof form.deadline)
                     form.publisherId = _.toString(1)
                     if (this.editForm) {
                         this.$emit('updateWork', form)
@@ -119,7 +110,6 @@ export default {
                         this.$emit('addWork', form)
                         this.reset()
                     }
-                    console.log('submit!')
                 } else {
                     console.log('fault!')
                 }

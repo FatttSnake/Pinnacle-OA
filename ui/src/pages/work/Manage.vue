@@ -117,21 +117,13 @@ export default {
         handleClick(row) {
             this.rowData = row
             this.editVisible = true
-            console.log('click')
         },
         deleteConfirmEvent(row) {
             this.deleteTableData(row)
-            console.log('delete confirm!')
         },
-        deleteCancelEvent() {
-            console.log('delete cancel!')
-        },
-        completeConfirmEvent() {
-            console.log('complete confirm!')
-        },
-        completeCancelEvent() {
-            console.log('complete cancel!')
-        },
+        deleteCancelEvent() {},
+        completeConfirmEvent() {},
+        completeCancelEvent() {},
         getTableData() {
             request.get('/work').then((res) => {
                 const response = res.data
@@ -149,22 +141,17 @@ export default {
             })
         },
         deleteTableData(row) {
-            request
-                .delete('/work/' + row.id)
-                .then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_DELETE_OK) {
-                        this.getTableData()
-                    } else {
-                        ElMessage({
-                            message: '删除失败',
-                            type: 'error'
-                        })
-                    }
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.delete('/work/' + row.id).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_DELETE_OK) {
+                    this.getTableData()
+                } else {
+                    ElMessage({
+                        message: '删除失败',
+                        type: 'error'
+                    })
+                }
+            })
         },
         setDialogVisible(dialogVisible) {
             this.addVisible = dialogVisible
