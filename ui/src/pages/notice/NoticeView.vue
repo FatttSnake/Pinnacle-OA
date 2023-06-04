@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header>
-            <notice-head></notice-head>
+            <notice-view-head @selectSelfByCond="getLoading" />
         </el-header>
         <el-main>
             <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" router>
@@ -15,14 +15,31 @@
 </template>
 
 <script lang="ts">
-import { useNoticeTypeStore } from '@/store/notice'
+import { useNoticeTypeStore, useNoticeStore } from '@/store/notice'
+import { mapState } from 'pinia'
 const noticeTypeStore = useNoticeTypeStore()
+const noticeStore = useNoticeStore()
+
 export default {
     name: 'NoticeView',
+    computed: {
+        ...mapState(useNoticeStore, ['showLoading', 'searchBySelf'])
+    },
     data() {
         return {}
     },
-    methods: {},
+    methods: {
+        getLoading(status) {
+            noticeStore.showLoading = true
+            noticeStore.selectAllNoticeSelf(
+                status,
+                this.searchBySelf.title,
+                this.searchBySelf.type,
+                this.searchBySelf.startTime,
+                this.searchBySelf.endTime
+            )
+        }
+    },
     mounted() {
         noticeTypeStore.selectEnableNoticeType()
     }

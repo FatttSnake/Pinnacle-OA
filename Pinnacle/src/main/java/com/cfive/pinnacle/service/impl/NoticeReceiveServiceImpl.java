@@ -10,6 +10,8 @@ import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -24,10 +26,16 @@ import java.util.List;
 public class NoticeReceiveServiceImpl extends ServiceImpl<NoticeReceiveMapper, NoticeReceive> implements INoticeReceiveService {
     @Autowired
     private NoticeReceiveMapper noticeReceiveMapper;
+
     @Override
-    public List<Notice> selectByUserId(Integer readStatus) {
+    public List<Notice> selectByUserId(Integer readStatus, String title, String type, String startTime, String endTime) {
         Long userId = WebUtil.getLoginUser().getUser().getId();
-        return noticeReceiveMapper.selectByUserId(userId,readStatus);
+        LocalDateTime start = null, end = null;
+        if (startTime != "" && endTime != "") {
+            start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        return noticeReceiveMapper.selectByUserId(userId, readStatus, title, type, start, end);
     }
 
     @Override
@@ -39,12 +47,12 @@ public class NoticeReceiveServiceImpl extends ServiceImpl<NoticeReceiveMapper, N
     @Override
     public Boolean modifyNoticeIsRead(Notice notice) {
         Integer readStatus = null;
-        if (null!=notice.getIsRead()){
-            readStatus=notice.getIsRead()==0?1:0;
+        if (null != notice.getIsRead()) {
+            readStatus = notice.getIsRead() == 0 ? 1 : 0;
         }
         LambdaUpdateWrapper<NoticeReceive> luw = new LambdaUpdateWrapper<>();
         Long userId = WebUtil.getLoginUser().getUser().getId();
-        luw.eq(NoticeReceive::getNoticeId, notice.getId()).eq(NoticeReceive::getUserId, userId).set(null!=readStatus,NoticeReceive::getAlreadyRead, readStatus);
-        return noticeReceiveMapper.update(null,luw)>0;
+        luw.eq(NoticeReceive::getNoticeId, notice.getId()).eq(NoticeReceive::getUserId, userId).set(null != readStatus, NoticeReceive::getAlreadyRead, readStatus);
+        return noticeReceiveMapper.update(null, luw) > 0;
     }
 }

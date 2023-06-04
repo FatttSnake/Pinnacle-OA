@@ -67,8 +67,8 @@ public class NoticeController {
     //根据登录用户id查询所接收的公告
     @GetMapping("/self")
     @PreAuthorize("hasAuthority('notice:self:get')")
-    public ResponseResult<List<Notice>> selectByUserId(Integer readStatus) {
-        List<Notice> noticesByUserId = noticeReceiveService.selectByUserId(readStatus);
+    public ResponseResult<List<Notice>> selectByUserId(Integer readStatus,String title, String type, String startTime, String endTime) {
+        List<Notice> noticesByUserId = noticeReceiveService.selectByUserId(readStatus, title.trim(), type.trim(), startTime.trim(), endTime.trim());
         Integer code = noticesByUserId != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticesByUserId != null ? "" : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticesByUserId);

@@ -14,7 +14,15 @@ export default {
             state.showLoading = true
             state.currentViewPage = 'ToRead'
         })
-        noticeStore.selectAllNoticeSelf(0)
+        noticeStore.selectAllNoticeSelf(0, '', '', '', '')
+        noticeStore.$patch((state) => {
+            state.searchBySelf = {
+                title: '',
+                type: '',
+                startTime: '',
+                endTime: ''
+            }
+        })
     }
 }
 </script>

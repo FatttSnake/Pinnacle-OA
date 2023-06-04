@@ -4,7 +4,6 @@
         :model="search"
         class="demo-form-inline"
         label-width="auto"
-        ref="searchForm"
         style="min-width: 1185px"
     >
         <el-row :span="24">
