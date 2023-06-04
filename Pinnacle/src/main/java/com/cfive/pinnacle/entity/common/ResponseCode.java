@@ -8,6 +8,7 @@ public class ResponseCode {
     public static final int SYSTEM_OK = 20000;
     public static final int LOGIN_SUCCESS = 20010;
     public static final int LOGIN_USERNAME_PASSWORD_ERROR = 20011;
+    public static final int OLD_PASSWORD_NOT_MATCH = 20012;
     public static final int LOGOUT_SUCCESS = 20015;
     public static final int LOGOUT_FAILED = 20016;
     public static final int TOKEN_IS_ILLEGAL = 20017;

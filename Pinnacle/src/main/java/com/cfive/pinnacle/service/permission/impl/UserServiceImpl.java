@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.permission.*;
+import com.cfive.pinnacle.exception.OldPasswordNotMatchException;
 import com.cfive.pinnacle.mapper.permission.*;
 import com.cfive.pinnacle.service.permission.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -76,8 +77,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public boolean modifyPasswd(String passwd) {
-        String encryptedPassword = passwordEncoder.encode(passwd);
+    public boolean modifyPasswd(String oldPasswd, String newPasswd) {
+        if (!passwordEncoder.matches(oldPasswd, userMapper.getOneWithPowerByUsername(WebUtil.getLoginUser().getUsername()).getPasswd())) {
+            throw new OldPasswordNotMatchException();
+        }
+
+        String encryptedPassword = passwordEncoder.encode(newPasswd);
         User user = new User().setId(WebUtil.getLoginUser().getUser().getId()).setPasswd(encryptedPassword);
         return userMapper.updateById(user) == 1;
     }

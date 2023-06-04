@@ -18,7 +18,7 @@ public interface IUserService extends IService<User> {
 
     User getInfo();
 
-    boolean modifyPasswd(String passwd);
+    boolean modifyPasswd(String oldPasswd, String newPasswd);
 
     List<User> getAffairUser();
 

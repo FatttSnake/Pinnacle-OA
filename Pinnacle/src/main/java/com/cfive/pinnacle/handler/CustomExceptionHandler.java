@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.exception.DataValidationFailedException;
+import com.cfive.pinnacle.exception.OldPasswordNotMatchException;
 import com.cfive.pinnacle.exception.TokenHasExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -52,6 +53,9 @@ public class CustomExceptionHandler {
         }
         if (e instanceof UncategorizedSQLException) {
             return ResponseResult.build(ResponseCode.DATABASE_EXECUTE_ERROR, "error", null);
+        }
+        if (e instanceof OldPasswordNotMatchException) {
+            return ResponseResult.build(ResponseCode.OLD_PASSWORD_NOT_MATCH, e.getMessage(), null);
         }
 
         log.debug(e.getMessage(), e);
