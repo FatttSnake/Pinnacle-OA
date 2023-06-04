@@ -44,15 +44,15 @@ public class UserController {
 
     @PutMapping("/passwd")
     @Operation(summary = "修改密码")
-    public ResponseResult<?> modifyPasswd(String password) {
-        if (password == null) {
+    public ResponseResult<?> modifyPasswd(String oldPasswd, String newPassword) {
+        if (oldPasswd == null || newPassword == null) {
             throw new DataValidationFailedException();
         }
-        password = password.trim();
-        if (password.isBlank() || password.length() < 8 || password.length() > 64) {
+        newPassword = newPassword.trim();
+        if (oldPasswd.isBlank() || oldPasswd.length() < 8 || oldPasswd.length() > 64 || newPassword.isBlank() || newPassword.length() < 8 || newPassword.length() > 64) {
             throw new DataValidationFailedException();
         }
-        if (userService.modifyPasswd(password)) {
+        if (userService.modifyPasswd(oldPasswd, newPassword)) {
             return ResponseResult.databaseUpdateSuccess(null);
         } else {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "error", null);
