@@ -35,6 +35,7 @@ public class DepartmentController {
 
     //获取所有部门及其各部门所属成员
     @GetMapping("/user")
+    @PreAuthorize("hasAuthority('notice:manage:add')")
     public ResponseResult<List<Department>> getDepartAndUser() {
         return ResponseResult.databaseSelectSuccess(departmentService.getDepartmentWithUser());
     }
