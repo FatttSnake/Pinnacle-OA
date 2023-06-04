@@ -19,7 +19,13 @@
                     <el-form-item label="用户名" prop="username">
                         <el-input v-model="form.username" disabled />
                     </el-form-item>
-                    <el-link type="default" size="default" style="float: right">修改密码</el-link>
+                    <el-link
+                        type="default"
+                        size="default"
+                        style="float: right"
+                        @click="visible = true"
+                        >修改密码</el-link
+                    >
                 </el-col>
                 <el-col :span="12">
                     <el-row>
@@ -67,11 +73,17 @@
             </el-row>
         </el-form>
     </div>
+    <el-dialog v-model="visible" width="50%" title="修改密码">
+        <edit-passwd></edit-passwd>
+    </el-dialog>
 </template>
 
 <script lang="ts">
 import _ from 'lodash'
 import request from '@/services'
+import { ElMessage } from 'element-plus'
+import { requestUser } from '@/utils/auth'
+import { DATABASE_SELECT_OK, DATABASE_UPDATE_OK } from '@/constants/Common.constants'
 
 export default {
     data() {
@@ -131,26 +143,50 @@ export default {
                         message: '请选择性别'
                     }
                 ]
-            }
+            },
+            visible: false
         }
     },
     methods: {
         getFormData() {
-            request
-                .get('/user/info')
-                .then((response) => {
+            request.get('/user/info').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
                     this.staff = response.data.data.staff
                     this.staff.username = response.data.data.username
                     this.form = _.cloneDeep(this.staff)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                } else {
+                    ElMessage({
+                        message: '数据查询出错',
+                        type: 'error'
+                    })
+                }
+            })
+        },
+        putForm(form) {
+            request.put('/staff/self', form).then(async (res) => {
+                const response = res.data
+                if (response.code === DATABASE_UPDATE_OK) {
+                    ElMessage({
+                        message: '修改成功',
+                        type: 'success'
+                    })
+                    this.getFormData()
+                    await requestUser()
+                    location.reload()
+                } else {
+                    ElMessage({
+                        message: '修改失败',
+                        type: 'error'
+                    })
+                }
+            })
         },
         onSubmit(form) {
             // 表单校验
             this.$refs.form.validate((value) => {
                 if (value) {
+                    this.putForm(form)
                     console.log('submit!')
                 } else {
                     console.log('fault!')

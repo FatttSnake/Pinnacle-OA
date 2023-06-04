@@ -6,7 +6,7 @@
     <router-view></router-view>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 export default {
     name: 'TaskPage',
     data() {

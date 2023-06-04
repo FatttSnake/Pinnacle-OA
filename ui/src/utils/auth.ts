@@ -56,4 +56,13 @@ function verifyCaptcha(value: string): boolean {
     return captcha.value.toLowerCase() === value.replace(/\s*/g, '').toLowerCase()
 }
 
-export { login, logout, getLoginStatus, getUser, getUsername, getCaptchaSrc, verifyCaptcha }
+export {
+    login,
+    logout,
+    getLoginStatus,
+    getUser,
+    requestUser,
+    getUsername,
+    getCaptchaSrc,
+    verifyCaptcha
+}

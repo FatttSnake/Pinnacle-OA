@@ -2,7 +2,7 @@
     <el-card shadow="hover" class="homeCard">
         <template #header>
             <div class="card-header" style="height: 20px">
-                <h2>公告</h2>
+                <h2>个人事务</h2>
                 <el-button class="button" text @click="pushTodo">查看更多</el-button>
             </div>
         </template>
@@ -47,7 +47,7 @@ export default {
             return new Date(time).toLocaleString()
         },
         pushTodo() {
-            this.$router.push('/notice/view/all')
+            this.$router.push('/affair/personal/person')
         }
     }
 }

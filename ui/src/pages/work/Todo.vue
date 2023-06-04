@@ -42,8 +42,10 @@
     </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import request from '@/services'
+import { DATABASE_SELECT_OK, DATABASE_UPDATE_OK } from '@/constants/Common.constants'
+import { ElMessage } from 'element-plus'
 export default {
     name: 'TodoPage',
     data() {
@@ -87,10 +89,18 @@ export default {
         getTableData() {
             request
                 .get('/work/todo')
-                .then((response) => {
-                    this.tableData = response.data.data
-                    if (this.taskData) {
-                        this.loading = false
+                .then((res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_SELECT_OK) {
+                        this.tableData = response.data
+                        if (this.taskData) {
+                            this.loading = false
+                        }
+                    } else {
+                        ElMessage({
+                            message: '数据查询出错',
+                            type: 'error'
+                        })
                     }
                 })
                 .catch((reportError) => {
@@ -101,11 +111,15 @@ export default {
             console.log(workId)
             request
                 .get('/work/' + workId)
-                .then((response) => {
-                    console.log(response.data.data)
-                    this.taskData = response.data.data
-                    console.log(this.tableData)
-                    return true
+                .then((res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_SELECT_OK) {
+                        this.taskData = response.data
+                        console.log(this.tableData)
+                        return true
+                    } else {
+                        return false
+                    }
                 })
                 .catch((reportError) => {
                     console.log(reportError)
@@ -117,9 +131,16 @@ export default {
             console.log(userWork)
             request
                 .put('/work/set_status', userWork)
-                .then((response) => {
-                    console.log(response.data.data)
-                    this.getTableData()
+                .then((res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_UPDATE_OK) {
+                        this.getTableData()
+                    } else {
+                        ElMessage({
+                            message: '状态修改失败',
+                            type: 'error'
+                        })
+                    }
                 })
                 .catch((reportError) => {
                     console.log(reportError)

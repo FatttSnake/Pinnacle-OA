@@ -54,8 +54,10 @@
     </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import request from '@/services'
+import { DATABASE_SELECT_OK, DATABASE_UPDATE_OK } from '@/constants/Common.constants'
+import { ElMessage } from 'element-plus'
 
 export default {
     name: 'CompletePage',
@@ -95,45 +97,47 @@ export default {
             console.log('complete cancel!')
         },
         getTableData() {
-            request
-                .get('/work/complete')
-                .then((response) => {
-                    this.tableData = response.data.data
+            request.get('/work/complete').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.tableData = response.data
                     if (this.tableData) {
                         console.log(this.tableData)
                         this.loading = false
                     }
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                } else {
+                    ElMessage({
+                        message: '数据查询出错',
+                        type: 'error'
+                    })
+                }
+            })
         },
         getTaskData(workId) {
             console.log(workId)
-            request
-                .get('/work/' + workId)
-                .then((response) => {
-                    console.log(response.data.data)
-                    this.taskData = response.data.data
-                    console.log(this.tableData)
+            request.get('/work/' + workId).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.taskData = response.data
                     return true
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
+                } else {
                     return false
-                })
+                }
+            })
         },
         setTaskStatus(userWork) {
             console.log(userWork)
-            request
-                .put('/work/set_status', userWork)
-                .then((response) => {
-                    console.log(response.data.data)
+            request.put('/work/set_status', userWork).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_UPDATE_OK) {
                     this.getTableData()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                } else {
+                    ElMessage({
+                        message: '状态修改失败',
+                        type: 'error'
+                    })
+                }
+            })
         },
         viewClick(workId) {
             this.getTaskData(workId)

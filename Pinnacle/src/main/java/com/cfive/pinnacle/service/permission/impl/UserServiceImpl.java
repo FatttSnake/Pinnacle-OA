@@ -73,7 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public User getInfo() {
-        return WebUtil.getLoginUser().getUser();
+        return getUserWithPower(WebUtil.getLoginUser().getUser().getUsername());
     }
 
     @Override
