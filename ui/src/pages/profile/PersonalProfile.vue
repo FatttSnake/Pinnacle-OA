@@ -152,8 +152,8 @@ export default {
             request.get('/user/info').then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
-                    this.staff = response.data.data.staff
-                    this.staff.username = response.data.data.username
+                    this.staff = response.data.staff
+                    this.staff.username = response.data.username
                     this.form = _.cloneDeep(this.staff)
                 } else {
                     ElMessage({
