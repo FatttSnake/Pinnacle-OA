@@ -2,6 +2,7 @@ package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.permission.Group;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     @Override
     public IPage<Group> getAllGroup(Long currentPage, Long pageSize, String searchName, List<Long> searchRole, Integer searchEnable, Integer searchRegex) {
         Page<Group> groupIPage = PageDTO.of(currentPage, pageSize);
+        groupIPage.addOrder(OrderItem.desc("id"));
         searchName = searchName.trim();
         List<Long> groupList = groupMapper.filterGroupByRoleId(null, null, searchName, searchEnable, searchRegex);
         if (groupList.size() > 0) {
@@ -57,7 +60,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         if (groupList.size() > 0) {
             LambdaQueryWrapper<Group> wrapper = new LambdaQueryWrapper<Group>().in(Group::getId, groupList);
             groupIPage = groupMapper.selectPage(groupIPage, wrapper);
-            groupIPage.setRecords(groupMapper.getAll(groupIPage.getRecords()));
+            List<Group> groups = groupMapper.getAll(groupIPage.getRecords());
+            Collections.reverse(groups);
+            groupIPage.setRecords(groups);
         }
 
 
