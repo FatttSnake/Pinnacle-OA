@@ -2,6 +2,8 @@ package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.permission.*;
 import com.cfive.pinnacle.exception.DataValidationFailedException;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +46,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     @Override
     public IPage<Role> getAllRole(Long currentPage, Long pageSize, String searchName, List<Long> searchPower, Integer searchEnable, Integer searchRegex) {
-        IPage<Role> roleIPage = PageDTO.of(currentPage, pageSize);
+        Page<Role> roleIPage = PageDTO.of(currentPage, pageSize);
+        roleIPage.addOrder(OrderItem.desc("id"));
         searchName = searchName.trim();
         List<Long> roleList = roleMapper.filterRoleByPowerId(null, null, searchName, searchEnable, searchRegex);
         if (roleList.size() > 0) {
@@ -58,7 +62,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         if (roleList.size() > 0) {
             LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<Role>().in(Role::getId, roleList);
             roleIPage = roleMapper.selectPage(roleIPage, wrapper);
-            roleIPage.setRecords(roleMapper.getAll(roleIPage.getRecords()));
+            List<Role> roles = roleMapper.getAll(roleIPage.getRecords());
+            Collections.reverse(roles);
+            roleIPage.setRecords(roles);
         }
 
         return roleIPage;
