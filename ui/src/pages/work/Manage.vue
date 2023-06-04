@@ -167,7 +167,6 @@ export default {
                 })
         },
         setDialogVisible(dialogVisible) {
-            console.log(dialogVisible)
             this.addVisible = dialogVisible
             this.editVisible = dialogVisible
             this.getTableData()

@@ -73,8 +73,14 @@
             </el-row>
         </el-form>
     </div>
-    <el-dialog v-model="visible" width="50%" title="修改密码">
-        <edit-passwd></edit-passwd>
+    <el-dialog
+        v-model="visible"
+        width="50%"
+        title="修改密码"
+        :show-close="false"
+        :close-on-click-modal="false"
+    >
+        <edit-passwd @updatePasswd="updatePasswd" @cancelPasswd="cancelPasswd"></edit-passwd>
     </el-dialog>
 </template>
 
@@ -195,6 +201,13 @@ export default {
         },
         resetForm() {
             this.form = _.cloneDeep(this.staff)
+        },
+        updatePasswd(passwdForm) {
+            console.log(passwdForm)
+            this.visible = false
+        },
+        cancelPasswd() {
+            this.visible = false
         }
     },
     created() {
