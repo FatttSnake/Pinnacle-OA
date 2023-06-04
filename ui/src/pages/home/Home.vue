@@ -10,7 +10,7 @@
         </el-row>
         <el-row :gutter="20">
             <el-col :span="12">
-                <work-card :tableData="works" />
+                <affairs-card :tableData="affairs" />
             </el-col>
             <el-col :span="12">
                 <work-card :tableData="works" />
@@ -21,13 +21,16 @@
 
 <script lang="ts">
 import request from '@/services'
+import AffairsCard from '@/components/home/AffairsCard.vue'
 
 export default {
     name: 'HomePage',
+    components: { AffairsCard },
     data() {
         return {
             works: [],
-            notices: []
+            notices: [],
+            affairs: []
         }
     },
     methods: {
@@ -44,6 +47,14 @@ export default {
                 .get('/notice/limit')
                 .then((response) => {
                     this.notices = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
+            request
+                .get('/affair/personal_affairs_limit')
+                .then((response) => {
+                    this.affairs = response.data.data
                 })
                 .catch((reportError) => {
                     console.log(reportError)
