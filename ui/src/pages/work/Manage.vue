@@ -94,6 +94,12 @@
 import request from '@/services'
 import EditWork from '@/components/work/EditWork.vue'
 import { ElMessage } from 'element-plus'
+import {
+    DATABASE_DELETE_OK,
+    DATABASE_SAVE_OK,
+    DATABASE_SELECT_OK,
+    DATABASE_UPDATE_OK
+} from '@/constants/Common.constants'
 
 export default {
     name: 'AllTaskPage',
@@ -127,81 +133,98 @@ export default {
             console.log('complete cancel!')
         },
         getTableData() {
-            request
-                .get('/work')
-                .then((response) => {
-                    this.tableData = response.data.data
+            request.get('/work').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.tableData = response.data
                     if (this.tableData) {
                         this.loading = false
                     }
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                } else {
+                    ElMessage({
+                        message: '数据查询出错',
+                        type: 'error'
+                    })
+                }
+            })
         },
         deleteTableData(row) {
             request
                 .delete('/work/' + row.id)
-                .then((response) => {
-                    this.getTableData()
-                    console.log(response.data.data)
+                .then((res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_DELETE_OK) {
+                        this.getTableData()
+                    } else {
+                        ElMessage({
+                            message: '删除失败',
+                            type: 'error'
+                        })
+                    }
                 })
                 .catch((reportError) => {
                     console.log(reportError)
                 })
         },
         setDialogVisible(dialogVisible) {
-            console.log(dialogVisible)
             this.addVisible = dialogVisible
             this.editVisible = dialogVisible
             this.getTableData()
         },
         updateWork(form) {
-            request
-                .put('/work', form)
-                .then((response) => {
+            request.put('/work', form).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_UPDATE_OK) {
                     this.editVisible = false
                     this.getTableData()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                    ElMessage({
+                        message: '修改成功',
+                        type: 'success'
+                    })
+                } else {
+                    ElMessage({
+                        message: '修改失败',
+                        type: 'error'
+                    })
+                }
+            })
         },
         addWork(form) {
-            request
-                .post('/work', form)
-                .then((response) => {
+            request.post('/work', form).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SAVE_OK) {
                     this.addVisible = false
                     this.getTableData()
                     ElMessage({
                         message: '添加成功',
                         type: 'success'
                     })
-                    console.log(response.data)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
+                } else {
                     ElMessage({
-                        message: '添加出错',
+                        message: '添加失败',
                         type: 'error'
                     })
-                })
+                }
+            })
         },
         formatDate(time) {
             return new Date(time).toLocaleString()
         },
         searchByContent() {
-            request
-                .get('/work', { content: this.searchContent })
-                .then((response) => {
-                    this.tableData = response.data.data
+            request.get('/work', { content: this.searchContent }).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.tableData = response.data
                     if (this.tableData) {
                         this.loading = false
                     }
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                } else {
+                    ElMessage({
+                        message: '查询出错',
+                        type: 'error'
+                    })
+                }
+            })
         }
     },
     created() {

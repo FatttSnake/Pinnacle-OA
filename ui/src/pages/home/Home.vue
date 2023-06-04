@@ -10,7 +10,7 @@
         </el-row>
         <el-row :gutter="20">
             <el-col :span="12">
-                <work-card :tableData="works" />
+                <affairs-card :tableData="affairs" />
             </el-col>
             <el-col :span="12">
                 <work-card :tableData="works" />
@@ -21,33 +21,55 @@
 
 <script lang="ts">
 import request from '@/services'
+import AffairsCard from '@/components/home/AffairsCard.vue'
+import { DATABASE_SELECT_OK } from '@/constants/Common.constants'
+import { ElMessage } from 'element-plus'
 
 export default {
     name: 'HomePage',
+    components: { AffairsCard },
     data() {
         return {
             works: [],
-            notices: []
+            notices: [],
+            affairs: []
         }
     },
     methods: {
         getTableData() {
-            request
-                .get('/work/card')
-                .then((response) => {
-                    this.works = response.data.data
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
-            request
-                .get('/notice/limit')
-                .then((response) => {
-                    this.notices = response.data.data
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.get('/work/card').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.works = response.data
+                } else {
+                    ElMessage({
+                        message: '工作事项数据查询出错',
+                        type: 'error'
+                    })
+                }
+            })
+            request.get('/notice/limit').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.notices = response.data
+                } else {
+                    ElMessage({
+                        message: '公告数据查询出错',
+                        type: 'error'
+                    })
+                }
+            })
+            request.get('/affair/personal_affairs_limit').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.affairs = response.data
+                } else {
+                    ElMessage({
+                        message: '个人事务数据查询出错',
+                        type: 'error'
+                    })
+                }
+            })
         }
     },
     created() {
