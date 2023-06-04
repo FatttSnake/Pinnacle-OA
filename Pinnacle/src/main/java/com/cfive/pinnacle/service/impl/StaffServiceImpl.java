@@ -48,6 +48,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
             userIPage = PageDTO.of(currentPage, pageSize);
         }
         searchInput = searchInput.trim();
+
         return staffMapper.getAllStaff(userIPage, departmentId, searchType, searchInput, searchGender, searchBirthFrom, searchBirthTo, searchRegex);
     }
 
@@ -71,6 +72,23 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
         }
         user.setDepartmentId(departmentId);
         userMapper.updateById(user);
+
+        return true;
+    }
+
+    @Override
+    public boolean modifySelf(Staff staff) {
+        User user = WebUtil.getLoginUser().getUser();
+        Staff oldStaff = user.getStaff();
+        staff.setUserId(user.getId());
+        if (oldStaff == null) {
+            staff.setId(null);
+            staffMapper.insert(staff);
+        } else {
+            staff.setId(oldStaff.getId());
+            staffMapper.updateById(staff);
+        }
+
         return true;
     }
 }
