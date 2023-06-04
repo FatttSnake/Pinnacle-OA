@@ -53,7 +53,7 @@ export const useNoticeStore = defineStore('notice', {
                 type: '',
                 startTime: '',
                 endTime: '',
-                userName: ''
+                userIdList: []
             },
             selectData: [
                 {
@@ -91,6 +91,7 @@ export const useNoticeStore = defineStore('notice', {
             currentViewPage: 'All',
             hackReset: true,
             departmentList: [],
+            senderList: [],
             multiDeleteSelection: [],
             noticeShowData: {
                 content: '',
@@ -121,14 +122,14 @@ export const useNoticeStore = defineStore('notice', {
     },
     getters: {},
     actions: {
-        async selectAllNotice(
+        selectAllNotice(
             currentPage: number,
             pageSize: number,
             title: string,
             type: string,
             startTime: string,
             endTime: string,
-            userName: string
+            userIdList: []
         ) {
             void request
                 .get('/notice/page', {
@@ -138,7 +139,7 @@ export const useNoticeStore = defineStore('notice', {
                     type,
                     startTime,
                     endTime,
-                    userName
+                    userIdList: userIdList.toString() + ''
                 })
                 .then((response) => {
                     if (response.data.code === 20021) {
@@ -177,8 +178,8 @@ export const useNoticeStore = defineStore('notice', {
                 this.departmentList = response.data.data
             })
         },
-        async handleAddNotice(addFormData: IAddNoticeData) {
-            await request.post('/notice', addFormData).then((response) => {
+        handleAddNotice(addFormData: IAddNoticeData) {
+            void request.post('/notice', addFormData).then((response) => {
                 if (response.data.code === 20022) {
                     this.dialogAddVisible = false
                     ElMessage({
@@ -192,10 +193,10 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            await this.selectAllNotice(1, 5, '', '', '', '', '')
+            this.selectAllNotice(1, 5, '', '', '', '', [])
         },
-        async handleUpdateNotice(updateNotice: IAddNoticeData) {
-            await request.put('/notice', updateNotice).then((response) => {
+        handleUpdateNotice(updateNotice: IAddNoticeData) {
+            void request.put('/notice', updateNotice).then((response) => {
                 if (response.data.code === 20023) {
                     this.dialogEditVisible = false
                     this.editFlag = false
@@ -210,7 +211,7 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            await this.selectAllNotice(1, 5, '', '', '', '', '')
+            this.selectAllNotice(1, 5, '', '', '', '', [])
             this.hackReset = false
         },
         async modifyNoticeIsRead(notice: INotice) {

@@ -14,6 +14,7 @@
             color: '#fff',
             'font-size': '20px'
         }"
+        @filter-change="handleFilterChange"
     >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column type="index" label="序号" width="75" align="center">
@@ -79,9 +80,8 @@
             prop="sender.username"
             label="发布者"
             width="100"
-            column-key="sender.username"
-            :filters="filterSenderName"
-            :filter-method="filterTag"
+            column-key="senderId"
+            :filters="senderList"
             filter-placement="bottom-end"
             align="center"
         >
@@ -150,7 +150,6 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash'
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
 import { COLOR_TOP, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
@@ -170,15 +169,11 @@ export default {
             'currentPage',
             'pageSize',
             'multiDeleteSelection',
-            'search'
+            'search',
+            'senderList'
         ])
     },
-    emits: ['clearFilter', 'handleDeleteById'],
-    data() {
-        return {
-            filterSenderName: []
-        }
-    },
+    emits: ['handleDeleteById', 'getNoticeSender', 'filterSender'],
     props: [],
     methods: {
         SIZE_ICON_SM() {
@@ -202,20 +197,6 @@ export default {
             } else {
                 return title
             }
-        },
-        filterTag(value) {
-            noticeStore.$patch((state) => {
-                state.search.userName = value
-            })
-            noticeStore.selectAllNotice(
-                this.currentPage,
-                this.pageSize,
-                this.search.title,
-                this.search.type,
-                this.search.startTime,
-                this.search.endTime,
-                this.search.userName
-            )
         },
         formatDate(row, column) {
             // 获取单元格数据
@@ -261,7 +242,7 @@ export default {
                 this.search.type,
                 this.search.startTime,
                 this.search.endTime,
-                this.search.userName
+                this.search.userIdList
             )
         },
         handleCurrentChange(currentPage) {
@@ -276,31 +257,21 @@ export default {
                 this.search.type,
                 this.search.startTime,
                 this.search.endTime,
-                this.search.userName
+                this.search.userIdList
             )
+        },
+        handleFilterChange(filters) {
+            noticeStore.$patch((state) => {
+                state.search.userIdList = filters.senderId
+            })
+            this.$emit('filterSender')
         }
     },
     mounted() {
-        noticeStore.selectAllNotice(this.currentPage, this.pageSize, '', '', '', '', '')
+        noticeStore.selectAllNotice(this.currentPage, this.pageSize, '', '', '', '', [])
     },
     updated() {
-        this.$refs.tableRef.clearFilter(['sender.username'])
-        this.filterSenderName = []
-        const nameArray = []
-        if (!_.isEmpty(this.selectData)) {
-            for (let i = 0; i < this.selectData.length; i++) {
-                nameArray.push(this.selectData[i].sender.username)
-            }
-            const newArr = nameArray.filter((item, i, arr) => {
-                return arr.indexOf(item) === i
-            })
-            for (let j = 0; j < newArr.length; j++) {
-                const senderName = { text: '', value: '' }
-                senderName.text = newArr[j]
-                senderName.value = newArr[j]
-                this.filterSenderName.push(senderName)
-            }
-        }
+        this.$emit('getNoticeSender')
     }
 }
 </script>

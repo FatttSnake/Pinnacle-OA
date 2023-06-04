@@ -44,13 +44,13 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     }
 
     @Override
-    public IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime,String userName) {
+    public IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime,List<Long> userIdList) {
         LocalDateTime start=null,end=null;
         if (startTime!=""&&endTime!=""){
             start= LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
-        return noticeMapper.selectPageNotice(page, title, type, start, end,userName);
+        return noticeMapper.selectPageNotice(page, title, type, start, end,userIdList);
     }
 
     @Override

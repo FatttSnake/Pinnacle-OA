@@ -8,10 +8,10 @@ import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
 import com.cfive.pinnacle.service.INoticeReceiveService;
 import com.cfive.pinnacle.service.INoticeService;
+import com.cfive.pinnacle.utils.WebUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +39,8 @@ public class NoticeController {
     //分页查询所有公告或分页模糊查询
     @GetMapping("/page")
     @PreAuthorize("hasAuthority('notice:manage:get')")
-    public ResponseResult<List<Notice>> selectPageNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime,String userName) {
+    public ResponseResult<List<Notice>> selectPageNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime,String userIdList) {
+        List<Long> userIds = WebUtil.convertStringToList(userIdList, Long.class);
         Page<Notice> noticePage;
         if (null != currentPage && null != pageSize) {
             noticePage = PageDTO.of(currentPage, pageSize);
@@ -47,7 +48,7 @@ public class NoticeController {
             // 不进行分页
             noticePage = PageDTO.of(1, -1);
         }
-        IPage<Notice> noticeIPage = noticeService.selectPageNotice(noticePage, title.trim(), type.trim(), startTime.trim(), endTime.trim(),userName.trim());
+        IPage<Notice> noticeIPage = noticeService.selectPageNotice(noticePage, title.trim(), type.trim(), startTime.trim(), endTime.trim(),userIds);
         int code = noticeIPage.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticeIPage.getRecords() != null ? String.valueOf(noticeIPage.getTotal()) : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticeIPage.getRecords());

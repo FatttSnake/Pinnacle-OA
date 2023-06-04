@@ -50,12 +50,12 @@
             <if test="null!=startTime">
                 and n.send_time &gt;= #{startTime}
             </if>
-            <if test="null !=endTime">
+            <if test="null != endTime">
                 and n.end_time &lt; #{endTime}
             </if>
-            <if test="null!=userName and userName!=''">
-                and u.username = #{userName}
-            </if>
+            <foreach collection="userIdList" item="item" index="index" open="and u.id in (" separator="," close=")">
+                #{item}
+            </foreach>
             and n.deleted = 0
             and n.old = 0
         </where>
