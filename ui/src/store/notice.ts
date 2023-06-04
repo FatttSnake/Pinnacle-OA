@@ -201,8 +201,8 @@ export const useNoticeStore = defineStore('notice', {
                 this.departmentList = response.data.data
             })
         },
-        handleAddNotice(addFormData: IAddNoticeData) {
-            void request.post('/notice', addFormData).then((response) => {
+        async handleAddNotice(addFormData: IAddNoticeData) {
+            await request.post('/notice', addFormData).then((response) => {
                 if (response.data.code === DATABASE_SAVE_OK) {
                     this.dialogAddVisible = false
                     ElMessage({
@@ -218,8 +218,8 @@ export const useNoticeStore = defineStore('notice', {
             })
             this.selectAllNotice(1, 5, '', '', '', '', [])
         },
-        handleUpdateNotice(updateNotice: IAddNoticeData) {
-            void request.put('/notice', updateNotice).then((response) => {
+        async handleUpdateNotice(updateNotice: IAddNoticeData) {
+            await request.put('/notice', updateNotice).then((response) => {
                 if (response.data.code === DATABASE_UPDATE_OK) {
                     this.dialogEditVisible = false
                     this.editFlag = false

@@ -84,7 +84,13 @@
                         }}</span>
                         <span v-if="scope.node.level === 2">{{
                             ((scope.node.value = scope.data.id),
-                            (scope.node.label = scope.data.username))
+                            (scope.node.label = scope.data.staff
+                                ? scope.data.staff.lastName +
+                                  scope.data.staff.firstName +
+                                  '(' +
+                                  scope.data.username +
+                                  ')'
+                                : scope.data.username))
                         }}</span>
                     </template>
                 </el-cascader>
@@ -140,7 +146,6 @@ export default {
                 content: [{ required: true, message: '请填写公告内容', trigger: 'blur' }],
                 receivers: [
                     {
-                        type: 'array',
                         required: true,
                         message: '请选择公告接收者',
                         trigger: 'change'
