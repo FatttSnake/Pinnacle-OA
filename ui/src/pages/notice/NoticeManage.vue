@@ -37,6 +37,8 @@
             </el-dialog>
             <notice-manage-table
                 @handleDeleteById="handleDeleteById"
+                @getNoticeSender="getNoticeSender"
+                @filterSender="getLoading"
                 ref="manageTable"
             ></notice-manage-table>
         </el-main>
@@ -92,7 +94,7 @@ export default {
                                 '',
                                 '',
                                 '',
-                                ''
+                                []
                             )
                         } else if (response.data.code === 20034) {
                             ElMessage({
@@ -119,8 +121,9 @@ export default {
                 this.search.type,
                 this.search.startTime,
                 this.search.endTime,
-                this.search.userName
+                this.search.userIdList
             )
+            // noticeStore.search.userIdList = []
         },
         deleteBatchByIds() {
             const multiDeleteIds = []
@@ -147,7 +150,7 @@ export default {
                                     '',
                                     '',
                                     '',
-                                    ''
+                                    []
                                 )
                             } else if (response.data.code === 20034) {
                                 ElMessage({
@@ -164,6 +167,20 @@ export default {
                     type: 'warning'
                 })
             }
+        },
+        getNoticeSender() {
+            const senders = []
+            request.get('/user/notice').then((response) => {
+                for (let i = 0; i < response.data.data.length; i++) {
+                    const senderName = { text: '', value: '' }
+                    senderName.text = response.data.data[i].username
+                    senderName.value = response.data.data[i].id
+                    senders.push(senderName)
+                }
+                noticeStore.$patch((state) => {
+                    state.senderList = senders
+                })
+            })
         }
     },
     mounted() {
@@ -175,7 +192,8 @@ export default {
             'currentPage',
             'pageSize',
             'multiDeleteSelection',
-            'search'
+            'search',
+            'senderList'
         ])
     }
 }

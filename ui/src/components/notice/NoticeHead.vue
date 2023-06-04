@@ -109,7 +109,7 @@ export default {
                     type: '',
                     startTime: '',
                     endTime: '',
-                    userName: ''
+                    userIdList: []
                 }
             })
             this.$emit('selectByCond')

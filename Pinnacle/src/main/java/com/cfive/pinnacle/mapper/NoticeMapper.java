@@ -20,6 +20,6 @@ import java.util.List;
 public interface NoticeMapper extends BaseMapper<Notice> {
     Notice selectByNoticeId(Long nid);
 
-    IPage<Notice> selectPageNotice(IPage<?> page, String title, String type, LocalDateTime startTime, LocalDateTime endTime,String userName);
+    IPage<Notice> selectPageNotice(IPage<?> page, String title, String type, LocalDateTime startTime, LocalDateTime endTime,List<Long> userIdList);
 
 }
