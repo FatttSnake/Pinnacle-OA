@@ -86,6 +86,7 @@ import backShape from '@/assets/svg/back-shape.svg'
 import { ElMessage } from 'element-plus'
 import {
     LOGIN_SUCCESS,
+    LOGIN_USERNAME_PASSWORD_ERROR,
     LOGOUT_FAILED,
     PRODUCTION_NAME,
     USER_DISABLE
@@ -168,6 +169,7 @@ export default {
                         }, 1500)
                         break
                     case LOGOUT_FAILED:
+                    case LOGIN_USERNAME_PASSWORD_ERROR:
                         ElMessage.error({
                             dangerouslyUseHTMLString: true,
                             message: '<strong>用户名</strong> 或 <strong>密码</strong> 错误'
