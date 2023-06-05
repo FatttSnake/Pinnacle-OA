@@ -25,16 +25,13 @@
         </el-form-item>
 
         <el-form-item label="考勤时间" v-model="form.attTime" prop="attTime">
-            <div class="block">
-                <el-date-picker
-                    v-model="form.attTime"
-                    +
-                    type="datetime"
-                    format="YYYY-MM-DD HH:mm:ss"
-                    placeholder="请选择考勤时间"
-                    style="width: 200px"
-                />
-            </div>
+            <el-date-picker
+                v-model="form.attTime"
+                +
+                type="datetime"
+                format="YYYY-MM-DD HH:mm:ss"
+                placeholder="请选择考勤时间"
+            />
         </el-form-item>
     </el-form>
     <el-footer style="text-align: center">
@@ -83,7 +80,6 @@ export default {
                     this.$emit('setDialogVisible', false)
                 } else {
                     ElMessage.error('操作失败')
-                    this.$emit('setDialogVisible', false)
                     return false
                 }
             })
