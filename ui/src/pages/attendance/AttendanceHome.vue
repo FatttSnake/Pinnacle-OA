@@ -1,37 +1,35 @@
 <template>
-    <div id="attendanceMain">
-        <div id="attendanceMain1">
+    <el-row :gutter="10">
+        <el-col :span="12">
             <el-date-picker
                 v-model="attTime"
                 type="datetimerange"
+                style="width: 100%"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 value-format="YYYY-MM-DD HH:mm:ss"
-            >
-            </el-date-picker>
-
-            <el-button type="primary" style="margin-left: 15px" @click="getAttendancesByTime()">
+            />
+        </el-col>
+        <el-col :span="-1">
+            <el-button type="primary" @click="getAttendancesByTime()">
                 <el-icon :size="SIZE_ICON_SM()" style="vertical-align: center">
                     <icon-pinnacle-search />
                 </el-icon>
                 <span style="vertical-align: center">查询</span>
             </el-button>
-
-            <el-button type="warning" style="margin-left: 15px" @click="resetParam()">
+            <el-button type="warning" @click="resetParam()">
                 <el-icon :size="SIZE_ICON_SM()" style="vertical-align: center">
                     <icon-pinnacle-reset />
                 </el-icon>
                 <span style="vertical-align: center">重置</span>
             </el-button>
-
-            <el-button type="success" style="margin-left: 15px" @click="handleAdd()">
+            <el-button type="success" @click="handleAdd()">
                 <el-icon :size="SIZE_ICON_SM()" style="vertical-align: center">
                     <icon-pinnacle-click />
                 </el-icon>
-                <span style="vertical-align: center">增加</span>
+                <span style="vertical-align: center">打卡</span>
             </el-button>
-
             <el-popconfirm
                 title="你确定要批量删除这些数据吗?"
                 confirm-button-text="确定"
@@ -49,121 +47,115 @@
                     </el-button>
                 </template>
             </el-popconfirm>
-        </div>
+        </el-col>
+    </el-row>
 
-        <div id="attendanceMain2">
-            <el-table
-                :data="tableData"
-                border
-                style="width: 80%"
-                :header-cell-style="{ background: 'aliceblue' }"
-                @selection-change="handleSelectionChange"
-            >
-                <el-table-column type="selection" width="55" />
-                <el-table-column prop="id" label="考勤编号" width="200"></el-table-column>
-                <el-table-column prop="user.username" label="用户名" width="180"></el-table-column>
-                <el-table-column prop="attTime" label="考勤时间">
-                    <template #default="scope">
-                        {{ formatDate(scope.row.attTime) }}
+    <el-table
+        :data="tableData"
+        border
+        :header-cell-style="{ background: 'aliceblue' }"
+        @selection-change="handleSelectionChange"
+        style="margin-top: 10px"
+    >
+        <el-table-column type="selection" width="55" />
+        <el-table-column prop="user.username" label="用户名" align="center" />
+        <el-table-column prop="attTime" label="考勤时间" width="250" align="center">
+            <template #default="scope">
+                {{ formatDate(scope.row.attTime) }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="status" label="考勤状态" width="150" align="center">
+            <template v-slot="scope">
+                <el-tag
+                    :type="
+                        scope.row.status === 1
+                            ? 'success'
+                            : scope.row.status === 2
+                            ? ''
+                            : scope.row.status === 3
+                            ? 'warning'
+                            : scope.row.status === 1 + ''
+                            ? 'success'
+                            : scope.row.status === 2 + ''
+                            ? ''
+                            : scope.row.status === 3 + ''
+                            ? 'warning'
+                            : 'danger'
+                    "
+                    disable-transitions
+                    >{{
+                        scope.row.status === 1
+                            ? '签到'
+                            : scope.row.status === 2
+                            ? '签退'
+                            : scope.row.status === 3
+                            ? '迟到'
+                            : scope.row.status === 1 + ''
+                            ? '签到'
+                            : scope.row.status === 2 + ''
+                            ? '签退'
+                            : scope.row.status === 3 + ''
+                            ? '迟到'
+                            : '异常'
+                    }}
+                </el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column prop="operations" label="操作" width="250" align="center">
+            <template #default="scope">
+                <el-button type="success" size="small" @click="viewUpdate(scope.row)"
+                    >更改
+                </el-button>
+                <el-popconfirm
+                    title="您确定要删除吗?"
+                    confirm-button-text="确定"
+                    cancel-button-text="再想想"
+                    icon-color="red"
+                    @cancel="cancel"
+                    @confirm="handleDelete(scope.row.id)"
+                >
+                    <template #reference>
+                        <el-button type="danger" size="small">删除</el-button>
                     </template>
-                </el-table-column>
-                <el-table-column prop="status" label="考勤状态">
-                    <template v-slot="scope">
-                        <el-tag
-                            :type="
-                                scope.row.status === 1
-                                    ? 'success'
-                                    : scope.row.status === 2
-                                    ? ''
-                                    : scope.row.status === 3
-                                    ? 'warning'
-                                    : scope.row.status === 1 + ''
-                                    ? 'success'
-                                    : scope.row.status === 2 + ''
-                                    ? ''
-                                    : scope.row.status === 3 + ''
-                                    ? 'warning'
-                                    : 'danger'
-                            "
-                            disable-transitions
-                            >{{
-                                scope.row.status === 1
-                                    ? '签到'
-                                    : scope.row.status === 2
-                                    ? '签退'
-                                    : scope.row.status === 3
-                                    ? '迟到'
-                                    : scope.row.status === 1 + ''
-                                    ? '签到'
-                                    : scope.row.status === 2 + ''
-                                    ? '签退'
-                                    : scope.row.status === 3 + ''
-                                    ? '迟到'
-                                    : '异常'
-                            }}
-                        </el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="operations" label="操作">
-                    <template #default="scope">
-                        <el-button type="success" size="small" @click="viewUpdate(scope.row)"
-                            >更改
-                        </el-button>
-                        <el-popconfirm
-                            title="您确定要删除吗?"
-                            confirm-button-text="确定"
-                            cancel-button-text="再想想"
-                            icon-color="red"
-                            @cancel="cancel"
-                            @confirm="handleDelete(scope.row.id)"
-                        >
-                            <template #reference>
-                                <el-button type="danger" size="small">删除</el-button>
-                            </template>
-                        </el-popconfirm>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </div>
+                </el-popconfirm>
+            </template>
+        </el-table-column>
+    </el-table>
 
-        <div>
-            <el-dialog
-                v-model="addDialogFormVisible"
-                title="考勤信息"
-                width="25% "
-                :close-on-click-modal="false"
-                :show-close="false"
-            >
-                <edit-attendance
-                    :users="users"
-                    :isDisabled="isDisabled"
-                    @addAttendance="addAttendance"
-                    @setDialogVisible="setDialogVisible"
-                ></edit-attendance>
-            </el-dialog>
-            <el-dialog
-                v-model="editDialogFormVisible"
-                title="考勤信息"
-                width="25% "
-                :close-on-click-modal="false"
-                :show-close="false"
-            >
-                <edit-attendance
-                    :users="users"
-                    :form-data="form"
-                    :isDisabled="isDisabled"
-                    @addAttendance="addAttendance"
-                    @setDialogVisible="setDialogVisible"
-                ></edit-attendance>
-            </el-dialog>
-        </div>
-    </div>
+    <el-dialog
+        v-model="addDialogFormVisible"
+        title="考勤信息"
+        width="25% "
+        :close-on-click-modal="false"
+        :show-close="false"
+    >
+        <edit-attendance
+            :users="users"
+            :isDisabled="isDisabled"
+            @addAttendance="addAttendance"
+            @setDialogVisible="setDialogVisible"
+        ></edit-attendance>
+    </el-dialog>
+    <el-dialog
+        v-model="editDialogFormVisible"
+        title="考勤信息"
+        width="25% "
+        :close-on-click-modal="false"
+        :show-close="false"
+    >
+        <edit-attendance
+            :users="users"
+            :form-data="form"
+            :isDisabled="isDisabled"
+            @addAttendance="addAttendance"
+            @setDialogVisible="setDialogVisible"
+        ></edit-attendance>
+    </el-dialog>
 </template>
 <script lang="ts">
 import { SIZE_ICON_SM, SIZE_ICON_XL } from '@/constants/Common.constants.js'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
-import '@/assets/css/attendance.css'
 
 import _ from 'lodash'
 import request from '@/services'
