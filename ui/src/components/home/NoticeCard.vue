@@ -32,6 +32,7 @@
                 >
             </el-row>
         </div>
+        <el-empty v-if="tableData?.length === 0" description="暂无数据" image-size="0" />
     </el-card>
 </template>
 
