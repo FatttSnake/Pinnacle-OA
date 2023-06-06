@@ -51,6 +51,8 @@
     </el-row>
 
     <el-table
+        v-loading="dataLoading"
+        element-loading-text="加载中..."
         :data="tableData"
         border
         :header-cell-style="{ background: 'aliceblue' }"
@@ -153,7 +155,7 @@
     </el-dialog>
 </template>
 <script lang="ts">
-import { SIZE_ICON_SM, SIZE_ICON_XL } from '@/constants/Common.constants.js'
+import { DATABASE_SELECT_OK, SIZE_ICON_SM, SIZE_ICON_XL } from '@/constants/Common.constants.js'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 
@@ -185,7 +187,7 @@ export default {
                 attTime: ''
             },
             isDisabled: false,
-
+            dataLoading: true,
             options: [
                 {
                     value: 1,
@@ -226,43 +228,53 @@ export default {
                 .then((response) => {
                     this.users = response.data.data
                 })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                .catch((reportError) => {})
         },
         // 获取所有考勤信息
         getAttendances() {
+            this.dataLoading = true
             request
                 .get('/attendance/findAllAttendance')
                 .then((response) => {
-                    this.tableData = response.data.data
+                    if (response.data.code === DATABASE_SELECT_OK) {
+                        this.dataLoading = false
+                        this.tableData = response.data.data
+                    }
                 })
                 .catch((reportError) => {
-                    console.log(reportError)
+                    this.dataLoading = false
                 })
         },
         getAttendancesByTime() {
-            const start = this.handleDateFormatUTC(this.attTime[0])
-            const end = this.handleDateFormatUTC(this.attTime[1])
-            request
-                .get('/attendance/findAttendanceByTime', {
-                    startTime: start,
-                    endTime: end
-                })
-                .then((response) => {
-                    this.tableData = response.data.data
-                    ElMessage({
-                        message: '查询成功',
-                        type: 'success'
+            this.dataLoading = true
+            if (this.attTime.length !== 0) {
+                const start = this.handleDateFormatUTC(this.attTime[0])
+                const end = this.handleDateFormatUTC(this.attTime[1])
+                request
+                    .get('/attendance/findAttendanceByTime', {
+                        startTime: start,
+                        endTime: end
                     })
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                    ElMessage({
-                        message: '查询失败',
-                        type: 'error'
+                    .then((response) => {
+                        if (response.data.code === DATABASE_SELECT_OK) {
+                            this.dataLoading = false
+                            this.tableData = response.data.data
+                            ElMessage({
+                                message: '查询成功',
+                                type: 'success'
+                            })
+                        }
                     })
-                })
+                    .catch((reportError) => {
+                        this.dataLoading = false
+                        ElMessage({
+                            message: '查询失败',
+                            type: 'error'
+                        })
+                    })
+            } else {
+                this.getAttendances()
+            }
         },
         handleDateFormatUTC(date) {
             let newFormat = ''
@@ -303,12 +315,9 @@ export default {
             request
                 .post('/attendance/saveAttendance', formData)
                 .then((response) => {
-                    console.log(response)
                     this.getAttendances()
                 })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                .catch((reportError) => {})
         },
         // 获取更改数据
         viewUpdate(row) {
@@ -344,7 +353,6 @@ export default {
                 .delete('/attendance/delAttendance/' + id)
                 .then((response) => {
                     if (response) {
-                        console.log(response)
                         ElMessage({
                             message: '删除成功',
                             type: 'success'
@@ -357,9 +365,7 @@ export default {
                         })
                     }
                 })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                .catch((reportError) => {})
         },
         // 批量删除
         handleSelectionChange(val) {
@@ -384,9 +390,7 @@ export default {
                         })
                     }
                 })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+                .catch((reportError) => {})
         }
     },
     created() {

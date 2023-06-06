@@ -34,6 +34,8 @@
     </el-row>
 
     <el-table
+        v-loading="dataLoading"
+        element-loading-text="加载中..."
         :data="tableData"
         border
         :header-cell-style="{ background: 'aliceblue' }"
@@ -94,7 +96,7 @@
 </template>
 
 <script lang="ts">
-import { SIZE_ICON_SM, SIZE_ICON_XL } from '@/constants/Common.constants.js'
+import { DATABASE_SELECT_OK, SIZE_ICON_SM, SIZE_ICON_XL } from '@/constants/Common.constants.js'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import _ from 'lodash'
@@ -108,7 +110,7 @@ export default {
             id: '',
             userId: '',
             username: '',
-            attTime: '',
+            attTime: [],
             attTimeB: [],
             status: '',
             pageNum: 1,
@@ -116,6 +118,7 @@ export default {
             total: 0,
             nowTime: new Date(),
             formLabelWidth: '80px',
+            dataLoading: true,
             value1: '',
             form: {
                 userId: '',
@@ -162,35 +165,49 @@ export default {
         },
 
         getOneAttendancesByTime() {
-            const start = this.handleDateFormatUTC(this.attTimeB[0])
-            const end = this.handleDateFormatUTC(this.attTimeB[1])
-            request
-                .get('/attendance/findOneAttendanceByTime', {
-                    startTime: start,
-                    endTime: end
-                })
-                .then((response) => {
-                    this.tableData = response.data.data
-                    ElMessage({
-                        message: '查询成功',
-                        type: 'success'
+            this.dataLoading = true
+            if (this.attTimeB.length !== 0) {
+                const start = this.handleDateFormatUTC(this.attTimeB[0])
+                const end = this.handleDateFormatUTC(this.attTimeB[1])
+                request
+                    .get('/attendance/findOneAttendanceByTime', {
+                        startTime: start,
+                        endTime: end
                     })
-                })
-                .catch((reportError) => {
-                    ElMessage({
-                        message: '查询失败',
-                        type: 'error'
+                    .then((response) => {
+                        if (response.data.code === DATABASE_SELECT_OK) {
+                            this.dataLoading = false
+                            this.tableData = response.data.data
+                            ElMessage({
+                                message: '查询成功',
+                                type: 'success'
+                            })
+                        }
                     })
-                    this.getAttendancesByUserId()
-                })
+                    .catch((reportError) => {
+                        this.dataLoading = false
+                        ElMessage({
+                            message: '查询失败',
+                            type: 'error'
+                        })
+                    })
+            } else {
+                this.getAttendancesByUserId()
+            }
         },
         getAttendancesByUserId() {
+            this.dataLoading = true
             request
                 .get('/attendance/selectAttendance')
                 .then((response) => {
-                    this.tableData = response.data.data
+                    if (response.data.code === DATABASE_SELECT_OK) {
+                        this.dataLoading = false
+                        this.tableData = response.data.data
+                    }
                 })
-                .catch((reportError) => {})
+                .catch((reportError) => {
+                    this.dataLoading = false
+                })
         },
         resetForm() {
             this.$refs.form.resetFields()
