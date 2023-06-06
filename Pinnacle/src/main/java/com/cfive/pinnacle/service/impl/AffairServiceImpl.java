@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -35,5 +37,16 @@ public class AffairServiceImpl extends ServiceImpl<AffairMapper, Affair> impleme
     public List<User> getSameDepartmentUser(long id) {
         List<User> user = affairMapper.getSameDepartmentUser(id);
         return user;
+    }
+
+
+    public List<Affair> getFuzzyQueriesByAffairTitle(String title ,Integer typeId,Integer status,Integer inspectorId,String startTime, String endTime) {
+        LocalDateTime start=null,end=null;
+        if (startTime!=""&&endTime!=""){
+            start= LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        List<Affair> affairList = affairMapper.getFuzzyQueriesByAffairTitle(title,typeId,status,inspectorId,start,end);
+        return  affairList;
     }
 }

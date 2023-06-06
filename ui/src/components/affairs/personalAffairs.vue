@@ -18,7 +18,7 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="申请者" prop="applicantId">
+        <el-table-column label="审批者" prop="applicantId">
             <template #default="scope">
                 {{
                     scope.row.applicantId === 1
@@ -58,7 +58,7 @@
 
         <el-table-column label="审批结果" width="90" prop="status">
             <template #default="scope">
-                {{ scope.row.status === 1 ? '同意' : '驳回' }}
+                {{ scope.row.status === 1 ? '同意' : scope.row.status === 2 ? '驳回' : '未审批' }}
             </template>
         </el-table-column>
     </el-table>
@@ -91,8 +91,6 @@
         <div class="block">
             <el-pagination
                 style="color: #888888"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
                 :page-size="100"
                 layout="prev, pager, next, jumper"
                 :total="1000"
@@ -118,6 +116,7 @@ export default {
                 status: '',
                 applicantId: '',
                 inspectorId: '',
+                inspectorName: '',
                 createTime: new Date(),
                 inspectTime: new Date(),
                 priority: '',
@@ -126,7 +125,19 @@ export default {
                 old: '',
                 deleted: '',
                 version: ''
-            }
+            },
+            grantUsers: [
+                {
+                    id: '',
+                    username: ''
+                }
+            ],
+            inspectorUsers: [
+                {
+                    id: '',
+                    username: ''
+                }
+            ]
         }
     },
     methods: {
@@ -135,20 +146,31 @@ export default {
             request
                 .delete('/affair/' + row.id)
                 .then((response) => {
-                    console.log(response.data)
                     this.getApproved()
                 })
                 .catch((reportError) => {
                     console.log(reportError)
                 })
         },
+        getGrantUser() {
+            request
+                .get('/user/affair')
+                .then((response) => {
+                    this.grantUsers = response.data.data
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                }) // 获取有权限用户
+        },
+        // getInspectorName() {
+        //     for (let i = 0; i < this.grantUsers.length; i++) {
+        //         if (this.grantUsers[i].id === this.tableData[i].inspectorId) {
+        //             this.inspectorUsers[i].id = this.tableData[i].inspectorId
+        //             this.inspectorUsers[i].username = this.grantUsers[i].username
+        //         }
+        //     }
+        // },
 
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`)
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`)
-        },
         getApproved() {
             request
                 .get('/affair/personal_affairs')
@@ -174,7 +196,8 @@ export default {
     created() {
         this.getApproved()
         this.dialogFalse()
-        console.log(this.tableData)
+        this.getGrantUser()
+        // this.getInspectorName()
     }
 }
 </script>
