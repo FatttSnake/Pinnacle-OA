@@ -12,7 +12,11 @@
                 <el-option
                     v-for="item in workers"
                     :key="item.id"
-                    :label="item.username"
+                    :label="
+                        item.staff
+                            ? item.staff.lastName + item.staff.firstName + '(' + item.username + ')'
+                            : item.username
+                    "
                     :value="item"
                 />
             </el-select>
@@ -29,7 +33,7 @@
             </el-col>
         </el-form-item>
         <el-form-item label="工作内容" prop="content">
-            <el-input v-model="form.content" type="textarea" />
+            <el-input v-model="form.content" type="textarea" maxlength="100" show-word-limit />
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="onSubmit(form)">
@@ -42,9 +46,9 @@
 </template>
 
 <script lang="ts">
-import request from '@/services'
 import _ from 'lodash'
 export default {
+    emits: ['updateWork', 'addWork', 'setDialogVisible'],
     props: {
         editForm: {
             publisherId: '',
@@ -52,7 +56,8 @@ export default {
             deadline: '',
             content: '',
             worker: []
-        }
+        },
+        workers: null
     },
     data() {
         return {
@@ -64,12 +69,6 @@ export default {
                 content: '',
                 worker: []
             },
-            workers: [
-                {
-                    id: '',
-                    username: ''
-                }
-            ],
             rules: {
                 worker: [
                     {
@@ -93,16 +92,10 @@ export default {
         }
     },
     methods: {
-        getFormData() {
-            request.get('/user/department').then((response) => {
-                this.workers = response.data.data
-            })
-        },
         onSubmit(form) {
             // 表单校验
             this.$refs.ruleForm.validate((value) => {
                 if (value) {
-                    form.publisherId = _.toString(1)
                     if (this.editForm) {
                         this.$emit('updateWork', form)
                         this.reset()
@@ -116,7 +109,11 @@ export default {
             })
         },
         reset() {
-            this.$refs.ruleForm.resetFields()
+            if (this.editForm) {
+                this.form = _.cloneDeep(this.editForm)
+            } else {
+                this.$refs.ruleForm.resetFields()
+            }
         },
         cancel() {
             this.reset()
@@ -125,17 +122,15 @@ export default {
     },
     updated() {
         if (this.editForm) {
-            this.form = this.editForm
+            this.form = _.cloneDeep(this.editForm)
             this.commitButton = '保存'
         }
-        this.getFormData()
     },
     created() {
         if (this.editForm) {
-            this.form = this.editForm
+            this.form = _.cloneDeep(this.editForm)
             this.commitButton = '保存'
         }
-        this.getFormData()
     }
 }
 </script>

@@ -1,6 +1,5 @@
 server:
   port: 8621
-
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -17,3 +16,9 @@ mybatis-plus:
       logic-delete-value: id
       id-type: assign_id
   type-aliases-package: com.cfive.pinnacle.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: debug

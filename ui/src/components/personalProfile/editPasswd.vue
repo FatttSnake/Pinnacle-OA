@@ -23,6 +23,7 @@
 </template>
 <script lang="ts">
 export default {
+    emits: ['updatePasswd', 'cancelPasswd'],
     data() {
         return {
             passwdForm: {
@@ -41,6 +42,10 @@ export default {
                     {
                         required: true,
                         message: '新密码不能为空'
+                    },
+                    {
+                        validator: this.validateSurePasswordLength,
+                        trigger: 'blur'
                     }
                 ],
                 selectPasswd: [
@@ -51,6 +56,10 @@ export default {
                     },
                     {
                         validator: this.validateSurePassword,
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: this.validateSurePasswordLength,
                         trigger: 'blur'
                     }
                 ]
@@ -81,6 +90,14 @@ export default {
                 } else {
                     callback()
                 }
+            }
+        },
+        validateSurePasswordLength(rule, value, callback) {
+            if (value.length < 8 || value.length > 64) {
+                callback(new Error('新密码长度应为8到64位'))
+                return false
+            } else {
+                callback()
             }
         }
     }

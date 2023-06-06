@@ -7,12 +7,12 @@
                     <el-row :gutter="20">
                         <el-col :span="12">
                             <el-form-item label="名字" prop="firstName">
-                                <el-input v-model="form.firstName" />
+                                <el-input v-model="form.firstName" maxlength="20" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="姓氏" prop="lastName">
-                                <el-input v-model="form.lastName" />
+                                <el-input v-model="form.lastName" maxlength="20" />
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -57,13 +57,13 @@
                         </el-col>
                     </el-row>
                     <el-form-item label="邮箱" prop="email">
-                        <el-input v-model="form.email" />
+                        <el-input v-model="form.email" maxlength="50" />
                     </el-form-item>
                     <el-form-item label="手机号码" prop="tel">
-                        <el-input v-model="form.tel" />
+                        <el-input v-model="form.tel" maxlength="20" />
                     </el-form-item>
                     <el-form-item label="联系地址" prop="address">
-                        <el-input v-model="form.address" />
+                        <el-input v-model="form.address" maxlength="100" show-word-limit />
                     </el-form-item>
                     <el-form-item style="float: right">
                         <el-button type="info" @click="resetForm">重置</el-button>
@@ -89,7 +89,11 @@ import _ from 'lodash'
 import request from '@/services'
 import { ElMessage } from 'element-plus'
 import { requestUser } from '@/utils/auth'
-import { DATABASE_SELECT_OK, DATABASE_UPDATE_OK } from '@/constants/Common.constants'
+import {
+    DATABASE_SELECT_OK,
+    DATABASE_UPDATE_OK,
+    OLD_PASSWORD_NOT_MATCH
+} from '@/constants/Common.constants'
 
 export default {
     data() {
@@ -148,7 +152,9 @@ export default {
                         required: true,
                         message: '请选择性别'
                     }
-                ]
+                ],
+                email: [{ validator: this.checkEmail }],
+                tel: [{ validator: this.checkTel }]
             },
             visible: false
         }
@@ -203,10 +209,51 @@ export default {
             this.form = _.cloneDeep(this.staff)
         },
         updatePasswd(passwdForm) {
-            this.visible = false
+            request
+                .put('/user/passwd', {
+                    oldPasswd: passwdForm.oldPasswd,
+                    newPasswd: passwdForm.newPasswd
+                })
+                .then(async (res) => {
+                    const response = res.data
+                    if (response.code === DATABASE_UPDATE_OK) {
+                        ElMessage({
+                            message: '修改成功',
+                            type: 'success'
+                        })
+                        this.visible = false
+                    } else if (response.code === OLD_PASSWORD_NOT_MATCH) {
+                        ElMessage({
+                            message: '旧密码错误，修改失败，请重试',
+                            type: 'error'
+                        })
+                    } else {
+                        ElMessage({
+                            message: '系统错误，修改失败',
+                            type: 'error'
+                        })
+                    }
+                })
         },
         cancelPasswd() {
             this.visible = false
+        },
+        checkEmail(rule, value, callback) {
+            const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+            if (mailReg.test(value)) {
+                callback()
+            } else {
+                return callback(new Error('邮箱格式错误！'))
+            }
+        },
+        checkTel(rule, value, callback) {
+            const telReg =
+                /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
+            if (telReg.test(value)) {
+                callback()
+            } else {
+                return callback(new Error('手机号格式错误！'))
+            }
         }
     },
     created() {

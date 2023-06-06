@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -44,15 +45,17 @@ public class UserController {
 
     @PutMapping("/passwd")
     @Operation(summary = "修改密码")
-    public ResponseResult<?> modifyPasswd(String oldPasswd, String newPassword) {
-        if (oldPasswd == null || newPassword == null) {
+    public ResponseResult<?> modifyPasswd(@RequestBody Map<String, String> passwd) {
+        String oldPasswd = passwd.get("oldPasswd");
+        String newPasswd = passwd.get("newPasswd");
+        if (oldPasswd == null || newPasswd == null) {
             throw new DataValidationFailedException();
         }
-        newPassword = newPassword.trim();
-        if (oldPasswd.isBlank() || oldPasswd.length() < 8 || oldPasswd.length() > 64 || newPassword.isBlank() || newPassword.length() < 8 || newPassword.length() > 64) {
+        newPasswd = newPasswd.trim();
+        if (oldPasswd.isBlank() || newPasswd.isBlank() || newPasswd.length() < 8 || newPasswd.length() > 64) {
             throw new DataValidationFailedException();
         }
-        if (userService.modifyPasswd(oldPasswd, newPassword)) {
+        if (userService.modifyPasswd(oldPasswd, newPasswd)) {
             return ResponseResult.databaseUpdateSuccess(null);
         } else {
             return ResponseResult.build(ResponseCode.DATABASE_UPDATE_ERROR, "error", null);
@@ -70,14 +73,14 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('work:manage:add', 'work:admin:add', 'attendance:manage:modify')")
     @Operation(summary = "获取同部门下所有用户")
     public ResponseResult<List<User>> getDepartmentUser() {
-        return ResponseResult.databaseSaveSuccess(userService.getDepartmentUser());
+        return ResponseResult.databaseSelectSuccess(userService.getDepartmentUser());
     }
 
     @GetMapping("/notice")
     @PreAuthorize("hasAuthority('notice:manage:get')")
     @Operation(summary = "获取拥有发布公告权限的用户")
     public ResponseResult<List<User>> getNoticeUser() {
-        return ResponseResult.databaseSaveSuccess(userService.getNoticeUser());
+        return ResponseResult.databaseSelectSuccess(userService.getNoticeUser());
     }
 
     @GetMapping
