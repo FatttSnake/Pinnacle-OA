@@ -37,7 +37,13 @@
                             round
                             style="margin-right: 10px"
                         >
-                            {{ item.username }}
+                            {{
+                                item.staff.lastName +
+                                item.staff.firstName +
+                                '(' +
+                                item.username +
+                                ')'
+                            }}
                         </el-tag>
                     </template>
                 </el-table-column>
@@ -77,12 +83,27 @@
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog v-model="addVisible" width="60%">
-            <edit-work @setDialogVisible="setDialogVisible" @addWork="addWork"></edit-work>
+        <el-dialog
+            v-model="addVisible"
+            width="60%"
+            :show-close="false"
+            :close-on-click-modal="false"
+        >
+            <edit-work
+                :workers="workers"
+                @setDialogVisible="setDialogVisible"
+                @addWork="addWork"
+            ></edit-work>
         </el-dialog>
-        <el-dialog v-model="editVisible" width="60%">
+        <el-dialog
+            v-model="editVisible"
+            width="60%"
+            :show-close="false"
+            :close-on-click-modal="false"
+        >
             <edit-work
                 :editForm="rowData"
+                :workers="workers"
                 @setDialogVisible="setDialogVisible"
                 @updateWork="updateWork"
             ></edit-work>
@@ -110,28 +131,21 @@ export default {
             addVisible: false,
             editVisible: false,
             loading: true,
-            searchContent: ''
+            searchContent: '',
+            workers: []
         }
     },
     methods: {
         handleClick(row) {
             this.rowData = row
             this.editVisible = true
-            console.log('click')
         },
         deleteConfirmEvent(row) {
             this.deleteTableData(row)
-            console.log('delete confirm!')
         },
-        deleteCancelEvent() {
-            console.log('delete cancel!')
-        },
-        completeConfirmEvent() {
-            console.log('complete confirm!')
-        },
-        completeCancelEvent() {
-            console.log('complete cancel!')
-        },
+        deleteCancelEvent() {},
+        completeConfirmEvent() {},
+        completeCancelEvent() {},
         getTableData() {
             request.get('/work').then((res) => {
                 const response = res.data
@@ -149,22 +163,17 @@ export default {
             })
         },
         deleteTableData(row) {
-            request
-                .delete('/work/' + row.id)
-                .then((res) => {
-                    const response = res.data
-                    if (response.code === DATABASE_DELETE_OK) {
-                        this.getTableData()
-                    } else {
-                        ElMessage({
-                            message: '删除失败',
-                            type: 'error'
-                        })
-                    }
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.delete('/work/' + row.id).then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_DELETE_OK) {
+                    this.getTableData()
+                } else {
+                    ElMessage({
+                        message: '删除失败',
+                        type: 'error'
+                    })
+                }
+            })
         },
         setDialogVisible(dialogVisible) {
             this.addVisible = dialogVisible
@@ -211,7 +220,7 @@ export default {
             return new Date(time).toLocaleString()
         },
         searchByContent() {
-            request.get('/work', { content: this.searchContent }).then((res) => {
+            request.get('/work', { content: this.searchContent.trim() }).then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
                     this.tableData = response.data
@@ -225,10 +234,20 @@ export default {
                     })
                 }
             })
+        },
+        getWorkers() {
+            request.get('/user/department').then((res) => {
+                const response = res.data
+                if (response.code === DATABASE_SELECT_OK) {
+                    this.workers = response.data
+                    console.log(this.workers)
+                }
+            })
         }
     },
-    created() {
+    mounted() {
         this.getTableData()
+        this.getWorkers()
     },
     components: {
         EditWork

@@ -22,13 +22,13 @@
         </el-descriptions-item>
         <el-descriptions-item label="负责员工">
             <el-tag v-for="item in taskData.worker" style="margin-right: 10px">{{
-                item.username
+                item.staff.lastName + item.staff.firstName + '(' + item.username + ')'
             }}</el-tag>
         </el-descriptions-item>
     </el-descriptions>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 export default {
     props: {
         taskData: {
