@@ -4,6 +4,7 @@ import com.cfive.pinnacle.entity.Affair;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cfive.pinnacle.entity.permission.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ public interface IAffairService extends IService<Affair> {
 
 //    int deleteAffair_ApprovedByID(Affair affair);
     List<User> getSameDepartmentUser (long id);
+    List<Affair> getFuzzyQueriesByAffairTitle(String title,Integer typeId,Integer status,Integer inspectorId,String startTime,String endTime);
 
 
 }

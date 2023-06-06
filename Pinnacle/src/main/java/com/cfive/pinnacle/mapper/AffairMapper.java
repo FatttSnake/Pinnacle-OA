@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cfive.pinnacle.entity.permission.User;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -38,6 +39,9 @@ public interface AffairMapper extends BaseMapper<Affair> {
     //不同意
 
     List<User> getSameDepartmentUser(@Param("id") long id);
+
+
+    List<Affair> getFuzzyQueriesByAffairTitle(String title, Integer typeId, Integer status, Integer inspectorId,LocalDateTime start,LocalDateTime end );
 
 //
 //    @Select("SELECT t_affair.applicant_id,t_affair.inspector_id,t_user.id,t_user.username from t_affair,t_user ")

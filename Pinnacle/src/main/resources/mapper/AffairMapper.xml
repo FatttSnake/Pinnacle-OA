@@ -20,6 +20,36 @@
             t_user.deleted = 0;
     </select>
 
+    <select id="getFuzzyQueriesByAffairTitle" resultMap="affairMap">
+        select
+                       *
+        from t_affair
+        <where>
+            <if test=" title!=null and title!='' ">
+                 instr(title,#{title})&gt;0
+            </if>
+            <if test=" typeId!=null ">
+                and instr(type_id,#{typeId})>0
+            </if>
+            <if test="status!=null ">
+                and instr(status,#{status})>0
+            </if>
+            <if test="inspectorId!=null">
+                and instr(inspector_id,#{inspectorId})>0
+            </if>
+            <if test="createTime!=null">
+                and create_time &gt;= #{start}
+            </if>
+            <if test="endTime!=null">
+                and create_time &lt; #{end}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+
+
+
     <resultMap id="userMap" type="user">
         <id property="id" column="user_id"/>
         <result property="username" column="user_username"/>
@@ -35,5 +65,12 @@
             <result property="version" column="staff_version"/>
         </association>
     </resultMap>
+
+    <resultMap id="affairMap" type="affair" autoMapping="true">
+        <id property="id" column="id"/>
+    </resultMap>
+
+
+
 
 </mapper>

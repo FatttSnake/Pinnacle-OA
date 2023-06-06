@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,6 +55,13 @@ public class AffairController {
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
     }
 
+    @GetMapping("/personal_affairs_title")
+    @PreAuthorize("hasAuthority('affair:self:get')")
+    public ResponseResult getPersonalAffairsByTitle(String title,Integer typeId,Integer status,Integer inspectorId,String startTime,String endTime) {
+        System.out.println(title);
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getFuzzyQueriesByAffairTitle(title,typeId,status,inspectorId,startTime,endTime));
+    }
+
     @GetMapping("/not_approved")
     @PreAuthorize("hasAuthority('affair:manage:get')")
     public ResponseResult<List<Affair>> selectNotApproved() {
@@ -75,7 +84,6 @@ public class AffairController {
     @PutMapping("/yes")
     @PreAuthorize("hasAuthority('affair:manage:modify')")
     public ResponseResult<Integer> updateAffairYes(@RequestBody Affair affair) {
-        System.out.println(affair);
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", affairService.updateAffairYes(affair));
         //审批同意
     }
