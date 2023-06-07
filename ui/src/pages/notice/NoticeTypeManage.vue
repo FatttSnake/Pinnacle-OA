@@ -34,11 +34,11 @@
                 <notice-type-commit-form ref="addForm" />
                 <template #footer>
                     <span class="dialog-footer">
-                        <el-button @click="resetForm" style="margin-right: 20px">重置</el-button>
-                        <el-button type="primary" @click="submitForm" style="margin-right: 20px">
+                        <el-button type="primary" @click="submitForm" class="marRight">
                             确定
                         </el-button>
-                        <el-button @click="closeForm">取消</el-button>
+                        <el-button @click="closeForm" class="marRight">取消</el-button>
+                        <el-button @click="resetForm" class="marRight">重置</el-button>
                     </span>
                 </template>
             </el-dialog>
@@ -96,12 +96,19 @@ export default {
                 state.hackReset = true
             })
         },
-        submitForm() {
-            this.$refs.addForm.$refs.addTypeData.validate((valid) => {
+        async submitForm() {
+            await this.$refs.addForm.$refs.addTypeData.validate((valid) => {
                 if (valid) {
                     noticeTypeStore.handleAddNoticeType(this.addTypeData)
                 } else {
                     return false
+                }
+            })
+            await noticeTypeStore.$patch((state) => {
+                state.addTypeData = {
+                    id: '',
+                    name: '',
+                    enable: 1
                 }
             })
         },
@@ -111,7 +118,13 @@ export default {
                 state.dialogEditTypeVisible = false
                 state.hackReset = false
                 state.editFlag = false
-                state.addTypeData = { name: '', enable: 1 }
+            })
+            noticeTypeStore.$patch((state) => {
+                state.addTypeData = {
+                    id: '',
+                    name: '',
+                    enable: 1
+                }
             })
         },
         resetForm() {
@@ -198,5 +211,13 @@ export default {
 .el-main {
     padding: 0;
     margin-top: 20px;
+}
+.dialog-footer {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+.marRight {
+    margin-right: 15px;
 }
 </style>

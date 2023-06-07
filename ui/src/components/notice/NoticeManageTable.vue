@@ -7,6 +7,8 @@
         border
         highlight-current-row
         @selection-change="handleSelectionChange"
+        @row-contextmenu="openClickMenu"
+        @row-click="handleShow"
         :header-cell-style="{
             background: 'darksalmon',
             'text-align': 'center',
@@ -36,6 +38,7 @@
         <el-table-column prop="noticeType.name" label="公告类别" width="100" align="center">
             <template #default="scope">
                 <el-tag
+                    disable-transitions
                     size="default"
                     :type="
                         scope.row.noticeType.name === '通知公告'
@@ -44,13 +47,11 @@
                             ? 'danger'
                             : 'success'
                     "
-                    disable-transitions
                 >
                     {{ scope.row.noticeType.name }}
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column prop="priority" label="优先级" width="80" align="center" />
         <el-table-column
             prop="createTime"
             label="创建时间"
@@ -59,6 +60,29 @@
             :formatter="formatDate"
             align="center"
         />
+        <el-table-column prop="priority" label="优先级" width="80" align="center">
+            <template #default="scope"
+                ><el-tag
+                    disable-transitions
+                    :type="
+                        scope.row.priority <= 4
+                            ? 'success'
+                            : scope.row.priority <= 10
+                            ? 'warning'
+                            : 'danger'
+                    "
+                    effect="plain"
+                >
+                    {{
+                        scope.row.priority <= 4
+                            ? '普通'
+                            : scope.row.priority <= 10
+                            ? '优先'
+                            : '紧急'
+                    }}
+                </el-tag></template
+            >
+        </el-table-column>
         <el-table-column
             prop="sendTime"
             label="生效时间"
@@ -85,11 +109,7 @@
             align="center"
         >
             <template #default="scope">
-                <el-tag
-                    :type="scope.row.sender.username === 'cyb' ? '' : 'success'"
-                    disable-transitions
-                    >{{ scope.row.sender.username }}
-                </el-tag>
+                <el-tag disable-transitions>{{ scope.row.sender.username }} </el-tag>
             </template>
         </el-table-column>
         <el-table-column label="操作" width="200px" align="center">
@@ -146,12 +166,37 @@
         </template>
         <notice-show-dialog />
     </el-dialog>
+    <!-- 表格鼠标右击下拉菜单-->
+    <ul
+        v-show="rightClickVisible"
+        :style="{ left: left + 'px', top: top + 'px' }"
+        class="contextmenu"
+    >
+        <li v-if="rightClickNotice.top === 0" @click.stop="modifyTop(rightClickNotice)">
+            <el-icon :size="SIZE_ICON_MD()">
+                <icon-pinnacle-top />
+            </el-icon>
+            置顶
+        </li>
+        <li v-if="rightClickNotice.top === 1" @click.stop="modifyTop(rightClickNotice)">
+            <el-icon :size="28">
+                <icon-pinnacle-cancel-top />
+            </el-icon>
+            取消置顶
+        </li>
+        <li>
+            <el-icon :size="SIZE_ICON_SM()">
+                <icon-pinnacle-label />
+            </el-icon>
+            新建标签
+        </li>
+    </ul>
 </template>
 
 <script lang="ts">
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
-import { COLOR_TOP, SIZE_ICON_MD, SIZE_ICON_XS } from '@/constants/Common.constants'
+import { COLOR_TOP, SIZE_ICON_MD, SIZE_ICON_SM, SIZE_ICON_XS } from '@/constants/Common.constants'
 
 const noticeStore = useNoticeStore()
 
@@ -173,8 +218,22 @@ export default {
         ])
     },
     emits: ['handleDeleteById', 'getNoticeSender', 'filterSender'],
-    props: [],
+    data() {
+        return {
+            rightClickVisible: false,
+            rightClickNotice: {
+                id: '',
+                top: 0,
+                isRead: 0
+            },
+            top: 0,
+            left: 0
+        }
+    },
     methods: {
+        SIZE_ICON_SM() {
+            return SIZE_ICON_SM
+        },
         SIZE_ICON_XS() {
             return SIZE_ICON_XS
         },
@@ -265,6 +324,37 @@ export default {
                 state.search.userIdList = filters.senderId
             })
             this.$emit('filterSender')
+        },
+        openClickMenu(row, column, event) {
+            // 阻止元素发生默认的行为
+            event.preventDefault()
+            this.left = event.pageX
+            this.top = event.pageY
+            this.rightClickNotice = row
+            this.rightClickVisible = true
+        },
+        async modifyTop(notice) {
+            await noticeStore.modifyTop(notice)
+            this.closeMenu()
+            await noticeStore.selectAllNotice(this.currentPage, this.pageSize, '', '', '', '', [])
+        },
+        // 关闭菜单
+        closeMenu() {
+            this.rightClickVisible = false
+        }
+    },
+    watch: {
+        //   监听属性对象，newValue为新的值，也就是改变后的值
+        rightClickVisible(newValue, oldValue) {
+            if (newValue) {
+                // 菜单显示的时候
+                // 在body上添加事件处理程序
+                document.body.addEventListener('click', this.closeMenu)
+            } else {
+                // 菜单隐藏的时候
+                // 移除body上添加的事件处理程序
+                document.body.removeEventListener('click', this.closeMenu)
+            }
         }
     },
     mounted() {
@@ -285,5 +375,29 @@ export default {
     display: flex;
     margin: 20px 0;
     justify-content: center;
+}
+.contextmenu {
+    background: #fff;
+    z-index: 3000;
+    position: fixed;
+    list-style-type: none;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    border: 1px solid #dadadc;
+}
+
+.contextmenu li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 16px;
+    cursor: pointer;
+}
+
+.contextmenu li:hover {
+    background: #eee;
 }
 </style>
