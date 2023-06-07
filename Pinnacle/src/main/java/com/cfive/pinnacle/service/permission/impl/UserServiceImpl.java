@@ -77,6 +77,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    @Transactional
     public boolean modifyPasswd(String oldPasswd, String newPasswd) {
         if (!passwordEncoder.matches(oldPasswd, userMapper.getOneWithPowerByUsername(WebUtil.getLoginUser().getUsername()).getPasswd())) {
             throw new OldPasswordNotMatchException();
