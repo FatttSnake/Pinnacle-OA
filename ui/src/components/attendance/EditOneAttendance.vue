@@ -4,7 +4,7 @@
             <el-date-picker v-model="form.attTime" type="datetime" disabled style="width: 200px" />
         </el-form-item>
     </el-form>
-    <div>
+    <div style="text-align: center">
         <span class="dialog-footer">
             <el-button type="primary" @click="submitForm()">确认</el-button>
             <el-button @click="cancel">取消</el-button>
@@ -17,8 +17,10 @@ import { ElMessage } from 'element-plus'
 import _ from 'lodash'
 import request from '@/services'
 import { DATABASE_SAVE_OK } from '@/constants/Common.constants'
+
 export default {
     name: 'EditOneAttendance',
+    emits: ['setDialogVisible'],
     data() {
         return {
             formLabelWidth: '80px',
@@ -62,8 +64,8 @@ export default {
                 })
                 .catch((reportError) => {
                     ElMessage({
-                        message: '签到成功',
-                        type: 'success'
+                        message: '签到失败',
+                        type: 'warning'
                     })
                 })
         }
