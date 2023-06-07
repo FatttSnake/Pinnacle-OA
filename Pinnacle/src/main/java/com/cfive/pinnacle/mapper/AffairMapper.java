@@ -41,7 +41,7 @@ public interface AffairMapper extends BaseMapper<Affair> {
     List<User> getSameDepartmentUser(@Param("id") long id);
 
 
-    List<Affair> getFuzzyQueriesByAffairTitle(String title, Integer typeId, Integer status, Integer inspectorId,LocalDateTime start,LocalDateTime end );
+    List<Affair> getFuzzyQueriesByAffairTitle(String title, Long typeId, Integer status,Long applicantId);
 
 //
 //    @Select("SELECT t_affair.applicant_id,t_affair.inspector_id,t_user.id,t_user.username from t_affair,t_user ")

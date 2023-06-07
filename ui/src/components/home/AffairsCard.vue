@@ -27,7 +27,7 @@
                 >
                 <el-col :xs="4" :sm="4" :md="3" :lg="3" :xl="2" style="text-align: right"
                     ><el-text type="info" style="line-height: 32px">{{
-                        item.status
+                        item.status === 0 ? '未审批' : item.status === 1 ? '同意' : '驳回'
                     }}</el-text></el-col
                 >
             </el-row>

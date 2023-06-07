@@ -24,7 +24,7 @@ public interface IAffairService extends IService<Affair> {
 
 //    int deleteAffair_ApprovedByID(Affair affair);
     List<User> getSameDepartmentUser (long id);
-    List<Affair> getFuzzyQueriesByAffairTitle(String title,Integer typeId,Integer status,Integer inspectorId,String startTime,String endTime);
+    List<Affair> getFuzzyQueriesByAffairTitle(String title,Long typeId,Integer status,Long applicantId);
 
 
 }

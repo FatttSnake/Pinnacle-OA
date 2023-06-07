@@ -192,13 +192,34 @@ export default {
         dialogFalse() {
             this.dialogVisible = false
         }
+        // forRouter() {
+        //     setInterval(() => {
+        //         if (this.DataToRouterView !== '') {
+        //             this.tableData = this.DataToRouterView
+        //         }
+        //     }, 500)
+        // }
     },
     created() {
         this.getApproved()
         this.dialogFalse()
         this.getGrantUser()
+        // this.forRouter()
         // this.getInspectorName()
+    },
+    props: ['DataToRouterView'],
+    watch: {
+        DataToRouterView: function (val) {
+            this.tableData = val
+        }
     }
 }
 </script>
-<style></style>
+<style>
+.el-header {
+    background-color: #fff;
+}
+.el-form {
+    margin-top: 1px;
+}
+</style>

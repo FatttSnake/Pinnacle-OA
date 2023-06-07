@@ -55,11 +55,12 @@ public class AffairController {
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
     }
 
-    @GetMapping("/personal_affairs_title")
+    @GetMapping("/personal_affairs_fuzzy_queries")
     @PreAuthorize("hasAuthority('affair:self:get')")
-    public ResponseResult getPersonalAffairsByTitle(String title,Integer typeId,Integer status,Integer inspectorId,String startTime,String endTime) {
+    public ResponseResult getPersonalAffairsByTitle(String title,Long typeId,Integer status) {
         System.out.println(title);
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getFuzzyQueriesByAffairTitle(title,typeId,status,inspectorId,startTime,endTime));
+        Long applicantId =WebUtil.getLoginUser().getUser().getId();
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getFuzzyQueriesByAffairTitle(title,typeId,status,applicantId));
     }
 
     @GetMapping("/not_approved")
