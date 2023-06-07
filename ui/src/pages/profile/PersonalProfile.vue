@@ -52,6 +52,7 @@
                                     v-model="form.birth"
                                     size="default"
                                     placeholder="请选择日期"
+                                    value-format="YYYY-MM-DD"
                                 />
                             </el-form-item>
                         </el-col>
@@ -239,7 +240,7 @@ export default {
             this.visible = false
         },
         checkEmail(rule, value, callback) {
-            const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+            const mailReg = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/
             if (mailReg.test(value)) {
                 callback()
             } else {

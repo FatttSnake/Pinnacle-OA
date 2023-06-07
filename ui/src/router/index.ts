@@ -36,7 +36,10 @@ const router = createRouter({
                 {
                     path: '/profile',
                     component: async () => await import('@/pages/profile/PersonalProfile.vue'),
-                    name: 'profile'
+                    name: 'profile',
+                    meta: {
+                        title: '个人档案'
+                    }
                 },
                 workRouter,
                 noticeRouter,

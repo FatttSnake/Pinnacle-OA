@@ -3,7 +3,7 @@
         <template #header>
             <div class="card-header" style="height: 20px">
                 <h2>待办工作</h2>
-                <el-button class="button" text @click="pushTodo">查看更多</el-button>
+                <el-button text @click="pushTodo">查看更多</el-button>
             </div>
         </template>
         <div v-for="item in tableData" :key="item" class="card-text card-item">

@@ -5,16 +5,14 @@
                 <work-card :tableData="works" />
             </el-col>
             <el-col :span="12">
-                <notice-card :tableData="notices" />
+                <attendence-card />
             </el-col>
         </el-row>
         <el-row :gutter="20">
             <el-col :span="12">
                 <affairs-card :tableData="affairs" />
             </el-col>
-            <el-col :span="12">
-                <work-card :tableData="works" />
-            </el-col>
+            <el-col :span="12"> <notice-card :tableData="notices" /></el-col>
         </el-row>
     </div>
 </template>
@@ -24,10 +22,11 @@ import request from '@/services'
 import AffairsCard from '@/components/home/AffairsCard.vue'
 import { DATABASE_SELECT_OK } from '@/constants/Common.constants'
 import { ElMessage } from 'element-plus'
+import AttendenceCard from '@/components/home/AttendanceCard.vue'
 
 export default {
     name: 'HomePage',
-    components: { AffairsCard },
+    components: { AttendenceCard, AffairsCard },
     data() {
         return {
             works: [],
