@@ -13,10 +13,15 @@
         </template>
         <el-calendar ref="calendar" />
     </el-card>
-    <el-dialog v-model="attendanceVisible"> </el-dialog>
+    <el-dialog v-model="attendanceVisible" title="打卡" style="width: 25%">
+        <edit-one-attendance @setDialogVisible="closeAttendance" />
+    </el-dialog>
 </template>
 <script lang="ts">
+import EditOneAttendance from '@/components/attendance/EditOneAttendance.vue'
+
 export default {
+    components: { EditOneAttendance },
     data() {
         return {
             attendanceVisible: false
@@ -25,6 +30,9 @@ export default {
     methods: {
         showAttendance() {
             this.attendanceVisible = true
+        },
+        closeAttendance() {
+            this.attendanceVisible = false
         },
         pushTodo() {
             this.$router.push('/attendance/user')
