@@ -126,7 +126,7 @@
 
     <el-dialog
         v-model="addDialogFormVisible"
-        title="考勤信息"
+        title="添加考勤信息"
         width="25% "
         :close-on-click-modal="false"
         :show-close="false"
@@ -141,7 +141,7 @@
     </el-dialog>
     <el-dialog
         v-model="editDialogFormVisible"
-        title="考勤信息"
+        title="更新考勤信息"
         width="25% "
         :close-on-click-modal="false"
         :show-close="false"
