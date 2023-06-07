@@ -1,6 +1,6 @@
 <template>
     <el-container>
-        <el-header>
+        <el-header style="width: 100%">
             <notice-manage-head @selectByCond="getLoading"></notice-manage-head>
         </el-header>
         <el-main>
@@ -29,11 +29,12 @@
                 center
                 :close-on-click-modal="false"
                 :before-close="handleDialogClose"
+                style="min-width: 450px; max-width: 900px"
             >
                 <template #header>
                     <h2 style="color: red">发布公告</h2>
                 </template>
-                <notice-commit-form />
+                <notice-commit-form ref="addForm" />
             </el-dialog>
             <notice-manage-table
                 @handleDeleteById="handleDeleteById"
@@ -77,6 +78,7 @@ export default {
                 state.editFlag = false
                 state.hackReset = false
             })
+            this.$refs.addForm.$refs.addData.resetFields()
         },
         handleDeleteById(deleteID) {
             ElMessageBox.confirm('确定是否要删除？该操作将无法回退', '警告', {

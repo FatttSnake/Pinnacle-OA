@@ -2,6 +2,7 @@ package com.cfive.pinnacle.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.cfive.pinnacle.entity.NoticeType;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
@@ -55,17 +56,15 @@ public class NoticeTypeController {
     //分页查询所有公告类型
     @GetMapping("/page")
     @PreAuthorize("hasAuthority('notice:type:get')")
-    public ResponseResult<List<NoticeType>> selectPageTypeList(Integer currentPage, Integer pageSize){
-        Page<NoticeType> noticeTypePage=new Page<>();
+    public ResponseResult<List<NoticeType>> selectPageTypeList(Integer currentPage, Integer pageSize,String name,Integer enable){
+        Page<NoticeType> noticeTypePage;
         if (null != currentPage && null != pageSize) {
-            noticeTypePage.setCurrent(currentPage.intValue());
-            noticeTypePage.setSize(pageSize.intValue());
+            noticeTypePage = PageDTO.of(currentPage, pageSize);
         } else {
             // 不进行分页
-            noticeTypePage.setCurrent(1);
-            noticeTypePage.setSize(-1);
+            noticeTypePage = PageDTO.of(1, -1);
         }
-        IPage<NoticeType> selectPageTypeList = noticeTypeService.selectPageTypeList(noticeTypePage);
+        IPage<NoticeType> selectPageTypeList = noticeTypeService.selectPageTypeList(noticeTypePage,name.trim(),enable);
         Integer code = selectPageTypeList.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = selectPageTypeList.getRecords() != null ? String.valueOf(selectPageTypeList.getTotal()) : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, selectPageTypeList.getRecords());

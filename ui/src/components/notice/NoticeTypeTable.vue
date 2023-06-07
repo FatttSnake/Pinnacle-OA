@@ -3,8 +3,7 @@
         v-loading="dataLoading"
         element-loading-text="加载中..."
         ref="tableRef"
-        :data="noticeTypeList.filter((data) => !search || data.name.includes(search))"
-        style="font-size: 18px"
+        :data="noticeTypeList"
         stripe
         border
         highlight-current-row
@@ -12,14 +11,22 @@
         :header-cell-style="{
             background: 'darksalmon',
             'text-align': 'center',
-            color: '#fff'
+            color: '#fff',
+            'font-size': '16px'
         }"
-        ><el-table-column type="selection" width="65" align="center" />
+        ><el-table-column type="selection" align="center" />
         <el-table-column type="index" label="序号" width="80" align="center" :index="indexFormat" />
-        <el-table-column label="类型名称" prop="name" width="500" align="center" />
+        <el-table-column
+            label="类型名称"
+            prop="name"
+            min-width="160"
+            show-overflow-tooltip
+            align="center"
+        />
         <el-table-column label="是否启用" prop="enable" width="350" align="center">
             <template #default="scope">
                 <el-switch
+                    :loading="switchLoading"
                     v-model="scope.row.enable"
                     style="--el-switch-on-color: #13ce66; --el-switch-off-color: #afb2b8"
                     active-text="启用"
@@ -30,15 +37,12 @@
                 />
             </template>
         </el-table-column>
-        <el-table-column align="center">
-            <template #header>
-                <el-input v-model="search" size="default" placeholder="请输入关键字搜索" />
-            </template>
+        <el-table-column label="操作" align="center" width="200px">
             <template #default="scope">
-                <el-button size="default" type="primary" @click="handleOpenEditDialog(scope.row)"
+                <el-button size="small" type="primary" @click="handleOpenEditDialog(scope.row)"
                     >编辑</el-button
                 >
-                <el-button size="default" type="danger" @click="deleteTypeById(scope.row.id)"
+                <el-button size="small" type="danger" @click="deleteTypeById(scope.row.id)"
                     >删除</el-button
                 >
             </template>
@@ -52,7 +56,7 @@
             @current-change="handleCurrentChange"
             layout="total, sizes, prev, pager, next, jumper"
             background
-            :page-sizes="[5, 10, 20, 40]"
+            :page-sizes="[10, 20, 50, 100]"
             :total="total"
             v-model:current-page="currentPage"
             v-model:page-size="pageSize"
@@ -66,6 +70,7 @@
         v-if="hackReset"
         :close-on-click-modal="false"
         :before-close="closeEditForm"
+        style="min-width: 320px; max-width: 700px"
     >
         <template #header>
             <h2 style="color: red">编辑公告类型</h2>
@@ -100,13 +105,14 @@ export default {
             'hackReset',
             'showTypeData',
             'addTypeData',
-            'multiDeleteSelection'
+            'multiDeleteSelection',
+            'searchType',
+            'switchLoading'
         ])
     },
     data() {
         return {
-            filterSenderName: [],
-            search: ''
+            filterSenderName: []
         }
     },
     props: [],
@@ -120,11 +126,16 @@ export default {
         indexFormat(index) {
             return (this.currentPage - 1) * this.pageSize + index + 1
         },
-        switchChang(id, value) {
-            noticeTypeStore.updateNoticeTypeEnable(id, value)
-            setTimeout(() => {
-                noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
-            }, 800)
+        async switchChang(id, value) {
+            this.switchLoading = true
+            this.dataLoading = true
+            await noticeTypeStore.updateNoticeTypeEnable(id, value)
+            await noticeTypeStore.selectNoticeType(
+                this.currentPage,
+                this.pageSize,
+                this.searchType.name,
+                this.searchType.enable
+            )
         },
         handleOpenEditDialog(row) {
             noticeTypeStore.$patch((state) => {
@@ -144,14 +155,24 @@ export default {
             noticeTypeStore.$patch((state) => {
                 state.pageSize = pageSize
             })
-            noticeTypeStore.selectNoticeType(this.currentPage, parseInt(pageSize))
+            noticeTypeStore.selectNoticeType(
+                this.currentPage,
+                parseInt(pageSize),
+                this.searchType.name,
+                this.searchType.enable
+            )
         },
         handleCurrentChange(currentPage) {
             // currentPage：当前第几页
             noticeTypeStore.$patch((state) => {
                 state.currentPage = currentPage
             })
-            noticeTypeStore.selectNoticeType(parseInt(currentPage), this.pageSize)
+            noticeTypeStore.selectNoticeType(
+                parseInt(currentPage),
+                this.pageSize,
+                this.searchType.name,
+                this.searchType.enable
+            )
         },
         submitEditForm() {
             this.$refs.editForm.$refs.addTypeData.validate((valid) => {
@@ -173,14 +194,19 @@ export default {
     },
     mounted() {
         noticeTypeStore.dataLoading = true
-        noticeTypeStore.selectNoticeType(1, 5)
+        noticeTypeStore.selectNoticeType(1, 10, '', -1)
     },
     updated() {}
 }
 </script>
 
 <style scoped>
+.el-table {
+    margin-top: 10px;
+}
 .pagination {
-    margin: 30px 400px;
+    display: flex;
+    margin: 20px 0;
+    justify-content: center;
 }
 </style>
