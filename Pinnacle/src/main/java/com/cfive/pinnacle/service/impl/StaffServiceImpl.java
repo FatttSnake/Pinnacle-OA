@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -53,6 +54,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     }
 
     @Override
+    @Transactional
     public boolean modifyStaff(User user) {
         Long departmentId = user.getDepartmentId();
         Staff newStaff = user.getStaff();
@@ -77,6 +79,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     }
 
     @Override
+    @Transactional
     public boolean modifySelf(Staff staff) {
         User user = WebUtil.getLoginUser().getUser();
         Staff oldStaff = user.getStaff();
