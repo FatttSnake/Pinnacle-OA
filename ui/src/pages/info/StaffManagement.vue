@@ -200,6 +200,20 @@ import { ElMessage } from 'element-plus'
 export default {
     name: 'StaffManagement',
     data() {
+        const checkEmail = (rule, value, callback) => {
+            if (value && !/^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/.test(value)) {
+                return callback(new Error('非法邮箱地址'))
+            } else {
+                return callback()
+            }
+        }
+        const checkTel = (rule, value, callback) => {
+            if (value && !/^0?(13|14|15|17|18|19)[0-9]{9}$/.test(value)) {
+                return callback(new Error('非法手机号码'))
+            } else {
+                return callback()
+            }
+        }
         return {
             dialogVisible: false,
             tableLoading: true,
@@ -231,6 +245,18 @@ export default {
                     {
                         required: true,
                         message: '姓氏为必填项'
+                    }
+                ],
+                inputEmail: [
+                    {
+                        validator: checkEmail,
+                        message: '非法邮箱地址'
+                    }
+                ],
+                inputTel: [
+                    {
+                        validator: checkTel,
+                        message: '非法手机号码'
                     }
                 ]
             },

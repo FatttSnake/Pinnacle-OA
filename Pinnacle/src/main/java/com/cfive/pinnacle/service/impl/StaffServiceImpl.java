@@ -13,8 +13,10 @@ import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -56,6 +58,8 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     @Override
     @Transactional
     public boolean modifyStaff(User user) {
+        verifyEmailAndTel(user.getStaff());
+
         Long departmentId = user.getDepartmentId();
         Staff newStaff = user.getStaff();
         user = userMapper.getOneById(user.getId());
@@ -81,6 +85,8 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     @Override
     @Transactional
     public boolean modifySelf(Staff staff) {
+        verifyEmailAndTel(staff);
+
         User user = WebUtil.getLoginUser().getUser();
         Staff oldStaff = user.getStaff();
         staff.setUserId(user.getId());
@@ -93,5 +99,18 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
         }
 
         return true;
+    }
+
+    public void verifyEmailAndTel(Staff staff) {
+        String email = staff.getEmail();
+        String tel = staff.getTel();
+        String emailPattern = "^\\w[-\\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\\.)+[A-Za-z]{2,14}$";
+        String telPattern = "0?(13|14|15|17|18|19)[0-9]{9}";
+        if (StringUtils.hasText(email) && !Pattern.matches(emailPattern, email)) {
+            throw new DataValidationFailedException();
+        }
+        if (StringUtils.hasText(tel) && !Pattern.matches(telPattern, tel)) {
+            throw new DataValidationFailedException();
+        }
     }
 }
