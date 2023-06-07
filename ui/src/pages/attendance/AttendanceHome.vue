@@ -130,6 +130,7 @@
         width="25% "
         :close-on-click-modal="false"
         :show-close="false"
+        style="min-width: 320px"
     >
         <edit-attendance
             :users="users"
@@ -144,6 +145,7 @@
         width="25% "
         :close-on-click-modal="false"
         :show-close="false"
+        style="min-width: 320px"
     >
         <edit-attendance
             :users="users"

@@ -73,6 +73,7 @@
             </template>
         </el-table-column>
     </el-table>
+
     <el-dialog
         v-model="dialogFormVisible"
         title="考勤信息"
@@ -80,18 +81,7 @@
         :close-on-click-modal="false"
         :show-close="false"
     >
-        <el-form ref="ruleForm" :model="form" :label-width="formLabelWidth">
-            <el-form-item label="考勤时间" v-model="attTime" prop="attTime">
-                <el-date-picker v-model="nowTime" type="datetime" disabled style="width: 200px" />
-            </el-form-item>
-        </el-form>
-
-        <template #footer>
-            <span class="dialog-footer">
-                <el-button type="primary" @click="submitForm()">确认</el-button>
-                <el-button @click="cancel">取消</el-button>
-            </span>
-        </template>
+        <edit-one-attendance @setDialogVisible="setDialogVisible"></edit-one-attendance>
     </el-dialog>
 </template>
 
@@ -113,11 +103,7 @@ export default {
             attTime: [],
             attTimeB: [],
             status: '',
-            pageNum: 1,
-            pageSize: 10,
-            total: 0,
             nowTime: new Date(),
-            formLabelWidth: '80px',
             dataLoading: true,
             value1: '',
             form: {
@@ -151,6 +137,10 @@ export default {
             const ss = _.padStart(dateParse.getUTCSeconds().toString(), 2, '0')
             newFormat = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
             return newFormat
+        },
+        setDialogVisible(dialogVisible) {
+            this.dialogFormVisible = dialogVisible
+            this.getAttendancesByUserId()
         },
 
         // 重置参数
@@ -215,44 +205,9 @@ export default {
         handleAdd() {
             this.dialogFormVisible = true
             // this.getNowDate()
-            this.nowTime = new Date()
-            this.form.attTime = this.nowTime
             this.$nextTick(() => {
                 this.form.userId = this.userId + ''
             })
-        },
-        doSave() {
-            request
-                .post('/attendance/saveOneAttendance', this.form)
-                .then((response) => {
-                    this.dialogFormVisible = false
-                    this.getAttendancesByUserId()
-                })
-                .catch((reportError) => {})
-        },
-
-        submitForm() {
-            this.$refs.ruleForm.validate((valid) => {
-                if (valid) {
-                    this.doSave()
-                    ElMessage({
-                        message: '操作成功',
-                        type: 'success'
-                    })
-                } else {
-                    ElMessage.error('操作失败')
-                    return false
-                }
-            })
-        },
-        // 点击取消
-        cancel() {
-            this.dialogFormVisible = false
-            ElMessage({
-                message: '取消操作',
-                type: 'warning'
-            })
-            this.getAttendancesByUserId()
         }
     },
 
