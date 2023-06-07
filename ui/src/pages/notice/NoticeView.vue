@@ -1,6 +1,6 @@
 <template>
     <el-container>
-        <el-header>
+        <el-header style="width: 100%">
             <notice-view-head @selectSelfByCond="getLoading" />
         </el-header>
         <el-main>

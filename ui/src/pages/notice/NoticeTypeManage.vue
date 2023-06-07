@@ -1,6 +1,9 @@
 <template>
     <el-container>
-        <el-header>
+        <el-header style="width: 100%">
+            <notice-type-head @selectTypeByCond="getLoadData"></notice-type-head>
+        </el-header>
+        <el-main>
             <el-button type="primary" :size="'large'" @click="handleOpenAddDialog"
                 ><el-icon :size="SIZE_ICON_MD()" style="color: white; margin-right: 3px">
                     <icon-pinnacle-add /> </el-icon
@@ -23,6 +26,7 @@
                 :close-on-click-modal="false"
                 v-if="hackReset"
                 :before-close="closeForm"
+                style="min-width: 320px; max-width: 700px"
             >
                 <template #header>
                     <h2 style="color: red">添加公告类型</h2>
@@ -38,8 +42,6 @@
                     </span>
                 </template>
             </el-dialog>
-        </el-header>
-        <el-main>
             <notice-type-table @deleteTypeById="deleteTypeById" />
         </el-main>
     </el-container>
@@ -68,7 +70,8 @@ export default {
             'addTypeData',
             'currentPage',
             'pageSize',
-            'multiDeleteSelection'
+            'multiDeleteSelection',
+            'searchType'
         ])
     },
     data() {
@@ -80,7 +83,12 @@ export default {
         },
         getLoadData() {
             noticeTypeStore.dataLoading = true
-            noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
+            noticeTypeStore.selectNoticeType(
+                this.currentPage,
+                this.pageSize,
+                this.searchType.name,
+                this.searchType.enable
+            )
         },
         handleOpenAddDialog() {
             noticeTypeStore.$patch((state) => {
@@ -122,7 +130,12 @@ export default {
                                 message: '删除成功.',
                                 type: 'success'
                             })
-                            noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
+                            noticeTypeStore.selectNoticeType(
+                                this.currentPage,
+                                this.pageSize,
+                                '',
+                                -1
+                            )
                         } else if (response.data.code === DATABASE_DELETE_ERROR) {
                             ElMessage({
                                 message: response.data.msg,
@@ -151,7 +164,12 @@ export default {
                                     message: '删除成功.',
                                     type: 'success'
                                 })
-                                noticeTypeStore.selectNoticeType(this.currentPage, this.pageSize)
+                                noticeTypeStore.selectNoticeType(
+                                    this.currentPage,
+                                    this.pageSize,
+                                    '',
+                                    -1
+                                )
                             } else if (response.data.code === DATABASE_DELETE_ERROR) {
                                 ElMessage({
                                     message: response.data.msg,
@@ -173,4 +191,12 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.el-header {
+    background-color: #fff;
+}
+.el-main {
+    padding: 0;
+    margin-top: 20px;
+}
+</style>

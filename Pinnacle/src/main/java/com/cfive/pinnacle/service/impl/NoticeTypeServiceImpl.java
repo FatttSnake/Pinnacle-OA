@@ -9,6 +9,7 @@ import com.cfive.pinnacle.service.INoticeTypeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ import java.util.List;
 public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeType> implements INoticeTypeService {
     @Autowired
     NoticeTypeMapper noticeTypeMapper;
+
     @Override
     public List<NoticeType> selectTypeList() {
         LambdaQueryWrapper<NoticeType> lqw = new LambdaQueryWrapper<>();
@@ -32,8 +34,10 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
     }
 
     @Override
-    public IPage<NoticeType> selectPageTypeList(IPage<NoticeType> page) {
+    public IPage<NoticeType> selectPageTypeList(IPage<NoticeType> page, String name, Integer enable) {
         LambdaQueryWrapper<NoticeType> lqw = new LambdaQueryWrapper<>();
+        lqw.like(null != name && name != "", NoticeType::getName, name);
+        lqw.eq(null != enable && enable != -1, NoticeType::getEnable, enable);
         lqw.orderByDesc(NoticeType::getId);
         return noticeTypeMapper.selectPage(page, lqw);
     }
@@ -48,31 +52,32 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
 
     @Override
     public Boolean updateTypeEnableById(Long typeId, Integer enable) {
-        if ((null==typeId)||(null==enable)){
+        if ((null == typeId) || (null == enable)) {
             return false;
         }
         LambdaUpdateWrapper<NoticeType> luw = new LambdaUpdateWrapper<>();
-        luw.eq(null!=typeId,NoticeType::getId, typeId).set(null!=enable,NoticeType::getEnable,enable);
-        return noticeTypeMapper.update(null, luw)>0;
+        luw.eq(null != typeId, NoticeType::getId, typeId).set(null != enable, NoticeType::getEnable, enable);
+        return noticeTypeMapper.update(null, luw) > 0;
     }
 
     @Override
     public Boolean addNoticeType(NoticeType noticeType) {
-        return noticeTypeMapper.insert(noticeType)>0;
+        return noticeTypeMapper.insert(noticeType) > 0;
     }
 
     @Override
     public Boolean updateNoticeType(NoticeType noticeType) {
-        return noticeTypeMapper.updateById(noticeType)>0;
+        return noticeTypeMapper.updateById(noticeType) > 0;
     }
 
     @Override
     public Boolean deleteNoticeTypeById(Long typeId) {
-        return noticeTypeMapper.deleteById(typeId)>0;
+        return noticeTypeMapper.deleteById(typeId) > 0;
     }
 
     @Override
+    @Transactional
     public Boolean deleteBatchByTypeIds(List<Long> typeIds) {
-        return noticeTypeMapper.deleteBatchIds(typeIds)>0;
+        return noticeTypeMapper.deleteBatchIds(typeIds) > 0;
     }
 }

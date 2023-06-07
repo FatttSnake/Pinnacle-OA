@@ -17,7 +17,7 @@ import java.util.List;
 public interface INoticeTypeService extends IService<NoticeType> {
     List<NoticeType> selectTypeList();
 
-    IPage<NoticeType> selectPageTypeList(IPage<NoticeType> page);
+    IPage<NoticeType> selectPageTypeList(IPage<NoticeType> page,String name,Integer enable);
     List<NoticeType> selectEnableTypeList();
 
     Boolean updateTypeEnableById(Long typeId, Integer enable);

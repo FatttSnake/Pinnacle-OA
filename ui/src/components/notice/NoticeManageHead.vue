@@ -1,18 +1,12 @@
 <template>
-    <el-form
-        :inline="true"
-        :model="search"
-        class="demo-form-inline"
-        label-width="auto"
-        style="min-width: 1185px"
-    >
-        <el-row :span="24">
-            <el-col :span="5">
+    <el-form :inline="true" :model="search" class="demo-form-inline">
+        <el-row :span="24" :gutter="5">
+            <el-col :xs="6" :sm="6" :md="6" :lg="5" :xl="5">
                 <el-form-item label="公告标题：" prop="title">
                     <el-input v-model="search.title" placeholder="请输入公告标题"></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span="5">
+            <el-col :xs="6" :sm="6" :md="6" :lg="5" :xl="5">
                 <el-form-item label="公告类型：" prop="type">
                     <el-select v-model="search.type" placeholder="请选择公告类型">
                         <el-option
@@ -24,7 +18,7 @@
                     </el-select>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="6" :sm="6" :md="4" :lg="8" :xl="10">
                 <el-form-item label="日期：" prop="timeRang">
                     <el-date-picker
                         v-model="timeRang"
@@ -37,13 +31,17 @@
                     </el-date-picker>
                 </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :xs="3" :sm="3" :md="4" :lg="4" :xl="2">
                 <el-form-item>
                     <el-button type="primary" @click="selectByCondition"
                         ><el-icon :size="SIZE_ICON_SM()" style="color: white; margin-right: 5px">
                             <icon-pinnacle-notice_search /> </el-icon
                         >查询</el-button
                     >
+                </el-form-item>
+            </el-col>
+            <el-col :xs="3" :sm="3" :md="4" :lg="2" :xl="2">
+                <el-form-item>
                     <el-button type="primary" @click="resetForm"
                         ><el-icon :size="SIZE_ICON_SM()" style="color: white">
                             <icon-pinnacle-reset /> </el-icon

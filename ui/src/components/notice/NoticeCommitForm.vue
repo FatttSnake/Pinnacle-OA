@@ -98,7 +98,7 @@
             <el-form-item label="公告内容" prop="content">
                 <el-input type="textarea" v-model="addData.content"></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item class="formFooter">
                 <el-button type="primary" @click="submitForm">发布</el-button>
                 <el-button type="primary" @click="closeForm">取消</el-button>
                 <el-button @click="resetForm()">重置</el-button>
@@ -176,6 +176,7 @@ export default {
                     return false
                 }
             })
+            this.resetForm()
         },
         closeForm() {
             noticeStore.$patch((state) => {
@@ -184,6 +185,7 @@ export default {
                 state.hackReset = false
                 state.editFlag = false
             })
+            this.resetForm()
         },
         resetForm() {
             this.$refs.addData.resetFields()
@@ -219,5 +221,10 @@ export default {
 
 .el-slider {
     margin-left: 20px;
+}
+.formFooter {
+    display: flex;
+    margin: 20px 0;
+    justify-content: center;
 }
 </style>

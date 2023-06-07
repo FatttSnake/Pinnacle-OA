@@ -53,7 +53,7 @@ export const useNoticeStore = defineStore('notice', {
     state: () => {
         return {
             total: 0,
-            pageSize: 5,
+            pageSize: 10,
             currentPage: 1,
             search: {
                 title: '',
@@ -216,7 +216,7 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            this.selectAllNotice(1, 5, '', '', '', '', [])
+            this.selectAllNotice(1, 10, '', '', '', '', [])
         },
         async handleUpdateNotice(updateNotice: IAddNoticeData) {
             await request.put('/notice', updateNotice).then((response) => {
@@ -234,7 +234,7 @@ export const useNoticeStore = defineStore('notice', {
                     })
                 }
             })
-            this.selectAllNotice(1, 5, '', '', '', '', [])
+            this.selectAllNotice(1, 10, '', '', '', '', [])
             this.hackReset = false
         },
         async modifyNoticeIsRead(notice: INotice) {
@@ -269,9 +269,10 @@ export const useNoticeTypeStore = defineStore('notice_type', {
     state: () => {
         return {
             total: 0,
-            pageSize: 5,
+            pageSize: 10,
             currentPage: 1,
             dataLoading: true,
+            switchLoading: false,
             dialogAddTypeVisible: false,
             dialogEditTypeVisible: false,
             hackReset: true,
@@ -294,6 +295,10 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                 id: '',
                 name: '',
                 enable: 1
+            },
+            searchType: {
+                name: '',
+                enable: -1
             }
         }
     },
@@ -303,22 +308,22 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                 this.enableNoticeTypeList = response.data.data
             })
         },
-        async selectNoticeType(currentPage: number, pageSize: number) {
-            await request.get('/notice_type/page', { currentPage, pageSize }).then((response) => {
-                if (response.data.code === DATABASE_SELECT_OK) {
-                    this.noticeTypeList = response.data.data
-                    this.total = parseInt(response.data.msg)
-                    if (this.noticeTypeList.length !== 0) {
+        selectNoticeType(currentPage: number, pageSize: number, name: string, enable: number) {
+            void request
+                .get('/notice_type/page', { currentPage, pageSize, name, enable })
+                .then((response) => {
+                    if (response.data.code === DATABASE_SELECT_OK) {
+                        this.noticeTypeList = response.data.data
+                        this.total = parseInt(response.data.msg)
                         this.dataLoading = false
+                    } else {
+                        this.dataLoading = false
+                        ElMessage({
+                            message: response.data.msg,
+                            type: 'error'
+                        })
                     }
-                } else {
-                    this.dataLoading = false
-                    ElMessage({
-                        message: response.data.msg,
-                        type: 'error'
-                    })
-                }
-            })
+                })
         },
         async updateNoticeTypeEnable(typeId: string, enable: number) {
             await request
@@ -328,11 +333,13 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                 })
                 .then((response) => {
                     if (response.data.code === DATABASE_UPDATE_OK) {
+                        this.switchLoading = false
                         ElMessage({
                             message: '修改成功.',
                             type: 'success'
                         })
                     } else if (response.data.code === DATABASE_UPDATE_ERROR) {
+                        this.switchLoading = false
                         ElMessage({
                             message: response.data.msg,
                             type: 'error'
@@ -355,7 +362,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                     })
                 }
             })
-            await this.selectNoticeType(1, 5)
+            this.selectNoticeType(1, 10, '', -1)
         },
         async handleUpdateNoticeType(updateNotice: IAddNoticeTypeData) {
             await request.put('/notice_type', updateNotice).then((response) => {
@@ -379,7 +386,7 @@ export const useNoticeTypeStore = defineStore('notice_type', {
                     })
                 }
             })
-            await this.selectNoticeType(this.currentPage, this.pageSize)
+            this.selectNoticeType(this.currentPage, this.pageSize, '', -1)
         }
     }
 })

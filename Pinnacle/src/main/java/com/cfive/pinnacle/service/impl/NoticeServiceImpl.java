@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -44,39 +45,38 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     }
 
     @Override
-    public IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime,List<Long> userIdList) {
-        LocalDateTime start=null,end=null;
-        if (startTime!=""&&endTime!=""){
-            start= LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime, List<Long> userIdList) {
+        LocalDateTime start = null, end = null;
+        if (startTime != "" && endTime != "") {
+            start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
-        return noticeMapper.selectPageNotice(page, title, type, start, end,userIdList);
+        return noticeMapper.selectPageNotice(page, title, type, start, end, userIdList);
     }
 
     @Override
+    @Transactional
     public Boolean deleteById(Long nid) {
         LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
         lqw.eq(NoticeReceive::getNoticeId, nid);
-        boolean flag = noticeReceiveMapper.delete(lqw) > 0;
-        return flag && noticeMapper.deleteById(nid) > 0;
+        noticeReceiveMapper.delete(lqw);
+        return noticeMapper.deleteById(nid) > 0;
     }
 
     @Override
+    @Transactional
     public Boolean deleteBatchByIds(List<Long> noticeIds) {
-        boolean flag = false;
         for (Long nid :
                 noticeIds) {
             LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
             lqw.eq(NoticeReceive::getNoticeId, nid);
-            flag = noticeReceiveMapper.delete(lqw) > 0;
-            if (!flag) {
-                break;
-            }
+            noticeReceiveMapper.delete(lqw);
         }
-        return flag && noticeMapper.deleteBatchIds(noticeIds) > 0;
+        return noticeMapper.deleteBatchIds(noticeIds) > 0;
     }
 
     @Override
+    @Transactional
     public Boolean updateNotice(Notice notice) {
         noticeMapper.update(null, new UpdateWrapper<Notice>().eq("id", notice.getId()).set("old", 1)); //修改原始数据
         LambdaQueryWrapper<NoticeReceive> lqw = new LambdaQueryWrapper<>();
@@ -96,8 +96,9 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     }
 
     @Override
+    @Transactional
     public Boolean addNotice(Notice notice) {
-        boolean noticeFlag, noticeRecFlag = false;
+        boolean noticeFlag;
         notice.setSenderId(WebUtil.getLoginUser().getUser().getId());
 //        notice.setSenderId(1652714496280469506L);
         noticeFlag = noticeMapper.insert(notice) > 0;
@@ -108,15 +109,12 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
                 NoticeReceive noticeReceive = new NoticeReceive();
                 noticeReceive.setNoticeId(noticeId);
                 noticeReceive.setUserId(receiveId);
-                noticeRecFlag = noticeReceiveMapper.insert(noticeReceive) > 0;
-                if (!noticeRecFlag) {
-                    break;
-                }
+                noticeReceiveMapper.insert(noticeReceive);
             }
         } else {
             noticeFlag = false;
         }
-        return noticeFlag && noticeRecFlag;
+        return noticeFlag;
     }
 
 

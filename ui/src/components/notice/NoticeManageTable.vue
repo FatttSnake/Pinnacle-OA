@@ -7,19 +7,18 @@
         border
         highlight-current-row
         @selection-change="handleSelectionChange"
-        style="font-size: 18px"
         :header-cell-style="{
             background: 'darksalmon',
             'text-align': 'center',
             color: '#fff',
-            'font-size': '20px'
+            'font-size': '16px'
         }"
         @filter-change="handleFilterChange"
     >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column type="index" label="序号" width="75" align="center">
+        <el-table-column type="selection" align="center" />
+        <el-table-column type="index" width="80" label="序号" align="center">
             <template #default="scope">
-                <el-icon :size="SIZE_ICON_SM()" :color="COLOR_TOP()" v-if="scope.row.top === 1">
+                <el-icon :size="SIZE_ICON_XS()" :color="COLOR_TOP()" v-if="scope.row.top === 1">
                     <icon-pinnacle-top />
                 </el-icon>
                 {{ (this.currentPage - 1) * this.pageSize + scope.$index + 1 }}
@@ -28,13 +27,13 @@
         <el-table-column
             prop="title"
             label="公告标题"
-            width="200"
+            min-width="160"
             show-overflow-tooltip
             align="center"
         >
-            <template #default="scope"> {{ formatterTitle(scope.row.title) }} </template>
+            <template #default="scope"> {{ formatterTitle(scope.row.title) }}</template>
         </el-table-column>
-        <el-table-column prop="noticeType.name" label="公告类别" width="160" align="center">
+        <el-table-column prop="noticeType.name" label="公告类别" width="100" align="center">
             <template #default="scope">
                 <el-tag
                     size="default"
@@ -51,12 +50,12 @@
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column prop="priority" label="优先级" width="100" align="center" />
+        <el-table-column prop="priority" label="优先级" width="80" align="center" />
         <el-table-column
             prop="createTime"
             label="创建时间"
             sortable
-            width="220"
+            width="160"
             :formatter="formatDate"
             align="center"
         />
@@ -64,7 +63,7 @@
             prop="sendTime"
             label="生效时间"
             sortable
-            width="220"
+            width="160"
             :formatter="formatDate"
             align="center"
         />
@@ -72,7 +71,7 @@
             prop="endTime"
             label="失效时间"
             sortable
-            width="220"
+            width="160"
             :formatter="formatDate"
             align="center"
         />
@@ -93,7 +92,7 @@
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="200px" align="center">
+        <el-table-column label="操作" width="200px" align="center">
             <template #default="scope">
                 <el-button size="small" color="#626aef" @click="handleShow(scope.row)"
                     >查看
@@ -115,7 +114,7 @@
             @current-change="handleCurrentChange"
             layout="total, sizes, prev, pager, next, jumper"
             background
-            :page-sizes="[5, 10, 20, 40]"
+            :page-sizes="[10, 20, 50, 100]"
             :total="total"
             v-model:current-page="currentPage"
             v-model:page-size="pageSize"
@@ -133,7 +132,7 @@
         <template #header>
             <h2 style="color: red">编辑公告</h2>
         </template>
-        <notice-commit-form />
+        <notice-commit-form ref="editForm" />
     </el-dialog>
     <!--        查看会话框-->
     <el-dialog
@@ -152,7 +151,7 @@
 <script lang="ts">
 import { mapState } from 'pinia'
 import { useNoticeStore } from '@/store/notice'
-import { COLOR_TOP, SIZE_ICON_MD, SIZE_ICON_SM } from '@/constants/Common.constants'
+import { COLOR_TOP, SIZE_ICON_MD, SIZE_ICON_XS } from '@/constants/Common.constants'
 
 const noticeStore = useNoticeStore()
 
@@ -176,8 +175,8 @@ export default {
     emits: ['handleDeleteById', 'getNoticeSender', 'filterSender'],
     props: [],
     methods: {
-        SIZE_ICON_SM() {
-            return SIZE_ICON_SM
+        SIZE_ICON_XS() {
+            return SIZE_ICON_XS
         },
         COLOR_TOP() {
             return COLOR_TOP
@@ -220,6 +219,7 @@ export default {
                 state.editFlag = false
                 state.hackReset = false
             })
+            this.$refs.editForm.$refs.addData.resetFields()
         },
         handleShow(row) {
             noticeStore.$patch((state) => {
@@ -282,6 +282,8 @@ export default {
 }
 
 .pagination {
-    margin: 30px 400px;
+    display: flex;
+    margin: 20px 0;
+    justify-content: center;
 }
 </style>
