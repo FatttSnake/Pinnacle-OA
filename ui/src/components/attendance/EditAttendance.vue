@@ -1,6 +1,6 @@
 <template>
     <el-form ref="ruleForm" :rules="rules" :model="form" :label-width="formLabelWidth">
-        <el-form-item label="用户名" prop="userId">
+        <el-form-item label="用户" prop="userId">
             <el-select
                 v-model="form.userId"
                 filterable
