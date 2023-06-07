@@ -57,18 +57,6 @@
                     :style="{ left: left + 'px', top: top + 'px' }"
                     class="contextmenu"
                 >
-                    <li v-if="rightClickNotice.top === 0" @click.stop="modifyTop(rightClickNotice)">
-                        <el-icon :size="SIZE_ICON_MD()">
-                            <icon-pinnacle-top />
-                        </el-icon>
-                        置顶
-                    </li>
-                    <li v-if="rightClickNotice.top === 1" @click.stop="modifyTop(rightClickNotice)">
-                        <el-icon :size="28">
-                            <icon-pinnacle-cancel-top />
-                        </el-icon>
-                        取消置顶
-                    </li>
                     <li
                         v-if="rightClickNotice.isRead === 0"
                         @click.stop="modifyStatus(rightClickNotice)"
@@ -196,19 +184,6 @@ export default {
         // 关闭菜单
         closeMenu() {
             this.rightClickVisible = false
-        },
-        async modifyTop(notice) {
-            await noticeStore.modifyTop(notice)
-            this.closeMenu()
-            let flag = 0
-            if (this.currentViewPage === 'All') {
-                flag = -1
-            } else if (this.currentViewPage === 'ToRead') {
-                flag = 0
-            } else if (this.currentViewPage === 'AlRead') {
-                flag = 1
-            }
-            await noticeStore.selectAllNoticeSelf(flag, '', '', '', '')
         }
     },
     mounted() {},
@@ -332,7 +307,6 @@ h4 {
     font-weight: 500;
     color: #333;
     border: 1px solid #dadadc;
-    //box-shadow: 1px 1px 1px 1px rgba(21, 21, 21, 0.3);
 }
 
 .contextmenu li {
