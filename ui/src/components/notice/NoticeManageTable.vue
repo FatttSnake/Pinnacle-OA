@@ -8,7 +8,6 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
         @row-contextmenu="openClickMenu"
-        @row-click="handleShow"
         :header-cell-style="{
             background: 'darksalmon',
             'text-align': 'center',
@@ -183,12 +182,6 @@
                 <icon-pinnacle-cancel-top />
             </el-icon>
             取消置顶
-        </li>
-        <li>
-            <el-icon :size="SIZE_ICON_SM()">
-                <icon-pinnacle-label />
-            </el-icon>
-            新建标签
         </li>
     </ul>
 </template>

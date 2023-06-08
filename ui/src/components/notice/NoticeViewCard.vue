@@ -75,12 +75,6 @@
                         </el-icon>
                         标为未读
                     </li>
-                    <li>
-                        <el-icon :size="SIZE_ICON_SM()">
-                            <icon-pinnacle-label />
-                        </el-icon>
-                        新建标签
-                    </li>
                 </ul>
             </el-timeline-item>
         </el-timeline>
