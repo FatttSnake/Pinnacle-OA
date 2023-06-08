@@ -16,5 +16,3 @@ mybatis-plus:
       logic-delete-value: id
       id-type: assign_id
   type-aliases-package: com.cfive.pinnacle.entity
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
