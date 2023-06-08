@@ -31,10 +31,13 @@ public class WorkController {
     @GetMapping
     @PreAuthorize("hasAuthority('work:manage:get')")
     public ResponseResult<List<Work>> getAll(String content) {
-        if (content != null) {
+        System.out.println(content);
+        if (content != null && content.length() != 0) {
+            System.out.println("test1");
             List<Work> workList = workService.getWorkByContent(content);
             return ResponseResult.databaseSelectSuccess(workList);
         } else {
+            System.out.println("test2");
             return ResponseResult.databaseSelectSuccess(workService.getAll());
         }
     }

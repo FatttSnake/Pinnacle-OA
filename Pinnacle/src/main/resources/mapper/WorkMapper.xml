@@ -76,14 +76,18 @@
                tuw.user_id       worker_id,
                tu.username        worker_name,
                tuw.status        status,
-               tuw.complete_time completeTime
+               tuw.complete_time completeTime,
+               first_name,
+               last_name
         from t_work w
                  left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
                  left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
                  left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
+                 left join (select * from t_staff where deleted = 0) as ts on tuw.user_id = ts.user_id
         where w.content like '%${content}%'
           and w.deleted = 0
-          and w.old = 0;
+          and w.old = 0
+        order by w.id desc;
     </select>
     <select id="getTodo" parameterType="long" resultMap="workMap">
         select w.id,
