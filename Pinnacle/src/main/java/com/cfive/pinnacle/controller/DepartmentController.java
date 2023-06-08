@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Department;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.exception.DataValidationFailedException;
 import com.cfive.pinnacle.service.IDepartmentService;
 import com.cfive.pinnacle.utils.WebUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -63,6 +65,9 @@ public class DepartmentController {
     @PostMapping
     @PreAuthorize("hasAuthority('department:admin:add')")
     public ResponseResult<?> addDepartment(@RequestBody Department department) {
+        if (Pattern.matches("[0-9-()（）]{7,18}", department.getTel())) {
+            throw new DataValidationFailedException();
+        }
         if (departmentService.save(department)) {
             return ResponseResult.databaseSaveSuccess(null);
         } else {
@@ -73,6 +78,9 @@ public class DepartmentController {
     @PutMapping
     @PreAuthorize("hasAuthority('department:admin:modify')")
     public ResponseResult<?> modifyDepartment(@RequestBody Department department) {
+        if (Pattern.matches("[0-9-()（）]{7,18}", department.getTel())) {
+            throw new DataValidationFailedException();
+        }
         if (departmentService.updateById(department)) {
             return ResponseResult.databaseUpdateSuccess(null);
         } else {
