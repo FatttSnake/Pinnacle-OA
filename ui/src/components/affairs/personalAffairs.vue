@@ -192,13 +192,6 @@ export default {
         dialogFalse() {
             this.dialogVisible = false
         }
-        // forRouter() {
-        //     setInterval(() => {
-        //         if (this.DataToRouterView !== '') {
-        //             this.tableData = this.DataToRouterView
-        //         }
-        //     }, 500)
-        // }
     },
     created() {
         this.getApproved()

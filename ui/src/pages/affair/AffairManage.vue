@@ -1,50 +1,97 @@
 <template>
-    <el-row :span="24">
-        <el-col :span="18">
-            <div class="mt-4">
-                <el-input placeholder="查询事务" class="input-with-select">
-                    <template #prepend>
-                        <el-select placeholder="查询方式">
-                            <el-option label="事务编号" value="1" />
-                            <el-option label="事务名称" value="2" />
-                            <el-option label="日期" value="3" />
-                        </el-select>
-                    </template>
-                    <template #append>
-                        <el-button>查询</el-button>
-                    </template>
-                </el-input>
-            </div>
-        </el-col>
+    <el-container>
+        <el-header>
+            <el-col :span="24">
+                <el-menu
+                    :default-active="$route.path"
+                    class="el-menu-demo"
+                    mode="horizontal"
+                    router
+                    background-color="white"
+                >
+                    <el-menu-item index="/affair/manage/toApprove"> 待审批 </el-menu-item>
+                    <el-menu-item index="/affair/manage/Approved"> 已审批 </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-header>
 
-        <el-col :span="6">
-            <el-menu
-                :default-active="$route.path"
-                class="el-menu-demo"
-                mode="horizontal"
-                router
-                background-color="white"
-            >
-                <el-menu-item index="/affair/manage/toApprove">
-                    <el-button type="warning" round>待审批</el-button>
-                </el-menu-item>
-                <el-menu-item index="/affair/manage/Approved">
-                    <el-button type="success" round>已审批</el-button>
-                </el-menu-item>
-            </el-menu>
-        </el-col>
-        <router-view></router-view>
-    </el-row>
+        <el-main>
+            <el-col :span="24">
+                <el-form :model="formData">
+                    <el-row :span="24">
+                        <el-col :span="5">
+                            <el-form-item label="事务标题:"
+                                ><el-input v-model="formData.title"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="1"></el-col>
+                        <el-col :span="4">
+                            <el-form-item label="事务类型:"
+                                ><el-select v-model="formData.typeId">
+                                    <el-option label="事假" name="type1" value="1"></el-option>
+                                    <el-option label="病假" name="type2" value="2"></el-option>
+                                    <el-option label="财务报销" name="type3" value="3"></el-option>
+                                    <el-option label="调休" name="type4" value="4"></el-option>
+                                </el-select> </el-form-item
+                        ></el-col>
+                        <el-col :span="1"></el-col>
+                        <el-col :span="4"
+                            ><el-form-item label="审批进度:">
+                                <el-select v-model="formData.status">
+                                    <el-option label="未审批" value="0"></el-option>
+                                    <el-option label="同意" value="1"></el-option>
+                                    <el-option label="驳回" value="2"></el-option>
+                                </el-select> </el-form-item
+                        ></el-col>
+                        <el-col :span="1"></el-col>
+                        <el-col :span="3">
+                            <el-button type="primary" @click="onSubmit">查询</el-button>
+                            <el-button type="primary" @click="resetForm">重置</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-col>
+            <router-view :DataToRouterView="DataToRouterView"></router-view>
+        </el-main>
+    </el-container>
 </template>
 
 <script lang="ts">
-import { COLOR_BACKGROUND } from '@/constants/Common.constants'
+import request from '@/services'
 
 export default {
     name: 'AffairManage',
+    data() {
+        return {
+            formView: true,
+            formData: {
+                title: '',
+                typeId: '',
+                status: ''
+            },
+            DataToRouterView: {}
+        }
+    },
     methods: {
-        COLOR_BACKGROUND() {
-            return COLOR_BACKGROUND
+        turnFormViewFalse() {
+            this.formView = false
+        },
+        turnFormViewTrue() {
+            this.formView = true
+        },
+        onSubmit() {
+            request
+                .get('/affair/personal_affairs_fuzzy_queries', this.formData)
+                .then((response) => {
+                    this.DataToRouterView = response.data.data
+                    console.log(response.data)
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
+        },
+        resetForm() {
+            this.$router.go()
         }
     }
 }

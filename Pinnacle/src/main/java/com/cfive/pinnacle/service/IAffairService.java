@@ -26,5 +26,7 @@ public interface IAffairService extends IService<Affair> {
     List<User> getSameDepartmentUser (long id);
     List<Affair> getFuzzyQueriesByAffairTitle(String title,Long typeId,Integer status,Long applicantId);
 
+    List<Affair> getNotApprovedByFuzzyQueries(String title,Long typeId,Integer status,Long applicantId);
+
 
 }

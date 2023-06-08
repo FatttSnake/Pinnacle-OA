@@ -1,20 +1,4 @@
 <template>
-    <el-col :span="16">
-        <div class="mt-4">
-            <el-input placeholder="查询事务" class="input-with-select">
-                <template #prepend>
-                    <el-select placeholder="查询方式">
-                        <el-option label="事务编号" value="1" />
-                        <el-option label="事务名称" value="2" />
-                        <el-option label="日期" value="3" />
-                    </el-select>
-                </template>
-                <template #append>
-                    <el-button>查询</el-button>
-                </template>
-            </el-input>
-        </div>
-    </el-col>
     <el-table :data="tableData" style="width: 100%">
         <el-table-column label="事务编号" prop="id" />
 
@@ -214,6 +198,12 @@ export default {
         this.getApproved()
         this.dialogFalse()
         this.getUser()
+    },
+    props: ['DataToRouterView'],
+    watch: {
+        DataToRouterView: function (val) {
+            this.tableData = val
+        }
     }
 }
 </script>

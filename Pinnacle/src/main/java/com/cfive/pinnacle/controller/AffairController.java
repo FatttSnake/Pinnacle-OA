@@ -72,6 +72,12 @@ public class AffairController {
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper));
     }
 
+    @GetMapping("/not_approved_FuzzyQueries")
+    @PreAuthorize("hasAuthority('affair:manage:get')")
+    public ResponseResult<List<Affair>> selectNotApprovedByFuzzyQueries(String title,Long typeId,Integer status,Long applicantId) {
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getNotApprovedByFuzzyQueries(title,typeId,status,applicantId));
+    }
+
 
     @GetMapping("/approved")
     @PreAuthorize("hasAuthority('affair:manage:get')")

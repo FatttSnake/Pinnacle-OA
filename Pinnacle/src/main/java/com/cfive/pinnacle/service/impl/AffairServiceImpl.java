@@ -44,4 +44,9 @@ public class AffairServiceImpl extends ServiceImpl<AffairMapper, Affair> impleme
         List<Affair> affairList = affairMapper.getFuzzyQueriesByAffairTitle(title,typeId,status,applicantId);
         return  affairList;
     }
+
+
+    public List<Affair> getNotApprovedByFuzzyQueries(String title, Long typeId, Integer status, Long applicantId) {
+        return null;
+    }
 }
