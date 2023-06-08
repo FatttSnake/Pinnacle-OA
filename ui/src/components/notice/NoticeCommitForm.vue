@@ -155,7 +155,7 @@ export default {
         }
     },
     methods: {
-        submitForm() {
+        async submitForm() {
             const receiveId = []
             if (this.addData.receivers.length > 0) {
                 for (let i = 0; i < this.addData.receivers.length; i++) {
@@ -163,7 +163,7 @@ export default {
                 }
             }
             this.addData.receivers = receiveId
-            this.$refs.addData.validate((valid) => {
+            await this.$refs.addData.validate((valid) => {
                 if (valid) {
                     if (noticeStore.editFlag === true) {
                         // 编辑操作
@@ -176,7 +176,7 @@ export default {
                     return false
                 }
             })
-            this.resetForm()
+            await this.resetForm()
         },
         closeForm() {
             noticeStore.$patch((state) => {
