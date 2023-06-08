@@ -80,6 +80,7 @@
         width="25%"
         :close-on-click-modal="false"
         :show-close="false"
+        style="min-width: 320px"
     >
         <edit-one-attendance @setDialogVisible="setDialogVisible"></edit-one-attendance>
     </el-dialog>
