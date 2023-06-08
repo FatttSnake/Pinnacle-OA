@@ -11,7 +11,12 @@
             </el-col>
             <el-col :span="1" />
             <el-col :span="3">
-                <el-button size="default" type="primary" @click="searchByContent">搜索</el-button>
+                <el-button
+                    size="default"
+                    type="primary"
+                    @click="searchByContent(this.searchContent.trim())"
+                    >搜索</el-button
+                >
             </el-col>
             <el-col :span="3">
                 <el-button size="default" @click="addVisible = true">添加</el-button>
@@ -112,6 +117,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash'
 import request from '@/services'
 import EditWork from '@/components/work/EditWork.vue'
 import { ElMessage } from 'element-plus'
@@ -131,7 +137,7 @@ export default {
             addVisible: false,
             editVisible: false,
             loading: true,
-            searchContent: '',
+            searchContent: null,
             workers: []
         }
     },
@@ -150,7 +156,7 @@ export default {
             request.get('/work').then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
-                    this.tableData = response.data
+                    this.tableData = _.cloneDeep(response.data)
                     if (this.tableData) {
                         this.loading = false
                     }
@@ -219,11 +225,12 @@ export default {
         formatDate(time) {
             return new Date(time).toLocaleString()
         },
-        searchByContent() {
-            request.get('/work', { content: this.searchContent.trim() }).then((res) => {
+        searchByContent(content) {
+            request.get('/work', { content }).then((res) => {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
-                    this.tableData = response.data
+                    this.tableData = _.cloneDeep(response.data)
+                    console.log(this.tableData)
                     if (this.tableData) {
                         this.loading = false
                     }
