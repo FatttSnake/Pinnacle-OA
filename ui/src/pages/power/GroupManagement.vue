@@ -237,13 +237,12 @@ export default {
                     if (response.code === DATABASE_SELECT_OK) {
                         const groups = response.data.records
                         this.totalCount = response.data.total
-                        for (const group of groups) {
+                        groups.forEach((group) => {
                             group.customColumn_1 = []
-                            const roles = group.roles
-                            for (const role of roles) {
+                            group.roles.forEach((role) => {
                                 group.customColumn_1.push(role.name)
-                            }
-                        }
+                            })
+                        })
                         this.groupTable = groups
                         this.tableLoading = false
                     } else {
@@ -290,9 +289,9 @@ export default {
             this.groupForm.inputGroupName = row.name
             this.editGroupId = row.id
             this.groupForm.selectedRoles = []
-            for (const role of row.roles) {
+            row.roles.forEach((role) => {
                 this.groupForm.selectedRoles.push(role.id)
-            }
+            })
             this.groupForm.enable = row.enable
             this.isAddNew = false
             this.dialogVisible = true
@@ -333,12 +332,11 @@ export default {
                         roles: [],
                         enable: this.groupForm.enable
                     }
-                    for (const roleId of this.groupForm.selectedRoles) {
-                        const role = {
+                    this.groupForm.selectedRoles.forEach((roleId) => {
+                        groupObject.roles.push({
                             id: roleId
-                        }
-                        groupObject.roles.push(role)
-                    }
+                        })
+                    })
                     if (this.isAddNew) {
                         request.post('/group', groupObject).then((res) => {
                             const response = res.data
