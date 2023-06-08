@@ -51,7 +51,7 @@
             <el-form-item label="性别" class="fill-with">
                 <el-select v-model="selectedGender" class="fill-with">
                     <el-option label="全部" :value="-1" />
-                    <el-option label="未知" :value="0" />
+                    <el-option label="保密" :value="0" />
                     <el-option label="男" :value="1" />
                     <el-option label="女" :value="2" />
                 </el-select>
@@ -156,7 +156,7 @@
                     </el-form-item>
                     <el-form-item label="性别" prop="selectedGender">
                         <el-select v-model="userForm.selectedGender">
-                            <el-option label="未知" :value="0" />
+                            <el-option label="保密" :value="0" />
                             <el-option label="男" :value="1" />
                             <el-option label="女" :value="2" />
                         </el-select>
@@ -315,7 +315,7 @@ export default {
             }
             switch (row.staff.gender) {
                 case 0:
-                    return '未知'
+                    return '保密'
                 case 1:
                     return '男'
                 case 2:

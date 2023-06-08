@@ -145,6 +145,13 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 export default {
     name: 'DepartmentManagement',
     data() {
+        const checkTel = (rule, value, callback) => {
+            if (value && !/[0-9-()（）]{7,18}/.test(value)) {
+                return callback(new Error('非法电话号码'))
+            } else {
+                return callback()
+            }
+        }
         return {
             dialogTitle: '',
             dialogVisible: false,
@@ -167,6 +174,12 @@ export default {
                     {
                         required: true,
                         message: '名称为必填项'
+                    }
+                ],
+                inputTel: [
+                    {
+                        validator: checkTel,
+                        message: '非法电话号码'
                     }
                 ]
             },
