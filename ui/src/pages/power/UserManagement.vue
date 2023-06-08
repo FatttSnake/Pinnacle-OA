@@ -160,6 +160,7 @@
                         :disabled="disableSelectRoles"
                         v-model="userForm.selectedRoles"
                         multiple
+                        filterable
                         style="width: 100%"
                     >
                         <el-option
@@ -175,6 +176,7 @@
                         :disabled="disableSelectGroups"
                         v-model="userForm.selectedGroups"
                         multiple
+                        filterable
                         style="width: 100%"
                     >
                         <el-option
