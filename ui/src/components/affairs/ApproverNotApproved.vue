@@ -1,6 +1,6 @@
 <template>
     <el-table :data="tableData" style="width: 100%">
-        <el-table-column label="事务编号" prop="id" />
+        <!--        <el-table-column label="事务编号" prop="id" />-->
 
         <el-table-column label="事务名称" prop="title" />
 
@@ -80,20 +80,6 @@
             </el-col>
         </el-row>
     </el-dialog>
-
-    <el-divider>
-        <div class="block">
-            <el-pagination
-                style="color: #888888"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :page-size="100"
-                layout="prev, pager, next, jumper"
-                :total="1000"
-            >
-            </el-pagination>
-        </div>
-    </el-divider>
 </template>
 
 <script lang="ts">
@@ -150,13 +136,6 @@ export default {
                     console.log(reportError)
                 }) // 审批驳回
         },
-
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`)
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`)
-        }, // 标签页
         getApproved() {
             request
                 .get('/affair/not_approved')
@@ -180,7 +159,6 @@ export default {
         } // 关闭弹出框
     },
     created() {
-        console.log('not approved created')
         this.getApproved()
         this.dialogFalse()
     }, // 获取事务信息

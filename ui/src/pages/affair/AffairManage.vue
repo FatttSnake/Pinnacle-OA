@@ -27,7 +27,7 @@
                         <el-col :span="1"></el-col>
                         <el-col :span="4">
                             <el-form-item label="事务类型:"
-                                ><el-select v-model="formData.typeId">
+                                ><el-select v-model="formData.typeId" clearable>
                                     <el-option label="事假" name="type1" value="1"></el-option>
                                     <el-option label="病假" name="type2" value="2"></el-option>
                                     <el-option label="财务报销" name="type3" value="3"></el-option>
@@ -35,14 +35,19 @@
                                 </el-select> </el-form-item
                         ></el-col>
                         <el-col :span="1"></el-col>
-                        <el-col :span="4"
-                            ><el-form-item label="审批进度:">
-                                <el-select v-model="formData.status">
-                                    <el-option label="未审批" value="0"></el-option>
-                                    <el-option label="同意" value="1"></el-option>
-                                    <el-option label="驳回" value="2"></el-option>
-                                </el-select> </el-form-item
-                        ></el-col>
+                        <!--                        <el-col :xs="6" :sm="6" :md="5" :lg="8" :xl="10">-->
+                        <!--                            <el-form-item label="日期：" prop="timeRang">-->
+                        <!--                                <el-date-picker-->
+                        <!--                                    v-model="forTime"-->
+                        <!--                                    type="datetimerange"-->
+                        <!--                                    range-separator="至"-->
+                        <!--                                    start-placeholder="开始日期"-->
+                        <!--                                    end-placeholder="结束日期"-->
+                        <!--                                    style="width: auto"-->
+                        <!--                                >-->
+                        <!--                                </el-date-picker>-->
+                        <!--                            </el-form-item>-->
+                        <!--                        </el-col>-->
                         <el-col :span="1"></el-col>
                         <el-col :span="3">
                             <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -67,7 +72,9 @@ export default {
             formData: {
                 title: '',
                 typeId: '',
-                status: ''
+                status: '',
+                startTime: '',
+                endTime: ''
             },
             DataToRouterView: {}
         }
@@ -81,7 +88,7 @@ export default {
         },
         onSubmit() {
             request
-                .get('/affair/personal_affairs_fuzzy_queries', this.formData)
+                .get('/affair/not_approved_FuzzyQueries', this.formData)
                 .then((response) => {
                     this.DataToRouterView = response.data.data
                     console.log(response.data)

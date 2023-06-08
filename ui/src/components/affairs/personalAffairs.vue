@@ -1,6 +1,6 @@
 <template>
     <el-table :data="tableData" style="width: 100%">
-        <el-table-column label="事务编号" prop="id" />
+        <!--        <el-table-column label="事务编号" prop="id" />-->
 
         <el-table-column label="事务名称" prop="title" />
 
@@ -18,16 +18,16 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="审批者" prop="applicantId">
+        <el-table-column label="审批者" prop="inspectorId">
             <template #default="scope">
                 {{
-                    scope.row.applicantId === 1
+                    scope.row.inspectorId === 1
                         ? 'ggb'
-                        : scope.row.applicantId === 1652714496280469506
+                        : scope.row.inspectorId === 1652714496280469506
                         ? 'cyb'
-                        : scope.row.applicantId === 1654151146072145921
+                        : scope.row.inspectorId === 1654151146072145921
                         ? 'syf'
-                        : scope.row.applicantId === 1654151877520973826
+                        : scope.row.inspectorId === 1654151877520973826
                         ? 'gzw'
                         : 'yrm'
                 }}
@@ -86,18 +86,6 @@
             </el-col>
         </el-row>
     </el-dialog>
-
-    <el-divider>
-        <div class="block">
-            <el-pagination
-                style="color: #888888"
-                :page-size="100"
-                layout="prev, pager, next, jumper"
-                :total="1000"
-            >
-            </el-pagination>
-        </div>
-    </el-divider>
 </template>
 
 <script lang="ts">

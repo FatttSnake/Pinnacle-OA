@@ -31,7 +31,7 @@
                         <el-col :span="1"></el-col>
                         <el-col :span="4">
                             <el-form-item label="事务类型:"
-                                ><el-select v-model="formData.typeId">
+                                ><el-select v-model="formData.typeId" clearable>
                                     <el-option label="事假" name="type1" value="1"></el-option>
                                     <el-option label="病假" name="type2" value="2"></el-option>
                                     <el-option label="财务报销" name="type3" value="3"></el-option>
@@ -41,7 +41,7 @@
                         <el-col :span="1"></el-col>
                         <el-col :span="4"
                             ><el-form-item label="审批进度:">
-                                <el-select v-model="formData.status">
+                                <el-select v-model="formData.status" clearable>
                                     <el-option label="未审批" value="0"></el-option>
                                     <el-option label="同意" value="1"></el-option>
                                     <el-option label="驳回" value="2"></el-option>
