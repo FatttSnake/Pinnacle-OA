@@ -244,20 +244,17 @@ export default {
                     if (response.code === DATABASE_SELECT_OK) {
                         const roles = response.data.records
                         this.totalCount = response.data.total
-                        for (const role of roles) {
+                        roles.forEach((role) => {
                             role.customColumn_1 = []
-                            const menus = role.menus
-                            const elements = role.elements
-                            const operations = role.operations
-                            for (const operation of operations) {
-                                const element = _.find(elements, { id: operation.elementId })
+                            role.operations.forEach((operation) => {
+                                const element = _.find(role.elements, { id: operation.elementId })
                                 if (element.operations === undefined) {
                                     element.operations = []
                                 }
                                 element.operations.push(operation)
-                            }
-                            for (const element of elements) {
-                                const menu = _.find(menus, { id: element.menuId })
+                            })
+                            role.elements.forEach((element) => {
+                                const menu = _.find(role.menus, { id: element.menuId })
                                 if (menu.elements === undefined) {
                                     menu.elements = []
                                 }
@@ -270,8 +267,8 @@ export default {
                                 role.customColumn_1.push(
                                     `${menu.name}/${element.name}/${_.join(operas, ';')}`
                                 )
-                            }
-                        }
+                            })
+                        })
                         this.roleTable = roles
                         this.tableLoading = false
                     } else {
@@ -301,28 +298,25 @@ export default {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
                     const data = response.data
-                    const menuList = data.menuList
-                    const elementList = data.elementList
-                    const operationList = data.operationList
-                    for (const operation of operationList) {
-                        const element = _.find(elementList, { id: operation.elementId })
+                    data.operationList.forEach((operation) => {
+                        const element = _.find(data.elementList, { id: operation.elementId })
                         if (element.children === undefined) {
                             element.children = []
                         }
                         element.children.push(operation)
-                    }
-                    for (const element of elementList) {
-                        const menu = _.find(menuList, { id: element.menuId })
+                    })
+                    data.elementList.forEach((element) => {
+                        const menu = _.find(data.menuList, { id: element.menuId })
                         if (menu.children === undefined) {
                             menu.children = []
                         }
                         menu.children.push(element)
-                    }
-                    for (const menu of menuList) {
+                    })
+                    data.menuList.forEach((menu) => {
                         if (menu.children.length === 1) {
                             menu.children = menu.children[0].children
                         }
-                    }
+                    })
                     this.powerOptions = data.menuList
                     this.powerTree = data.menuList
                     this.dialogLoading = false
@@ -353,10 +347,10 @@ export default {
             this.roleForm.selectedPower.clear()
             this.roleForm.enable = row.enable
             this.defaultSelectedPower = []
-            for (const operation of row.operations) {
+            row.operations.forEach((operation) => {
                 this.defaultSelectedPower.push(operation.powerId)
                 this.roleForm.selectedPower.add(operation.powerId)
-            }
+            })
             this.isAddNew = false
             this.dialogVisible = true
         },
@@ -396,12 +390,11 @@ export default {
                         powers: [],
                         enable: this.roleForm.enable
                     }
-                    for (const powerId of this.roleForm.selectedPower) {
-                        const power = {
+                    this.roleForm.selectedPower.forEach((powerId) => {
+                        roleObject.powers.push({
                             id: powerId
-                        }
-                        roleObject.powers.push(power)
-                    }
+                        })
+                    })
                     if (this.isAddNew) {
                         request.post('/role', roleObject).then((res) => {
                             const response = res.data

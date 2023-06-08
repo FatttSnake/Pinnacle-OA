@@ -313,19 +313,17 @@ export default {
                     if (response.code === DATABASE_SELECT_OK) {
                         const users = response.data.records
                         this.totalCount = response.data.total
-                        for (const user of users) {
+                        users.forEach((user) => {
                             user.name = user.username
                             user.customColumn_1 = []
                             user.customColumn_2 = []
-                            const roles = user.roles
-                            for (const role of roles) {
+                            user.roles.forEach((role) => {
                                 user.customColumn_1.push(role.name)
-                            }
-                            const groups = user.groups
-                            for (const group of groups) {
+                            })
+                            user.groups.forEach((group) => {
                                 user.customColumn_2.push(group.name)
-                            }
-                        }
+                            })
+                        })
                         this.userTable = users
                         this.tableLoading = false
                     } else {
@@ -377,20 +375,20 @@ export default {
             this.editUserId = row.id
             this.userForm.selectedRoles = []
             this.userForm.selectedGroups = []
-            for (const role of row.roles) {
+            row.roles.forEach((role) => {
                 if (role.id === '0') {
                     this.userForm.selectedRoles.push(role.name)
                 } else {
                     this.userForm.selectedRoles.push(role.id)
                 }
-            }
-            for (const group of row.groups) {
+            })
+            row.groups.forEach((group) => {
                 if (group.id === '0') {
                     this.userForm.selectedGroups.push(group.name)
                 } else {
                     this.userForm.selectedGroups.push(group.id)
                 }
-            }
+            })
             this.userForm.enable = row.enable
             this.isAddNew = false
             this.dialogVisible = true
@@ -455,18 +453,16 @@ export default {
                         enable: this.userForm.enable
                     }
                     if (this.editUserId !== '1') {
-                        for (const roleId of this.userForm.selectedRoles) {
-                            const role = {
+                        this.userForm.selectedRoles.forEach((roleId) => {
+                            userObject.roles.push({
                                 id: roleId
-                            }
-                            userObject.roles.push(role)
-                        }
-                        for (const groupId of this.userForm.selectedGroups) {
-                            const group = {
+                            })
+                        })
+                        this.userForm.selectedGroups.forEach((groupId) => {
+                            userObject.groups.push({
                                 id: groupId
-                            }
-                            userObject.groups.push(group)
-                        }
+                            })
+                        })
                     }
 
                     if (this.isAddNew) {
