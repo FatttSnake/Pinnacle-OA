@@ -13,7 +13,7 @@
         </template>
         <el-calendar ref="calendar" />
     </el-card>
-    <el-dialog v-model="attendanceVisible" title="打卡" style="width: 25%">
+    <el-dialog v-model="attendanceVisible" title="打卡" style="width: 25%; min-width: 320px">
         <edit-one-attendance @setDialogVisible="closeAttendance" />
     </el-dialog>
 </template>
