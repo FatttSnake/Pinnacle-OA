@@ -58,9 +58,8 @@ public class AffairController {
     @GetMapping("/personal_affairs_fuzzy_queries")
     @PreAuthorize("hasAuthority('affair:self:get')")
     public ResponseResult getPersonalAffairsByTitle(String title,Long typeId,Integer status) {
-        System.out.println(title);
         Long applicantId =WebUtil.getLoginUser().getUser().getId();
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getFuzzyQueriesByAffairTitle(title,typeId,status,applicantId));
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getFuzzyQueriesByAffairTitle(title.trim(),typeId,status,applicantId));
     }
 
     @GetMapping("/not_approved")
@@ -74,8 +73,8 @@ public class AffairController {
 
     @GetMapping("/not_approved_FuzzyQueries")
     @PreAuthorize("hasAuthority('affair:manage:get')")
-    public ResponseResult<List<Affair>> selectNotApprovedByFuzzyQueries(String title,Long typeId,Integer status,Long applicantId) {
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getNotApprovedByFuzzyQueries(title,typeId,status,applicantId));
+    public ResponseResult<List<Affair>> selectNotApprovedByFuzzyQueries(String title,Long typeId,Integer status,Long applicantId,LocalDateTime startTime,LocalDateTime endTime ) {
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getNotApprovedByFuzzyQueries(title,typeId,status,applicantId,startTime,endTime));
     }
 
 

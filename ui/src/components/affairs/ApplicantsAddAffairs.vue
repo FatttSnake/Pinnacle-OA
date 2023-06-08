@@ -2,7 +2,11 @@
     <el-form :model="form" label-width="120px">
         <el-form-item label="事务标题:">
             <el-col :span="4">
-                <el-input v-model="form.title" placeholder="请输入事务标题" class="longInput" />
+                <el-input
+                    v-model.trim="form.title"
+                    placeholder="请输入事务标题"
+                    class="longInput"
+                />
             </el-col>
         </el-form-item>
 
@@ -78,7 +82,13 @@
         </el-form-item>
 
         <el-form-item label="具体内容:">
-            <el-input v-model="form.content" type="textarea" class="textarea" rows="15" cols="20" />
+            <el-input
+                v-model.trim="form.content"
+                type="textarea"
+                class="textarea"
+                rows="15"
+                cols="20"
+            />
         </el-form-item>
         <el-form-item>
             <el-col :span="6">
@@ -122,7 +132,8 @@ export default {
                 department_id: ''
             },
             sameDepartmentUsers: [],
-            grant: true
+            grant: true,
+            formView: false
         }
     },
     methods: {
@@ -148,7 +159,7 @@ export default {
                         console.log(reportError)
                     })
                 this.getPersonalAffair()
-                this.$router.go()
+                this.$router.go(-1)
             } else {
                 if (_.isEmpty(form.title)) {
                     ElMessage({

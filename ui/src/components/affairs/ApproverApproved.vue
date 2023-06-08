@@ -1,6 +1,6 @@
 <template>
     <el-table :data="tableData" style="width: 100%">
-        <el-table-column label="事务编号" prop="id" />
+        <!--        <el-table-column label="事务编号" prop="id" />-->
 
         <el-table-column label="事务名称" prop="title" />
 
@@ -19,7 +19,21 @@
         </el-table-column>
 
         <el-table-column label="申请者" prop="applicantId">
-            <el-text v-for="(user, index) in users" :key="index" :content="user.username" />
+            <template #default="scope">
+                {{
+                    scope.row.applicantId === 1652714496280469506
+                        ? 'cyb'
+                        : scope.row.applicantId === 1654151146072145921
+                        ? 'syf'
+                        : scope.row.applicantId === 1654151877520973826
+                        ? 'gzw'
+                        : scope.row.applicantId === 1654151930402746370
+                        ? 'yrm'
+                        : scope.row.applicantId === 1
+                        ? 'admin'
+                        : 'ggb'
+                }}
+            </template>
         </el-table-column>
         <el-table-column label="提交日期" prop="createTime">
             <template #default="scope">
@@ -74,20 +88,6 @@
             </el-col>
         </el-row>
     </el-dialog>
-
-    <el-divider>
-        <div class="block">
-            <el-pagination
-                style="color: #888888"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :page-size="100"
-                layout="prev, pager, next, jumper"
-                :total="1000"
-            >
-            </el-pagination>
-        </div>
-    </el-divider>
 </template>
 
 <script lang="ts">
@@ -165,12 +165,6 @@ export default {
                     console.log(reportError)
                 }) // 数据库中获取用户
         },
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`)
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`)
-        },
         getApproved() {
             request
                 .get('/affair/approved')
@@ -194,7 +188,6 @@ export default {
         }
     },
     created() {
-        console.log('approved created')
         this.getApproved()
         this.dialogFalse()
         this.getUser()
@@ -202,6 +195,7 @@ export default {
     props: ['DataToRouterView'],
     watch: {
         DataToRouterView: function (val) {
+            this.getUser()
             this.tableData = val
         }
     }
