@@ -197,8 +197,22 @@ export default {
         this.getApproved()
         this.dialogFalse()
         this.getGrantUser()
+        // this.forRouter()
         // this.getInspectorName()
+    },
+    props: ['DataToRouterView'],
+    watch: {
+        DataToRouterView: function (val) {
+            this.tableData = val
+        }
     }
 }
 </script>
-<style></style>
+<style>
+.el-header {
+    background-color: #fff;
+}
+.el-form {
+    margin-top: 1px;
+}
+</style>

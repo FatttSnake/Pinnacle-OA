@@ -198,6 +198,12 @@ export default {
         this.getApproved()
         this.dialogFalse()
         this.getUser()
+    },
+    props: ['DataToRouterView'],
+    watch: {
+        DataToRouterView: function (val) {
+            this.tableData = val
+        }
     }
 }
 </script>

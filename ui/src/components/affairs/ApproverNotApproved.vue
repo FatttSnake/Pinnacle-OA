@@ -183,7 +183,13 @@ export default {
         console.log('not approved created')
         this.getApproved()
         this.dialogFalse()
-    } // 获取事务信息
+    }, // 获取事务信息
+    props: ['DataToRouterView'],
+    watch: {
+        DataToRouterView: function (val) {
+            this.tableData = val
+        }
+    }
 }
 </script>
 <style></style>
