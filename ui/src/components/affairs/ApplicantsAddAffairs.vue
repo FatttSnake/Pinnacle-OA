@@ -1,6 +1,6 @@
 <template>
-    <el-form :model="form" label-width="120px">
-        <el-form-item label="事务标题:">
+    <el-form :model="form" :rules="rules" ref="formRules" label-width="120px">
+        <el-form-item label="事务标题:" prop="title">
             <el-col :span="4">
                 <el-input
                     v-model.trim="form.title"
@@ -10,7 +10,7 @@
             </el-col>
         </el-form-item>
 
-        <el-form-item label="申请者:" v-if="grant">
+        <el-form-item label="申请者:" v-if="grant" prop="applicantId">
             <el-col :span="4">
                 <el-input
                     v-model="form.applicantId"
@@ -21,7 +21,7 @@
             </el-col>
         </el-form-item>
 
-        <el-form-item label="申请者:" v-if="!grant">
+        <el-form-item label="申请者:" v-if="!grant" prop="applicantId">
             <el-col :span="4">
                 <el-select
                     v-model="form.applicantId"
@@ -40,7 +40,7 @@
             </el-col>
         </el-form-item>
 
-        <el-form-item label="审批者:">
+        <el-form-item label="审批者:" prop="inspectorId">
             <el-col :span="4">
                 <el-select
                     v-model="form.inspectorId"
@@ -59,7 +59,7 @@
             </el-col>
         </el-form-item>
 
-        <el-form-item label="事务类型:">
+        <el-form-item label="事务类型:" prop="typeId">
             <el-col :span="8">
                 <el-radio-group v-model="form.typeId">
                     <el-radio label="1" name="type1">事假</el-radio>
@@ -70,7 +70,7 @@
             </el-col>
         </el-form-item>
 
-        <el-form-item v-model="form.createTime" label="创建时间:">
+        <el-form-item v-model="form.createTime" label="创建时间:" prop="createTime">
             <el-col :span="5">
                 <el-date-picker
                     v-model="form.createTime"
@@ -81,7 +81,7 @@
             </el-col>
         </el-form-item>
 
-        <el-form-item label="具体内容:">
+        <el-form-item label="具体内容:" prop="content">
             <el-input
                 v-model.trim="form.content"
                 type="textarea"
@@ -103,7 +103,6 @@
 import 'element-plus/theme-chalk/index.css'
 import request from '@/services/index.js'
 import _ from 'lodash'
-import { ElMessage } from 'element-plus'
 
 export default {
     data() {
@@ -131,6 +130,38 @@ export default {
                 username: '',
                 department_id: ''
             },
+            rules: {
+                title: [
+                    {
+                        required: true,
+                        message: '错误！事务标题不能为空！'
+                    }
+                ],
+                content: [
+                    {
+                        required: true,
+                        message: '错误！事务内容不能为空！'
+                    }
+                ],
+                typeId: [
+                    {
+                        required: true,
+                        message: '错误！请选择事务类型!'
+                    }
+                ],
+                applicantId: [
+                    {
+                        required: true,
+                        message: '错误！请输入申请者id!'
+                    }
+                ],
+                inspectorId: [
+                    {
+                        required: true,
+                        message: '错误！请选择审批者!'
+                    }
+                ]
+            },
             sameDepartmentUsers: [],
             grant: true,
             formView: false
@@ -140,58 +171,25 @@ export default {
         onSubmit: function (form) {
             this.form.applicantId = this.currentUser.id
             console.log(form)
-            if (
-                !_.isEmpty(form.title) &&
-                !_.isEmpty(form.content) &&
-                !_.isEmpty(form.typeId) &&
-                !_.isEmpty(form.applicantId) &&
-                !_.isEmpty(form.inspectorId)
-            ) {
-                request
-                    .post('/affair/add', form)
-                    .then((response) => {
-                        console.log(response.data)
-                        this.getPersonalAffair()
-                        this.resetForm()
-                    })
-                    .catch((reportError) => {
-                        this.resetForm()
-                        console.log(reportError)
-                    })
-                this.getPersonalAffair()
-                this.$router.go(-1)
-            } else {
-                if (_.isEmpty(form.title)) {
-                    ElMessage({
-                        message: '错误！事务标题不能为空！',
-                        type: 'error'
-                    })
+            this.$refs.formRules.validate((value) => {
+                if (value) {
+                    request
+                        .post('/affair/add', form)
+                        .then((response) => {
+                            console.log(response.data)
+                            this.getPersonalAffair()
+                            this.resetForm()
+                        })
+                        .catch((reportError) => {
+                            this.resetForm()
+                            console.log(reportError)
+                        })
+                    this.getPersonalAffair()
+                    this.$router.go(-1)
+                } else {
+                    console.log('fault!')
                 }
-                if (_.isEmpty(form.content)) {
-                    ElMessage({
-                        message: '错误！事务内容不能为空!',
-                        type: 'error'
-                    })
-                }
-                if (_.isEmpty(form.typeId)) {
-                    ElMessage({
-                        message: '错误！请选择事务类型!',
-                        type: 'error'
-                    })
-                }
-                if (_.isEmpty(form.applicantId)) {
-                    ElMessage({
-                        message: '错误！请输入申请者id!',
-                        type: 'error'
-                    })
-                }
-                if (_.isEmpty(form.inspectorId)) {
-                    ElMessage({
-                        message: '错误！请选择审批者!',
-                        type: 'error'
-                    })
-                }
-            }
+            })
         }, // 表单提交及验证
         resetForm() {
             this.$nextTick(() => {
