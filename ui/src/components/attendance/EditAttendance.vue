@@ -1,10 +1,11 @@
 <template>
     <el-form ref="ruleForm" :rules="rules" :model="form" :label-width="formLabelWidth">
-        <el-form-item label="用户" prop="userId">
+        <el-form-item label="用户" prop="userId" v-show="isShow">
             <el-select
                 v-model="form.userId"
                 filterable
                 :disabled="isDisabled"
+                v-show="isShow"
                 :reserve-keyword="false"
                 placeholder="选择相对应的工作人员"
             >
@@ -48,7 +49,8 @@ export default {
     props: {
         users: {},
         formData: {},
-        isDisabled: Boolean
+        isDisabled: Boolean,
+        isShow: Boolean
     },
     data() {
         return {
@@ -63,8 +65,7 @@ export default {
                 status: [{ required: true, message: '请选择考勤状态', trigger: 'change' }],
                 attTime: [{ required: true, message: '请选择考勤时间', trigger: 'change' }]
             },
-            formLabelWidth: '80px',
-            isdisabled: false
+            formLabelWidth: '80px'
         }
     },
     methods: {

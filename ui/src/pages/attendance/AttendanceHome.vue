@@ -26,9 +26,9 @@
             </el-button>
             <el-button type="success" @click="handleAdd()">
                 <el-icon :size="SIZE_ICON_SM()" style="vertical-align: center">
-                    <icon-pinnacle-click />
+                    <icon-pinnacle-plus />
                 </el-icon>
-                <span style="vertical-align: center">打卡</span>
+                <span style="vertical-align: center">添加</span>
             </el-button>
             <el-popconfirm
                 title="你确定要批量删除这些数据吗?"
@@ -134,6 +134,7 @@
     >
         <edit-attendance
             :users="users"
+            :isShow="isShow"
             :isDisabled="isDisabled"
             @addAttendance="addAttendance"
             @setDialogVisible="setDialogVisible"
@@ -150,6 +151,7 @@
         <edit-attendance
             :users="users"
             :form-data="form"
+            :isShow="isShow"
             :isDisabled="isDisabled"
             @addAttendance="addAttendance"
             @setDialogVisible="setDialogVisible"
@@ -189,6 +191,7 @@ export default {
                 attTime: ''
             },
             isDisabled: false,
+            isShow: true,
             dataLoading: true,
             options: [
                 {
@@ -311,6 +314,7 @@ export default {
             this.getFormData()
             this.addDialogFormVisible = true
             this.isDisabled = false
+            this.isShow = true
         },
         // 处理保存
         doSave(formData) {
@@ -326,6 +330,7 @@ export default {
             this.getFormData()
             this.editDialogFormVisible = true
             this.isDisabled = true
+            this.isShow = false
             this.form = row
             this.form.status = row.status + ''
         },
