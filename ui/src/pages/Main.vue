@@ -320,8 +320,7 @@ export default {
 }
 
 .menu:not(.el-menu--collapse) {
-    width: 13vw;
-    min-width: 190px;
+    width: calc(10rem + 5vw);
 }
 
 .menu-top > * {
