@@ -60,13 +60,14 @@
         style="margin-top: 10px"
     >
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="user.username" label="用户名" align="center" />
-        <el-table-column prop="attTime" label="考勤时间" width="250" align="center">
+        <el-table-column type="index" label="序号" width="80" align="center" :index="indexFormat" />
+        <el-table-column prop="user.username" label="名称" align="center" />
+        <el-table-column prop="attTime" label="考勤时间" width="300" align="center">
             <template #default="scope">
                 {{ formatDate(scope.row.attTime) }}
             </template>
         </el-table-column>
-        <el-table-column prop="status" label="考勤状态" width="150" align="center">
+        <el-table-column prop="status" label="考勤状态" width="180" align="center">
             <template v-slot="scope">
                 <el-tag
                     :type="
@@ -233,7 +234,12 @@ export default {
                 .then((response) => {
                     this.users = response.data.data
                 })
-                .catch((reportError) => {})
+                .catch((reportError) => {
+                    ElMessage({
+                        message: '失败',
+                        type: 'error'
+                    })
+                })
         },
         // 获取所有考勤信息
         getAttendances() {
@@ -248,6 +254,10 @@ export default {
                 })
                 .catch((reportError) => {
                     this.dataLoading = false
+                    ElMessage({
+                        message: '失败',
+                        type: 'error'
+                    })
                 })
         },
         getAttendancesByTime() {
@@ -293,7 +303,9 @@ export default {
             newFormat = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
             return newFormat
         },
-
+        indexFormat(index) {
+            return index + 1
+        },
         // 重置参数
         resetParam() {
             this.attTime = []
@@ -323,7 +335,12 @@ export default {
                 .then((response) => {
                     this.getAttendances()
                 })
-                .catch((reportError) => {})
+                .catch((reportError) => {
+                    ElMessage({
+                        message: '失败',
+                        type: 'error'
+                    })
+                })
         },
         // 获取更改数据
         viewUpdate(row) {
@@ -340,7 +357,6 @@ export default {
         },
         // 点击取消
         cancel() {
-            this.resetForm()
             ElMessage({
                 message: '取消操作',
                 type: 'warning'
@@ -372,7 +388,12 @@ export default {
                         })
                     }
                 })
-                .catch((reportError) => {})
+                .catch((reportError) => {
+                    ElMessage({
+                        message: '删除失败',
+                        type: 'error'
+                    })
+                })
         },
         // 批量删除
         handleSelectionChange(val) {
@@ -381,23 +402,36 @@ export default {
         // 批量删除
         delBatch() {
             const map = this.multipleSelection.map((v) => v.id)
-            request
-                .post('/attendance/delBatchAttendance', map)
-                .then((response) => {
-                    if (response) {
-                        ElMessage({
-                            message: '批量删除成功',
-                            type: 'success'
-                        })
-                        this.getAttendances()
-                    } else {
+            // eslint-disable-next-line eqeqeq
+            if (map != '') {
+                request
+                    .post('/attendance/delBatchAttendance', map)
+                    .then((response) => {
+                        if (response) {
+                            ElMessage({
+                                message: '批量删除成功',
+                                type: 'success'
+                            })
+                            this.getAttendances()
+                        } else {
+                            ElMessage({
+                                message: '批量删除失败',
+                                type: 'error'
+                            })
+                        }
+                    })
+                    .catch((reportError) => {
                         ElMessage({
                             message: '批量删除失败',
                             type: 'error'
                         })
-                    }
+                    })
+            } else {
+                ElMessage({
+                    message: '批量删除失败，请至少选择一条数据',
+                    type: 'error'
                 })
-                .catch((reportError) => {})
+            }
         }
     },
     created() {

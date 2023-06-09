@@ -41,13 +41,14 @@
         :header-cell-style="{ background: 'aliceblue' }"
         style="margin-top: 10px"
     >
-        <el-table-column prop="user.username" label="用户名" align="center"></el-table-column>
-        <el-table-column prop="attTime" label="考勤时间" width="250" align="center">
+        <el-table-column type="index" label="序号" width="80" align="center" :index="indexFormat" />
+        <el-table-column prop="user.username" label="名称" align="center"></el-table-column>
+        <el-table-column prop="attTime" label="考勤时间" width="300" align="center">
             <template #default="scope">
                 {{ formatDate(scope.row.attTime) }}
             </template>
         </el-table-column>
-        <el-table-column prop="status" label="考勤状态" width="150" align="center">
+        <el-table-column prop="status" label="考勤状态" width="200" align="center">
             <template v-slot="scope">
                 <el-tag
                     :type="
@@ -155,6 +156,9 @@ export default {
             })
         },
 
+        indexFormat(index) {
+            return index + 1
+        },
         getOneAttendancesByTime() {
             this.dataLoading = true
             if (this.attTimeB.length !== 0) {
