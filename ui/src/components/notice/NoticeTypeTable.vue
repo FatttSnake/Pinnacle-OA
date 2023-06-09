@@ -9,9 +9,8 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
         :header-cell-style="{
-            background: 'darksalmon',
+            background: 'aliceblue',
             'text-align': 'center',
-            color: '#fff',
             'font-size': '16px'
         }"
         ><el-table-column type="selection" align="center" />

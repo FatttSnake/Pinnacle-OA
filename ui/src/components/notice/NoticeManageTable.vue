@@ -9,9 +9,8 @@
         @selection-change="handleSelectionChange"
         @row-contextmenu="openClickMenu"
         :header-cell-style="{
-            background: 'darksalmon',
+            background: 'aliceblue',
             'text-align': 'center',
-            color: '#fff',
             'font-size': '16px'
         }"
         @filter-change="handleFilterChange"
