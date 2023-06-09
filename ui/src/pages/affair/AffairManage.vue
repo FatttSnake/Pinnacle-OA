@@ -9,8 +9,12 @@
                     router
                     background-color="white"
                 >
-                    <el-menu-item index="/affair/manage/toApprove"> 待审批 </el-menu-item>
-                    <el-menu-item index="/affair/manage/Approved"> 已审批 </el-menu-item>
+                    <el-menu-item index="/affair/manage/toApprove" @click="turnToNotApproved">
+                        待审批
+                    </el-menu-item>
+                    <el-menu-item index="/affair/manage/Approved" @click="turnToApproved">
+                        已审批
+                    </el-menu-item>
                 </el-menu>
             </el-col>
         </el-header>
@@ -50,7 +54,12 @@
                         <!--                        </el-col>-->
                         <el-col :span="1"></el-col>
                         <el-col :span="3">
-                            <el-button type="primary" @click="onSubmit">查询</el-button>
+                            <el-button type="primary" @click="onSubmit1" v-if="flagNotApproved"
+                                >查询</el-button
+                            >
+                            <el-button type="primary" @click="onSubmit2" v-if="flagApproved"
+                                >查询</el-button
+                            >
                             <el-button type="primary" @click="resetForm">重置</el-button>
                         </el-col>
                     </el-row>
@@ -76,6 +85,9 @@ export default {
                 startTime: '',
                 endTime: ''
             },
+            flagNotApproved: true,
+            flagApproved: false,
+            count: 0,
             DataToRouterView: {}
         }
     },
@@ -86,7 +98,7 @@ export default {
         turnFormViewTrue() {
             this.formView = true
         },
-        onSubmit() {
+        onSubmit1() {
             request
                 .get('/affair/not_approved_FuzzyQueries', this.formData)
                 .then((response) => {
@@ -97,8 +109,29 @@ export default {
                     console.log(reportError)
                 })
         },
+        onSubmit2() {
+            request
+                .get('/affair/approved_FuzzyQueries', this.formData)
+                .then((response) => {
+                    this.DataToRouterView = response.data.data
+                    console.log(response.data)
+                })
+                .catch((reportError) => {
+                    console.log(reportError)
+                })
+        },
+        turnToNotApproved() {
+            this.flagApproved = false
+            this.flagNotApproved = true
+        },
+        turnToApproved() {
+            this.flagNotApproved = false
+            this.flagApproved = true
+        },
         resetForm() {
-            this.$router.go()
+            if (this.flagNotApproved) {
+                this.$router.go()
+            }
         }
     }
 }

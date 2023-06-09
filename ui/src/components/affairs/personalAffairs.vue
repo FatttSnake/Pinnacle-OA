@@ -22,7 +22,7 @@
             <template #default="scope">
                 {{
                     scope.row.inspectorId === 1
-                        ? 'ggb'
+                        ? 'admin'
                         : scope.row.inspectorId === 1652714496280469506
                         ? 'cyb'
                         : scope.row.inspectorId === 1654151146072145921

@@ -43,7 +43,9 @@ public interface AffairMapper extends BaseMapper<Affair> {
 
     List<Affair> getFuzzyQueriesByAffairTitle(String title, Long typeId, Integer status,Long applicantId);
 
-    List<Affair> getNotApprovedByFuzzyQueries(String title, Long typeId, Integer status,Long applicantId ,LocalDateTime startTime,LocalDateTime endTime);
+    List<Affair> getNotApprovedByFuzzyQueries(String title, Long typeId, Integer status,Long inspectorId ,LocalDateTime startTime,LocalDateTime endTime);
+
+    List<Affair> getApprovedByFuzzyQueries(String title, Long typeId, Integer status,Long inspectorId ,LocalDateTime startTime,LocalDateTime endTime);
 
 //
 //    @Select("SELECT t_affair.applicant_id,t_affair.inspector_id,t_user.id,t_user.username from t_affair,t_user ")
