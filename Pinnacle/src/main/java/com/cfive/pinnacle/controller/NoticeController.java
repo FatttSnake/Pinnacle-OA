@@ -88,7 +88,7 @@ public class NoticeController {
     }
     //修改公告置顶状态
     @PutMapping("/update_notice_top")
-    @PreAuthorize("hasAuthority('notice:self:get')")
+    @PreAuthorize("hasAuthority('notice:manage:get')")
     public ResponseResult<?> updateNoticeTop(@RequestBody Notice notice) {
         String operationMessage = notice.getTop() == 1 ? "取消置顶" : "置顶";
         Boolean updateResult = noticeService.updateNoticeTop(notice);
