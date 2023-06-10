@@ -1,4 +1,5 @@
-SET FOREIGN_KEY_CHECKS = 0;
+SET
+FOREIGN_KEY_CHECKS = 0;
 
 truncate t_menu;
 truncate t_element;
@@ -23,16 +24,16 @@ VALUES (1010000, '公用', '/', id, null);
 commit;
 
 begin;
-insert into t_power (id,type_id)
+insert into t_power (id, type_id)
 values (1010100, 2);
 insert into t_element(id, name, power_id, menu_id)
 VALUES (1010100, '公用', id, 1010000);
 commit;
 
 begin;
-insert into t_power(id,type_id)
+insert into t_power(id, type_id)
 values (1010101, 3);
-insert into t_operation(id,name, code, power_id, element_id, parent_id)
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
 VALUES (1010101, '查询当前用户信息', 'common:user:self', id, 1010100, null);
 commit;
 
@@ -51,30 +52,30 @@ VALUES (2010100, '基础', id, 2010000);
 commit;
 
 begin;
-insert into t_power(id,type_id)
-values (2010101,3);
-insert into t_operation(id,name, code, power_id, element_id, parent_id)
+insert into t_power(id, type_id)
+values (2010101, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
 VALUES (2010101, '获取首页待办工作', 'work:self:home', id, 2010100, null);
 commit;
 
 begin;
-insert into t_power(id,type_id)
-values (2010102,3);
-insert into t_operation(id,name, code, power_id, element_id, parent_id)
+insert into t_power(id, type_id)
+values (2010102, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
 VALUES (2010102, '获取个人工作', 'work:self:get', id, 2010100, null);
 commit;
 
 begin;
-insert into t_power(id,type_id)
-values (2010103,3);
-insert into t_operation(id,name, code, power_id, element_id, parent_id)
+insert into t_power(id, type_id)
+values (2010103, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
 VALUES (2010103, '获取工作详细内容', 'work:self:detail', id, 2010100, null);
 commit;
 
 begin;
-insert into t_power(id,type_id)
-values (2010104,3);
-insert into t_operation(id,name, code, power_id, element_id, parent_id)
+insert into t_power(id, type_id)
+values (2010104, 3);
+insert into t_operation(id, name, code, power_id, element_id, parent_id)
 VALUES (2010104, '更新工作状态', 'work:self:status', id, 2010100, null);
 commit;
 
@@ -598,4 +599,8 @@ insert into t_operation (id, name, code, power_id, element_id, parent_id)
 VALUES (103010105, '修改用户', 'system:user:modify', id, 103010100, null);
 commit;
 
-SET FOREIGN_KEY_CHECKS = 1;
+SET
+FOREIGN_KEY_CHECKS = 1;
+
+insert into t_user(id, username, passwd, enable)
+values (1, 'admin', '$2a$10$z/L1BXim1WgFJQxa4v8oOOm1morCUB74ipmUwmk2FlYrI8WAkIBMq', 1);
