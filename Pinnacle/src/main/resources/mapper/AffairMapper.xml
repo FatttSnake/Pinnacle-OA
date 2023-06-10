@@ -38,6 +38,8 @@
             <if test="status!=null ">
                 and instr(status,#{status})>0
             </if>
+            and deleted = 0
+            and old = 0
         </where>
         order by create_time desc
     </select>
@@ -71,8 +73,9 @@
         *
         from t_affair
         <where>
-            <if test=" applicantId !=null">
-                applicant_id = #{applicantId}
+            <if test=" inspectorId !=null">
+                inspector_id = #{inspectorId}
+                and status=0
             </if>
 
             <if test=" title!=null and title!='' ">
@@ -84,11 +87,43 @@
             <if test="status!=null ">
                 and instr(status,#{status})>0
             </if>
+            and deleted = 0
+            and old = 0
         </where>
         order by create_time desc
     </select>
 
+    <select id="getApprovedByFuzzyQueries" resultMap="affairMap3">
+        select
+        *
+        from t_affair
+        <where>
+            <if test=" inspectorId !=null">
+                inspector_id = #{inspectorId}
+                and status!=0
+            </if>
+
+            <if test=" title!=null and title!='' ">
+                and  instr(title,#{title})&gt;0
+            </if>
+            <if test=" typeId!=null ">
+                and instr(type_id,#{typeId})>0
+            </if>
+            <if test="status!=null ">
+                and instr(status,#{status})>0
+            </if>
+            and deleted = 0
+            and old = 0
+        </where>
+        order by inspect_time desc
+    </select>
+
+
     <resultMap id="affairMap2" type="affair" autoMapping="true">
+        <id property="id" column="id"/>
+    </resultMap>
+
+    <resultMap id="affairMap3" type="affair" autoMapping="true">
         <id property="id" column="id"/>
     </resultMap>
 

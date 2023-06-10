@@ -22,7 +22,7 @@
             <template #default="scope">
                 {{
                     scope.row.applicantId === 1
-                        ? 'ggb'
+                        ? 'admin'
                         : scope.row.applicantId === 1652714496280469506
                         ? 'cyb'
                         : scope.row.applicantId === 1654151146072145921

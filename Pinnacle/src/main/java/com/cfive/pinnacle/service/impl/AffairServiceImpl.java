@@ -46,8 +46,14 @@ public class AffairServiceImpl extends ServiceImpl<AffairMapper, Affair> impleme
     }
 
 
-    public List<Affair> getNotApprovedByFuzzyQueries(String title, Long typeId, Integer status, Long applicantId, LocalDateTime startTime ,LocalDateTime endTime) {
-        List<Affair> affairList =affairMapper.getNotApprovedByFuzzyQueries(title,typeId,status,applicantId,startTime,endTime);
+    public List<Affair> getNotApprovedByFuzzyQueries(String title, Long typeId, Integer status, Long inspectorId, LocalDateTime startTime ,LocalDateTime endTime) {
+        List<Affair> affairList =affairMapper.getNotApprovedByFuzzyQueries(title,typeId,status,inspectorId,startTime,endTime);
+        return affairList;
+    }
+
+
+    public List<Affair> getApprovedByFuzzyQueries(String title, Long typeId, Integer status, Long inspectorId, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Affair> affairList =affairMapper.getApprovedByFuzzyQueries(title,typeId,status,inspectorId,startTime,endTime);
         return affairList;
     }
 }

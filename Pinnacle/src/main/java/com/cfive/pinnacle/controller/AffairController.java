@@ -73,8 +73,9 @@ public class AffairController {
 
     @GetMapping("/not_approved_FuzzyQueries")
     @PreAuthorize("hasAuthority('affair:manage:get')")
-    public ResponseResult<List<Affair>> selectNotApprovedByFuzzyQueries(String title,Long typeId,Integer status,Long applicantId,LocalDateTime startTime,LocalDateTime endTime ) {
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getNotApprovedByFuzzyQueries(title,typeId,status,applicantId,startTime,endTime));
+    public ResponseResult<List<Affair>> selectNotApprovedByFuzzyQueries(String title,Long typeId,Integer status,LocalDateTime startTime,LocalDateTime endTime ) {
+        Long inspectorId= WebUtil.getLoginUser().getUser().getId();
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getNotApprovedByFuzzyQueries(title,typeId,status,inspectorId,startTime,endTime));
     }
 
 
@@ -85,6 +86,13 @@ public class AffairController {
         wrapper2.ne(Affair::getStatus, 0).eq(Affair::getInspectorId, WebUtil.getLoginUser().getUser().getId());
         wrapper2.orderByDesc(Affair::getInspectTime);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.list(wrapper2));
+    }
+
+    @GetMapping("/approved_FuzzyQueries")
+    @PreAuthorize("hasAuthority('affair:manage:get')")
+    public  ResponseResult<List<Affair>> selectApprovedByFuzzyQueries(String title,Long typeId,Integer status,LocalDateTime startTime,LocalDateTime endTime ) {
+        Long inspectorId =WebUtil.getLoginUser().getUser().getId();
+        return  ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getApprovedByFuzzyQueries(title,typeId,status,inspectorId,startTime,endTime));
     }
 
     @PutMapping("/yes")

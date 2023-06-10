@@ -21,17 +21,15 @@
         <el-table-column label="申请者" prop="applicantId">
             <template #default="scope">
                 {{
-                    scope.row.applicantId === 1652714496280469506
+                    scope.row.applicantId === 1
+                        ? 'admin'
+                        : scope.row.applicantId === 1652714496280469506
                         ? 'cyb'
                         : scope.row.applicantId === 1654151146072145921
                         ? 'syf'
                         : scope.row.applicantId === 1654151877520973826
                         ? 'gzw'
-                        : scope.row.applicantId === 1654151930402746370
-                        ? 'yrm'
-                        : scope.row.applicantId === 1
-                        ? 'admin'
-                        : 'ggb'
+                        : 'yrm'
                 }}
             </template>
         </el-table-column>
