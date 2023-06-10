@@ -57,10 +57,11 @@
                             <el-button type="primary" @click="onSubmit1" v-if="flagNotApproved"
                                 >查询</el-button
                             >
+
                             <el-button type="primary" @click="onSubmit2" v-if="flagApproved"
                                 >查询</el-button
                             >
-                            <el-button type="primary" @click="resetForm">重置</el-button>
+                            <el-button type="primary" @click="resetForm1">重置</el-button>
                         </el-col>
                     </el-row>
                 </el-form>
@@ -87,7 +88,7 @@ export default {
             },
             flagNotApproved: true,
             flagApproved: false,
-            count: 0,
+            updateKey: Date.now(),
             DataToRouterView: {}
         }
     },
@@ -128,9 +129,15 @@ export default {
             this.flagNotApproved = false
             this.flagApproved = true
         },
-        resetForm() {
-            if (this.flagNotApproved) {
-                this.$router.go()
+        resetForm1() {
+            if (this.flagNotApproved && !this.flagApproved) {
+                this.formData.title = ''
+                this.formData.typeId = ''
+                this.onSubmit1()
+            } else {
+                this.formData.title = ''
+                this.formData.typeId = ''
+                this.onSubmit2()
             }
         }
     }
