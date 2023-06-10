@@ -8,7 +8,7 @@
             </el-col>
             <el-col :span="1"></el-col>
             <el-col :span="5">
-                <el-form-item label="公告类型：" prop="enable" class="fill-with">
+                <el-form-item label="状态：" prop="enable" class="fill-with">
                     <el-select
                         v-model="searchType.enable"
                         placeholder="请选择公告类型"
