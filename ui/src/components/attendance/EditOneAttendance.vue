@@ -56,7 +56,7 @@ export default {
                 .then((response) => {
                     if (response.data.code === DATABASE_SAVE_OK) {
                         ElMessage({
-                            message: '签到成功',
+                            message: '打卡成功',
                             type: 'success'
                         })
                         this.$emit('setDialogVisible', false)
@@ -64,7 +64,7 @@ export default {
                 })
                 .catch((reportError) => {
                     ElMessage({
-                        message: '签到失败',
+                        message: '打卡失败',
                         type: 'warning'
                     })
                 })
