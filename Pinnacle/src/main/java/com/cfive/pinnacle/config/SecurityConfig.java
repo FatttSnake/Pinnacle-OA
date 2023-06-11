@@ -2,14 +2,14 @@ package com.cfive.pinnacle.config;
 
 import com.cfive.pinnacle.filter.JwtAuthenticationTokenFilter;
 import com.cfive.pinnacle.handler.CustomAuthenticationEntryPointHandler;
-import com.cfive.pinnacle.service.permission.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,14 +24,8 @@ import java.util.List;
 @Configuration
 @EnableMethodSecurity()
 public class SecurityConfig {
-    private UserDetailsServiceImpl userDetailsService;
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     private CustomAuthenticationEntryPointHandler authenticationEntryPointHandler;
-
-    @Autowired
-    public void setUserDetailsService(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @Autowired
     public void setJwtAuthenticationTokenFilter(JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter) {
@@ -49,23 +43,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
-        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedMethods(List.of("*"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setMaxAge(3600L);
         corsConfiguration.setAllowedOrigins(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",corsConfiguration);
+        source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
 
@@ -73,34 +63,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 //  Disable CSRF
-                .csrf()
-                .disable()
+                .csrf(AbstractHttpConfigurer::disable)
 
                 // Do not get SecurityContent by Session
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // Allow anonymous access
-                .authorizeHttpRequests()
-                .requestMatchers("/login", "/error/thrown", "/doc.html", "/swagger-ui/**", "/webjars/**", "/v3/**", "/swagger-ui.html")
-                .anonymous()
+                .authorizeHttpRequests(authorizeHttpRequests ->
+                        authorizeHttpRequests
+                                // Allow anonymous access
+                                .requestMatchers("/login", "/error/thrown", "/doc.html", "/swagger-ui/**", "/webjars/**", "/v3/**", "/swagger-ui.html")
+                                .anonymous()
+                                // Authentication required
+                                .anyRequest()
+                                .authenticated())
 
-                // Authentication required
-                .anyRequest()
-                .authenticated()
-                .and()
 
-                .logout()
-                .disable()
+                .logout(AbstractHttpConfigurer::disable)
 
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPointHandler)
-                .and()
+                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPointHandler))
 
-                .cors()
-                .configurationSource(corsConfigurationSource())
-                .and()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
