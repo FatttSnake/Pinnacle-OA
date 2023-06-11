@@ -51,12 +51,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
 
     @Override
     public List<Work> getAll() {
-        List<Work> workList = workMapper.getAll();
-        for (Work work:
-                workList) {
-            work.setProgress(getProgress(work.getId()));
-        }
-        return workList;
+        return workMapper.getAll();
     }
 
     @Override
