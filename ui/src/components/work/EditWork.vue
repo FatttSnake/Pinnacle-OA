@@ -103,8 +103,6 @@ export default {
                         this.$emit('addWork', form)
                         this.reset()
                     }
-                } else {
-                    console.log('fault!')
                 }
             })
         },

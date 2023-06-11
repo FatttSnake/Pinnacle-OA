@@ -51,8 +51,6 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public List<Attendance> selectByTime(String startTime, String endTime) {
         LocalDateTime start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        System.out.println(start);
-        System.out.println(end);
         LambdaQueryWrapper<Attendance> lqw = new LambdaQueryWrapper<>();
         lqw.ge(Attendance::getAttTime, start).le(Attendance::getAttTime, end);
         List<Attendance> attendancesByTime = attendanceMapper.selectList(lqw);
@@ -68,8 +66,6 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public List<Attendance> selectOneByTime(String startTime, String endTime, Long userId) {
         LocalDateTime start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        System.out.println(start);
-        System.out.println(end);
         LambdaQueryWrapper<Attendance> lqw = new LambdaQueryWrapper<>();
         lqw.ge(Attendance::getAttTime, start).le(Attendance::getAttTime, end).eq(Attendance::getDeleted, 0).eq(Attendance::getUserId, userId);
         List<Attendance> oneAttendancesByTime = attendanceMapper.selectList(lqw);

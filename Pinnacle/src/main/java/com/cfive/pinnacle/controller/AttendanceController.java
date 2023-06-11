@@ -61,7 +61,6 @@ public class AttendanceController {
     public ResponseResult<List<Attendance>> findOneAttendanceAndUserByTime(String startTime, String endTime) {
         Long userId = WebUtil.getLoginUser().getUser().getId();
         List<Attendance> attendances = attendanceService.selectOneByTime(startTime, endTime, userId);
-        System.out.println(attendances);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }
 

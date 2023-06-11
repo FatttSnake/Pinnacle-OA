@@ -112,7 +112,6 @@ public class AffairController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('affair:manage:delete')")
     public ResponseResult<Boolean> deleteAffairApproved(@PathVariable Long id) {
-        System.out.println("affair");
         return ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", affairService.removeById(id));
         //删除已审批事务
 

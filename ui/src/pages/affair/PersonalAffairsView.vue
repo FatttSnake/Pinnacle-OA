@@ -87,10 +87,6 @@ export default {
                 .get('/affair/personal_affairs_fuzzy_queries', this.formData)
                 .then((response) => {
                     this.DataToRouterView = response.data.data
-                    console.log(response.data)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
                 })
         },
         resetForm() {

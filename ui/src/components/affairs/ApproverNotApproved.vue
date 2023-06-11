@@ -112,40 +112,20 @@ export default {
     },
     methods: {
         handleYes(row) {
-            console.log(row)
             row.inspectTime = new Date()
-            request
-                .put('/affair/yes', row)
-                .then((response) => {
-                    console.log(response.data)
-                    this.getApproved()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                }) // 执行审批同意
+            request.put('/affair/yes', row).then((response) => {
+                this.getApproved()
+            })
         },
         handleNo(row) {
-            console.log(row)
-            request
-                .put('/affair/no', row)
-                .then((response) => {
-                    console.log(response.data)
-                    this.getApproved()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                }) // 审批驳回
+            request.put('/affair/no', row).then((response) => {
+                this.getApproved()
+            })
         },
         getApproved() {
-            request
-                .get('/affair/not_approved')
-                .then((response) => {
-                    this.tableData = response.data.data
-                    console.log(this.tableData)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                }) // 获取事务信息或者重新刷新页面
+            request.get('/affair/not_approved').then((response) => {
+                this.tableData = response.data.data
+            })
         },
         format(time) {
             return new Date(time).toLocaleString()

@@ -100,26 +100,14 @@ export default {
             this.formView = true
         },
         onSubmit1() {
-            request
-                .get('/affair/not_approved_FuzzyQueries', this.formData)
-                .then((response) => {
-                    this.DataToRouterView = response.data.data
-                    console.log(response.data)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.get('/affair/not_approved_FuzzyQueries', this.formData).then((response) => {
+                this.DataToRouterView = response.data.data
+            })
         },
         onSubmit2() {
-            request
-                .get('/affair/approved_FuzzyQueries', this.formData)
-                .then((response) => {
-                    this.DataToRouterView = response.data.data
-                    console.log(response.data)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.get('/affair/approved_FuzzyQueries', this.formData).then((response) => {
+                this.DataToRouterView = response.data.data
+            })
         },
         turnToNotApproved() {
             this.flagApproved = false
