@@ -35,10 +35,7 @@
     </resultMap>
 
 
-
-
-
-    <select id="getAttendanceAndUserByid" resultMap="AttendAndUserResult">
+    <select id="getAttendanceAndUserById" resultMap="AttendAndUserResult">
         select att.id      attId,
                att.user_id,
                att.att_time,
@@ -56,7 +53,8 @@
         from t_attendance att,
              t_user u
         where att.user_id = u.id
-          and att.deleted = 0 and att.user_id=#{userid}
+          and att.deleted = 0
+          and att.user_id = #{userid}
         order by att_time DESC
     </select>
     <resultMap id="AttendAndUserResult" type="attendance" autoMapping="true">
@@ -70,4 +68,4 @@
         </association>
     </resultMap>
 
-    </mapper>
+</mapper>

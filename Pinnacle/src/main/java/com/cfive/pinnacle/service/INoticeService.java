@@ -1,8 +1,8 @@
 package com.cfive.pinnacle.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cfive.pinnacle.entity.Notice;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cfive.pinnacle.entity.Notice;
 
 import java.util.List;
 
@@ -27,5 +27,5 @@ public interface INoticeService extends IService<Notice> {
 
     Boolean addNotice(Notice notice);
 
-    IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime,List<Long> userIdList);
+    IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime, List<Long> userIdList);
 }

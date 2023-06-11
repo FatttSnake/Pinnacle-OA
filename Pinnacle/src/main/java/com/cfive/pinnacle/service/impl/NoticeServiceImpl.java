@@ -3,6 +3,7 @@ package com.cfive.pinnacle.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.mapper.NoticeMapper;
@@ -10,7 +11,6 @@ import com.cfive.pinnacle.mapper.NoticeReceiveMapper;
 import com.cfive.pinnacle.mapper.NoticeTypeMapper;
 import com.cfive.pinnacle.mapper.permission.UserMapper;
 import com.cfive.pinnacle.service.INoticeService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -30,14 +31,31 @@ import java.util.List;
  */
 @Service
 public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> implements INoticeService {
-    @Autowired
+
     NoticeMapper noticeMapper;
-    @Autowired
     NoticeTypeMapper noticeTypeMapper;
-    @Autowired
     UserMapper userMapper;
-    @Autowired
     NoticeReceiveMapper noticeReceiveMapper;
+
+    @Autowired
+    public void setNoticeMapper(NoticeMapper noticeMapper) {
+        this.noticeMapper = noticeMapper;
+    }
+
+    @Autowired
+    public void setNoticeTypeMapper(NoticeTypeMapper noticeTypeMapper) {
+        this.noticeTypeMapper = noticeTypeMapper;
+    }
+
+    @Autowired
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
+    @Autowired
+    public void setNoticeReceiveMapper(NoticeReceiveMapper noticeReceiveMapper) {
+        this.noticeReceiveMapper = noticeReceiveMapper;
+    }
 
     @Override
     public Notice selectByNoticeId(Long nid) {
@@ -47,7 +65,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     @Override
     public IPage<Notice> selectPageNotice(IPage<Notice> page, String title, String type, String startTime, String endTime, List<Long> userIdList) {
         LocalDateTime start = null, end = null;
-        if (startTime != "" && endTime != "") {
+        if (!Objects.equals(startTime, "") && !Objects.equals(endTime, "")) {
             start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }

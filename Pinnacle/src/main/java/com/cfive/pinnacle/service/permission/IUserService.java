@@ -1,8 +1,8 @@
 package com.cfive.pinnacle.service.permission;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cfive.pinnacle.entity.permission.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cfive.pinnacle.entity.permission.User;
 
 import java.util.List;
 

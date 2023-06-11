@@ -31,15 +31,23 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @Slf4j
 public class NoticeController {
-    @Autowired
     private INoticeService noticeService;
-    @Autowired
     private INoticeReceiveService noticeReceiveService;
+
+    @Autowired
+    public void setNoticeService(INoticeService noticeService) {
+        this.noticeService = noticeService;
+    }
+
+    @Autowired
+    public void setNoticeReceiveService(INoticeReceiveService noticeReceiveService) {
+        this.noticeReceiveService = noticeReceiveService;
+    }
 
     //分页查询所有公告或分页模糊查询
     @GetMapping("/page")
     @PreAuthorize("hasAuthority('notice:manage:get')")
-    public ResponseResult<List<Notice>> selectPageNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime,String userIdList) {
+    public ResponseResult<List<Notice>> selectPageNotice(Integer currentPage, Integer pageSize, String title, String type, String startTime, String endTime, String userIdList) {
         List<Long> userIds = WebUtil.convertStringToList(userIdList, Long.class);
         Page<Notice> noticePage;
         if (null != currentPage && null != pageSize) {
@@ -48,7 +56,7 @@ public class NoticeController {
             // 不进行分页
             noticePage = PageDTO.of(1, -1);
         }
-        IPage<Notice> noticeIPage = noticeService.selectPageNotice(noticePage, title.trim(), type.trim(), startTime.trim(), endTime.trim(),userIds);
+        IPage<Notice> noticeIPage = noticeService.selectPageNotice(noticePage, title.trim(), type.trim(), startTime.trim(), endTime.trim(), userIds);
         int code = noticeIPage.getRecords() != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticeIPage.getRecords() != null ? String.valueOf(noticeIPage.getTotal()) : "数据查询失败，请重试！";
         return ResponseResult.build(code, msg, noticeIPage.getRecords());
@@ -67,7 +75,7 @@ public class NoticeController {
     //根据登录用户id查询所接收的公告
     @GetMapping("/self")
     @PreAuthorize("hasAuthority('notice:self:get')")
-    public ResponseResult<List<Notice>> selectByUserId(Integer readStatus,String title, String type, String startTime, String endTime) {
+    public ResponseResult<List<Notice>> selectByUserId(Integer readStatus, String title, String type, String startTime, String endTime) {
         List<Notice> noticesByUserId = noticeReceiveService.selectByUserId(readStatus, title.trim(), type.trim(), startTime.trim(), endTime.trim());
         int code = noticesByUserId != null ? ResponseCode.DATABASE_SELECT_OK : ResponseCode.DATABASE_SELECT_ERROR;
         String msg = noticesByUserId != null ? "" : "数据查询失败，请重试！";
@@ -86,6 +94,7 @@ public class NoticeController {
         return ResponseResult.build(updateById ? ResponseCode.DATABASE_UPDATE_OK : ResponseCode.DATABASE_UPDATE_ERROR, msg, null);
 
     }
+
     //修改公告置顶状态
     @PutMapping("/update_notice_top")
     @PreAuthorize("hasAuthority('notice:manage:get')")

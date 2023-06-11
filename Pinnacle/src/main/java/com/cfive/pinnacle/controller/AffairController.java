@@ -11,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,19 +21,21 @@ import java.util.List;
  * @author FatttSnake
  * @since 2023-04-30
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/affair")
 public class AffairController {
+    private IAffairService affairService;
+
     @Autowired
-    IAffairService affairService;
+    public void setAffairService(IAffairService affairService) {
+        this.affairService = affairService;
+    }
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('affair:self:add')")
     public ResponseResult<Boolean> addAffair(@RequestBody Affair affair) {
         return ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", affairService.save(affair));
     }
-
 
     @GetMapping("/personal_affairs")
     @PreAuthorize("hasAuthority('affair:self:get')")
@@ -57,9 +58,9 @@ public class AffairController {
 
     @GetMapping("/personal_affairs_fuzzy_queries")
     @PreAuthorize("hasAuthority('affair:self:get')")
-    public ResponseResult getPersonalAffairsByTitle(String title,Long typeId,Integer status) {
-        Long applicantId =WebUtil.getLoginUser().getUser().getId();
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getFuzzyQueriesByAffairTitle(title.trim(),typeId,status,applicantId));
+    public ResponseResult<List<Affair>> getPersonalAffairsByTitle(String title, Long typeId, Integer status) {
+        Long applicantId = WebUtil.getLoginUser().getUser().getId();
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.getFuzzyQueriesByAffairTitle(title.trim(), typeId, status, applicantId));
     }
 
     @GetMapping("/not_approved")
@@ -73,11 +74,10 @@ public class AffairController {
 
     @GetMapping("/not_approved_FuzzyQueries")
     @PreAuthorize("hasAuthority('affair:manage:get')")
-    public ResponseResult<List<Affair>> selectNotApprovedByFuzzyQueries(String title,Long typeId,Integer status,LocalDateTime startTime,LocalDateTime endTime ) {
-        Long inspectorId= WebUtil.getLoginUser().getUser().getId();
-        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getNotApprovedByFuzzyQueries(title,typeId,status,inspectorId,startTime,endTime));
+    public ResponseResult<List<Affair>> selectNotApprovedByFuzzyQueries(String title, Long typeId, Integer status, LocalDateTime startTime, LocalDateTime endTime) {
+        Long inspectorId = WebUtil.getLoginUser().getUser().getId();
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.getNotApprovedByFuzzyQueries(title, typeId, status, inspectorId, startTime, endTime));
     }
-
 
     @GetMapping("/approved")
     @PreAuthorize("hasAuthority('affair:manage:get')")
@@ -90,9 +90,9 @@ public class AffairController {
 
     @GetMapping("/approved_FuzzyQueries")
     @PreAuthorize("hasAuthority('affair:manage:get')")
-    public  ResponseResult<List<Affair>> selectApprovedByFuzzyQueries(String title,Long typeId,Integer status,LocalDateTime startTime,LocalDateTime endTime ) {
-        Long inspectorId =WebUtil.getLoginUser().getUser().getId();
-        return  ResponseResult.build(ResponseCode.DATABASE_SELECT_OK,"success",affairService.getApprovedByFuzzyQueries(title,typeId,status,inspectorId,startTime,endTime));
+    public ResponseResult<List<Affair>> selectApprovedByFuzzyQueries(String title, Long typeId, Integer status, LocalDateTime startTime, LocalDateTime endTime) {
+        Long inspectorId = WebUtil.getLoginUser().getUser().getId();
+        return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", affairService.getApprovedByFuzzyQueries(title, typeId, status, inspectorId, startTime, endTime));
     }
 
     @PutMapping("/yes")
@@ -108,7 +108,6 @@ public class AffairController {
         return ResponseResult.build(ResponseCode.DATABASE_UPDATE_OK, "success", affairService.updateAffairNo(affair));
         //审批驳回
     }
-
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('affair:manage:delete')")

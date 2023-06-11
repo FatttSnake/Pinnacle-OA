@@ -1,8 +1,7 @@
 package com.cfive.pinnacle.service;
 
-import com.cfive.pinnacle.entity.Affair;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cfive.pinnacle.entity.permission.User;
+import com.cfive.pinnacle.entity.Affair;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,17 +16,14 @@ import java.util.List;
  */
 public interface IAffairService extends IService<Affair> {
 
-//    int insertAffair(Affair affair);
     int updateAffairYes(Affair affair);
+
     int updateAffairNo(Affair affair);
 
+    List<Affair> getFuzzyQueriesByAffairTitle(String title, Long typeId, Integer status, Long applicantId);
 
-//    int deleteAffair_ApprovedByID(Affair affair);
-    List<User> getSameDepartmentUser (long id);
-    List<Affair> getFuzzyQueriesByAffairTitle(String title,Long typeId,Integer status,Long applicantId);
+    List<Affair> getNotApprovedByFuzzyQueries(String title, Long typeId, Integer status, Long inspectorId, LocalDateTime startTime, LocalDateTime endTime);
 
-    List<Affair> getNotApprovedByFuzzyQueries(String title,Long typeId,Integer status,Long inspectorId,LocalDateTime startTime,LocalDateTime endTime);
-
-    List<Affair> getApprovedByFuzzyQueries(String title,Long typeId,Integer status,Long inspectorId,LocalDateTime startTime,LocalDateTime endTime);
+    List<Affair> getApprovedByFuzzyQueries(String title, Long typeId, Integer status, Long inspectorId, LocalDateTime startTime, LocalDateTime endTime);
 
 }

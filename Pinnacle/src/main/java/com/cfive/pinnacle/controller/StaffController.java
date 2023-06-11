@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.*;
  * @author FatttSnake
  * @since 2023-04-30
  */
+@Tag(name = "员工信息", description = "员工信息相关接口")
 @RestController
 @RequestMapping("/staff")
-@Tag(name = "员工信息", description = "员工信息相关接口")
 public class StaffController {
     private IStaffService staffService;
 

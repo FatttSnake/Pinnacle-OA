@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.NoticeReceiveMapper">
-<!--查询所有或根据用户阅读状态进行查询-->
+    <!--查询所有或根据用户阅读状态进行查询-->
     <select id="selectByUserId" resultMap="selectAllMap">
         select u.id uid,
         u.username,
@@ -57,7 +57,7 @@
             <id property="id" column="uid"/>
         </association>
     </resultMap>
-<!-- 所接收到公告的前五条公告   -->
+    <!-- 所接收到公告的前五条公告   -->
     <select id="selectLimitByUserId" resultMap="selectAllMap">
         select u.id uid,
         u.username,

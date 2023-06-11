@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.service.permission.impl;
 
-import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.entity.permission.LoginUser;
+import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.service.permission.ILoginService;
 import com.cfive.pinnacle.utils.JwtUtil;
 import com.cfive.pinnacle.utils.RedisCache;

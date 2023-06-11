@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.mapper;
 
-import com.cfive.pinnacle.entity.NoticeType;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cfive.pinnacle.entity.NoticeType;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

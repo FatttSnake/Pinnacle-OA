@@ -1,8 +1,8 @@
 package com.cfive.pinnacle.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cfive.pinnacle.entity.Department;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cfive.pinnacle.entity.Department;
 
 import java.util.List;
 

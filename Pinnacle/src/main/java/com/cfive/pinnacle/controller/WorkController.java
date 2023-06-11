@@ -22,11 +22,14 @@ import java.util.List;
  */
 
 @RestController
-@CrossOrigin
 @RequestMapping("/work")
 public class WorkController {
-    @Autowired
     private IWorkService workService;
+
+    @Autowired
+    public void setWorkService(IWorkService workService) {
+        this.workService = workService;
+    }
 
     @GetMapping
     @PreAuthorize("hasAuthority('work:manage:get')")
