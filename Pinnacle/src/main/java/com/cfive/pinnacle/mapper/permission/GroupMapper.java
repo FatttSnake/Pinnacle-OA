@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.mapper.permission;
 
-import com.cfive.pinnacle.entity.permission.Group;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cfive.pinnacle.entity.permission.Group;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,6 +18,7 @@ import java.util.List;
 @Mapper
 public interface GroupMapper extends BaseMapper<Group> {
     List<Long> filterGroupByRoleId(@Param("groupList") List<Long> groupList, @Param("roleId") Long roleId, @Param("searchName") String searchName, @Param("searchEnable") Integer searchEnable, @Param("searchRegex") Integer searchRegex);
+
     List<Group> getAll(@Param("groupList") List<Group> groupList);
 
     Group getOneById(@Param("id") long id);

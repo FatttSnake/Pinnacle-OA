@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.mapper.permission;
 
-import com.cfive.pinnacle.entity.permission.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cfive.pinnacle.entity.permission.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,7 +23,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     List<User> getAllAffairUser();
 
-    List<User> getAllDepartmentUser(@Param("departmentId")long departmentId);
+    List<User> getAllDepartmentUser(@Param("departmentId") long departmentId);
 
     List<User> getAllNoticeUser();
 

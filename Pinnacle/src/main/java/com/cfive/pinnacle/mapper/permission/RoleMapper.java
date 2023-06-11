@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.mapper.permission;
 
-import com.cfive.pinnacle.entity.permission.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cfive.pinnacle.entity.permission.Role;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

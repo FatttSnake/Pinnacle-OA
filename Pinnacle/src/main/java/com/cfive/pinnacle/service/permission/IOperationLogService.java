@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.service.permission;
 
-import com.cfive.pinnacle.entity.permission.OperationLog;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cfive.pinnacle.entity.permission.OperationLog;
 
 /**
  * <p>

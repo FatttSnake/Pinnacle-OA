@@ -1,8 +1,8 @@
 package com.cfive.pinnacle.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cfive.pinnacle.entity.Notice;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
@@ -20,6 +20,6 @@ import java.util.List;
 public interface NoticeMapper extends BaseMapper<Notice> {
     Notice selectByNoticeId(Long nid);
 
-    IPage<Notice> selectPageNotice(IPage<?> page, String title, String type, LocalDateTime startTime, LocalDateTime endTime,List<Long> userIdList);
+    IPage<Notice> selectPageNotice(IPage<?> page, String title, String type, LocalDateTime startTime, LocalDateTime endTime, List<Long> userIdList);
 
 }

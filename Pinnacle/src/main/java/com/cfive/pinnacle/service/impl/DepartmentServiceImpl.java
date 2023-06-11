@@ -2,10 +2,10 @@ package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.Department;
 import com.cfive.pinnacle.mapper.DepartmentMapper;
 import com.cfive.pinnacle.service.IDepartmentService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

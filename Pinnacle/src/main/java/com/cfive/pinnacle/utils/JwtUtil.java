@@ -51,13 +51,7 @@ public class JwtUtil {
         }
         long expMillis = nowMillis + ttlMillis;
         Date expDate = new Date(expMillis);
-        return JWT.create()
-                .withJWTId(uuid)
-                .withSubject(subject)
-                .withIssuer(ISSUER)
-                .withIssuedAt(now)
-                .withExpiresAt(expDate)
-                .sign(algorithm());
+        return JWT.create().withJWTId(uuid).withSubject(subject).withIssuer(ISSUER).withIssuedAt(now).withExpiresAt(expDate).sign(algorithm());
     }
 
     /**
@@ -100,8 +94,7 @@ public class JwtUtil {
      * @return 解析内容
      */
     public static DecodedJWT parseJWT(String jwt) {
-        JWTVerifier jwtVerifier = JWT.require(algorithm())
-                .build();
+        JWTVerifier jwtVerifier = JWT.require(algorithm()).build();
         return jwtVerifier.verify(jwt);
     }
 
@@ -109,7 +102,6 @@ public class JwtUtil {
 //        String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjYWM2ZDVhZi1mNjVlLTQ0MDAtYjcxMi0zYWEwOGIyOTIwYjQiLCJzdWIiOiJzZyIsImlzcyI6InNnIiwiaWF0IjoxNjM4MTA2NzEyLCJleHAiOjE2MzgxMTAzMTJ9.JVsSbkP94wuczb4QryQbAke3ysBDIL5ou8fWsbt_ebg";
 //        Claims claims = parseJWT(token);
 
-        System.out.println(parseJWT("ayJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxd2UiLCJpc3MiOiJjZml2ZSIsImV4cCI6MTY4MzE5MzkyOSwiaWF0IjoxNjgzMTkwMzI5LCJqdGkiOiIzOWY5YTcxYTllY2E0Mjg1OGVjNGExODU2ZmQwYjk4OCJ9.4YOOILGWxlnmToWTdo4YoCbfXqvzdJF_Ds4zulDWX1o")
-                .getClaims());
+        System.out.println(parseJWT("ayJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxd2UiLCJpc3MiOiJjZml2ZSIsImV4cCI6MTY4MzE5MzkyOSwiaWF0IjoxNjgzMTkwMzI5LCJqdGkiOiIzOWY5YTcxYTllY2E0Mjg1OGVjNGExODU2ZmQwYjk4OCJ9.4YOOILGWxlnmToWTdo4YoCbfXqvzdJF_Ds4zulDWX1o").getClaims());
     }
 }

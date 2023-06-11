@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.service.permission;
 
-import com.cfive.pinnacle.entity.permission.Power;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cfive.pinnacle.entity.permission.Power;
 import com.cfive.pinnacle.entity.permission.PowerSet;
 
 /**

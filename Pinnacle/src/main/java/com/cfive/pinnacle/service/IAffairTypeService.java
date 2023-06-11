@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.service;
 
-import com.cfive.pinnacle.entity.AffairType;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cfive.pinnacle.entity.AffairType;
 
 /**
  * <p>

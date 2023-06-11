@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Schema(title = "ResponseResult",description = "响应结果")
+@Schema(title = "ResponseResult", description = "响应结果")
 public class ResponseResult<T> implements Serializable {
 
     @Serial

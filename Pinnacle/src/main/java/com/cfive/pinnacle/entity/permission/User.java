@@ -4,17 +4,16 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.Version;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.List;
-
 import com.cfive.pinnacle.entity.Department;
 import com.cfive.pinnacle.entity.Staff;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>

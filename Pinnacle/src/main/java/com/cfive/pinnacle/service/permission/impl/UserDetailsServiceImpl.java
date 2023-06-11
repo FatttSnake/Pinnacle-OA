@@ -1,7 +1,7 @@
 package com.cfive.pinnacle.service.permission.impl;
 
-import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.entity.permission.LoginUser;
+import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.service.permission.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
