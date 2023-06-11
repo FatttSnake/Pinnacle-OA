@@ -47,7 +47,6 @@ public class AffairController {
     }
 
     @GetMapping("/personal_affairs_limit")
-    @PreAuthorize("hasAuthority('affair:self:get')")
     public ResponseResult<List<Affair>> getPersonalAffairsLimit() {
         LambdaQueryWrapper<Affair> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Affair::getApplicantId, WebUtil.getLoginUser().getUser().getId());
