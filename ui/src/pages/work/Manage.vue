@@ -31,7 +31,7 @@
                 v-loading="loading"
                 element-loading-text="加载中..."
             >
-                <el-table-column prop="content" label="内容" width="800" />
+                <el-table-column prop="content" label="内容" />
                 <el-table-column prop="publisherName" label="发布者" width="120" />
                 <el-table-column prop="worker" label="工作人员" width="200">
                     <template #default="{ row }">

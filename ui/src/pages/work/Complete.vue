@@ -8,7 +8,7 @@
                 element-loading-text="加载中..."
             >
                 <el-table-column fixed prop="publisherName" label="发布者" width="120" />
-                <el-table-column prop="content" label="内容" width="800" />
+                <el-table-column prop="content" label="内容" />
                 <el-table-column prop="status" label="完成状态" width="100">
                     <template #default="scope">
                         <el-tag :type="scope.row.tagType">
