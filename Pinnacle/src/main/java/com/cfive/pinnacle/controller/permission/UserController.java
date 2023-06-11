@@ -71,7 +71,7 @@ public class UserController {
 
     @Operation(summary = "获取同部门下所有用户")
     @GetMapping("/department")
-    @PreAuthorize("hasAnyAuthority('work:manage:add', 'work:admin:add', 'attendance:manage:modify')")
+    @PreAuthorize("hasAnyAuthority('work:manage:add', 'work:admin:add', 'attendance:manage:modify', 'affair:self:add')")
     public ResponseResult<List<User>> getDepartmentUser() {
         return ResponseResult.databaseSelectSuccess(userService.getDepartmentUser());
     }
