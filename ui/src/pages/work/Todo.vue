@@ -8,7 +8,7 @@
                 element-loading-text="加载中..."
             >
                 <el-table-column fixed prop="publisherName" label="发布者" width="150" />
-                <el-table-column prop="content" label="内容" width="800" />
+                <el-table-column prop="content" label="内容" />
                 <el-table-column prop="deadline" label="结束时间" width="200" sortable>
                     <template #default="scope">
                         <span :style="{ color: scope.row.color1 }">{{ formatDate(scope) }}</span>
