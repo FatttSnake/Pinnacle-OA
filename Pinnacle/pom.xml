@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.cfive</groupId>
     <artifactId>Pinnacle</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0.230611_alpha</version>
     <name>Pinnacle</name>
     <description>Pinnacle</description>
     <properties>
