@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cfive.pinnacle.mapper.permission.GroupMapper">
+
+    <select id="filterGroupByRoleId" resultType="long">
+        select distinct t_group.id as group_id
+        from (select * from t_group where deleted = 0) as t_group
+        left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
+        left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
+        <where>
+            <if test="roleId != null">
+                tr.id = #{roleId}
+            </if>
+            <foreach collection="groupList" item="item" index="index" open="and t_group.id in (" separator="," close=")"
+                     nullable="true">
+                #{item}
+            </foreach>
+            <if test="searchName != null and searchName != ''">
+                <if test="searchRegex == 1">
+                    and t_group.name regexp #{searchName}
+                </if>
+                <if test="searchRegex != 1">
+                    and instr(t_group.name, #{searchName}) > 0
+                </if>
+            </if>
+            <if test="searchEnable != null and searchEnable != -1">
+                and t_group.enable = #{searchEnable}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAll" resultMap="groupMap">
+        select distinct t_group.id as group_id,
+        t_group.name as group_name,
+        t_group.enable as group_enable,
+        t_group.deleted as group_deleted,
+        t_group.version as group_version,
+        tr.id as role_id,
+        tr.name as role_name,
+        tr.deleted as role_deleted,
+        tr.version as role_version
+        from (select * from t_group where deleted = 0) as t_group
+        left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
+        left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
+        <where>
+            <foreach collection="groupList" item="item" index="index" open="t_group.id in (" separator="," close=")"
+                     nullable="true">
+                #{item.id}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="getOneById" resultMap="groupMap">
+        select t_group.id      as group_id,
+               t_group.name    as group_name,
+               t_group.enable  as group_enable,
+               t_group.deleted as group_deleted,
+               t_group.version as group_version,
+               tr.id           as role_id,
+               tr.name         as role_name,
+               tr.deleted      as role_deleted,
+               tr.version      as role_version
+        from t_group
+                 left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
+        where t_group.deleted = 0
+          and (tr.deleted = 0 or tr.deleted is null)
+          and (trg.deleted = 0 or trg.deleted is null)
+          and t_group.id = #{id}
+    </select>
+
+    <resultMap id="groupBase" type="role">
+        <id property="id" column="group_id"/>
+        <result property="name" column="group_name"/>
+        <result property="enable" column="group_enable"/>
+        <result property="deleted" column="group_deleted"/>
+        <result property="version" column="group_version"/>
+    </resultMap>
+
+    <resultMap id="groupMap" type="group" extends="groupBase">
+        <collection property="roles" ofType="role">
+            <id property="id" column="role_id"/>
+            <result property="name" column="role_name"/>
+            <result property="deleted" column="role_deleted"/>
+            <result property="version" column="role_version"/>
+        </collection>
+    </resultMap>
+</mapper>

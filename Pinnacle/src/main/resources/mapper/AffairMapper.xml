@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cfive.pinnacle.mapper.AffairMapper">
+
+    <select id="getFuzzyQueriesByAffairTitle" resultMap="affairMap">
+        select
+        *
+        from t_affair
+        <where>
+            <if test=" applicantId !=null">
+                applicant_id = #{applicantId}
+            </if>
+
+            <if test=" title!=null and title!='' ">
+                and instr(title,#{title})&gt;0
+            </if>
+            <if test=" typeId!=null ">
+                and instr(type_id,#{typeId})>0
+            </if>
+            <if test="status!=null ">
+                and instr(status,#{status})>0
+            </if>
+            and deleted = 0
+            and old = 0
+        </where>
+        order by create_time desc
+    </select>
+
+
+    <resultMap id="userMap" type="user">
+        <id property="id" column="user_id"/>
+        <result property="username" column="user_username"/>
+        <result property="departmentId" column="user_department_id"/>
+        <result property="enable" column="user_enable"/>
+        <result property="deleted" column="user_deleted"/>
+        <result property="version" column="user_version"/>
+        <association property="staff" javaType="staff">
+            <id property="id" column="staff_id"/>
+            <result property="firstName" column="staff_first_name"/>
+            <result property="lastName" column="staff_last_name"/>
+            <result property="deleted" column="staff_deleted"/>
+            <result property="version" column="staff_version"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="affairMap" type="affair" autoMapping="true">
+        <id property="id" column="id"/>
+    </resultMap>
+
+    <select id="getNotApprovedByFuzzyQueries" resultMap="affairMap2">
+        select
+        *
+        from t_affair
+        <where>
+            <if test=" inspectorId !=null">
+                inspector_id = #{inspectorId}
+                and status=0
+            </if>
+
+            <if test=" title!=null and title!='' ">
+                and instr(title,#{title})&gt;0
+            </if>
+            <if test=" typeId!=null ">
+                and instr(type_id,#{typeId})>0
+            </if>
+            <if test="status!=null ">
+                and instr(status,#{status})>0
+            </if>
+            and deleted = 0
+            and old = 0
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="getApprovedByFuzzyQueries" resultMap="affairMap3">
+        select
+        *
+        from t_affair
+        <where>
+            <if test=" inspectorId !=null">
+                inspector_id = #{inspectorId}
+                and status!=0
+            </if>
+
+            <if test=" title!=null and title!='' ">
+                and instr(title,#{title})&gt;0
+            </if>
+            <if test=" typeId!=null ">
+                and instr(type_id,#{typeId})>0
+            </if>
+            <if test="status!=null ">
+                and instr(status,#{status})>0
+            </if>
+            and deleted = 0
+            and old = 0
+        </where>
+        order by inspect_time desc
+    </select>
+
+
+    <resultMap id="affairMap2" type="affair" autoMapping="true">
+        <id property="id" column="id"/>
+    </resultMap>
+
+    <resultMap id="affairMap3" type="affair" autoMapping="true">
+        <id property="id" column="id"/>
+    </resultMap>
+
+
+</mapper>

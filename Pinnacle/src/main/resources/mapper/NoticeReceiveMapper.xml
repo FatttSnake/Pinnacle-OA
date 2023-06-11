@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cfive.pinnacle.mapper.NoticeReceiveMapper">
+    <!--查询所有或根据用户阅读状态进行查询-->
+    <select id="selectByUserId" resultMap="selectAllMap">
+        select u.id uid,
+        u.username,
+        n.id nid,
+        n.title,
+        n.content,
+        n.type_id,
+        n.sender_id,
+        n.create_time,
+        n.send_time,
+        n.end_time,
+        n.priority,
+        n.top,
+        n.modify_time,
+        n.origin_id,
+        type.id typeId,
+        type.name,
+        type.enable,
+        notice_receive.id receiveId,
+        notice_receive.already_read receiveRead
+        from t_notice_receive notice_receive
+        left join t_notice n on n.id = notice_receive.notice_id
+        left join t_notice_type type on type.id = n.type_id
+        left join t_user u on n.sender_id = u.id
+        <where>
+            <if test="null!=readStatus and readStatus>=0">
+                and notice_receive.already_read=#{readStatus}
+            </if>
+            <if test="null!=title and title!=''">
+                and instr(n.title,#{title})&gt;0
+            </if>
+            <if test="null!=type and type!=''">
+                and instr(type.name,#{type})&gt;0
+            </if>
+            <if test="null!=startTime">
+                and n.send_time &gt;= #{startTime}
+            </if>
+            <if test="null != endTime">
+                and n.end_time &lt; #{endTime}
+            </if>
+            and notice_receive.user_id=#{userId}
+            and notice_receive.deleted=0
+        </where>
+        order by n.top desc, n.create_time desc
+    </select>
+    <resultMap id="selectAllMap" type="notice" autoMapping="true">
+        <id property="id" column="nid"/>
+        <result property="isRead" column="receiveRead"/>
+        <association property="noticeType" javaType="noticeType" autoMapping="true">
+            <id property="id" column="typeId"/>
+        </association>
+        <association property="sender" javaType="user" autoMapping="true">
+            <id property="id" column="uid"/>
+        </association>
+    </resultMap>
+    <!-- 所接收到公告的前五条公告   -->
+    <select id="selectLimitByUserId" resultMap="selectAllMap">
+        select u.id uid,
+        u.username,
+        n.id nid,
+        n.title,
+        n.content,
+        n.type_id,
+        n.sender_id,
+        n.create_time,
+        n.send_time,
+        n.end_time,
+        n.priority,
+        n.top,
+        n.modify_time,
+        n.origin_id,
+        type.id typeId,
+        type.name,
+        type.enable,
+        notice_receive.id receiveId,
+        notice_receive.already_read receiveRead
+        from t_notice_receive notice_receive
+        left join t_notice n on n.id = notice_receive.notice_id
+        left join t_notice_type type on type.id = n.type_id
+        left join t_user u on n.sender_id = u.id
+        <where>
+            and notice_receive.user_id=#{userId}
+            and notice_receive.deleted=0
+        </where>
+        order by n.top desc, n.send_time desc
+        limit 5;
+    </select>
+</mapper>

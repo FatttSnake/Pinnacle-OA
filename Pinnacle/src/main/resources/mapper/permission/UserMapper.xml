@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cfive.pinnacle.mapper.permission.UserMapper">
+
+    <select id="filterUserByRoleIdAndGroupId" resultType="long">
+        select distinct t_user.id as user_id
+        from (select * from t_user where deleted = 0) as t_user
+        left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+        left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+        left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+        left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+        left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+        <where>
+            <if test="roleId != null">
+                tr.id = #{roleId}
+            </if>
+            <if test="groupId != null">
+                and tg.id = #{groupId}
+            </if>
+            <foreach collection="userList" item="item" index="index" open="and t_user.id in (" separator="," close=")"
+                     nullable="true">
+                #{item}
+            </foreach>
+            <if test="searchName != null and searchName != ''">
+                <if test="searchRegex == 1">
+                    and t_user.username regexp #{searchName}
+                </if>
+                <if test="searchRegex != 1">
+                    and instr(t_user.username, #{searchName}) > 0
+                </if>
+            </if>
+            <if test="searchEnable != null and searchEnable != -1">
+                and t_user.enable = #{searchEnable}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAllWithRoleAndGroup" resultMap="userWithRoleMap">
+        select distinct t_user.id as user_id,
+        t_user.username as user_username,
+        t_user.department_id as user_department_id,
+        t_user.enable as user_enable,
+        t_user.deleted as user_deleted,
+        t_user.version as user_version,
+        ts.id as staff_id,
+        ts.first_name as staff_first_name,
+        ts.last_name as staff_last_name,
+        ts.deleted as staff_deleted,
+        ts.version as staff_version,
+        tr.id as role_id,
+        tr.enable as role_enable,
+        tr.name as role_name,
+        tr.deleted as role_deleted,
+        tr.version as role_version,
+        tg.id as group_id,
+        tg.name as group_name,
+        tg.enable as group_enable,
+        tg.deleted as group_deleted,
+        tg.version as group_version
+        from (select * from t_user where deleted = 0) as t_user
+        left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+        left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+        left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+        left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+        left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+        <where>
+            <foreach collection="userList" item="item" index="index" open="t_user.id in (" separator="," close=")"
+                     nullable="true">
+                #{item.id}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="getOneById" resultMap="userWithRoleMap">
+        select t_user.id            as user_id,
+               t_user.username      as user_username,
+               t_user.department_id as user_department_id,
+               t_user.enable        as user_enable,
+               t_user.deleted       as user_deleted,
+               t_user.version       as user_version,
+               ts.id                as staff_id,
+               ts.first_name        as staff_first_name,
+               ts.last_name         as staff_last_name,
+               ts.deleted           as staff_deleted,
+               ts.version           as staff_version,
+               tr.id                as role_id,
+               tr.name              as role_name,
+               tr.enable            as role_enable,
+               tr.deleted           as role_deleted,
+               tr.version           as role_version,
+               tg.id                as group_id,
+               tg.name              as group_name,
+               tg.enable            as group_enable,
+               tg.deleted           as group_deleted,
+               tg.version           as group_version
+        from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+        where t_user.deleted = 0
+          and t_user.id = #{id}
+    </select>
+
+    <select id="getOneWithPowerByUsername" resultMap="userWithPowerMap">
+        select t_user.id            as user_id,
+               t_user.username      as user_username,
+               t_user.passwd        as user_passwd,
+               t_user.department_id as user_department_id,
+               t_user.enable        as user_enable,
+               t_user.deleted       as user_deleted,
+               t_user.version       as user_version,
+               ts.id                as staff_id,
+               ts.first_name        as staff_first_name,
+               ts.last_name         as staff_last_name,
+               ts.gender            as staff_gender,
+               ts.birth             as staff_birth,
+               ts.email             as staff_email,
+               ts.tel               as staff_tel,
+               ts.address           as staff_address,
+               ts.deleted           as staff_deleted,
+               ts.version           as staff_version,
+               tm.id                as menu_id,
+               tm.name              as menu_name,
+               tm.url               as menu_url,
+               tm.power_id          as menu_power_id,
+               tm.parent_id         as menu_parent_id,
+               te.id                as element_id,
+               te.name              as element_name,
+               te.power_id          as element_power_id,
+               te.menu_id           as element_menu_id,
+               t.id                 as operation_id,
+               t.name               as operation_name,
+               t.code               as operation_code,
+               t.power_id           as operation_power_id,
+               t.element_id         as operation_element_id,
+               t.parent_id          as operation_parent_id
+        from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+                 left join (select * from t_group where deleted = 0 and enable = 1) as tg on tg.id = tug.group_id
+                 left join (select * from t_role_group where deleted = 0) as trg on tg.id = trg.group_id
+                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+                 left join (select * from t_role where deleted = 0 and enable = 1) as tr
+                           on tr.id = trg.role_id or tr.id = tur.role_id
+                 left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
+                 left join t_power as tp on tp.id = tpr.power_id
+                 left join t_menu tm on tp.id = tm.power_id
+                 left join t_element te on tp.id = te.power_id
+                 left join t_operation t on tp.id = t.power_id
+        where t_user.deleted = 0
+          and t_user.username = #{username}
+    </select>
+
+    <select id="getAllAffairUser" resultMap="userWithRoleMap">
+        select distinct t_user.id            as user_id,
+                        t_user.username      as user_username,
+                        t_user.department_id as user_department_id,
+                        t_user.enable        as user_enable,
+                        t_user.deleted       as user_deleted,
+                        t_user.version       as user_version,
+                        ts.id                as staff_id,
+                        ts.first_name        as staff_first_name,
+                        ts.last_name         as staff_last_name,
+                        ts.deleted           as staff_deleted,
+                        ts.version           as staff_version,
+                        tr.id                as role_id,
+                        tr.enable            as role_enable,
+                        tr.name              as role_name,
+                        tr.deleted           as role_deleted,
+                        tr.version           as role_version,
+                        tg.id                as group_id,
+                        tg.name              as group_name,
+                        tg.enable            as group_enable,
+                        tg.deleted           as group_deleted,
+                        tg.version           as group_version
+        from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+                 left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
+                 left join t_power as tp on tp.id = tpr.power_id
+                 left join (select * from t_operation) as t on t.power_id = tp.id
+        where t_user.deleted = 0
+          and t_user.id != 1
+          and t.code = 'affair:manage:modify'
+    </select>
+
+    <select id="getAllDepartmentUser" resultMap="userWithRoleMap">
+        select distinct t_user.id            as user_id,
+                        t_user.username      as user_username,
+                        t_user.department_id as user_department_id,
+                        t_user.enable        as user_enable,
+                        t_user.deleted       as user_deleted,
+                        t_user.version       as user_version,
+                        ts.id                as staff_id,
+                        ts.first_name        as staff_first_name,
+                        ts.last_name         as staff_last_name,
+                        ts.deleted           as staff_deleted,
+                        ts.version           as staff_version,
+                        tr.id                as role_id,
+                        tr.enable            as role_enable,
+                        tr.name              as role_name,
+                        tr.deleted           as role_deleted,
+                        tr.version           as role_version,
+                        tg.id                as group_id,
+                        tg.name              as group_name,
+                        tg.enable            as group_enable,
+                        tg.deleted           as group_deleted,
+                        tg.version           as group_version
+        from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+                 left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
+                 left join t_power as tp on tp.id = tpr.power_id
+                 left join (select * from t_operation) as t on t.power_id = tp.id
+        where t_user.deleted = 0
+          and t_user.id != 1
+          and t_user.department_id = #{departmentId}
+    </select>
+
+    <select id="getAllNoticeUser" resultMap="userWithRoleMap">
+        select distinct t_user.id            as user_id,
+                        t_user.username      as user_username,
+                        t_user.department_id as user_department_id,
+                        t_user.enable        as user_enable,
+                        t_user.deleted       as user_deleted,
+                        t_user.version       as user_version,
+                        ts.id                as staff_id,
+                        ts.first_name        as staff_first_name,
+                        ts.last_name         as staff_last_name,
+                        ts.deleted           as staff_deleted,
+                        ts.version           as staff_version,
+                        tr.id                as role_id,
+                        tr.enable            as role_enable,
+                        tr.name              as role_name,
+                        tr.deleted           as role_deleted,
+                        tr.version           as role_version,
+                        tg.id                as group_id,
+                        tg.name              as group_name,
+                        tg.enable            as group_enable,
+                        tg.deleted           as group_deleted,
+                        tg.version           as group_version
+        from t_user
+                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
+                 left join (select * from t_user_role where deleted = 0) as tur on t_user.id = tur.user_id
+                 left join (select * from t_role where deleted = 0) as tr on tr.id = tur.role_id
+                 left join (select * from t_user_group where deleted = 0) as tug on t_user.id = tug.user_id
+                 left join (select * from t_group where deleted = 0) as tg on tg.id = tug.group_id
+                 left join (select * from t_power_role where deleted = 0) as tpr on tpr.role_id = tr.id
+                 left join t_power as tp on tp.id = tpr.power_id
+                 left join (select * from t_operation) as t on t.power_id = tp.id
+        where t_user.deleted = 0
+          and t_user.id != 1
+          and t.code = 'notice:manage:get'
+    </select>
+
+    <resultMap id="userBase" type="user">
+        <id property="id" column="user_id"/>
+        <result property="username" column="user_username"/>
+        <result property="departmentId" column="user_department_id"/>
+        <result property="enable" column="user_enable"/>
+        <result property="deleted" column="user_deleted"/>
+        <result property="version" column="user_version"/>
+    </resultMap>
+
+    <resultMap id="userWithIfoMap" type="user" extends="userBase">
+        <association property="staff" javaType="staff">
+            <id property="id" column="staff_id"/>
+            <result property="firstName" column="staff_first_name"/>
+            <result property="lastName" column="staff_last_name"/>
+            <result property="gender" column="staff_gender"/>
+            <result property="birth" column="staff_birth"/>
+            <result property="email" column="staff_email"/>
+            <result property="tel" column="staff_tel"/>
+            <result property="address" column="staff_address"/>
+            <result property="deleted" column="staff_deleted"/>
+            <result property="version" column="staff_version"/>
+        </association>
+        <association property="department" javaType="department">
+            <id property="id" column="department_id"/>
+            <result property="name" column="department_name"/>
+            <result property="tel" column="department_tel"/>
+            <result property="address" column="department_address"/>
+            <result property="deleted" column="department_deleted"/>
+            <result property="version" column="department_version"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="userWithRoleMap" type="user" extends="userBase">
+        <association property="staff" javaType="staff">
+            <id property="id" column="staff_id"/>
+            <result property="firstName" column="staff_first_name"/>
+            <result property="lastName" column="staff_last_name"/>
+            <result property="deleted" column="staff_deleted"/>
+            <result property="version" column="staff_version"/>
+        </association>
+        <collection property="roles" ofType="role">
+            <id property="id" column="role_id"/>
+            <result property="name" column="role_name"/>
+            <result property="enable" column="role_enable"/>
+            <result property="deleted" column="role_deleted"/>
+            <result property="version" column="role_version"/>
+        </collection>
+        <collection property="groups" ofType="group">
+            <id property="id" column="group_id"/>
+            <result property="name" column="group_name"/>
+            <result property="enable" column="group_enable"/>
+            <result property="deleted" column="group_deleted"/>
+            <result property="version" column="group_version"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="userWithPowerMap" type="user" extends="userWithIfoMap">
+        <result property="passwd" column="user_passwd"/>
+        <collection property="menus" ofType="menu">
+            <id property="id" column="menu_id"/>
+            <result property="name" column="menu_name"/>
+            <result property="url" column="menu_url"/>
+            <result property="powerId" column="menu_power_id"/>
+            <result property="parentId" column="menu_parent_id"/>
+        </collection>
+        <collection property="elements" ofType="element">
+            <id property="id" column="element_id"/>
+            <result property="name" column="element_name"/>
+            <result property="powerId" column="element_power_id"/>
+            <result property="menuId" column="element_menu_id"/>
+        </collection>
+        <collection property="operations" ofType="operation">
+            <id property="id" column="operation_id"/>
+            <result property="name" column="operation_name"/>
+            <result property="code" column="operation_code"/>
+            <result property="powerId" column="operation_power_id"/>
+            <result property="elementId" column="operation_element_id"/>
+            <result property="parentId" column="operation_parent_id"/>
+        </collection>
+    </resultMap>
+</mapper>
