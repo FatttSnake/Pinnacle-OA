@@ -3,16 +3,15 @@ package com.cfive.pinnacle.entity.permission;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serial;
-import java.io.Serializable;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * <p>
@@ -37,7 +36,7 @@ public class Menu implements Serializable {
     private Long id;
 
     /**
-     *  菜单名
+     * 菜单名
      */
     @TableField("name")
     private String name;
@@ -49,7 +48,7 @@ public class Menu implements Serializable {
     private String url;
 
     /**
-     *  权限ID
+     * 权限ID
      */
     @TableField("power_id")
     @JsonSerialize(using = ToStringSerializer.class)

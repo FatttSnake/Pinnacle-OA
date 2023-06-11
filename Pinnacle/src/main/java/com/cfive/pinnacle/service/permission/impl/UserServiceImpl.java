@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.permission.*;
 import com.cfive.pinnacle.exception.OldPasswordNotMatchException;
 import com.cfive.pinnacle.mapper.permission.*;
 import com.cfive.pinnacle.service.permission.IUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,6 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void setUserRoleMapper(UserRoleMapper userRoleMapper) {
         this.userRoleMapper = userRoleMapper;
     }
+
     @Autowired
     public void setUserGroupMapper(UserGroupMapper userGroupMapper) {
         this.userGroupMapper = userGroupMapper;

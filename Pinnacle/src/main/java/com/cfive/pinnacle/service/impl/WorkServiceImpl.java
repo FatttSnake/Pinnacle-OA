@@ -2,14 +2,14 @@ package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.cfive.pinnacle.entity.permission.User;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.UserWork;
 import com.cfive.pinnacle.entity.Work;
-import com.cfive.pinnacle.mapper.permission.UserMapper;
+import com.cfive.pinnacle.entity.permission.User;
 import com.cfive.pinnacle.mapper.UserWorkMapper;
 import com.cfive.pinnacle.mapper.WorkMapper;
+import com.cfive.pinnacle.mapper.permission.UserMapper;
 import com.cfive.pinnacle.service.IWorkService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -28,12 +28,27 @@ import java.util.List;
  */
 @Service
 public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IWorkService {
-    @Autowired
+
     private WorkMapper workMapper;
-    @Autowired
     private UserWorkMapper userWorkMapper;
-    @Autowired
+
     private UserMapper userMapper;
+
+    @Autowired
+    public void setWorkMapper(WorkMapper workMapper) {
+        this.workMapper = workMapper;
+    }
+
+    @Autowired
+    public void setUserWorkMapper(UserWorkMapper userWorkMapper) {
+        this.userWorkMapper = userWorkMapper;
+    }
+
+    @Autowired
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
     @Override
     public List<Work> getAll() {
         return workMapper.getAll();
@@ -69,8 +84,8 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
 
     @Override
     public double getProgress(Long workId) {
-        double workNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id",workId));
-        double completeNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id",workId).eq("status",1));
+        double workNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id", workId));
+        double completeNum = userWorkMapper.selectCount(new QueryWrapper<UserWork>().eq("work_id", workId).eq("status", 1));
         double progress;
         progress = (completeNum / workNum) * 100;
         progress = (double) Math.round(progress * 100) / 100;
@@ -83,7 +98,7 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public boolean addWork(Work work) {
         boolean flag = workMapper.insert(work) > 0;
         long workId = work.getId();
@@ -100,32 +115,31 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public boolean deleteByWorkId(Long workId) {
         return userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", workId)) > 0 && workMapper.deleteById(workId) > 0;
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public boolean updateStatus(UserWork userWork) {
         return userWorkMapper.update(userWork, new UpdateWrapper<UserWork>().eq("work_id", userWork.getWorkId()).eq("user_id", userWork.getUserId())) > 0;
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public boolean updateWork(Work work) {
         boolean flag = userWorkMapper.delete(new QueryWrapper<UserWork>().eq("work_id", work.getId())) > 0;
         if (workMapper.update(null, new UpdateWrapper<Work>().eq("id", work.getId()).set("old", 1)) <= 0) {
             flag = false;
-        }
-        else{
+        } else {
             work.setOriginId(work.getId());
             work.setId(null); //清除id，使新插入的数据id重新生成
             work.setCreateTime(null);
             work.setModifyTime(null);
             work.setOld(0);
         }
-        if (workMapper.insert(work)<=0) {
+        if (workMapper.insert(work) <= 0) {
             flag = false;
         }
         for (User user :

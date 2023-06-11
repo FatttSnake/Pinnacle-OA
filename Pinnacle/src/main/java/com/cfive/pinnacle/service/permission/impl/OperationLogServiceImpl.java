@@ -1,9 +1,9 @@
 package com.cfive.pinnacle.service.permission.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.permission.OperationLog;
 import com.cfive.pinnacle.mapper.permission.OperationLogMapper;
 import com.cfive.pinnacle.service.permission.IOperationLogService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

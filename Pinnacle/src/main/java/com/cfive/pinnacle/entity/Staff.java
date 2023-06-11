@@ -1,15 +1,14 @@
 package com.cfive.pinnacle.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  * <p>
@@ -59,7 +58,7 @@ public class Staff implements Serializable {
     /**
      * 生日
      */
-    @TableField(value = "birth",updateStrategy = FieldStrategy.IGNORED)
+    @TableField(value = "birth", updateStrategy = FieldStrategy.IGNORED)
     private LocalDate birth;
 
     /**

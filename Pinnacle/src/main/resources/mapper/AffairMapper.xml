@@ -2,27 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cfive.pinnacle.mapper.AffairMapper">
 
-    <select id="getSameDepartmentUser" resultMap="userMap">
-        select t_user.id            as user_id,
-               t_user.username      as user_username,
-               t_user.department_id as user_department_id,
-               t_user.enable        as user_enable,
-               t_user.deleted       as user_deleted,
-               t_user.version       as user_version,
-               ts.id                as staff_id,
-               ts.first_name        as staff_first_name,
-               ts.last_name         as staff_last_name,
-               ts.deleted           as staff_deleted,
-               ts.version           as staff_version,
-        from t_user
-                 left join (select * from t_staff where deleted = 0) as ts on ts.user_id = t_user.id
-        where t_user.id=#{id}
-            t_user.deleted = 0;
-    </select>
-
     <select id="getFuzzyQueriesByAffairTitle" resultMap="affairMap">
         select
-                       *
+        *
         from t_affair
         <where>
             <if test=" applicantId !=null">
@@ -30,7 +12,7 @@
             </if>
 
             <if test=" title!=null and title!='' ">
-               and  instr(title,#{title})&gt;0
+                and instr(title,#{title})&gt;0
             </if>
             <if test=" typeId!=null ">
                 and instr(type_id,#{typeId})>0
@@ -43,8 +25,6 @@
         </where>
         order by create_time desc
     </select>
-
-
 
 
     <resultMap id="userMap" type="user">
@@ -67,7 +47,6 @@
         <id property="id" column="id"/>
     </resultMap>
 
-
     <select id="getNotApprovedByFuzzyQueries" resultMap="affairMap2">
         select
         *
@@ -79,7 +58,7 @@
             </if>
 
             <if test=" title!=null and title!='' ">
-                and  instr(title,#{title})&gt;0
+                and instr(title,#{title})&gt;0
             </if>
             <if test=" typeId!=null ">
                 and instr(type_id,#{typeId})>0
@@ -104,7 +83,7 @@
             </if>
 
             <if test=" title!=null and title!='' ">
-                and  instr(title,#{title})&gt;0
+                and instr(title,#{title})&gt;0
             </if>
             <if test=" typeId!=null ">
                 and instr(type_id,#{typeId})>0
@@ -126,10 +105,6 @@
     <resultMap id="affairMap3" type="affair" autoMapping="true">
         <id property="id" column="id"/>
     </resultMap>
-
-
-
-
 
 
 </mapper>

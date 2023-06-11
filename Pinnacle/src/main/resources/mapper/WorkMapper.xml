@@ -26,20 +26,20 @@
         select w.id,
                content,
                publisher_id,
-               u.username publisher_name,
+               u.username        publisher_name,
                create_time,
                deadline,
-               tuw.user_id worker_id,
-               tu.username  worker_name,
-               tuw.status  status,
+               tuw.user_id       worker_id,
+               tu.username       worker_name,
+               tuw.status        status,
                tuw.complete_time complete_time,
                first_name,
                last_name
         from t_work w
-            left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
-            left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
-            left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
-            left join (select * from t_staff where deleted = 0) as ts on tuw.user_id = ts.user_id
+                 left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
+                 left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
+                 left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
+                 left join (select * from t_staff where deleted = 0) as ts on tuw.user_id = ts.user_id
         where w.deleted = 0
           and w.old = 0
         order by w.id desc;
@@ -48,20 +48,20 @@
         select w.id,
                content,
                publisher_id,
-               u.username publisher_name,
+               u.username        publisher_name,
                create_time,
                deadline,
-               tuw.user_id worker_id,
-               tu.username  worker_name,
-               tuw.status  status,
+               tuw.user_id       worker_id,
+               tu.username       worker_name,
+               tuw.status        status,
                tuw.complete_time completeTime,
                first_name,
                last_name
         from t_work w
-                   left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
-                   left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
-                   left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
-                   left join (select * from t_staff where deleted = 0) as ts on tuw.user_id = ts.user_id
+                 left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
+                 left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
+                 left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
+                 left join (select * from t_staff where deleted = 0) as ts on tuw.user_id = ts.user_id
         where w.id = #{id}
           and w.deleted = 0
           and w.old = 0;
@@ -70,11 +70,11 @@
         select w.id,
                content,
                publisher_id,
-               u.username publisher_name,
+               u.username        publisher_name,
                create_time,
                deadline,
                tuw.user_id       worker_id,
-               tu.username        worker_name,
+               tu.username       worker_name,
                tuw.status        status,
                tuw.complete_time completeTime,
                first_name,
@@ -93,18 +93,17 @@
         select w.id,
                content,
                publisher_id,
-               u.username publisher_name,
+               u.username  publisher_name,
                create_time,
                deadline,
                tuw.user_id worker_id,
-               tu.username  worker_name,
+               tu.username worker_name,
                tuw.status  status
         from t_work w
                  left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
                  left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
                  left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
-        where
-            tuw.user_id = #{userId}
+        where tuw.user_id = #{userId}
           and status = false
           and w.deleted = 0
           and w.old = 0
@@ -112,22 +111,22 @@
     </select>
     <select id="getCard" parameterType="long" resultMap="workMap">
         select w.id,
-        content,
-        publisher_id,
-        u.username publisher_name,
-        create_time,
-        deadline,
-        tuw.user_id worker_id,
-        tu.username worker_name,
-        tuw.status status
+               content,
+               publisher_id,
+               u.username  publisher_name,
+               create_time,
+               deadline,
+               tuw.user_id worker_id,
+               tu.username worker_name,
+               tuw.status  status
         from t_work w
                  left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id
                  left join (select * from t_user_work where deleted = 0) as tuw on w.id = tuw.work_id
                  left join (select * from t_user where deleted = 0) as tu on tuw.user_id = tu.id
         where tuw.user_id = #{userId}
-        and status = false
-        and w.deleted = 0
-        and w.old = 0
+          and status = false
+          and w.deleted = 0
+          and w.old = 0
         order by w.deadline asc, w.id desc
         limit 5;
 
@@ -136,12 +135,12 @@
         select w.id,
                content,
                publisher_id,
-               u.username publisher_name,
+               u.username        publisher_name,
                create_time,
                deadline,
-               tuw.user_id worker_id,
-               u.username  worker_name,
-               tuw.status status,
+               tuw.user_id       worker_id,
+               u.username        worker_name,
+               tuw.status        status,
                tuw.complete_time complete_time
         from t_work w
                  left join (select * from t_user where deleted = 0) as u on w.publisher_id = u.id

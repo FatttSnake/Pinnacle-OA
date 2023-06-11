@@ -102,7 +102,6 @@
 <script lang="ts">
 import 'element-plus/theme-chalk/index.css'
 import request from '@/services/index.js'
-import _ from 'lodash'
 
 export default {
     data() {
@@ -170,24 +169,19 @@ export default {
     methods: {
         onSubmit: function (form) {
             this.form.applicantId = this.currentUser.id
-            console.log(form)
             this.$refs.formRules.validate((value) => {
                 if (value) {
                     request
                         .post('/affair/add', form)
                         .then((response) => {
-                            console.log(response.data)
                             this.getPersonalAffair()
                             this.resetForm()
                         })
                         .catch((reportError) => {
                             this.resetForm()
-                            console.log(reportError)
                         })
                     this.getPersonalAffair()
                     this.$router.go(-1)
-                } else {
-                    console.log('fault!')
                 }
             })
         }, // 表单提交及验证
@@ -202,24 +196,14 @@ export default {
             }, 500)
         }, // 动态时钟
         getGrantUser() {
-            request
-                .get('/user/affair')
-                .then((response) => {
-                    this.grantUsers = response.data.data
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                }) // 获取有权限用户
+            request.get('/user/affair').then((response) => {
+                this.grantUsers = response.data.data
+            })
         },
         getCurrentUser() {
-            request
-                .get('/user/info')
-                .then((response) => {
-                    this.currentUser = response.data.data
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                }) // 获取当前用户
+            request.get('/user/info').then((response) => {
+                this.currentUser = response.data.data
+            })
         },
         selectGrant() {
             for (let i = 0; i < this.grantUsers.length; i++) {
@@ -229,24 +213,14 @@ export default {
             }
         },
         getSameDepartmentUser() {
-            request
-                .get('/user/department')
-                .then((response) => {
-                    this.sameDepartmentUsers = response.data.data
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.get('/user/department').then((response) => {
+                this.sameDepartmentUsers = response.data.data
+            })
         },
         getPersonalAffair() {
-            request
-                .get('/affair/personal_affairs')
-                .then((response) => {
-                    this.grantUsers = response.data.data
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.get('/affair/personal_affairs').then((response) => {
+                this.grantUsers = response.data.data
+            })
         }
     },
     created() {

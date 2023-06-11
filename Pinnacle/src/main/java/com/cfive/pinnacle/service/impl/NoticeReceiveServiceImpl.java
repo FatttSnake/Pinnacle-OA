@@ -1,11 +1,11 @@
 package com.cfive.pinnacle.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.Notice;
 import com.cfive.pinnacle.entity.NoticeReceive;
 import com.cfive.pinnacle.mapper.NoticeReceiveMapper;
 import com.cfive.pinnacle.service.INoticeReceiveService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -24,14 +25,19 @@ import java.util.List;
  */
 @Service
 public class NoticeReceiveServiceImpl extends ServiceImpl<NoticeReceiveMapper, NoticeReceive> implements INoticeReceiveService {
-    @Autowired
+
     private NoticeReceiveMapper noticeReceiveMapper;
+
+    @Autowired
+    public void setNoticeReceiveMapper(NoticeReceiveMapper noticeReceiveMapper) {
+        this.noticeReceiveMapper = noticeReceiveMapper;
+    }
 
     @Override
     public List<Notice> selectByUserId(Integer readStatus, String title, String type, String startTime, String endTime) {
         Long userId = WebUtil.getLoginUser().getUser().getId();
         LocalDateTime start = null, end = null;
-        if (startTime != "" && endTime != "") {
+        if (!Objects.equals(startTime, "") && !Objects.equals(endTime, "")) {
             start = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             end = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }

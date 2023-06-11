@@ -200,9 +200,6 @@ export default {
             this.$refs.form.validate((value) => {
                 if (value) {
                     this.putForm(form)
-                    console.log('submit!')
-                } else {
-                    console.log('fault!')
                 }
             })
         },

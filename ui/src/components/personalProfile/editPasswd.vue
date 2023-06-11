@@ -73,8 +73,6 @@ export default {
                 if (value) {
                     this.$emit('updatePasswd', passwdForm)
                     this.$refs.passwdForm.resetFields()
-                } else {
-                    console.log('fault!')
                 }
             })
         },

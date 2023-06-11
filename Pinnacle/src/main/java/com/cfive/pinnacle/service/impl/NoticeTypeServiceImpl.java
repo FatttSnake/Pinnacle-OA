@@ -3,10 +3,10 @@ package com.cfive.pinnacle.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.NoticeType;
 import com.cfive.pinnacle.mapper.NoticeTypeMapper;
 import com.cfive.pinnacle.service.INoticeTypeService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +23,13 @@ import java.util.List;
  */
 @Service
 public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeType> implements INoticeTypeService {
-    @Autowired
+
     NoticeTypeMapper noticeTypeMapper;
+
+    @Autowired
+    public void setNoticeTypeMapper(NoticeTypeMapper noticeTypeMapper) {
+        this.noticeTypeMapper = noticeTypeMapper;
+    }
 
     @Override
     public List<NoticeType> selectTypeList() {
@@ -36,7 +41,7 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
     @Override
     public IPage<NoticeType> selectPageTypeList(IPage<NoticeType> page, String name, Integer enable) {
         LambdaQueryWrapper<NoticeType> lqw = new LambdaQueryWrapper<>();
-        lqw.like(null != name && name != "", NoticeType::getName, name);
+        lqw.like(null != name && !name.equals(""), NoticeType::getName, name);
         lqw.eq(null != enable && enable != -1, NoticeType::getEnable, enable);
         lqw.orderByDesc(NoticeType::getId);
         return noticeTypeMapper.selectPage(page, lqw);
@@ -46,8 +51,7 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
     public List<NoticeType> selectEnableTypeList() {
         LambdaQueryWrapper<NoticeType> lqw = new LambdaQueryWrapper<>();
         lqw.eq(NoticeType::getEnable, 1);
-        List<NoticeType> noticeTypes = noticeTypeMapper.selectList(lqw);
-        return noticeTypes;
+        return noticeTypeMapper.selectList(lqw);
     }
 
     @Override
@@ -56,7 +60,7 @@ public class NoticeTypeServiceImpl extends ServiceImpl<NoticeTypeMapper, NoticeT
             return false;
         }
         LambdaUpdateWrapper<NoticeType> luw = new LambdaUpdateWrapper<>();
-        luw.eq(null != typeId, NoticeType::getId, typeId).set(null != enable, NoticeType::getEnable, enable);
+        luw.eq(NoticeType::getId, typeId).set(NoticeType::getEnable, enable);
         return noticeTypeMapper.update(null, luw) > 0;
     }
 

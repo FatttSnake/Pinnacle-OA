@@ -130,25 +130,14 @@ export default {
     },
     methods: {
         handleDelete(row) {
-            console.log(row.id)
-            request
-                .delete('/affair/' + row.id)
-                .then((response) => {
-                    this.getApproved()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.delete('/affair/' + row.id).then((response) => {
+                this.getApproved()
+            })
         },
         getGrantUser() {
-            request
-                .get('/user/affair')
-                .then((response) => {
-                    this.grantUsers = response.data.data
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                }) // 获取有权限用户
+            request.get('/user/affair').then((response) => {
+                this.grantUsers = response.data.data
+            })
         },
         // getInspectorName() {
         //     for (let i = 0; i < this.grantUsers.length; i++) {
@@ -160,15 +149,9 @@ export default {
         // },
 
         getApproved() {
-            request
-                .get('/affair/personal_affairs')
-                .then((response) => {
-                    this.tableData = response.data.data
-                    console.log(this.tableData)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.get('/affair/personal_affairs').then((response) => {
+                this.tableData = response.data.data
+            })
         },
         format(time) {
             return new Date(time).toLocaleString()

@@ -1,6 +1,6 @@
 package com.cfive.pinnacle.exception;
 
-public class DataValidationFailedException extends RuntimeException{
+public class DataValidationFailedException extends RuntimeException {
     public DataValidationFailedException() {
         super("Data validation failed");
     }

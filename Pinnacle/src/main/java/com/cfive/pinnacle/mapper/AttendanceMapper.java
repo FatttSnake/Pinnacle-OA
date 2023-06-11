@@ -1,8 +1,7 @@
 package com.cfive.pinnacle.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.cfive.pinnacle.entity.Attendance;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cfive.pinnacle.entity.Attendance;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -19,8 +18,7 @@ import java.util.List;
 public interface AttendanceMapper extends BaseMapper<Attendance> {
 
     List<Attendance> getAllAttendanceAndUser();
-    List<Attendance> getAttendanceAndUserByid(Long userId);
 
-
+    List<Attendance> getAttendanceAndUserById(Long userId);
 
 }

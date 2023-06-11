@@ -118,61 +118,29 @@ export default {
     },
     methods: {
         handleYes(row) {
-            console.log(row)
-            request
-                .put('/affair/yes', row)
-                .then((response) => {
-                    console.log(response.data)
-                    this.getApproved()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.put('/affair/yes', row).then((response) => {
+                this.getApproved()
+            })
         },
         handleNo(row) {
-            console.log(row)
-            request
-                .put('/affair/no', row)
-                .then((response) => {
-                    console.log(response.data)
-                    this.getApproved()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.put('/affair/no', row).then((response) => {
+                this.getApproved()
+            })
         },
         handleDelete(row) {
-            console.log(row.id)
-            request
-                .delete('/affair/' + row.id)
-                .then((response) => {
-                    console.log(response.data)
-                    this.getApproved()
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.delete('/affair/' + row.id).then((response) => {
+                this.getApproved()
+            })
         },
         getUser() {
-            request
-                .get('/user/affair')
-                .then((response) => {
-                    this.users = response.data.data
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                }) // 数据库中获取用户
+            request.get('/user/affair').then((response) => {
+                this.users = response.data.data
+            })
         },
         getApproved() {
-            request
-                .get('/affair/approved')
-                .then((response) => {
-                    this.tableData = response.data.data
-                    console.log(this.tableData)
-                })
-                .catch((reportError) => {
-                    console.log(reportError)
-                })
+            request.get('/affair/approved').then((response) => {
+                this.tableData = response.data.data
+            })
         },
         format(time) {
             return new Date(time).toLocaleString()

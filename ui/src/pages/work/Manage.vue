@@ -230,7 +230,6 @@ export default {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
                     this.tableData = _.cloneDeep(response.data)
-                    console.log(this.tableData)
                     if (this.tableData) {
                         this.loading = false
                     }
@@ -247,7 +246,6 @@ export default {
                 const response = res.data
                 if (response.code === DATABASE_SELECT_OK) {
                     this.workers = response.data
-                    console.log(this.workers)
                 }
             })
         }

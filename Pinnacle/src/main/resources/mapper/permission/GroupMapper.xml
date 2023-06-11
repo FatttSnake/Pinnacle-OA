@@ -5,8 +5,8 @@
     <select id="filterGroupByRoleId" resultType="long">
         select distinct t_group.id as group_id
         from (select * from t_group where deleted = 0) as t_group
-                 left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
-                 left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
+        left join (select * from t_role_group where deleted = 0) as trg on t_group.id = trg.group_id
+        left join (select * from t_role where deleted = 0) as tr on tr.id = trg.role_id
         <where>
             <if test="roleId != null">
                 tr.id = #{roleId}

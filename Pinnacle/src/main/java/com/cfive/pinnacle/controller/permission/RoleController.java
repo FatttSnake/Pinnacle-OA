@@ -2,9 +2,9 @@ package com.cfive.pinnacle.controller.permission;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cfive.pinnacle.entity.permission.Role;
 import com.cfive.pinnacle.entity.common.ResponseCode;
 import com.cfive.pinnacle.entity.common.ResponseResult;
+import com.cfive.pinnacle.entity.permission.Role;
 import com.cfive.pinnacle.service.permission.IRoleService;
 import com.cfive.pinnacle.utils.WebUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,9 +27,9 @@ import java.util.List;
  * @author FatttSnake
  * @since 2023-04-30
  */
+@Tag(name = "角色", description = "角色相关接口")
 @RestController
 @RequestMapping("/role")
-@Tag(name = "角色", description = "角色相关接口")
 public class RoleController {
 
     private IRoleService roleService;

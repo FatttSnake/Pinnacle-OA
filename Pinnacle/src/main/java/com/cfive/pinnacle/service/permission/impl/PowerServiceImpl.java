@@ -1,10 +1,10 @@
 package com.cfive.pinnacle.service.permission.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.permission.*;
 import com.cfive.pinnacle.mapper.permission.*;
-import com.cfive.pinnacle.service.permission.*;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cfive.pinnacle.service.permission.IPowerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

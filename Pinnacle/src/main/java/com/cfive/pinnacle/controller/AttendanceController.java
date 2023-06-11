@@ -19,14 +19,16 @@ import java.util.List;
  * @author gzw
  * @since 2023-04-30
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/attendance")
 public class AttendanceController {
 
-    @Autowired
     private IAttendanceService attendanceService;
 
+    @Autowired
+    public void setAttendanceService(IAttendanceService attendanceService) {
+        this.attendanceService = attendanceService;
+    }
 
     //查询所有考勤信息和用户名
     @GetMapping("findAllAttendance")
@@ -35,30 +37,33 @@ public class AttendanceController {
         List<Attendance> attendances = attendanceService.getAllAttendanceAndUser();
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }
+
     //查询个人考勤
     @GetMapping("/selectAttendance")
     @PreAuthorize("hasAuthority('attendance:self:check')")
     public ResponseResult<List<Attendance>> findAttendanceAndUser() {
         Long userId = WebUtil.getLoginUser().getUser().getId();
-        List<Attendance> attendances = attendanceService.getAttendanceAndUserByid(userId);
+        List<Attendance> attendances = attendanceService.getAttendanceAndUserById(userId);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }
+
     //模糊时间查询所有考勤信息
     @GetMapping("/findAttendanceByTime")
     @PreAuthorize("hasAuthority('attendance:manage:get')")
-    public ResponseResult<List<Attendance>> findAttendanceAndUserByTime(String startTime,String endTime) {
+    public ResponseResult<List<Attendance>> findAttendanceAndUserByTime(String startTime, String endTime) {
         List<Attendance> attendances = attendanceService.selectByTime(startTime, endTime);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }
+
     //用户个人模糊时间查询
     @GetMapping("/findOneAttendanceByTime")
     @PreAuthorize("hasAuthority('attendance:self:check')")
-    public ResponseResult<List<Attendance>> findOneAttendanceAndUserByTime(String startTime,String endTime) {
+    public ResponseResult<List<Attendance>> findOneAttendanceAndUserByTime(String startTime, String endTime) {
         Long userId = WebUtil.getLoginUser().getUser().getId();
-        List<Attendance> attendances = attendanceService.selectOneByTime(startTime, endTime,userId);
-        System.out.println(attendances);
+        List<Attendance> attendances = attendanceService.selectOneByTime(startTime, endTime, userId);
         return ResponseResult.build(ResponseCode.DATABASE_SELECT_OK, "success", attendances);
     }
+
     //添加或更新考勤信息
     @PostMapping("/saveAttendance")
     @PreAuthorize("hasAuthority('attendance:manage:modify') and hasAuthority('attendance:manage:get')")
@@ -79,7 +84,7 @@ public class AttendanceController {
             attendance.setStatus(3);
             return attendanceService.save(attendance) ? ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", attendance) :
                     ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "error", null);
-        } else if (attendance.getAttTime().getHour() >= 10&& attendance.getAttTime().getHour() < 15) {
+        } else if (attendance.getAttTime().getHour() >= 10 && attendance.getAttTime().getHour() < 15) {
 //            签退
             attendance.setStatus(2);
             return attendanceService.save(attendance) ? ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", attendance) :
@@ -95,11 +100,7 @@ public class AttendanceController {
             return attendanceService.save(attendance) ? ResponseResult.build(ResponseCode.DATABASE_SAVE_OK, "success", attendance) :
                     ResponseResult.build(ResponseCode.DATABASE_SAVE_ERROR, "error", null);
         }
-
-
     }
-
-
 
     //删除考勤信息
     @DeleteMapping("/delAttendance/{id}")
@@ -116,7 +117,4 @@ public class AttendanceController {
         return attendanceService.removeByIds(ids) ? ResponseResult.build(ResponseCode.DATABASE_DELETE_OK, "success", null) :
                 ResponseResult.build(ResponseCode.DATABASE_DELETE_ERROR, "error", null);
     }
-
-
-
 }

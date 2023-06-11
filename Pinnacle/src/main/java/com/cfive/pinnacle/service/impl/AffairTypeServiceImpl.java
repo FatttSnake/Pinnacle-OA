@@ -1,9 +1,9 @@
 package com.cfive.pinnacle.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cfive.pinnacle.entity.AffairType;
 import com.cfive.pinnacle.mapper.AffairTypeMapper;
 import com.cfive.pinnacle.service.IAffairTypeService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

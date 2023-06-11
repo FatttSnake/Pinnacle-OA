@@ -39,11 +39,11 @@ create table `t_power`
 
 create table `t_menu`
 (
-    `id`        bigint       not null primary key auto_increment,
-    `name`      varchar(30)  not null comment ' 菜单名',
+    `id`        bigint      not null primary key auto_increment,
+    `name`      varchar(30) not null comment ' 菜单名',
     `url`       varchar(100) null comment 'URL',
-    `power_id`  bigint       not null comment '权限ID',
-    `parent_id` bigint       null comment '父ID',
+    `power_id`  bigint      not null comment '权限ID',
+    `parent_id` bigint null comment '父ID',
     constraint t_menu_power_id_fk foreign key (power_id) references t_power (id)
 ) comment '菜单';
 
@@ -72,7 +72,7 @@ create table `t_operation`
     `name`       varchar(50) not null comment '功能名',
     `code`       varchar(50) null comment '功能编码',
     `power_id`   bigint      not null comment '权限ID',
-    `parent_id`  bigint      null comment '父ID',
+    `parent_id`  bigint null comment '父ID',
     `element_id` bigint      not null comment '页面元素ID',
     constraint t_operation_power_id_fk foreign key (power_id) references t_power (id),
     constraint t_operation_element_id_fk foreign key (element_id) references t_element (id)
@@ -94,7 +94,7 @@ create table `t_user`
     `id`            bigint      not null primary key,
     `username`      varchar(20) not null comment '用户名',
     `passwd`        char(70)    not null comment '密码',
-    `department_id` bigint      null comment '部门',
+    `department_id` bigint null comment '部门',
     `enable`        int         not null comment '启用',
     `deleted`       bigint      not null default 0,
     `version`       int         not null default 0,
@@ -186,7 +186,7 @@ create table `t_staff`
     `first_name` varchar(20) not null comment '名',
     `last_name`  varchar(20) not null comment '姓',
     `gender`     int         not null default 0 comment '性别',
-    `birth`      date        null comment '生日',
+    `birth`      date null comment '生日',
     `email`      varchar(50) null comment '邮箱',
     `tel`        varchar(20) null comment '电话',
     `address`    varchar(100) null comment '地址',
@@ -217,7 +217,7 @@ create table `t_notice`
     `priority`    int         not null default 1 comment '优先级',
     `top`         int         not null default 0 comment '置顶',
     `modify_time` datetime    not null default (utc_timestamp()) comment '修改时间',
-    `origin_id`   bigint      null comment '源ID',
+    `origin_id`   bigint null comment '源ID',
     `old`         int         not null default 0 comment '已修改',
     `deleted`     bigint      not null default 0,
     `version`     int         not null default 0,
@@ -246,7 +246,7 @@ create table `t_work`
     `deadline`     datetime     not null comment '截止时间',
     `modify_time`  datetime     not null default (utc_timestamp()) comment '修改时间',
     `old`          int          not null default 0 comment '已修改',
-    `origin_id`    bigint       null comment '源ID',
+    `origin_id`    bigint null comment '源ID',
     `deleted`      bigint       not null default 0,
     `version`      int          not null default 0,
     constraint t_work_publisher_id_fk foreign key (publisher_id) references t_user (id)
@@ -254,13 +254,13 @@ create table `t_work`
 
 create table `t_user_work`
 (
-    `id`            bigint   not null primary key,
-    `user_id`       bigint   not null comment '用户',
-    `work_id`       bigint   not null comment '工作事项',
-    `status`        int      not null default 0 comment '工作状态',
+    `id`            bigint not null primary key,
+    `user_id`       bigint not null comment '用户',
+    `work_id`       bigint not null comment '工作事项',
+    `status`        int    not null default 0 comment '工作状态',
     `complete_time` datetime null comment '完成时间',
-    `deleted`       bigint   not null default 0,
-    `version`       int      not null default 0,
+    `deleted`       bigint not null default 0,
+    `version`       int    not null default 0,
     constraint t_user_work_user_id_fk foreign key (user_id) references t_user (id),
     constraint t_user_work_work_id_fk foreign key (work_id) references t_work (id)
 ) comment '中间表-用户-工作事项';
@@ -284,10 +284,10 @@ create table `t_affair`
     `applicant_id` bigint      not null comment '申请者',
     `inspector_id` bigint      not null comment '审核者',
     `create_time`  datetime    not null default (utc_timestamp()) comment '创建时间',
-    `inspect_time` datetime    null comment '审核时间',
+    `inspect_time` datetime null comment '审核时间',
     `priority`     int         not null default 1 comment '优先级',
     `modify_time`  datetime             default (utc_timestamp()) comment '修改时间',
-    `origin_id`    bigint      null comment '源ID',
+    `origin_id`    bigint null comment '源ID',
     `old`          int         not null default 0 comment '已修改',
     `deleted`      bigint      not null default 0,
     `version`      int         not null default 0,
